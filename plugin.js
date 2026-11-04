@@ -128,6 +128,7 @@ var AUTO_MAX_X = 198;
 var AUTO_MAX_Y = 66;
 var BORG_MARK = 1;
 var BORG_GLOW = 2;
+var BORG_DARK = 4;
 var BORG_LIGHT = 16;
 var BORG_VIEW = 32;
 function makeBorgGrid() {
@@ -6138,6 +6139,7 @@ function borgNoticePlayer(c) {
   if (p.status.stun && p.status.stun <= 50) t[117 /* ISSTUN */] = 1;
   if (p.status.stun > 50) t[118 /* ISHEAVYSTUN */] = 1;
   if (p.status.paralyzed > 50) t[119 /* ISPARALYZED */] = 1;
+  t[123 /* ISSTUDY */] = p.learnableSpells ? 1 : 0;
   const drained = c.R.frame.statDrained;
   for (let i = 0; i < STAT_MAX; i++) {
     t[10 /* CSTR */ + i] = p.stats[i] ?? 10;
@@ -14303,6 +14305,89 @@ function borgNearMonsterType(ctx, dist4) {
   danger2.fightingUnique = fight.fightingUnique > 0;
 }
 
+// src/item/magic-play.ts
+var NOT_TESTED_BY_NAME = /* @__PURE__ */ new Set([
+  40 /* LIGHTNING_STRIKE */,
+  89 /* TAP_UNLIFE */,
+  17 /* TAP_MAGICAL_ENERGY */,
+  68 /* REMOVE_CURSE */,
+  47 /* TREMOR */,
+  81 /* WORD_OF_DESTRUCTION */,
+  101 /* GRONDS_BLOW */,
+  116 /* DECOY */,
+  78 /* GLYPH_OF_WARDING */,
+  110 /* SINGLE_COMBAT */,
+  95 /* VAMPIRE_STRIKE */,
+  109 /* COMMAND */,
+  108 /* CURSE */,
+  131 /* FORCEFUL_BLOW */,
+  124 /* MAIM_FOE */
+]);
+var NOT_TESTED_BY_EFFECT = /* @__PURE__ */ new Set([
+  115 /* CREATE_ARROWS */,
+  117 /* BRAND_AMMUNITION */,
+  75 /* ENCHANT_WEAPON */,
+  76 /* ENCHANT_ARMOUR */,
+  8 /* IDENTIFY_RUNE */,
+  7 /* RECHARGING */
+]);
+function borgCanPlaySpell(spell) {
+  return !NOT_TESTED_BY_NAME.has(spell) && !NOT_TESTED_BY_EFFECT.has(spell);
+}
+function bookHandle(ctx, bidx) {
+  const books = ctx.view.spellbooks();
+  const book = books[bidx];
+  if (!book) return null;
+  let svalPos = 0;
+  for (let i = 0; i <= bidx; i++) if (books[i] && books[i].tval === book.tval) svalPos++;
+  for (const item of ctx.view.inventory()) {
+    if (item.number > 0 && item.tval === book.tval && item.sval === svalPos) return item.handle;
+  }
+  return null;
+}
+function borgPlayMagic(ctx, bored) {
+  const ratings = ratingsForClass(classOf(ctx));
+  if (ratings === null) return null;
+  if (trait3(ctx, 112 /* ISBLIND */) || trait3(ctx, 114 /* ISCONFUSED */)) return null;
+  if (!trait3(ctx, 26 /* LIGHT */)) return null;
+  const w = ctx.world;
+  if (w.map.inBounds(w.self.c.x, w.self.c.y) && w.map.at(w.self.c.x, w.self.c.y).info === BORG_DARK) return null;
+  const views = /* @__PURE__ */ new Map();
+  for (const book of ctx.view.spellbooks()) for (const s of book.spells) views.set(s.sidx, s);
+  let bestRating = -1;
+  let best = -1;
+  for (let sidx = ratings.length - 1; sidx >= 0; sidx--) {
+    const view = views.get(sidx);
+    if (view === void 0 || !borgBookPossessed(ctx, view.bidx)) continue;
+    if (borgSpellStatus(ctx, view) !== BORG_MAGIC_OKAY) continue;
+    const r = ratings[sidx].rating;
+    if (!bored && r <= 50) continue;
+    if (r <= 0) continue;
+    if (r <= bestRating) continue;
+    bestRating = r;
+    best = sidx;
+  }
+  if (trait3(ctx, 123 /* ISSTUDY */) && bestRating > 0 && best >= 0) {
+    const handle = bookHandle(ctx, views.get(best).bidx);
+    if (handle !== null) return ctx.act.raw("study", { handle, spell: best });
+  }
+  if (trait3(ctx, 105 /* CDEPTH */)) return null;
+  if (!bored) return null;
+  for (let sidx = ratings.length - 1; sidx >= 0; sidx--) {
+    const view = views.get(sidx);
+    if (view === void 0 || !borgBookPossessed(ctx, view.bidx)) continue;
+    if (borgSpellStatus(ctx, view) !== BORG_MAGIC_TEST) continue;
+    const spell = ratings[sidx].spell;
+    if (!borgCanPlaySpell(spell)) continue;
+    const cmd = borgSpell(ctx, spell);
+    if (cmd !== null) {
+      ctx.act.setTargetLocation(w.self.c.x, w.self.c.y);
+      return cmd;
+    }
+  }
+  return null;
+}
+
 // src/think-ladder.ts
 function borgPickUpHere(ctx, session) {
   const w = ctx.world;
@@ -14589,6 +14674,10 @@ function borgThinkDungeon(ctx, session) {
     const cmd = borgLeaveLevel(ctx, session, false);
     if (cmd) return cmd;
   }
+  {
+    const cmd = borgPlayMagic(ctx, false);
+    if (cmd) return cmd;
+  }
   if (borgWieldIsDigger(ctx) || !borgHasWeapon(ctx)) {
     const cmd = borgWearStuff(ctx, itemDeps);
     if (cmd) return cmd;
@@ -14845,6 +14934,10 @@ function borgThinkDungeon(ctx, session) {
   if (borgChooseShop(ctx, buildStoreDeps(session))) {
     const shop = flow.toShop(ctx, g.shop);
     if (shop) return shop;
+  }
+  if (!ctx.world.self.goal.fleeing) {
+    const cmd = borgPlayMagic(ctx, true);
+    if (cmd) return cmd;
   }
   {
     const cmd = flow.spastic(ctx, false);

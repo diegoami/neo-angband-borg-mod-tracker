@@ -227,8 +227,10 @@ function borgNoticePlayer(c: Ctx): void {
   if (p.status.stun && p.status.stun <= 50) t[BI.ISSTUN] = 1;
   if (p.status.stun > 50) t[BI.ISHEAVYSTUN] = 1;
   if (p.status.paralyzed > 50) t[BI.ISPARALYZED] = 1;
-  /* ISIMAGE (hallucination), ISFORGET (amnesia), ISSTUDY (new spells) have no
-   * AgentView field; left 0 (caveat). */
+  /* ISIMAGE (hallucination) and ISFORGET (amnesia) have no AgentView field;
+   * left 0 (caveat). ISSTUDY is player->upkeep->new_spells > 0
+   * (borg-trait.c:3125), which the view carries as learnableSpells. */
+  t[BI.ISSTUDY] = (p as { readonly learnableSpells?: number }).learnableSpells ? 1 : 0;
 
   /* Stats: CSTR..CCON = stat_cur (natural). ISFIX* (drained) from frame. */
   const drained = c.R.frame.statDrained;
