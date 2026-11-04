@@ -16129,10 +16129,10 @@ function createBorg(opts = {}) {
   const spells = buildSpellTable(session.resolvers.spellMessages ?? []);
   const tables = { hitBy: blows.hitBy, spell: spells.spell, spellInvisible: spells.spellInvisible };
   let lastDepth = -1;
-  let before = { lastGrid: session.lastGrid, arrival: session.arrivalPickup };
+  let before = { lastGrid: session.lastGrid, arrival: session.arrivalPickup, rechargeRest: session.rechargeRest ?? false };
   const controller = hostController((view, act) => {
     const ctx = { world, view, act, rng };
-    before = { lastGrid: session.lastGrid, arrival: session.arrivalPickup };
+    before = { lastGrid: session.lastGrid, arrival: session.arrivalPickup, rechargeRest: session.rechargeRest ?? false };
     world.clock += 1;
     world.self.timeThisPanel += 1;
     const depth = view.player().depth;
@@ -16182,6 +16182,7 @@ function createBorg(opts = {}) {
     world.self.timeThisPanel -= 1;
     session.lastGrid = before.lastGrid;
     session.arrivalPickup = before.arrival;
+    session.rechargeRest = before.rechargeRest;
   };
   return { world, rng, controller, rewind };
 }
