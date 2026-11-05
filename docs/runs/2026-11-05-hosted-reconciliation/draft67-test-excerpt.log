@@ -1,0 +1,38 @@
+verify	Run pnpm/action-setup@v6	2026-11-05T21:43:16.2323409Z Successfully updated pnpm to v12.16.1
+verify	Run actions/setup-node@v7	2026-11-05T21:43:18.8976723Z node: v22.23.4
+verify	Run pnpm install --frozen-lockfile	2026-11-05T21:43:20.2311185Z + @rpgm-tools/neo-angband-content 1.23.0-beta.1
+verify	Run pnpm install --frozen-lockfile	2026-11-05T21:43:20.2311611Z + @rpgm-tools/neo-angband-core 1.23.0-beta.1
+verify	Run pnpm install --frozen-lockfile	2026-11-05T21:43:20.2311991Z + @rpgm-tools/neo-angband-mod-sdk 1.23.0-beta.1
+verify	Run pnpm install --frozen-lockfile	2026-11-05T21:43:20.2313434Z + typescript 5.9.3
+verify	Run pnpm install --frozen-lockfile	2026-11-05T21:43:20.2313843Z + vitest 4.1.11
+verify	Run pnpm verify	2026-11-05T21:43:20.3582610Z $ pnpm typecheck && pnpm test && pnpm check
+verify	Run pnpm verify	2026-11-05T21:43:20.3741375Z $ tsc --noEmit
+verify	Run pnpm verify	2026-11-05T21:43:30.5337276Z  ^[[32m✓^[[39m src/item/magic-play.test.ts ^[[2m(^[[22m^[[2m32 tests^[[22m^[[2m | ^[[22m^[[33m26 skipped^[[39m^[[2m)^[[22m^[[32m 32^[[2mms^[[22m^[[39m
+verify	Run pnpm verify	2026-11-05T21:44:14.6653470Z ^[[90mstdout^[[2m | src/rest-and-store-verification.test.ts^[[2m > ^[[22m^[[2mthe Borg's ladder reaches rest and the store^[[2m > ^[[22m^[[2missue #3: HP below max, in a safe town, triggers a real multi-turn rest
+verify	Run pnpm verify	2026-11-05T21:44:25.3991580Z ^[[90mstdout^[[2m | src/rest-and-store-verification.test.ts^[[2m > ^[[22m^[[2mthe Borg's ladder reaches rest and the store^[[2m > ^[[22m^[[2missue #4: physically in a real shop, the store ladder trades with a real effect
+verify	Run pnpm verify	2026-11-05T21:44:25.4018483Z  ^[[32m✓^[[39m src/rest-and-store-verification.test.ts ^[[2m(^[[22m^[[2m4 tests^[[22m^[[2m)^[[22m^[[33m 52052^[[2mms^[[22m^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2686822Z  ^[[31m❯^[[39m src/play.test.ts ^[[2m(^[[22m^[[2m6 tests^[[22m^[[2m | ^[[22m^[[31m4 failed^[[39m^[[2m)^[[22m^[[33m 160294^[[2mms^[[22m^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2755090Z ^[[31m⎯⎯⎯⎯⎯⎯⎯^[[39m^[[1m^[[41m Failed Tests 4 ^[[49m^[[22m^[[31m⎯⎯⎯⎯⎯⎯⎯^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2759205Z ^[[41m^[[1m FAIL ^[[22m^[[49m src/play.test.ts^[[2m > ^[[22mthe Borg plays a real game^[[2m > ^[[22mkeeps playing for 1500 decisions (seed 1)
+verify	Run pnpm verify	2026-11-05T21:46:13.2766364Z ^[[31m^[[1mAssertionError^[[22m: "open" was issued 1363 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1363 to be less than 750^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2767982Z ^[[36m ^[[2m❯^[[22m src/play.test.ts:^[[2m352:11^[[22m^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2883601Z ^[[41m^[[1m FAIL ^[[22m^[[49m src/play.test.ts^[[2m > ^[[22mthe Borg plays a real game^[[2m > ^[[22mkeeps playing for 1500 decisions (seed 7)
+verify	Run pnpm verify	2026-11-05T21:46:13.2886257Z ^[[31m^[[1mAssertionError^[[22m: "open" was issued 1227 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1227 to be less than 750^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2887907Z ^[[36m ^[[2m❯^[[22m src/play.test.ts:^[[2m352:11^[[22m^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2894798Z ^[[41m^[[1m FAIL ^[[22m^[[49m src/play.test.ts^[[2m > ^[[22mthe Borg plays a real game^[[2m > ^[[22mkeeps playing for 1500 decisions (seed 42)
+verify	Run pnpm verify	2026-11-05T21:46:13.2896360Z ^[[31m^[[1mAssertionError^[[22m: "open" was issued 1348 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1348 to be less than 750^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2897247Z ^[[36m ^[[2m❯^[[22m src/play.test.ts:^[[2m352:11^[[22m^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2902126Z ^[[41m^[[1m FAIL ^[[22m^[[49m src/play.test.ts^[[2m > ^[[22mthe Borg plays a real game^[[2m > ^[[22mkeeps playing for 1500 decisions (seed 99)
+verify	Run pnpm verify	2026-11-05T21:46:13.2903364Z ^[[31m^[[1mAssertionError^[[22m: "open" was issued 1457 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1457 to be less than 750^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2904191Z ^[[36m ^[[2m❯^[[22m src/play.test.ts:^[[2m352:11^[[22m^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2917058Z ^[[2m Test Files ^[[22m ^[[1m^[[31m1 failed^[[39m^[[22m^[[2m | ^[[22m^[[1m^[[32m43 passed^[[39m^[[22m^[[90m (44)^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2918728Z ^[[2m      Tests ^[[22m ^[[1m^[[31m4 failed^[[39m^[[22m^[[2m | ^[[22m^[[1m^[[32m836 passed^[[39m^[[22m^[[2m | ^[[22m^[[33m26 skipped^[[39m^[[90m (866)^[[39m
+verify	Run pnpm verify	2026-11-05T21:46:13.2920983Z ^[[2m   Duration ^[[22m 166.97s^[[2m (transform 3.52s, setup 17.67s, import 10.32s, tests 238.79s, environment 6ms)^[[22m
+verify	Run pnpm verify	2026-11-05T21:46:13.2976444Z ##[error]AssertionError: "open" was issued 1363 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1363 to be less than 750
+verify	Run pnpm verify	 ❯ src/play.test.ts:352:11
+verify	Run pnpm verify	2026-11-05T21:46:13.2992037Z ##[error]AssertionError: "open" was issued 1227 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1227 to be less than 750
+verify	Run pnpm verify	 ❯ src/play.test.ts:352:11
+verify	Run pnpm verify	2026-11-05T21:46:13.2997068Z ##[error]AssertionError: "open" was issued 1348 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1348 to be less than 750
+verify	Run pnpm verify	 ❯ src/play.test.ts:352:11
+verify	Run pnpm verify	2026-11-05T21:46:13.3001845Z ##[error]AssertionError: "open" was issued 1457 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1457 to be less than 750
+verify	Run pnpm verify	 ❯ src/play.test.ts:352:11
