@@ -49,3 +49,6 @@ selects the prebuilt Mandos lab engine (9d6ae21ec, its existing patch bundle):
 the same ten play/rest cases pass10/10. That isolates an engine-version/patch
 boundary as a bundle; it does not prove which individual hunk fixes each
 published-beta.1 failure. Source issue25 retains the next attribution step.
+
+On a fresh clone, add upstream=https://github.com/neostryder/neo-angband-mod-borg.git
+and fetch its master before cutting an isolated source-fix branch.
