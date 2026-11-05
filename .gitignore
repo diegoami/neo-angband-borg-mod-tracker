@@ -4,3 +4,10 @@ node_modules/
 .claude/
 CLAUDE.md
 package-lock.json
+
+# Session watch cache
+.upstream-watch.json
+artifacts/
+
+# Shared agent entry is intentionally public for fork sessions
+!CLAUDE.md
