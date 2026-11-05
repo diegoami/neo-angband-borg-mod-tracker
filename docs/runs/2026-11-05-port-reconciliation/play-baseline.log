@@ -1,0 +1,65 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-reconcile-20261105
+
+ ❯ src/play.test.ts (6 tests | 4 failed) 210688ms
+     × keeps playing for 1500 decisions (seed 1) 39315ms
+     × keeps playing for 1500 decisions (seed 7) 46223ms
+     × keeps playing for 1500 decisions (seed 42) 54210ms
+     × keeps playing for 1500 decisions (seed 99) 39219ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 1)
+AssertionError: "open" was issued 1363 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1363 to be less than 750
+ ❯ src/play.test.ts:345:11
+    343|           `"${code}" was issued ${String(count)} of ${String(total)} t…
+    344|             `a single command taking over is what a stall looks like f…
+    345|         ).toBeLessThan(Math.max(60, Math.trunc(total / 2)));
+       |           ^
+    346|       }
+    347|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 7)
+AssertionError: "open" was issued 1227 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1227 to be less than 750
+ ❯ src/play.test.ts:345:11
+    343|           `"${code}" was issued ${String(count)} of ${String(total)} t…
+    344|             `a single command taking over is what a stall looks like f…
+    345|         ).toBeLessThan(Math.max(60, Math.trunc(total / 2)));
+       |           ^
+    346|       }
+    347|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 42)
+AssertionError: "open" was issued 1348 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1348 to be less than 750
+ ❯ src/play.test.ts:345:11
+    343|           `"${code}" was issued ${String(count)} of ${String(total)} t…
+    344|             `a single command taking over is what a stall looks like f…
+    345|         ).toBeLessThan(Math.max(60, Math.trunc(total / 2)));
+       |           ^
+    346|       }
+    347|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 99)
+AssertionError: "open" was issued 1457 of 1500 times: a single command taking over is what a stall looks like from outside: expected 1457 to be less than 750
+ ❯ src/play.test.ts:345:11
+    343|           `"${code}" was issued ${String(count)} of ${String(total)} t…
+    344|             `a single command taking over is what a stall looks like f…
+    345|         ).toBeLessThan(Math.max(60, Math.trunc(total / 2)));
+       |           ^
+    346|       }
+    347|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 6 passed (10)
+   Start at  22:26:33
+   Duration  213.56s (transform 3.18s, setup 1.12s, import 3.97s, tests 263.00s, environment 1ms)
+

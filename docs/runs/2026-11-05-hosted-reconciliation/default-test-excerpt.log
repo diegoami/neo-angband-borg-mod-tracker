@@ -1,0 +1,15 @@
+verify	Run pnpm/action-setup@v6	2026-11-05T21:47:31.8036132Z Successfully updated pnpm to v12.16.1
+verify	Run actions/setup-node@v7	2026-11-05T21:47:32.4720534Z node: v22.23.4
+verify	Run pnpm install --frozen-lockfile	2026-11-05T21:47:34.5445603Z + @rpgm-tools/neo-angband-core 1.23.0-beta.1
+verify	Run pnpm install --frozen-lockfile	2026-11-05T21:47:34.5446331Z + @rpgm-tools/neo-angband-mod-sdk 1.23.0-beta.1
+verify	Run pnpm install --frozen-lockfile	2026-11-05T21:47:34.5447889Z + typescript 5.9.3
+verify	Run pnpm install --frozen-lockfile	2026-11-05T21:47:34.5448150Z + vitest 4.1.11
+verify	Run pnpm verify	2026-11-05T21:47:34.6738327Z $ pnpm typecheck && pnpm test && pnpm check
+verify	Run pnpm verify	2026-11-05T21:47:34.6945892Z $ tsc --noEmit
+verify	Run pnpm verify	2026-11-05T21:47:44.4944206Z  ^[[32m✓^[[39m src/item/magic-play.test.ts ^[[2m(^[[22m^[[2m32 tests^[[22m^[[2m | ^[[22m^[[33m26 skipped^[[39m^[[2m)^[[22m^[[32m 31^[[2mms^[[22m^[[39m
+verify	Run pnpm verify	2026-11-05T21:47:46.9264934Z  ^[[2m^[[90m↓^[[39m^[[22m src/play.test.ts ^[[2m(^[[22m^[[2m6 tests^[[22m^[[2m | ^[[22m^[[33m6 skipped^[[39m^[[2m)^[[22m
+verify	Run pnpm verify	2026-11-05T21:47:47.7543866Z  ^[[2m^[[90m↓^[[39m^[[22m src/rest-and-store-verification.test.ts ^[[2m(^[[22m^[[2m4 tests^[[22m^[[2m | ^[[22m^[[33m4 skipped^[[39m^[[2m)^[[22m
+verify	Run pnpm verify	2026-11-05T21:48:02.7640041Z ^[[2m Test Files ^[[22m ^[[1m^[[32m42 passed^[[39m^[[22m^[[2m | ^[[22m^[[33m2 skipped^[[39m^[[90m (44)^[[39m
+verify	Run pnpm verify	2026-11-05T21:48:02.7645241Z ^[[2m      Tests ^[[22m ^[[1m^[[32m830 passed^[[39m^[[22m^[[2m | ^[[22m^[[33m36 skipped^[[39m^[[90m (866)^[[39m
+verify	Run pnpm verify	2026-11-05T21:48:02.7647251Z ^[[2m   Duration ^[[22m 22.30s^[[2m (transform 3.07s, setup 19.02s, import 10.32s, tests 28.68s, environment 8ms)^[[22m
+verify	Run pnpm verify	2026-11-05T21:48:03.0569040Z [mod-build] borg: ok, and the committed plugin.js is current (661.9 KiB, api >=2.0.0 <3.0.0)

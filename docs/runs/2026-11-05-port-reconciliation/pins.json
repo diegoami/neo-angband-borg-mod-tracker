@@ -1,0 +1,21 @@
+{
+  "versions": {
+    "neo-angband-core": "1.23.0-beta.1",
+    "neo-angband-mod-sdk": "1.23.0-beta.1",
+    "node": "v24.21.0",
+    "pnpm": "12.16.1",
+    "port": "74a017d2f695939eb2f046b7c9ff286ef1e82568",
+    "owned_default": "33552ab8504f5431d02f63a3b340757a47739661",
+    "engine": "0cc75b4afcbe6f5128730e4b910408c7be4ac5c5",
+    "content_tree": "d72413a575ea48cb94da046ce5e47370e2932a97"
+  },
+  "sha256": {
+    "package.json": "490319d14de476d8318ff5c4336da5854dceaca1340194e0763985e6a0ddf729",
+    "pnpm-lock.yaml": "61c92857f14899672e6856486e4a75a71a5e2c446c573bae855233098953f2b1",
+    "plugin.js": "e2c59d0bf99e8a558f2c28443c570097851d2ede3fe0e38c8f5be13f6604befa",
+    "src/play.test.ts": "2f246a5c3d5e461b7f7a900327ac2ffbd5b6f3b45691517285dae8b62d278c1e",
+    "src/rest-and-store-verification.test.ts": "2a2c14c49afe72c4fddcf193dddc9b8105286fc822e68fce5171977bbf93d5d2",
+    "core/trap.js:before": "bc7e15fc9c1e33463ef27d705f75c2c9535518728710e683520ab605fff0dcc4",
+    "core/trap.js:noteSpot-only": "eebc42268f7e6fe4c565c232cbf9ce49aa2c516adac2d7d24cb15302bfc89f0c"
+  }
+}
