@@ -1,0 +1,40 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-play-rest-content
+
+ ❯ src/play.test.ts (0 test)
+ ❯ src/rest-and-store-verification.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/play.test.ts [ src/play.test.ts ]
+Error: Play/rest tests require @rpgm-tools/neo-angband-content or NEO_ANGBAND_REPO with a built content pack.
+ ❯ packRoot src/play.test.ts:59:34
+     57|   } catch {
+     58|     const message = "Play/rest tests require @rpgm-tools/neo-angband-c…
+     59|     if (process.env["CI"]) throw new Error(message);
+       |                                  ^
+     60|     process.stderr.write(message + " Skipping play/rest cases locally.…
+     61|     return null;
+ ❯ src/play.test.ts:65:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/rest-and-store-verification.test.ts [ src/rest-and-store-verification.test.ts ]
+Error: Play/rest tests require @rpgm-tools/neo-angband-content or NEO_ANGBAND_REPO with a built content pack.
+ ❯ packRoot src/rest-and-store-verification.test.ts:75:34
+     73|   } catch {
+     74|     const message = "Play/rest tests require @rpgm-tools/neo-angband-c…
+     75|     if (process.env["CI"]) throw new Error(message);
+       |                                  ^
+     76|     process.stderr.write(message + " Skipping play/rest cases locally.…
+     77|     return null;
+ ❯ src/rest-and-store-verification.test.ts:81:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  no tests
+   Start at  22:35:53
+   Duration  3.45s (transform 4.03s, setup 1.41s, import 0ms, tests 0ms, environment 1ms)
+

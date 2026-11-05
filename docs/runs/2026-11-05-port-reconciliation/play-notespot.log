@@ -1,0 +1,27 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-reconcile-20261105
+
+ ❯ src/play.test.ts (6 tests | 1 failed) 286778ms
+     × keeps playing for 1500 decisions (seed 42) 132793ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 42)
+Error: Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/play.test.ts:328:5
+    326|    * that showed on all four. */
+    327|   for (const seed of [1, 7, 42, 99]) {
+    328|     when(`keeps playing for 1500 decisions (seed ${String(seed)})`, ()…
+       |     ^
+    329|       const r = playRun(pack!, seed, 1500);
+    330|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 9 passed (10)
+   Start at  22:30:42
+   Duration  289.52s (transform 3.04s, setup 1.08s, import 3.79s, tests 339.88s, environment 1ms)
+

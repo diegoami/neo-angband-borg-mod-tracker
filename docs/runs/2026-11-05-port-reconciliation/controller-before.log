@@ -1,0 +1,71 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-reconcile-20261105
+
+ ❯ src/api2/controller.test.ts (33 tests | 9 failed) 572ms
+     × resets the stall count when 'blind' clears in the published view 78ms
+     × resets the stall count when 'confused' clears in the published view 43ms
+     × resets the stall count when 'afraid' clears in the published view 33ms
+     × resets the stall count when 'poisoned' clears in the published view 30ms
+     × resets the stall count when 'paralyzed' clears in the published view 38ms
+     × resets the stall count when 'cut' clears in the published view 20ms
+     × resets the stall count when 'stun' clears in the published view 31ms
+     × resets the stall count when 'cut' crosses a published grade boundary 30ms
+     × resets the stall count when 'stun' crosses a published grade boundary 21ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/api2/controller.test.ts > one tick > resets the stall count when 'blind' clears in the published view
+ FAIL  src/api2/controller.test.ts > one tick > resets the stall count when 'confused' clears in the published view
+ FAIL  src/api2/controller.test.ts > one tick > resets the stall count when 'afraid' clears in the published view
+ FAIL  src/api2/controller.test.ts > one tick > resets the stall count when 'poisoned' clears in the published view
+ FAIL  src/api2/controller.test.ts > one tick > resets the stall count when 'paralyzed' clears in the published view
+ FAIL  src/api2/controller.test.ts > one tick > resets the stall count when 'cut' clears in the published view
+ FAIL  src/api2/controller.test.ts > one tick > resets the stall count when 'stun' clears in the published view
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "The Borg's open changed nothing 40 times running.",
++ ]
+
+ ❯ src/api2/controller.test.ts:295:27
+    293|     for (let n = 0; n < STALLS_BEFORE_RELEASE; n++) await tick(game.mo…
+    294|     expect(seen.slice(STALLS_BEFORE_RELEASE)).toEqual(Array<number>(ST…
+    295|     expect(game.released).toEqual([]);
+       |                           ^
+    296|     await tick(game.mod, game.input());
+    297|     expect(game.released).toHaveLength(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  src/api2/controller.test.ts > one tick > resets the stall count when 'cut' crosses a published grade boundary
+ FAIL  src/api2/controller.test.ts > one tick > resets the stall count when 'stun' crosses a published grade boundary
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "The Borg's open changed nothing 40 times running.",
++ ]
+
+ ❯ src/api2/controller.test.ts:317:27
+    315|     for (let n = 0; n < STALLS_BEFORE_RELEASE; n++) await tick(game.mo…
+    316|     expect(seen.slice(STALLS_BEFORE_RELEASE)).toEqual(Array<number>(ST…
+    317|     expect(game.released).toEqual([]);
+       |                           ^
+    318|     await tick(game.mod, game.input());
+    319|     expect(game.released).toHaveLength(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 24 passed (33)
+   Start at  22:35:32
+   Duration  3.88s (transform 2.07s, setup 727ms, import 2.32s, tests 572ms, environment 0ms)
+
