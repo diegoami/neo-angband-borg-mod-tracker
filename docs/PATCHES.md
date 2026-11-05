@@ -17,3 +17,9 @@ The 2026-11-05 reconciliation and exact verification receipts are in
 [the run record](runs/2026-11-05-port-reconciliation/README.md). Earlier scenario
 receipts on the canonical source issues remain authoritative for their named
 versions; this table does not re-certify every historical correction.
+
+[Hosted-check reconciliation](runs/2026-11-05-hosted-reconciliation/README.md)
+confirms unchanged upstream heads and completed checks: default CI passes
+830 tests but skips36; draft67 CI runs the ten play/rest cases and reproduces
+the four baseline failures (836 passed / 4 failed / 26 spell cases skipped).
+Draft67 stays draft; none of these source/adoption states change.
