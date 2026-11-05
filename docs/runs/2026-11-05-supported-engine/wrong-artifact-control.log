@@ -1,0 +1,13 @@
+file:///tmp/neo-borg-supported-20261105/tools/verify-notespot-source.mjs:20
+    throw new Error(`Wrong engine artifact: ${file}`);
+          ^
+
+Error: Wrong engine artifact: /tmp/neo-borg-supported-bad-artifacts/rpgm-tools-neo-angband-core-1.23.0-beta.2.tgz
+    at file:///tmp/neo-borg-supported-20261105/tools/verify-notespot-source.mjs:20:11
+    at Array.map (<anonymous>)
+    at file:///tmp/neo-borg-supported-20261105/tools/verify-notespot-source.mjs:17:34
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.21.0

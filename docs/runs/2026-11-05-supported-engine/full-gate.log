@@ -1,0 +1,15 @@
+$ pnpm typecheck && pnpm test && pnpm check
+$ tsc --noEmit
+$ vitest run
+
+ RUN  v4.1.11 /tmp/neo-borg-supported-20261105
+
+
+ Test Files  44 passed (44)
+      Tests  866 passed (866)
+   Start at  23:57:40
+   Duration  213.98s (transform 56.08s, setup 41.86s, import 87.41s, tests 312.51s, environment 10ms)
+
+$ node tools/build.mjs --check
+[mod-build] checking 1: borg
+[mod-build] borg: ok, and the committed plugin.js is current (661.9 KiB, api >=2.0.0 <3.0.0)
