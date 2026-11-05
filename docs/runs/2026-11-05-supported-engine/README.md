@@ -12,7 +12,7 @@ timeouts are unchanged. Both published proposal heads remain untouched.
 The selected dependency is engine source
 `19ff25eac8997e8feb6b5e62eefa7ffe4d134631`, **not** the npm beta.2 label. All
 three compatible core/SDK/content packages come from that source, built with
-Node26.13.0 / pnpm12.3.4 / npm11.20.0 / TypeScript5.9.3. Exact source trees,
+Node 26.13.0 / pnpm 12.3.4 / npm 11.20.0 / TypeScript 5.9.3. Exact source trees,
 package integrity/size/exports and producer limits are in
 [engine-artifacts.json](engine-artifacts.json); artifact SHA256s are in
 [SHA256SUMS](SHA256SUMS). The
@@ -73,14 +73,14 @@ labels, protected lab or private data change.
 
 ## Completed local gate
 
-`CI=1 pnpm verify` exits **0**: **866 passed / zero skips**, all44 test files
+`CI=1 pnpm verify` exits **0**: **866 passed / zero skips**, all 44 test files
 passed,213.98s. All ten play/rest cases and26 previously hidden spell cases
 execute in the unfiltered full suite. Typecheck passes and the committed
 plugin is current (661.9KiB, API >=2.0.0 <3.0.0). Manifest grants also pass.
 This is an observed full port compatibility receipt for the explicit fork
 source/artifact tuple above, not a claim about registry beta.2.
 
-Consumer toolchain: Node24.21.0 / pnpm12.16.1 / TypeScript5.9.3 / Vitest4.1.11.
+Consumer toolchain: Node 24.21.0 / pnpm 12.16.1 / TypeScript 5.9.3 / Vitest 4.1.11.
 [Complete gate log](full-gate.log), [numeric exit](full-gate.exit),
 [exact single-artifact SDK selection](sdk-selection.log), and the three
 `executed-*` manifest/lock/workspace receipts retain the executed selection;
@@ -96,3 +96,34 @@ its existing120s case limits. No assertion, timeout or seed was altered.
 Hosted exact-source CI is a separate receipt; local success does not imply
 its outcome. The original default/published beta.1 job remains an honest
 blocked baseline; any failure there is retained rather than waived.
+
+## Hosted profile reconciliation
+
+At immutable proposal head `14004194cd70efae2d54832cf6b5d57b32282dbf`,
+[exact-source CI42126504537](https://github.com/diegoami/neo-angband-borg-mod-tracker/actions/runs/42126504537)
+**succeeds**, independently rebuilding all three byte-matching artifacts on
+Node 26.13.0 and executing the generated sibling-free consumer recipe. All
+866 cases pass with zero skips in 156.59s; typecheck, grants and plugin currency pass.
+See [source excerpts](hosted-source-excerpt.log). The exact artifact SHA256
+checks and final all 866/no-skips guard both execute successfully.
+
+The required unchanged
+[published-default CI42126504028](https://github.com/diegoami/neo-angband-borg-mod-tracker/actions/runs/42126504028)
+**fails**:862 passed /4 failed /zero skips,121.39s. Seeds1/7/42/99 repeat
+`open`1363/1227/1348/1457 times of1500, matching the original baseline.
+All 26 spell cases now execute. Typecheck passes; the failed chain does not
+reach plugin checking. See [default excerpts](hosted-default-excerpt.log).
+Privacy/session checks pass.
+
+PR28 and upstream67 stay DRAFT/unmerged; no required failing default check
+is waived. The component primary/default remains `f8e7845acafa24d4f3971342c80cfaed76b0e03e`.
+The task worktree's dependencies were restored to its declared published
+beta.1 baseline after preserving the executed exact-source receipts.
+The lane-only watch audits 6 active source trackers / 22 references without
+problems; this was an isolated initial baseline, not a movement comparison; no Rust repository/feed polling is performed.
+
+The final receipt/ledger update changes documentation only. Any CI created
+by that append is separate from the exact immutable source-profile result
+above; no new result is inferred. The next port action requires the actual
+supported-default engine correction/delivery, then rechecking the full
+default gate before considering either draft's graduation or integration.
