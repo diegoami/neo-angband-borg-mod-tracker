@@ -18,3 +18,6 @@ allowBuilds:
 # documented alternative to disabling the protection outright.
 minimumReleaseAgeExclude:
   - "@rpgm-tools/*"
+
+patchedDependencies:
+  '@rpgm-tools/neo-angband-core@1.23.0-beta.1': patches/engine-notespot/@rpgm-tools__neo-angband-core@1.23.0-beta.1.patch

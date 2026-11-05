@@ -28,6 +28,8 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      # FORK: ordinary owned profile is published beta.1 + explicit carried noteSpot.
+      # The frozen lock applies the named core-only patch; SDK/content stay beta.1.
       - run: pnpm install --frozen-lockfile
 
       # Fail when the manifest asks for a wildcard state grant or the real map, so every

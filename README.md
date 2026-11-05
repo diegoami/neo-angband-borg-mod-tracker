@@ -52,3 +52,14 @@ published-beta.1 failure. Source issue25 retains the next attribution step.
 
 On a fresh clone, add upstream=https://github.com/neostryder/neo-angband-mod-borg.git
 and fetch its master before cutting an isolated source-fix branch.
+
+## Owned fork engine dependency profile
+
+The current integration proposal declares **published beta.1 + explicit
+carried noteSpot** through pnpm patchedDependencies. Core/SDK/content stay
+at matching beta.1; the core-only engine call restoration is named and
+hashed in [the carry ledger](patches/engine-notespot/README.md). A normal
+`pnpm install --frozen-lockfile` installs it and `CI=1 pnpm verify` runs its
+package controls plus all 866 port cases. This does not claim the published
+package itself contains the correction or that upstream429 has merged.
+Upstream PR67 remains separate and draft; Mandos owns its independent carry.

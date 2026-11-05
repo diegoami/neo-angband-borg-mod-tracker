@@ -30,12 +30,18 @@ execFileSync("tar", ["-x", "-C", tree], { input: archive });
 const run = (command, args) => execFileSync(command, args, { cwd: tree, stdio: "inherit", env: { ...process.env, NEO_ANGBAND_REPO: "", NEO_ANGBAND_LOCAL_CORE: "", CI: "1" } });
 console.log(`Preserved verification tree/logs: ${receipt}`);
 run("pnpm", ["install", "--frozen-lockfile", "--store-dir", join(receipt, "store")]);
-writeFileSync(join(tree, "pnpm-workspace.yaml"), readFileSync(join(tree, "pnpm-workspace.yaml"), "utf8") +
+// Source19ff25ea already contains noteSpot. Remove only this fork's exact
+// beta.1 carry declaration inside this generated tree before selecting artifacts.
+let workspace = readFileSync(join(tree, "pnpm-workspace.yaml"), "utf8");
+const carry = "  '@rpgm-tools/neo-angband-core@1.23.0-beta.1': patches/engine-notespot/@rpgm-tools__neo-angband-core@1.23.0-beta.1.patch\n";
+if (!workspace.includes(carry)) throw new Error("Expected exact beta.1 noteSpot carry declaration");
+workspace = workspace.replace(carry, "").replace(/^patchedDependencies:\n(?=\n|$)/m, "");
+writeFileSync(join(tree, "pnpm-workspace.yaml"), workspace +
   `\n# FORK: transitive SDK must select the same exact artifact.\noverrides:\n  "@rpgm-tools/neo-angband-mod-sdk": ${JSON.stringify("file:" + files[1])}\n`);
 run("pnpm", ["add", "-D", ...files, "--store-dir", join(receipt, "store")]);
 run("node", ["tools/check-grants.mjs"]);
 // Each runner coordinates with every engine/port/Mandos lane through the shared lock.
-// The required verify chain remains typecheck -> complete suite -> plugin currency.
+// Verify includes typecheck, installed-package controls, complete suite and plugin currency.
 let output = "";
 const code = await new Promise((resolveExit, reject) => {
   const child = spawn("flock", ["/tmp/angband-validation.lock", "pnpm", "verify"], {

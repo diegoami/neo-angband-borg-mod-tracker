@@ -41,3 +41,17 @@ and remains blocked by four repeated-open failures. Neither profile silently
 replaces the other. PR28 stays draft/unmerged while its required default check
 is failing; upstream67 stays draft and source25 stays open. These receipts do
 not change Mandos126/150 adoption state or any existing consumer carry.
+
+## Owner-requested normal fork dependency integration
+
+The follow-up to PR28's red unpatched default is a minimal **published beta.1
++ explicit carried noteSpot** dependency profile. [Named patch/provenance](../patches/engine-notespot/README.md)
+restores only the canonical engine import/call in published core source and
+dist; SDK/content remain beta.1. pnpm patchedDependencies and the lock hash
+make this the ordinary installed dependency, rather than an alternate test
+alias or a claimed npm delivery. Package controls fail before/pass after;
+[complete integration receipts](runs/2026-11-06-beta1-notespot-carry/README.md)
+record normal local/hosted gates separately from the retained unpatched
+negative control and exact-source compatibility profile. Upstream67's head
+is untouched/DRAFT. Source25/engine4 remain open with no carry labels.
+Owned PR28 requires normal hosted checks and parent review before merge.
