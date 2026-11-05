@@ -23,3 +23,35 @@ confirms unchanged upstream heads and completed checks: default CI passes
 830 tests but skips36; draft67 CI runs the ten play/rest cases and reproduces
 the four baseline failures (836 passed / 4 failed / 26 spell cases skipped).
 Draft67 stays draft; none of these source/adoption states change.
+
+## Exact-source dependency proposal after engine integration
+
+Engine [PR200](https://github.com/diegoami/neo-angband-tracker/pull/200) is merged
+and post-merge verified at `19ff25eac8997e8feb6b5e62eefa7ffe4d134631`; the older
+private-diagnostic-only row above describes its earlier reconciliation state.
+Engine upstream429 is still unmerged and no corrected npm package exists.
+
+[Owned draft PR28](https://github.com/diegoami/neo-angband-borg-mod-tracker/pull/28)
+combines exact source proposals66/67 with an explicitly pinned three-artifact
+fork verification recipe. [Exact dependency receipt](runs/2026-11-05-supported-engine/README.md):
+local complete gate866/866, 44 files,zero skips, 213.98s; all ten play/rest and 26
+spell cases execute; typecheck/grants/plugin current. Transitive SDK is pinned
+to the same source artifact. The separate published beta.1 profile is unchanged
+and remains blocked by four repeated-open failures. Neither profile silently
+replaces the other. PR28 stays draft/unmerged while its required default check
+is failing; upstream67 stays draft and source25 stays open. These receipts do
+not change Mandos126/150 adoption state or any existing consumer carry.
+
+## Owner-requested normal fork dependency integration
+
+The follow-up to PR28's red unpatched default is a minimal **published beta.1
++ explicit carried noteSpot** dependency profile. [Named patch/provenance](../patches/engine-notespot/README.md)
+restores only the canonical engine import/call in published core source and
+dist; SDK/content remain beta.1. pnpm patchedDependencies and the lock hash
+make this the ordinary installed dependency, rather than an alternate test
+alias or a claimed npm delivery. Package controls fail before/pass after;
+[complete integration receipts](runs/2026-11-06-beta1-notespot-carry/README.md)
+record normal local/hosted gates separately from the retained unpatched
+negative control and exact-source compatibility profile. Upstream67's head
+is untouched/DRAFT. Source25/engine4 remain open with no carry labels.
+Owned PR28 requires normal hosted checks and parent review before merge.

@@ -1,0 +1,37 @@
+$ pnpm typecheck && pnpm check:engine-carry && pnpm test && pnpm check
+$ tsc --noEmit
+$ node tools/check-notespot-package.mjs
+{
+  "package": "1.23.0-beta.1",
+  "checks": [
+    {
+      "name": "seen change updates remembered terrain immediately",
+      "pass": true
+    },
+    {
+      "name": "unseen remote change preserves prior memory",
+      "pass": true
+    },
+    {
+      "name": "player square updates without seen flag",
+      "pass": true
+    },
+    {
+      "name": "generation without live hook does not memorize",
+      "pass": true
+    }
+  ]
+}
+$ vitest run
+
+ RUN  v4.1.11 /tmp/neo-borg-supported-20261105
+
+
+ Test Files  44 passed (44)
+      Tests  866 passed (866)
+   Start at  00:19:39
+   Duration  186.93s (transform 40.06s, setup 38.68s, import 68.40s, tests 277.41s, environment 9ms)
+
+$ node tools/build.mjs --check
+[mod-build] checking 1: borg
+[mod-build] borg: ok, and the committed plugin.js is current (661.9 KiB, api >=2.0.0 <3.0.0)

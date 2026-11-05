@@ -1,0 +1,5 @@
+exact-source	Run node tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"	2026-11-05T23:06:20.7040803Z  Test Files  44 passed (44)
+exact-source	Run node tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"	2026-11-05T23:06:20.7041438Z       Tests  866 passed (866)
+exact-source	Run node tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"	2026-11-05T23:06:20.7042394Z    Duration  156.59s (transform 2.19s, setup 11.20s, import 6.47s, tests 213.48s, environment 5ms)
+exact-source	Run node tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"	2026-11-05T23:06:20.8100218Z [mod-build] borg: ok, and the committed plugin.js is current (661.9 KiB, api >=2.0.0 <3.0.0)
+exact-source	Run node tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"	2026-11-05T23:06:20.8278014Z Exact-source port gate passed; source engine 19ff25eac8997e8feb6b5e62eefa7ffe4d134631; receipts /tmp/neo-borg-notespot-verify-jmfHJO

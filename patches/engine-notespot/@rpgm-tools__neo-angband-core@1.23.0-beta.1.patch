@@ -1,0 +1,42 @@
+diff --git a/dist/game/trap.js b/dist/game/trap.js
+index a5779bf154427c9a7e321ed288a91e1ab182dd55..b92f79a2a0652cc23bfc0f71cd339b89be45c87c 100644
+--- a/dist/game/trap.js
++++ b/dist/game/trap.js
+@@ -23,6 +23,7 @@ import { OF, TMD, TRF } from "../generated/index.js";
+ import { checkHit } from "../combat/mon-melee.js";
+ import { equipLearnFlag } from "../obj/knowledge.js";
+ import { featIsTrapHolding } from "../world/chunk.js";
++import { noteSpot } from "./known.js";
+ import { lookupTrap } from "../world/trap.js";
+ import { squareIsSeen } from "../world/view.js";
+ import { sourceTrap } from "../effects/interpreter.js";
+@@ -132,6 +133,8 @@ export function squareSetFeatTrapSideEffect(state, grid) {
+ export function installChunkFeatHook(state) {
+     state.chunk.onFeatSet = (grid) => {
+         squareSetFeatTrapSideEffect(state, grid);
++        // FORK: engine#4 / upstream429 (2553cb49, merged source19ff25ea); cave-square.c:1261.
++        noteSpot(state, grid);
+     };
+ }
+ /** square_trap_specific: a trap of the exact kind index here? */
+diff --git a/src/game/trap.ts b/src/game/trap.ts
+index ecc0a3a40bf404b4f6c50b30379d7b0d9aebf160..9d99969528d0f9b91533c52003efb9f2931f0448 100644
+--- a/src/game/trap.ts
++++ b/src/game/trap.ts
+@@ -26,6 +26,7 @@ import { OF, TMD, TRF } from "../generated/index.js";
+ import { checkHit } from "../combat/mon-melee.js";
+ import { equipLearnFlag } from "../obj/knowledge.js";
+ import { featIsTrapHolding } from "../world/chunk.js";
++import { noteSpot } from "./known.js";
+ import type { TrapKind } from "../world/trap.js";
+ import type { KnownMap } from "./known.js";
+ import { lookupTrap } from "../world/trap.js";
+@@ -213,6 +214,8 @@ export function squareSetFeatTrapSideEffect(state: GameState, grid: Loc): void {
+ export function installChunkFeatHook(state: GameState): void {
+   state.chunk.onFeatSet = (grid: Loc): void => {
+     squareSetFeatTrapSideEffect(state, grid);
++    // FORK: engine#4 / upstream429 (2553cb49, merged source19ff25ea); cave-square.c:1261.
++    noteSpot(state, grid);
+   };
+ }
+ 

@@ -29,9 +29,11 @@
     "check": "node tools/build.mjs --check",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "verify": "pnpm typecheck && pnpm test && pnpm check"
+    "verify": "pnpm typecheck && pnpm check:engine-carry && pnpm test && pnpm check",
+    "check:engine-carry": "node tools/check-notespot-package.mjs"
   },
   "devDependencies": {
+    "@rpgm-tools/neo-angband-content": "1.23.0-beta.1",
     "@rpgm-tools/neo-angband-core": "1.23.0-beta.1",
     "@rpgm-tools/neo-angband-mod-sdk": "1.23.0-beta.1",
     "@types/node": "^22.20.1",
@@ -41,5 +43,10 @@
   },
   "engines": {
     "node": ">=22"
-  }
+  },
+  "//forkEngineCarry": [
+    "FORK: declared engine profile is published beta.1 + explicit carried noteSpot.",
+    "pnpm patchedDependencies names the core-only engine #4 / upstream429 backport.",
+    "Matching SDK/content remain beta.1; this does not claim npm or upstream delivery."
+  ]
 }

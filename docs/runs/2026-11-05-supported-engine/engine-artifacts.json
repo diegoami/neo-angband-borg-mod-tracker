@@ -1,0 +1,56 @@
+{
+  "commit": "19ff25eac8997e8feb6b5e62eefa7ffe4d134631",
+  "sourceBase": "0cc75b4afcbe6f5128730e4b910408c7be4ac5c5",
+  "coreTree": "b70fb735a44e75aa4fb8dc2a6fdf8930c574f9ce",
+  "sdkTree": "dc7f491841ffa412cbde81269375ea66a3b0735f",
+  "contentTree": "f9e3bc94bdc473d644168f85d1f66fb5eb204dbb",
+  "contentPackTree": "d72413a575ea48cb94da046ce5e47370e2932a97",
+  "lockBlob": "166d1a05ddb19169baf5ade1c5135213578dc7f0",
+  "toolchain": {
+    "node": "26.13.0",
+    "pnpm": "12.3.4",
+    "npm": "11.20.0",
+    "typescript": "5.9.3"
+  },
+  "packages": {
+    "core": {
+      "name": "@rpgm-tools/neo-angband-core",
+      "version": "1.23.0-beta.2",
+      "filename": "rpgm-tools-neo-angband-core-1.23.0-beta.2.tgz",
+      "integrity": "sha512-AN3SEuAofWbvLa1+aBnDDpwYnp8A17zEWfYckSlUZlTLwTOAu+k9H7BZk82d0Hofll+1thEVOYLBUqpuLjCcbw==",
+      "shasum": "5776f49eac0108bdd27e152b617b31e1b24ff3b0",
+      "size": 5040594,
+      "fileCount": 1525
+    },
+    "mod-sdk": {
+      "name": "@rpgm-tools/neo-angband-mod-sdk",
+      "version": "1.23.0-beta.2",
+      "filename": "rpgm-tools-neo-angband-mod-sdk-1.23.0-beta.2.tgz",
+      "integrity": "sha512-tZF/Nwl+ivjc07uXIb6PgMt6fobrmxySD3biUyFCaCv8xk+fKedOKIoHLALmWn/hjVm7dHaP18v4+ei+JR2D9w==",
+      "shasum": "dd045e4f04e8219aeae392c99466c41b2e86849e",
+      "size": 1042701,
+      "fileCount": 480
+    },
+    "content": {
+      "name": "@rpgm-tools/neo-angband-content",
+      "version": "1.23.0-beta.2",
+      "filename": "rpgm-tools-neo-angband-content-1.23.0-beta.2.tgz",
+      "integrity": "sha512-LTWzMR+okw3BPrzP5BpvZpTOIbRIxPKcQMU3RC/as3n+gNPhDdaaSFHigQoARj+XSc2LmyaAwoYFsuYE2UefRw==",
+      "shasum": "eb1966469378877ee26f24c33bc08fa495964091",
+      "size": 308897,
+      "fileCount": 118
+    }
+  },
+  "checks": [
+    "fresh frozen offline install",
+    "focused tsc build SDK/core/content",
+    "packed source and dist include noteSpot hook",
+    "zero .test. files packed",
+    "empty offline npm consumer installs all3; SDK deduped; seven declared JS exports import"
+  ],
+  "limitations": [
+    "No npm publication",
+    "No full port or Mandos compatibility claim",
+    "pnpm consumer requires SDK override to same tarball, preventing registry transitive SDK"
+  ]
+}

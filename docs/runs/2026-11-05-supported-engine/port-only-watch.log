@@ -1,0 +1,33 @@
+thread                                    upstream  Consumer state      moved  tracker
+diegoami/neo-angband-borg-mod-tracker#25 sourceOPEN      source                     diegoami/neo-angband-borg-mod-tracker#25: Upstream play/rest suites skip 10 installed-content cases and hide door-stall failures
+diegoami/neo-angband-borg-mod-tracker#24 sourceOPEN      source                     diegoami/neo-angband-borg-mod-tracker#24: Spell progression tests skip 26 cases in CI without a sibling engine checkout
+diegoami/neo-angband-borg-mod-tracker#23 sourceOPEN      source                     diegoami/neo-angband-borg-mod-tracker#23: Escape stair command is discarded inside phase guards
+diegoami/neo-angband-borg-mod-tracker#22 sourceOPEN      source                     diegoami/neo-angband-borg-mod-tracker#22: Inherited item-analysis gaps: knowledge, cursed flags and per-item valuation
+diegoami/neo-angband-borg-mod-tracker#15 sourceOPEN      source                     diegoami/neo-angband-borg-mod-tracker#15: The stall guard releases a character waiting out confusion
+diegoami/neo-angband-borg-mod-tracker#2 sourceOPEN      source                     diegoami/neo-angband-borg-mod-tracker#2: B03: the swap subsystem
+neostryder/neo-angband#468 issue          OPEN      source                     diegoami/neo-angband-borg-mod-tracker#25: Upstream play/rest suites skip 10 installed-content cases and hide door-stall failures
+neostryder/neo-angband-mod-borg#67 pr     OPEN      source                     diegoami/neo-angband-borg-mod-tracker#25: Upstream play/rest suites skip 10 installed-content cases and hide door-stall failures
+diegoami/neo-angband-tracker#4 issue      OPEN      source                     diegoami/neo-angband-borg-mod-tracker#25: Upstream play/rest suites skip 10 installed-content cases and hide door-stall failures
+neostryder/neo-angband#466 issue          OPEN      source                     diegoami/neo-angband-borg-mod-tracker#24: Spell progression tests skip 26 cases in CI without a sibling engine checkout
+neostryder/neo-angband-mod-borg#66 pr     OPEN      source                     diegoami/neo-angband-borg-mod-tracker#24: Spell progression tests skip 26 cases in CI without a sibling engine checkout
+neostryder/neo-angband#463 issue          OPEN      source                     diegoami/neo-angband-borg-mod-tracker#23: Escape stair command is discarded inside phase guards
+neostryder/neo-angband-mod-borg#63 pr     OPEN      source                     diegoami/neo-angband-borg-mod-tracker#23: Escape stair command is discarded inside phase guards
+diegoami/mandos#116 pr                    MERGED    source                     diegoami/neo-angband-borg-mod-tracker#23: Escape stair command is discarded inside phase guards
+neostryder/neo-angband#446 issue          CLOSED    source                     diegoami/neo-angband-borg-mod-tracker#22: Inherited item-analysis gaps: knowledge, cursed flags and per-item valuation
+neostryder/neo-angband-mod-borg#53 pr     MERGED    source                     diegoami/neo-angband-borg-mod-tracker#22: Inherited item-analysis gaps: knowledge, cursed flags and per-item valuation
+neostryder/neo-angband-mod-borg#62 pr     MERGED    source                     diegoami/neo-angband-borg-mod-tracker#22: Inherited item-analysis gaps: knowledge, cursed flags and per-item valuation
+neostryder/neo-angband#464 issue          OPEN      source                     diegoami/neo-angband-borg-mod-tracker#22: Inherited item-analysis gaps: knowledge, cursed flags and per-item valuation
+neostryder/neo-angband-mod-borg#64 pr     OPEN      source                     diegoami/neo-angband-borg-mod-tracker#22: Inherited item-analysis gaps: knowledge, cursed flags and per-item valuation
+diegoami/mandos#119 pr                    MERGED    source                     diegoami/neo-angband-borg-mod-tracker#22: Inherited item-analysis gaps: knowledge, cursed flags and per-item valuation
+neostryder/neo-angband#465 issue          OPEN      source                     diegoami/neo-angband-borg-mod-tracker#22: Inherited item-analysis gaps: knowledge, cursed flags and per-item valuation
+neostryder/neo-angband-mod-borg#65 pr     OPEN      source                     diegoami/neo-angband-borg-mod-tracker#22: Inherited item-analysis gaps: knowledge, cursed flags and per-item valuation
+diegoami/mandos#122 pr                    MERGED    source                     diegoami/neo-angband-borg-mod-tracker#22: Inherited item-analysis gaps: knowledge, cursed flags and per-item valuation
+neostryder/neo-angband#443 issue          CLOSED    source                     diegoami/neo-angband-borg-mod-tracker#15: The stall guard releases a character waiting out confusion
+neostryder/neo-angband-mod-borg#36 pr     CLOSED    source                     diegoami/neo-angband-borg-mod-tracker#15: The stall guard releases a character waiting out confusion
+neostryder/neo-angband-mod-borg#51 pr     MERGED    source                     diegoami/neo-angband-borg-mod-tracker#15: The stall guard releases a character waiting out confusion
+neostryder/neo-angband#462 issue          CLOSED    source                     diegoami/neo-angband-borg-mod-tracker#2: B03: the swap subsystem
+neostryder/neo-angband-mod-borg#62 pr     MERGED    source                     diegoami/neo-angband-borg-mod-tracker#2: B03: the swap subsystem
+
+Audited 6 trackers (open or patch-active); 22 upstream references; 0 internal candidates.
+No upstream movement since the last baseline.
+Source issue state and linked Mandos consumer state are distinct. Carried stays open until upstream correction is adopted downstream and verified; this report never changes labels or removes patches.
