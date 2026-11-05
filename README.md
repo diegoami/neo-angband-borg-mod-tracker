@@ -33,3 +33,19 @@ copied C defect is routed to neo-angband-tracker; proposed C fixes are not
 translated here as a separate correction service. Mandos handles applicable
 TS correction translations in its own derivative. Rust adoption belongs to
 borg-rs and carries no Neo dependency.
+
+## Recorded baseline at session bootstrap
+
+The owned docs branch changes no runtime source. With sibling content present,
+published core/SDK beta.1 executes866 cases:862pass,4fail (the repeated-open
+play assertions, no skips). This is the same known source investigation25,
+not a green gameplay claim. Without content the old baseline skips36 cases;
+do not use those skips as proof. A controlled patched-engine comparison is
+recorded on25 before attributing a new source defect. Bootstrap/monitoring
+checks are independent and must still pass.
+
+The bootstrap control keeps this port and the same content but explicitly
+selects the prebuilt Mandos lab engine (9d6ae21ec, its existing patch bundle):
+the same ten play/rest cases pass10/10. That isolates an engine-version/patch
+boundary as a bundle; it does not prove which individual hunk fixes each
+published-beta.1 failure. Source issue25 retains the next attribution step.
