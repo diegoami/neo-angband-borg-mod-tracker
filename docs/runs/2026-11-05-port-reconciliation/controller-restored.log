@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-reconcile-20261105
+
+
+ Test Files  1 passed (1)
+      Tests  33 passed (33)
+   Start at  22:35:37
+   Duration  4.15s (transform 2.13s, setup 791ms, import 2.43s, tests 565ms, environment 1ms)
+

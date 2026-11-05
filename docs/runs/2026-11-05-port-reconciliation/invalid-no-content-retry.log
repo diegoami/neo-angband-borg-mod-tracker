@@ -1,0 +1,15 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-reconcile-20261105
+
+ ↓ src/play.test.ts > the Borg plays a real game > names the engine fix its play tests depend on
+ ↓ src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 1)
+ ↓ src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 7)
+ ↓ src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 42)
+ ↓ src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 99)
+ ↓ src/play.test.ts > the Borg plays a real game > gets into the dungeon and back out under its own steam
+
+ Test Files  1 skipped (1)
+      Tests  6 skipped (6)
+   Start at  22:40:06
+   Duration  1.90s (transform 1.21s, setup 383ms, import 1.34s, tests 0ms, environment 0ms)
+
