@@ -1,0 +1,33 @@
+name: Neo Borg port fidelity defect
+description: A difference/omission from the pinned C Borg behavior
+labels: [upstream, bug]
+body:
+  - type: input
+    id: c_reference
+    attributes:
+      label: C version, function and pinned lines
+    validations:
+      required: true
+  - type: textarea
+    id: difference
+    attributes:
+      label: What the C does and what this port does differently
+      description: "If C has the same defect, use neo-angband-tracker. Mandos owns C-correction TS translations; this tracker is fidelity-only."
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Legal scene, engine/content pins, actual result and negative controls
+    validations:
+      required: true
+  - type: input
+    id: adoption
+    attributes:
+      label: Linked Mandos adoption issue, if applicable
+  - type: textarea
+    id: threads
+    attributes:
+      label: Linked source or proposal threads
+      description: "Replace none yet with qualified owner/repo#number references; keep the Threads prefix."
+      value: "**Threads**: none yet"
