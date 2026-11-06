@@ -9,8 +9,13 @@ git status --short
 git remote -v
 gh issue list -R diegoami/neo-angband-borg-mod-tracker --label checkpoint --state open
 node tools/check-session.mjs
-node tools/upstream-watch.mjs
 ```
+
+Broad upstream reconciliation is a weekly manual batch or owner request. Use
+targeted checks for active blockers, duplicate avoidance and closure evidence.
+Audit a watcher's complete scope before running it: inherited Threads references
+can follow external Rust links. No routine borg-rs repository/file/issue polling
+is authorised; reports arrive directly on the engine/C tracker board.
 
 Use this repository's issue board, not Mandos's former upstream queue.
 Preserve transferred history and link component/integration work across repos.
