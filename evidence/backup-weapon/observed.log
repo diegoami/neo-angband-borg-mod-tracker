@@ -1,0 +1,46 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-backup-evidence-20261106
+
+ ❯ evidence/backup-weapon/public-case.probe.ts (4 tests | 2 failed) 145ms
+   × C-qualified HOME backup should select its retrieval goal (current omission before-case) 25ms
+   × carrying a C-qualified weapon backup should add the missing C backup benefit (before-case) 34ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  evidence/backup-weapon/public-case.probe.ts > C-qualified HOME backup should select its retrieval goal (current omission before-case)
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ evidence/backup-weapon/public-case.probe.ts:62:19
+     60|  const s=scene();const selected=borgThinkHomeBuySwapWeapon(s.ctx,s.dep…
+     61|  evidence.cases.push({name:"home-qualified",selected,goal:{...s.ctx.wo…
+     62|  expect(selected).toBe(true);expect(action).toMatchObject({code:"home-…
+       |                   ^
+     63| });
+     64| it("carrying a C-qualified weapon backup should add the missing C back…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  evidence/backup-weapon/public-case.probe.ts > carrying a C-qualified weapon backup should add the missing C backup benefit (before-case)
+AssertionError: expected 0 to be greater than 100000
+ ❯ evidence/backup-weapon/public-case.probe.ts:68:16
+     66|  const delta=carried.ctx.world.self.power-base.ctx.world.self.power;
+     67|  evidence.cases.push({name:"carried-qualified",basePower:base.ctx.worl…
+     68|  expect(delta).toBeGreaterThan(100000);
+       |                ^
+     69| });
+     70| it("preserves existing option/depth and empty-home controls",()=>{
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  03:31:55
+   Duration  3.13s (transform 1.82s, setup 651ms, import 2.03s, tests 145ms, environment 0ms)
+

@@ -1,0 +1,162 @@
+{
+  "fork": "223f6d4c0734429e5334f6a046c39a469dae0afa",
+  "reference": "C4.2.6 f3082213/current e473720",
+  "cases": [
+    {
+      "name": "home-qualified",
+      "selected": false,
+      "goal": {
+        "type": 0,
+        "g": {
+          "x": 0,
+          "y": 0
+        },
+        "rising": false,
+        "leaving": false,
+        "fleeing": false,
+        "fleeingLunal": false,
+        "fleeingMunchkin": false,
+        "fleeingToTown": false,
+        "ignoring": false,
+        "less": false,
+        "waiting": false,
+        "recalling": 0,
+        "descending": 0,
+        "shop": -1,
+        "ware": -1,
+        "item": -1,
+        "doBest": false
+      },
+      "action": null,
+      "normalLoadoutQueries": 0,
+      "currentPower": 562630,
+      "expectedNetherScoreTerms": 105500
+    },
+    {
+      "name": "carried-qualified",
+      "basePower": 562630,
+      "carriedPower": 562630,
+      "delta": 0,
+      "netherTerms": 105500,
+      "rawCNoneSentinel": -1
+    }
+  ],
+  "mapping": {
+    "name": "of Éowyn",
+    "stats": {
+      "handle": 0,
+      "kindKey": "kind:42",
+      "aware": true,
+      "nameColor": "",
+      "label": "known Bastard Sword of Éowyn",
+      "baseName": "Bastard Sword",
+      "carried": false,
+      "tval": 9,
+      "sval": 1,
+      "pval": 0,
+      "number": 1,
+      "weight": 140,
+      "ac": 0,
+      "toA": 0,
+      "toH": 12,
+      "toD": 16,
+      "dd": 4,
+      "ds": 4,
+      "ego": false,
+      "artifact": true,
+      "flags": [
+        "PROT_FEAR"
+      ],
+      "modifiers": [
+        {
+          "code": "STR",
+          "value": 4
+        },
+        {
+          "code": "STEALTH",
+          "value": 2
+        }
+      ],
+      "brands": [],
+      "slays": [
+        "EVIL_2",
+        "UNDEAD_5",
+        "GIANT_3",
+        "ANIMAL_2"
+      ],
+      "resists": [
+        {
+          "element": "NETHER",
+          "level": 1
+        },
+        {
+          "element": "DARK",
+          "level": 1
+        },
+        {
+          "element": "COLD",
+          "level": 1
+        }
+      ],
+      "curses": [],
+      "egoName": null,
+      "artifactName": "of Éowyn",
+      "activation": false,
+      "inscription": null,
+      "unknownRunes": false,
+      "value": 120000,
+      "timeout": 0,
+      "borgAnalysis": {
+        "cost": 400,
+        "egoCost": null,
+        "artifactCost": 120000,
+        "dd": 3,
+        "ds": 4,
+        "cursed": false,
+        "oneRing": false,
+        "randomPower": false
+      }
+    },
+    "maxDepth": 60,
+    "nether": 0,
+    "aware": true,
+    "identified": true,
+    "usesSwaps": true,
+    "packFull": false,
+    "evaluator": "undefined"
+  },
+  "cInputs": {
+    "MAXDEPTH": 60,
+    "BLOWS": 4,
+    "TOHIT": 11,
+    "TODAM": 6,
+    "RNTHR": 0,
+    "RCOLD": 0,
+    "RDARK": 0,
+    "RFEAR": 0,
+    "WS_ANIMAL": 0,
+    "WS_EVIL": 0,
+    "WS_UNDEAD": 0,
+    "WS_GIANT": 0,
+    "WB_ELEC": 0
+  },
+  "cEligibility": {
+    "aware": true,
+    "wearableWeapon": true,
+    "quantity": 1,
+    "ordinaryWeaponDepthFloor": true,
+    "usesSwaps": true,
+    "capacityAvailable": true,
+    "curses": [],
+    "aggravate": false,
+    "unknownRunes": false,
+    "netherMissing": true,
+    "netherTermsOnly": 105500,
+    "exactTotalNotClaimed": true
+  },
+  "controls": {
+    "disabled": false,
+    "depth90": false,
+    "emptyHome": false
+  }
+}
