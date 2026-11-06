@@ -53,18 +53,18 @@
 2026-11-06T10:37:44.6397679Z ##[endgroup]
 2026-11-06T10:37:44.9019731Z Syncing repository: diegoami/neo-angband-borg-mod-tracker
 2026-11-06T10:37:44.9021792Z ##[group]Getting Git version info
-2026-11-06T10:37:44.9022730Z Working directory is '/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker'
+2026-11-06T10:37:44.9022730Z Working directory is '$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker'
 2026-11-06T10:37:44.9023817Z [command]/usr/bin/git version
 2026-11-06T10:37:44.9098336Z git version 2.56.0
 2026-11-06T10:37:44.9114839Z ##[endgroup]
-2026-11-06T10:37:44.9123552Z Temporarily overriding HOME='/home/runner/work/_temp/dc7f353f-c317-4264-b7f8-7838ecffed95' before making global git config changes
+2026-11-06T10:37:44.9123552Z Temporarily overriding HOME='$RUNNER_HOME/work/_temp/dc7f353f-c317-4264-b7f8-7838ecffed95' before making global git config changes
 2026-11-06T10:37:44.9125576Z Adding repository directory to the temporary git global config as a safe directory
-2026-11-06T10:37:44.9130148Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker
-2026-11-06T10:37:44.9179124Z Deleting the contents of '/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker'
+2026-11-06T10:37:44.9130148Z [command]/usr/bin/git config --global --add safe.directory $RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker
+2026-11-06T10:37:44.9179124Z Deleting the contents of '$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker'
 2026-11-06T10:37:44.9181597Z ##[group]Determining repository object format
 2026-11-06T10:37:44.9182826Z ##[endgroup]
 2026-11-06T10:37:44.9183506Z ##[group]Initializing the repository
-2026-11-06T10:37:44.9187211Z [command]/usr/bin/git init /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker
+2026-11-06T10:37:44.9187211Z [command]/usr/bin/git init $RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker
 2026-11-06T10:37:44.9299564Z hint: Using 'master' as the name for the initial branch. This default branch name
 2026-11-06T10:37:44.9300711Z hint: will change to "main" in Git 3.0. To configure the initial branch name
 2026-11-06T10:37:44.9301530Z hint: to use in all of your new repositories, which will suppress this warning,
@@ -78,7 +78,7 @@
 2026-11-06T10:37:44.9306434Z hint: 	git branch -m <name>
 2026-11-06T10:37:44.9306991Z hint:
 2026-11-06T10:37:44.9307562Z hint: Disable this message with "git config set advice.defaultBranchName false"
-2026-11-06T10:37:44.9311711Z Initialized empty Git repository in /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/
+2026-11-06T10:37:44.9311711Z Initialized empty Git repository in $RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/
 2026-11-06T10:37:44.9321717Z [command]/usr/bin/git remote add origin https://github.com/diegoami/neo-angband-borg-mod-tracker
 2026-11-06T10:37:44.9367728Z ##[endgroup]
 2026-11-06T10:37:44.9368420Z ##[group]Disabling automatic garbage collection
@@ -94,9 +94,9 @@
 2026-11-06T10:37:45.0108363Z Removing includeIf entries pointing to credentials config files
 2026-11-06T10:37:45.0111419Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
 2026-11-06T10:37:45.0148037Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
-2026-11-06T10:37:45.0353091Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
-2026-11-06T10:37:45.0393495Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path /home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
-2026-11-06T10:37:45.0470667Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:37:45.0353091Z [command]/usr/bin/git config --file $RUNNER_HOME/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-06T10:37:45.0393495Z [command]/usr/bin/git config --local includeIf.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path $RUNNER_HOME/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:37:45.0470667Z [command]/usr/bin/git config --local includeIf.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path $RUNNER_HOME/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
 2026-11-06T10:37:45.0473257Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
 2026-11-06T10:37:45.0514370Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
 2026-11-06T10:37:45.0562220Z ##[endgroup]
@@ -153,17 +153,17 @@
 2026-11-06T10:37:45.9068349Z ##[endgroup]
 2026-11-06T10:37:45.9770018Z Syncing repository: diegoami/neo-angband-tracker
 2026-11-06T10:37:45.9772716Z ##[group]Getting Git version info
-2026-11-06T10:37:45.9782285Z Working directory is '/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source'
+2026-11-06T10:37:45.9782285Z Working directory is '$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source'
 2026-11-06T10:37:45.9801287Z [command]/usr/bin/git version
 2026-11-06T10:37:45.9840212Z git version 2.56.0
 2026-11-06T10:37:45.9889736Z ##[endgroup]
-2026-11-06T10:37:45.9897781Z Temporarily overriding HOME='/home/runner/work/_temp/aa7ca53a-472a-426a-a727-42543e9b2002' before making global git config changes
+2026-11-06T10:37:45.9897781Z Temporarily overriding HOME='$RUNNER_HOME/work/_temp/aa7ca53a-472a-426a-a727-42543e9b2002' before making global git config changes
 2026-11-06T10:37:45.9901344Z Adding repository directory to the temporary git global config as a safe directory
-2026-11-06T10:37:45.9904963Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source
+2026-11-06T10:37:45.9904963Z [command]/usr/bin/git config --global --add safe.directory $RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source
 2026-11-06T10:37:45.9933271Z ##[group]Determining repository object format
 2026-11-06T10:37:45.9935330Z ##[endgroup]
 2026-11-06T10:37:45.9936947Z ##[group]Initializing the repository
-2026-11-06T10:37:45.9939477Z [command]/usr/bin/git init /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source
+2026-11-06T10:37:45.9939477Z [command]/usr/bin/git init $RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source
 2026-11-06T10:37:45.9980747Z hint: Using 'master' as the name for the initial branch. This default branch name
 2026-11-06T10:37:45.9983296Z hint: will change to "main" in Git 3.0. To configure the initial branch name
 2026-11-06T10:37:45.9985477Z hint: to use in all of your new repositories, which will suppress this warning,
@@ -177,7 +177,7 @@
 2026-11-06T10:37:45.9995770Z hint: 	git branch -m <name>
 2026-11-06T10:37:45.9997212Z hint:
 2026-11-06T10:37:45.9998838Z hint: Disable this message with "git config set advice.defaultBranchName false"
-2026-11-06T10:37:46.0002494Z Initialized empty Git repository in /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/
+2026-11-06T10:37:46.0002494Z Initialized empty Git repository in $RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/
 2026-11-06T10:37:46.0008067Z [command]/usr/bin/git remote add origin https://github.com/diegoami/neo-angband-tracker
 2026-11-06T10:37:46.0026605Z ##[endgroup]
 2026-11-06T10:37:46.0028150Z ##[group]Disabling automatic garbage collection
@@ -193,9 +193,9 @@
 2026-11-06T10:37:46.0590233Z Removing includeIf entries pointing to credentials config files
 2026-11-06T10:37:46.0592681Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
 2026-11-06T10:37:46.0650246Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
-2026-11-06T10:37:46.0882711Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
-2026-11-06T10:37:46.0928668Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path /home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
-2026-11-06T10:37:46.0968101Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:37:46.0882711Z [command]/usr/bin/git config --file $RUNNER_HOME/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-06T10:37:46.0928668Z [command]/usr/bin/git config --local includeIf.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path $RUNNER_HOME/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:37:46.0968101Z [command]/usr/bin/git config --local includeIf.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path $RUNNER_HOME/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
 2026-11-06T10:37:46.1007772Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/engine-source/.git.path /github/runner_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
 2026-11-06T10:37:46.1045785Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/engine-source/.git/worktrees/*.path /github/runner_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
 2026-11-06T10:37:46.1080731Z ##[endgroup]
@@ -251,7 +251,7 @@
 2026-11-06T10:37:51.6224769Z Switching pnpm from v12.17.0 to v12.16.1...
 2026-11-06T10:37:52.3858062Z Downloading @pnpm/exe.linux-x64@12.16.1: 0.00 B/25.62 MB
 2026-11-06T10:37:52.4675615Z Packages are copied from the content-addressable store to the virtual store.
-2026-11-06T10:37:52.4676587Z   Content-addressable store is at: /home/runner/setup-pnpm/node_modules/.bin/store/v11
+2026-11-06T10:37:52.4676587Z   Content-addressable store is at: $RUNNER_HOME/setup-pnpm/node_modules/.bin/store/v11
 2026-11-06T10:37:52.4698390Z   Virtual store is at:             node_modules/.bin/global/v11/8e8-18e56e7449360586-0/node_modules/.pnpm
 2026-11-06T10:37:52.8347000Z .../global/v11/8e8-18e56e7449360586-0    | Progress: resolved 2, reused 0, downloaded 2, added 2, done
 2026-11-06T10:37:53.0818639Z Successfully updated pnpm to v12.16.1
@@ -264,12 +264,12 @@
 2026-11-06T10:37:53.1050218Z   token: ***
 2026-11-06T10:37:53.1050414Z   package-manager-cache: true
 2026-11-06T10:37:53.1050627Z env:
-2026-11-06T10:37:53.1050838Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-11-06T10:37:53.1050838Z   PNPM_HOME: $RUNNER_HOME/setup-pnpm/node_modules/.bin
 2026-11-06T10:37:53.1051090Z ##[endgroup]
 2026-11-06T10:37:53.2061667Z Attempting to download 26.13.0...
 2026-11-06T10:37:54.1915533Z Acquiring 26.13.0 - x64 from https://github.com/actions/node-versions/releases/download/26.13.0-41378513395/node-26.13.0-linux-x64.tar.gz
 2026-11-06T10:37:54.6606017Z Extracting ...
-2026-11-06T10:37:54.6718876Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/73fced90-e4ea-4ce4-a4f6-62eab8509fbe -f /home/runner/work/_temp/5edb90a5-af15-428c-aad9-0847d902a30e
+2026-11-06T10:37:54.6718876Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C $RUNNER_HOME/work/_temp/73fced90-e4ea-4ce4-a4f6-62eab8509fbe -f $RUNNER_HOME/work/_temp/5edb90a5-af15-428c-aad9-0847d902a30e
 2026-11-06T10:37:55.8600024Z Adding to the cache ...
 2026-11-06T10:37:57.8329821Z ##[group]Environment details
 2026-11-06T10:37:58.0151352Z node: v26.13.0
@@ -277,23 +277,23 @@
 2026-11-06T10:37:58.0151775Z yarn: 1.22.22
 2026-11-06T10:37:58.0152201Z ##[endgroup]
 2026-11-06T10:37:58.0321823Z ##[group]Run npm install --global npm@11.20.0
-2026-11-06T10:37:58.0322147Z [36;1mnpm install --global npm@11.20.0[0m
+2026-11-06T10:37:58.0322147Z npm install --global npm@11.20.0
 2026-11-06T10:37:58.0343873Z shell: /usr/bin/bash -e {0}
 2026-11-06T10:37:58.0344088Z env:
-2026-11-06T10:37:58.0344306Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-11-06T10:37:58.0344306Z   PNPM_HOME: $RUNNER_HOME/setup-pnpm/node_modules/.bin
 2026-11-06T10:37:58.0344579Z ##[endgroup]
 2026-11-06T10:38:01.0088515Z 
 2026-11-06T10:38:01.0093733Z changed 10 packages in 3s
 2026-11-06T10:38:01.0494468Z ##[group]Run bash tools/build-notespot-artifacts.sh engine-source "$RUNNER_TEMP/engine-artifacts"
-2026-11-06T10:38:01.0495059Z [36;1mbash tools/build-notespot-artifacts.sh engine-source "$RUNNER_TEMP/engine-artifacts"[0m
+2026-11-06T10:38:01.0495059Z bash tools/build-notespot-artifacts.sh engine-source "$RUNNER_TEMP/engine-artifacts"
 2026-11-06T10:38:01.0514047Z shell: /usr/bin/bash -e {0}
 2026-11-06T10:38:01.0514250Z env:
-2026-11-06T10:38:01.0514467Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-11-06T10:38:01.0514467Z   PNPM_HOME: $RUNNER_HOME/setup-pnpm/node_modules/.bin
 2026-11-06T10:38:01.0514727Z ##[endgroup]
 2026-11-06T10:38:02.4449588Z Scope: all 9 workspace projects
 2026-11-06T10:38:02.4799067Z ? Verifying lockfile against supply-chain policies (815 entries)...
 2026-11-06T10:38:02.6283316Z Packages are hard linked from the content-addressable store to the virtual store.
-2026-11-06T10:38:02.6285777Z   Content-addressable store is at: /home/runner/work/_temp/engine-artifacts/store/v11
+2026-11-06T10:38:02.6285777Z   Content-addressable store is at: $RUNNER_HOME/work/_temp/engine-artifacts/store/v11
 2026-11-06T10:38:02.6286934Z   Virtual store is at:             node_modules/.pnpm
 2026-11-06T10:38:03.2307882Z Downloading @rolldown/binding-linux-x64-gnu@1.2.1: 0.00 B/7.93 MB
 2026-11-06T10:38:03.2447091Z Downloading electron-winstaller@5.4.0: 0.00 B/9.14 MB
@@ -324,10 +324,10 @@
 2026-11-06T10:38:20.4082133Z 
 2026-11-06T10:38:20.4433532Z synced 20 SDK authoring documents to docs/
 2026-11-06T10:38:23.9115982Z ##[group]Run node tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"
-2026-11-06T10:38:23.9116728Z [36;1mnode tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"[0m
+2026-11-06T10:38:23.9116728Z node tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"
 2026-11-06T10:38:23.9134591Z shell: /usr/bin/bash -e {0}
 2026-11-06T10:38:23.9134795Z env:
-2026-11-06T10:38:23.9135011Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-11-06T10:38:23.9135011Z   PNPM_HOME: $RUNNER_HOME/setup-pnpm/node_modules/.bin
 2026-11-06T10:38:23.9135277Z ##[endgroup]
 2026-11-06T10:38:23.9810458Z Preserved verification tree/logs: /tmp/neo-borg-notespot-verify-ISNZqJ
 2026-11-06T10:38:24.0174433Z ? Verifying lockfile against supply-chain policies (103 entries)...
@@ -480,12 +480,12 @@
 2026-11-06T10:41:31.7803185Z $ node tools/build.mjs --check
 2026-11-06T10:41:31.8468887Z [mod-build] checking 1: borg
 2026-11-06T10:41:31.9415846Z [mod-build] borg: ok, and the committed plugin.js is current (669.3 KiB, api >=2.0.0 <3.0.0)
-2026-11-06T10:41:31.9555564Z file:///home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/tools/verify-notespot-source.mjs:62
+2026-11-06T10:41:31.9555564Z file://$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/tools/verify-notespot-source.mjs:62
 2026-11-06T10:41:31.9557328Z   throw new Error(`Expected all 896 cases with zero skips; inspect ${receipt}`);
 2026-11-06T10:41:31.9557960Z         ^
 2026-11-06T10:41:31.9558257Z 
 2026-11-06T10:41:31.9558746Z Error: Expected all 896 cases with zero skips; inspect /tmp/neo-borg-notespot-verify-ISNZqJ
-2026-11-06T10:41:31.9559441Z     at file:///home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/tools/verify-notespot-source.mjs:62:9
+2026-11-06T10:41:31.9559441Z     at file://$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/tools/verify-notespot-source.mjs:62:9
 2026-11-06T10:41:31.9560054Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
 2026-11-06T10:41:31.9560329Z 
 2026-11-06T10:41:31.9560405Z Node.js v26.13.0
@@ -495,9 +495,9 @@
 2026-11-06T10:41:32.0972216Z Post job cleanup.
 2026-11-06T10:41:32.1767070Z [command]/usr/bin/git version
 2026-11-06T10:41:32.1811505Z git version 2.56.0
-2026-11-06T10:41:32.1850855Z Temporarily overriding HOME='/home/runner/work/_temp/2816d1b4-658f-489e-830e-75ae9628f8fd' before making global git config changes
+2026-11-06T10:41:32.1850855Z Temporarily overriding HOME='$RUNNER_HOME/work/_temp/2816d1b4-658f-489e-830e-75ae9628f8fd' before making global git config changes
 2026-11-06T10:41:32.1852202Z Adding repository directory to the temporary git global config as a safe directory
-2026-11-06T10:41:32.1855845Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source
+2026-11-06T10:41:32.1855845Z [command]/usr/bin/git config --global --add safe.directory $RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source
 2026-11-06T10:41:32.1895110Z Removing SSH command configuration
 2026-11-06T10:41:32.1902398Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
 2026-11-06T10:41:32.1962039Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
@@ -506,16 +506,16 @@
 2026-11-06T10:41:32.2267675Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
 2026-11-06T10:41:32.2487296Z Removing includeIf entries pointing to credentials config files
 2026-11-06T10:41:32.2500522Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
-2026-11-06T10:41:32.2533865Z includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path
-2026-11-06T10:41:32.2535405Z includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path
+2026-11-06T10:41:32.2533865Z includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path
+2026-11-06T10:41:32.2535405Z includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path
 2026-11-06T10:41:32.2536775Z includeif.gitdir:/github/workspace/engine-source/.git.path
 2026-11-06T10:41:32.2537714Z includeif.gitdir:/github/workspace/engine-source/.git/worktrees/*.path
-2026-11-06T10:41:32.2542022Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path
-2026-11-06T10:41:32.2575009Z /home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
-2026-11-06T10:41:32.2584713Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-d437627d\-b001\-40e2\-8d5c\-088be175fa55\.config
-2026-11-06T10:41:32.2640624Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path
-2026-11-06T10:41:32.2672653Z /home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
-2026-11-06T10:41:32.2682902Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-d437627d\-b001\-40e2\-8d5c\-088be175fa55\.config
+2026-11-06T10:41:32.2542022Z [command]/usr/bin/git config --local --get-all includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path
+2026-11-06T10:41:32.2575009Z $RUNNER_HOME/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:41:32.2584713Z [command]/usr/bin/git config --local --unset includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path $RUNNER_HOME\/work\/_temp\/git\-credentials\-d437627d\-b001\-40e2\-8d5c\-088be175fa55\.config
+2026-11-06T10:41:32.2640624Z [command]/usr/bin/git config --local --get-all includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path
+2026-11-06T10:41:32.2672653Z $RUNNER_HOME/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:41:32.2682902Z [command]/usr/bin/git config --local --unset includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path $RUNNER_HOME\/work\/_temp\/git\-credentials\-d437627d\-b001\-40e2\-8d5c\-088be175fa55\.config
 2026-11-06T10:41:32.2721795Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/engine-source/.git.path
 2026-11-06T10:41:32.2749533Z /github/runner_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
 2026-11-06T10:41:32.2756395Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/engine-source/.git.path \/github\/runner_temp\/git\-credentials\-d437627d\-b001\-40e2\-8d5c\-088be175fa55\.config
@@ -523,13 +523,13 @@
 2026-11-06T10:41:32.2822937Z /github/runner_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
 2026-11-06T10:41:32.2830471Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/engine-source/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-d437627d\-b001\-40e2\-8d5c\-088be175fa55\.config
 2026-11-06T10:41:32.2868837Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
-2026-11-06T10:41:32.3073875Z Removing credentials config '/home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config'
+2026-11-06T10:41:32.3073875Z Removing credentials config '$RUNNER_HOME/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config'
 2026-11-06T10:41:32.3222434Z Post job cleanup.
 2026-11-06T10:41:32.3932477Z [command]/usr/bin/git version
 2026-11-06T10:41:32.3973006Z git version 2.56.0
-2026-11-06T10:41:32.3999976Z Temporarily overriding HOME='/home/runner/work/_temp/2f6367df-05a7-4e96-b47b-01ab01cd7288' before making global git config changes
+2026-11-06T10:41:32.3999976Z Temporarily overriding HOME='$RUNNER_HOME/work/_temp/2f6367df-05a7-4e96-b47b-01ab01cd7288' before making global git config changes
 2026-11-06T10:41:32.4000895Z Adding repository directory to the temporary git global config as a safe directory
-2026-11-06T10:41:32.4004374Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker
+2026-11-06T10:41:32.4004374Z [command]/usr/bin/git config --global --add safe.directory $RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker
 2026-11-06T10:41:32.4038026Z Removing SSH command configuration
 2026-11-06T10:41:32.4043522Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
 2026-11-06T10:41:32.4075260Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
@@ -538,16 +538,16 @@
 2026-11-06T10:41:32.4353965Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
 2026-11-06T10:41:32.4580380Z Removing includeIf entries pointing to credentials config files
 2026-11-06T10:41:32.4586938Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
-2026-11-06T10:41:32.4629027Z includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path
-2026-11-06T10:41:32.4630455Z includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path
+2026-11-06T10:41:32.4629027Z includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path
+2026-11-06T10:41:32.4630455Z includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path
 2026-11-06T10:41:32.4631548Z includeif.gitdir:/github/workspace/.git.path
 2026-11-06T10:41:32.4632379Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
-2026-11-06T10:41:32.4637834Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path
-2026-11-06T10:41:32.4677487Z /home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
-2026-11-06T10:41:32.4686573Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-d3868c0b\-83a4\-44ae\-bc8a\-42be0f4b51b6\.config
-2026-11-06T10:41:32.4745391Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path
-2026-11-06T10:41:32.4774965Z /home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
-2026-11-06T10:41:32.4783442Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-d3868c0b\-83a4\-44ae\-bc8a\-42be0f4b51b6\.config
+2026-11-06T10:41:32.4637834Z [command]/usr/bin/git config --local --get-all includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path
+2026-11-06T10:41:32.4677487Z $RUNNER_HOME/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:41:32.4686573Z [command]/usr/bin/git config --local --unset includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path $RUNNER_HOME\/work\/_temp\/git\-credentials\-d3868c0b\-83a4\-44ae\-bc8a\-42be0f4b51b6\.config
+2026-11-06T10:41:32.4745391Z [command]/usr/bin/git config --local --get-all includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path
+2026-11-06T10:41:32.4774965Z $RUNNER_HOME/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:41:32.4783442Z [command]/usr/bin/git config --local --unset includeif.gitdir:$RUNNER_HOME/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path $RUNNER_HOME\/work\/_temp\/git\-credentials\-d3868c0b\-83a4\-44ae\-bc8a\-42be0f4b51b6\.config
 2026-11-06T10:41:32.4821178Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
 2026-11-06T10:41:32.4849554Z /github/runner_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
 2026-11-06T10:41:32.4856336Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-d3868c0b\-83a4\-44ae\-bc8a\-42be0f4b51b6\.config
@@ -555,5 +555,5 @@
 2026-11-06T10:41:32.4923452Z /github/runner_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
 2026-11-06T10:41:32.4930651Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-d3868c0b\-83a4\-44ae\-bc8a\-42be0f4b51b6\.config
 2026-11-06T10:41:32.4968586Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
-2026-11-06T10:41:32.5175754Z Removing credentials config '/home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config'
+2026-11-06T10:41:32.5175754Z Removing credentials config '$RUNNER_HOME/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config'
 2026-11-06T10:41:32.5322849Z Cleaning up orphan processes

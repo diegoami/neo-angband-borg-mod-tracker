@@ -102,3 +102,17 @@ assertFullSuite already used for ordinary logs. Existing31 routing/contract
 controls accept924 and reject old896/skips. No runtime/test/package/plugin
 change is made by this fix. Old jobs completed before the new push, so no
 valid active run was cancelled; final exact-head required profiles must pass.
+
+
+## Public-runner log normalization
+
+Head2d916e6 run42204835442 privacy rejects the copied public Actions log's
+53 literal hosted-runner home paths. It does not report credential values.
+The forward-only copy normalizes the runner-home prefix to $RUNNER_HOME and
+strips ANSI only; runtime/test/guard output is unchanged. The original public
+job URL remains [127846327040](https://github.com/diegoami/neo-angband-borg-mod-tracker/actions/runs/42204095358/job/127846327040),
+and its exact blob is retained in commit2d916e6. Original raw SHA256:
+3894ab525052d40ea8fc83753a7c0a855acd736fc5fbf0cead750691bae291ca
+The adjacent manifest records the normalized copy's new hash. No scanner
+rule/allowlist is weakened and no published commit is rewritten. This is
+evidence hygiene, not another runtime correction.
