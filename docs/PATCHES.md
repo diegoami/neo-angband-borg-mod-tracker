@@ -2,7 +2,7 @@
 
 Snapshot date: 2026-11-06. Linked canonical issues and PRs are authoritative
 for live bug/PR status. This ledger records disposition and patch provenance
-at this reconciliation. The resumed targeted update below covers sources2/23/22/32
+at this reconciliation. The resumed targeted update below covers sources2/23/22/24/25/32
 and validation35; untouched rows retain their earlier snapshot, not a fresh
 broad upstream audit.
 
@@ -15,10 +15,10 @@ changing a consumer patch, rebuild, lab, save or profile.
 | Escape stairs, source #23 | [Neo PR #63](https://github.com/neostryder/neo-angband-mod-borg/pull/63), `7c4992164b1c9c5c48d10b97a01f2d760a3c6372` | Accepted via upstream69 at `b8de975`; incorporated by owned34/`223f6d4`, normal full checks passed; source23 CLOSED | [Mandos #148](https://github.com/diegoami/mandos/issues/148) |
 | Store knowledge/unit values, source #22 | [Neo PR #64](https://github.com/neostryder/neo-angband-mod-borg/pull/64), `329459c0b35e5370363340b3df07694a52ee8a2a` | Accepted via upstream69 at `5915f9b`; incorporated by owned34/`223f6d4`, normal full checks passed; source22 CLOSED | [Mandos #146](https://github.com/diegoami/mandos/issues/146) |
 | Home random powers, source #32 | [Neo PR #65](https://github.com/neostryder/neo-angband-mod-borg/pull/65), `5416c6118bd016030cdbf00ee6644b2c13337267` | Accepted via upstream69 at `2a7bf7a`; incorporated by owned34/`223f6d4`, normal full checks passed; source32 CLOSED | Mandos #146 (existing aggregate consumer) |
-| Spell content coverage, source #24 | [Neo PR #66](https://github.com/neostryder/neo-angband-mod-borg/pull/66), `e71bd21df75010486c10a8e1c6748c4b546d1f10` | Upstream66 open; owned loader adopted and normal full gate verified | [Mandos #149](https://github.com/diegoami/mandos/issues/149) |
+| Spell content coverage, source #24 | [Neo PR #66](https://github.com/neostryder/neo-angband-mod-borg/pull/66), `e71bd21df75010486c10a8e1c6748c4b546d1f10` | Accepted via upstream69 at `f7699de`; exact owned loader incorporated/normal checks passed; source24 CLOSED | [Mandos #149](https://github.com/diegoami/mandos/issues/149) |
 | Stall affliction visibility, source #15 | `1909262` plus accepted `6c7bc298278ba66d67eb71029c20ee0ac2b75c6e` ([Neo PR #51](https://github.com/neostryder/neo-angband-mod-borg/pull/51)) | Incorporated and verified; source15 CLOSED. Bounded current-runtime follow-up establishes no new failure | [Mandos #140](https://github.com/diegoami/mandos/issues/140), independently owned |
-| Play/rest content, source #25 | [Neo issue #468](https://github.com/neostryder/neo-angband/issues/468), [draft port PR #67](https://github.com/neostryder/neo-angband-mod-borg/pull/67), `1d1793258b887efae5c862a15a92683b8258c33c` | Upstream draft/unmerged; owned loaders incorporated and normal beta.1 + explicit noteSpot carry verified | [Mandos #150](https://github.com/diegoami/mandos/issues/150) |
-| Play/rest engine boundary, source #25 links to engine #4 | Engine `noteSpot`: [engine source #4](https://github.com/diegoami/neo-angband-tracker/issues/4), [Neo PR #429](https://github.com/neostryder/neo-angband/pull/429), `2553cb496da46692fd64eade5f089acecdc5088e` | Upstream429 open; engine fork19ff25ea merged and owned port declares the explicit beta.1 noteSpot dependency carry | [Mandos #126](https://github.com/diegoami/mandos/issues/126) |
+| Play/rest content, source #25 | [Neo issue #468](https://github.com/neostryder/neo-angband/issues/468), [port PR #67](https://github.com/neostryder/neo-angband-mod-borg/pull/67), `1d1793258b887efae5c862a15a92683b8258c33c` | Accepted via upstream70 at `440d8d9`; exact owned loaders incorporated and normal beta.1 + explicit noteSpot verified; source25 CLOSED | [Mandos #150](https://github.com/diegoami/mandos/issues/150) |
+| Play/rest engine boundary, source #25 links to engine #4 | Engine `noteSpot`: [engine source #4](https://github.com/diegoami/neo-angband-tracker/issues/4), [Neo PR #429](https://github.com/neostryder/neo-angband/pull/429), `2553cb496da46692fd64eade5f089acecdc5088e` | Upstream429 accepted at `394825525`; parent owns engine source4 reconciliation; owned beta.1 noteSpot declaration unchanged | [Mandos #126](https://github.com/diegoami/mandos/issues/126) |
 
 The 2026-11-05 reconciliation and exact verification receipts are in
 [the run record](runs/2026-11-05-port-reconciliation/README.md). Earlier scenario
@@ -45,7 +45,7 @@ baseline; it is not the current declared fork profile. Independent
 [exact-source compatibility](runs/2026-11-05-supported-engine/README.md) stays
 separate. At that earlier stage, normal/source full gates executed866 cases without skips.
 The resumed carry verification below supersedes that count and the earlier
-open63–65 status. Untouched66/67 rows are historical snapshots; canonical
+open63–65 status. Accepted66/67 loader corrections are reconciled below; canonical
 issues remain authoritative. Our own28/30 merges alone were not upstream acceptance.
 
 The owner-approved [source lifecycle audit](https://github.com/diegoami/angband-workspace/issues/11)
@@ -120,3 +120,15 @@ are on that issue. Unfixed deadbfce also timed out (137.93s,exit1) under
 the same Node24/install/flags, so the failure is not introduced solely by
 63–65. [Exact baseline logs/exit/hashes](https://github.com/diegoami/neo-angband-borg-mod-tracker/tree/6748f5f/evidence/validation-seed42)
 are preserved; exact cause remains unclassified. No test cap/seed/assertion/timeout is weakened.
+
+
+The same targeted pass reconciles [maintainer acceptance66](https://github.com/neostryder/neo-angband-mod-borg/pull/66#issuecomment-6675552256)
+at `f7699dec10b9c3b1f0e5c3dfdb89f9054b62f265` through69 and
+[acceptance67](https://github.com/neostryder/neo-angband-mod-borg/pull/67#issuecomment-6676556092)
+at `440d8d98917b434a4441547c18e4e73915f239fb` through70. The spell/play/rest
+loader files exactly match owned223f6d4, whose normal896-case gates execute
+them without skips; sources24/25 CLOSED. Vendor reports915 tests/Borgbeta.3
+with enginebeta.3; that does not silently upgrade this fork's beta.1+explicit
+carry profile. Parent owns engine source4 resolution and Mandos owns149/150.
+Engine429's original acceptance initially left428 open; live428 is now
+CLOSED/completed, and its closure evidence belongs to the engine parent pass.
