@@ -1,0 +1,47 @@
+{
+  "commit": "deadbfce4ede467960c1647f2f0622c13927c298",
+  "command": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "src/play.test.ts",
+    "-t",
+    "seed 42",
+    "--execArgv=--cpu-prof",
+    "--execArgv=--cpu-prof-dir=/tmp/neo-borg-seed42-profile-output-20261106"
+  ],
+  "started_utc": "2026-11-06T10:21:34Z",
+  "node": "v24.21.0",
+  "pnpm": "12.16.1",
+  "files": {
+    "package.json": "514a3c1387525fca39de0f2d39a8c119d1e90161ccc6b3a20dfc0f00b6d4ba7e",
+    "pnpm-lock.yaml": "deeb9341a5c3a406a873ad8fb07ca04dba2f4bc5bf9661b250adc4510830d0b7",
+    "pnpm-workspace.yaml": "a3fee7997624b668b91ff109a98a6706d77bde65db1b7388b64ca55293e5530d",
+    "vitest.config.mjs": "b0c380830dd7d3d5735c2abf571054ad3784871881338b045e5a246e8474159c",
+    "src/play.test.ts": "13e7f07b0ddf2115296d1cf2da8bed3f1c31b4de2fdd28bb30096e2b2b70d96a",
+    "patches/engine-notespot/@rpgm-tools__neo-angband-core@1.23.0-beta.1.patch": "87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd"
+  },
+  "profile_limits": "CPU sampling changes execution cost; not a clean timing comparison. Separate Vite caches, identical dependency payloads.",
+  "host_before": {
+    "/proc/loadavg": "0.31 0.61 2.52 1/872 383641",
+    "/proc/pressure/cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=12840108\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+    "/proc/pressure/memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1525528\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1519659",
+    "/proc/pressure/io": "some avg10=0.00 avg60=0.00 avg300=0.06 total=16359826\nfull avg10=0.00 avg60=0.00 avg300=0.06 total=16277571",
+    "/sys/fs/cgroup/cpu.max": "max 100000",
+    "/sys/fs/cgroup/cpu.stat": "usage_usec 69619744695\nuser_usec 67856883201\nsystem_usec 1762861494\nnice_usec 3896000\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+    "/sys/fs/cgroup/memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+  },
+  "exit": 0,
+  "duration_wall_seconds": 49.889294616999905,
+  "finished_utc": "2026-11-06T10:22:24Z",
+  "host_after": {
+    "/proc/loadavg": "0.83 0.70 2.45 1/848 384363",
+    "/proc/pressure/cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=12870116\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+    "/proc/pressure/memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1525528\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1519659",
+    "/proc/pressure/io": "some avg10=0.00 avg60=0.02 avg300=0.06 total=16403031\nfull avg10=0.00 avg60=0.02 avg300=0.06 total=16320599",
+    "/sys/fs/cgroup/cpu.max": "max 100000",
+    "/sys/fs/cgroup/cpu.stat": "usage_usec 69678842048\nuser_usec 67913559898\nsystem_usec 1765282150\nnice_usec 3896000\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+    "/sys/fs/cgroup/memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+  }
+}

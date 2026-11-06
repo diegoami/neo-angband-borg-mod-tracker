@@ -1,0 +1,26 @@
+{
+  "@rpgm-tools/neo-angband-core": {
+    "version": "1.23.0-beta.1",
+    "resolved_path": "/tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core",
+    "files": 1527,
+    "tree_sha256": "ec933add0313ccbbd7ccb12a585d9985cbd597ff3e6eee96755deb7ef363eae1"
+  },
+  "@rpgm-tools/neo-angband-content": {
+    "version": "1.23.0-beta.1",
+    "resolved_path": "/tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-content@1.23.0-beta.1/node_modules/@rpgm-tools/neo-angband-content",
+    "files": 118,
+    "tree_sha256": "e38ac845a4393fc6da62ee00dbc32a2155d7c99624cfd83038535b883f145ca2"
+  },
+  "@rpgm-tools/neo-angband-mod-sdk": {
+    "version": "1.23.0-beta.1",
+    "resolved_path": "/tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-mod-sdk@1.23.0-beta.1/node_modules/@rpgm-tools/neo-angband-mod-sdk",
+    "files": 483,
+    "tree_sha256": "febe899d83ac5f41f353a1e23ec6bd8578dfe6877d62e0c7a0c5553a2e07b215"
+  },
+  "vitest": {
+    "version": "4.1.11",
+    "resolved_path": "/tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/vitest@4.1.11_@types+node@22.20.1_vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_/node_modules/vitest",
+    "files": 117,
+    "tree_sha256": "3014c8d8422554b7dba3dc03be89f00b4aa500543136182a735207bc4784187c"
+  }
+}

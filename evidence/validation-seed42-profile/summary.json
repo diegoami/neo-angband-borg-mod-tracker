@@ -1,0 +1,291 @@
+{
+  "profile": "CPU.20261106.112134.383840.0.001.cpuprofile",
+  "profile_span_seconds": 49.4595,
+  "sampled_seconds": 49.458467,
+  "sample_count": 46816,
+  "self": [
+    {
+      "function": "borgFlowSpread",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow.ts",
+      "profile_line": 234,
+      "sampled_seconds": 14.675793,
+      "percent_of_sample_span": 29.673
+    },
+    {
+      "function": "inBoundsFully",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-consts.ts",
+      "profile_line": 179,
+      "sampled_seconds": 5.118236,
+      "percent_of_sample_span": 10.3486
+    },
+    {
+      "function": "borgFlowCostStair",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-stairs.ts",
+      "profile_line": 33,
+      "sampled_seconds": 3.802341,
+      "percent_of_sample_span": 7.6879
+    },
+    {
+      "function": "flatSvals",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/item/svals.ts",
+      "profile_line": 255,
+      "sampled_seconds": 2.76632,
+      "percent_of_sample_span": 5.5932
+    },
+    {
+      "function": "cellView",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/agent/perceive.js",
+      "profile_line": 147,
+      "sampled_seconds": 2.154758,
+      "percent_of_sample_span": 4.3567
+    },
+    {
+      "function": "itemView",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/agent/entity-views.js",
+      "profile_line": 59,
+      "sampled_seconds": 1.865054,
+      "percent_of_sample_span": 3.7709
+    },
+    {
+      "function": "(anonymous)",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-consts.ts",
+      "profile_line": 1,
+      "sampled_seconds": 1.425085,
+      "percent_of_sample_span": 2.8814
+    },
+    {
+      "function": "sqinfoHas",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/world/chunk.js",
+      "profile_line": 196,
+      "sampled_seconds": 0.977282,
+      "percent_of_sample_span": 1.976
+    },
+    {
+      "function": "syncStairsFromMap",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-stairs.ts",
+      "profile_line": 17,
+      "sampled_seconds": 0.896448,
+      "percent_of_sample_span": 1.8125
+    },
+    {
+      "function": "objectKnownShadow",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/obj/known-object.js",
+      "profile_line": 330,
+      "sampled_seconds": 0.76582,
+      "percent_of_sample_span": 1.5484
+    },
+    {
+      "function": "(garbage collector)",
+      "url": "",
+      "profile_line": 0,
+      "sampled_seconds": 0.690904,
+      "percent_of_sample_span": 1.3969
+    },
+    {
+      "function": "squareIsSeen",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/world/view.js",
+      "profile_line": 176,
+      "sampled_seconds": 0.634734,
+      "percent_of_sample_span": 1.2834
+    },
+    {
+      "function": "(anonymous)",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/bitflag.js",
+      "profile_line": 472,
+      "sampled_seconds": 0.583268,
+      "percent_of_sample_span": 1.1793
+    },
+    {
+      "function": "isPassable",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/world/chunk.js",
+      "profile_line": 297,
+      "sampled_seconds": 0.55467,
+      "percent_of_sample_span": 1.1215
+    },
+    {
+      "function": "(anonymous)",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/agent/perceive.js",
+      "profile_line": 324,
+      "sampled_seconds": 0.550967,
+      "percent_of_sample_span": 1.114
+    },
+    {
+      "function": "flagNext",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/bitflag.js",
+      "profile_line": 85,
+      "sampled_seconds": 0.401539,
+      "percent_of_sample_span": 0.8119
+    },
+    {
+      "function": "(idle)",
+      "url": "",
+      "profile_line": 0,
+      "sampled_seconds": 0.391929,
+      "percent_of_sample_span": 0.7924
+    },
+    {
+      "function": "objectNew",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/obj/object.js",
+      "profile_line": 144,
+      "sampled_seconds": 0.359146,
+      "percent_of_sample_span": 0.7262
+    },
+    {
+      "function": "makeNoise",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/world/flow.js",
+      "profile_line": 20,
+      "sampled_seconds": 0.337811,
+      "percent_of_sample_span": 0.683
+    },
+    {
+      "function": "calcLighting",
+      "url": "file:///tmp/neo-borg-integrate-port-20261106/node_modules/.pnpm/@rpgm-tools+neo-angband-core@1.23.0-beta.1_patch_hash=87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd/node_modules/@rpgm-tools/neo-angband-core/dist/world/view.js",
+      "profile_line": 276,
+      "sampled_seconds": 0.332814,
+      "percent_of_sample_span": 0.6729
+    }
+  ],
+  "inclusive_app": [
+    {
+      "function": "(anonymous)",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/play.test.ts",
+      "profile_line": 296,
+      "sampled_seconds": 47.745489,
+      "percent_of_sample_span": 96.5365
+    },
+    {
+      "function": "playRun",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/play.test.ts",
+      "profile_line": 114,
+      "sampled_seconds": 47.743236,
+      "percent_of_sample_span": 96.532
+    },
+    {
+      "function": "viewDeps.resolver.resolver",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/play.test.ts",
+      "profile_line": 152,
+      "sampled_seconds": 44.185438,
+      "percent_of_sample_span": 89.3385
+    },
+    {
+      "function": "(anonymous)",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/core-api.ts",
+      "profile_line": 298,
+      "sampled_seconds": 44.163833,
+      "percent_of_sample_span": 89.2948
+    },
+    {
+      "function": "(anonymous)",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/controller.ts",
+      "profile_line": 73,
+      "sampled_seconds": 44.154953,
+      "percent_of_sample_span": 89.2768
+    },
+    {
+      "function": "think",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/think.ts",
+      "profile_line": 24,
+      "sampled_seconds": 38.139106,
+      "percent_of_sample_span": 77.1134
+    },
+    {
+      "function": "borgThinkDungeon",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/think-ladder.ts",
+      "profile_line": 477,
+      "sampled_seconds": 38.11136,
+      "percent_of_sample_span": 77.0573
+    },
+    {
+      "function": "toDark",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/index.ts",
+      "profile_line": 55,
+      "sampled_seconds": 26.964571,
+      "percent_of_sample_span": 54.5196
+    },
+    {
+      "function": "borgFlowDark",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-dark.ts",
+      "profile_line": 342,
+      "sampled_seconds": 26.961342,
+      "percent_of_sample_span": 54.5131
+    },
+    {
+      "function": "borgFlowCostStair",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-stairs.ts",
+      "profile_line": 33,
+      "sampled_seconds": 26.398944,
+      "percent_of_sample_span": 53.376
+    },
+    {
+      "function": "borgFlowFarFromStairsDist",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-misc.ts",
+      "profile_line": 52,
+      "sampled_seconds": 26.107306,
+      "percent_of_sample_span": 52.7863
+    },
+    {
+      "function": "borgFlowSpread",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow.ts",
+      "profile_line": 234,
+      "sampled_seconds": 22.637755,
+      "percent_of_sample_span": 45.7712
+    },
+    {
+      "function": "borgThinkDungeonBrave",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/think-ladder.ts",
+      "profile_line": 1108,
+      "sampled_seconds": 12.317172,
+      "percent_of_sample_span": 24.9041
+    },
+    {
+      "function": "borgFlowFarFromStairs",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-misc.ts",
+      "profile_line": 61,
+      "sampled_seconds": 11.727463,
+      "percent_of_sample_span": 23.7117
+    },
+    {
+      "function": "borgFlowDark5",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-dark.ts",
+      "profile_line": 304,
+      "sampled_seconds": 8.884355,
+      "percent_of_sample_span": 17.9633
+    },
+    {
+      "function": "borgFlowDark1",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-dark.ts",
+      "profile_line": 185,
+      "sampled_seconds": 8.00127,
+      "percent_of_sample_span": 16.1778
+    },
+    {
+      "function": "borgFlowDark4",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-dark.ts",
+      "profile_line": 260,
+      "sampled_seconds": 5.910025,
+      "percent_of_sample_span": 11.9495
+    },
+    {
+      "function": "loadoutPower",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/resolvers.ts",
+      "profile_line": 168,
+      "sampled_seconds": 5.685088,
+      "percent_of_sample_span": 11.4947
+    },
+    {
+      "function": "borgSimulatePower",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/trait/simulate.ts",
+      "profile_line": 74,
+      "sampled_seconds": 5.679435,
+      "percent_of_sample_span": 11.4832
+    },
+    {
+      "function": "inBoundsFully",
+      "url": "file:///tmp/neo-borg-seed42-profile-20261106/src/flow/flow-consts.ts",
+      "profile_line": 179,
+      "sampled_seconds": 5.467257,
+      "percent_of_sample_span": 11.0542
+    }
+  ],
+  "limits": "Sampled time, not exact call counts. Inclusive rows overlap; do not sum. Profile frame lines refer to transformed modules, not original TS line numbers."
+}
