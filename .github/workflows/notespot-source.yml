@@ -1,8 +1,6 @@
 # FORK: explicit exact-source compatibility gate, separate from published beta.1 CI.
 name: notespot-source
-on:
-  pull_request:
-  workflow_dispatch:
+on: {"workflow_call":{},"workflow_dispatch":{}}
 jobs:
   exact-source:
     if: github.repository == 'diegoami/neo-angband-borg-mod-tracker'
