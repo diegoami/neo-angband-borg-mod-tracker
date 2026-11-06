@@ -1,0 +1,19 @@
+✓ Lockfile passes supply-chain policies (verified 46m ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+Done in 39ms using pnpm v12.16.1
+$ pnpm typecheck && pnpm test && pnpm check
+$ tsc --noEmit
+$ vitest run
+
+ RUN  v4.1.11 /tmp/neo-borg-weapon-backup-home-20261106
+
+
+ Test Files  50 passed (50)
+      Tests  943 passed (943)
+   Start at  11:58:19
+   Duration  113.70s (transform 24.02s, setup 22.44s, import 37.14s, tests 156.38s, environment 9ms)
+
+$ node tools/build.mjs --check
+[mod-build] checking 1: borg
+[mod-build] borg: ok, and the committed plugin.js is current (671.4 KiB, api >=2.0.0 <3.0.0)

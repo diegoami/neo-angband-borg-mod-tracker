@@ -48,7 +48,7 @@ export function classifyEvent(name, event, cwd = process.cwd()) {
 }
 export function assertFullSuite(log) {
   const plain = log.replace(/\x1b\[[0-9;]*m/g, "");
-  if (!/Tests\s+896 passed \(896\)/.test(plain) || /\d+ skipped/.test(plain)) throw new Error("Required full gate must execute all 896 tests with zero skips");
+  if (!/Tests\s+924 passed \(924\)/.test(plain) || /\d+ skipped/.test(plain)) throw new Error("Required full gate must execute all 924 tests with zero skips");
 }
 export function assertGate(needs) {
   for (const name of ["profile", "checks", "scan"]) if (needs[name]?.result !== "success") throw new Error(`${name} did not succeed`);
@@ -76,7 +76,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     assertGate(needs);
     const profile = needs.profile.outputs.profile;
     const message = profile === "full"
-      ? "Full profile passed: ordinary typecheck, package controls, all 896 tests without skips, grants/plugin, privacy/session and exact-source compatibility."
+      ? "Full profile passed: ordinary typecheck, package controls, all 924 tests without skips, grants/plugin, privacy/session and exact-source compatibility."
       : "Docs profile passed: session, routing controls, privacy and real settings/version documentation contracts.";
     console.log(message);
     if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, message + "\n");

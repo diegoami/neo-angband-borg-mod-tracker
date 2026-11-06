@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-carry-weapon-backup-home-20261106
+
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  12:00:58
+   Duration  1.62s (transform 385ms, setup 154ms, import 425ms, tests 970ms, environment 0ms)
+

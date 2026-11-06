@@ -1,0 +1,86 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-weapon-backup-home-20261106
+
+ ❯ src/store/weapon-backup.test.ts (14 tests | 4 failed) 107ms
+   × retrieves the registered known Nether backup through production HOME deps 14ms
+   × includes the carried backup value instead of treating it as dead weight 11ms
+   × selects a backup handle during normal notice, without wearing it 4ms
+   × does not require the ordinary loadout evaluator to value carried backups 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/weapon-backup.test.ts > retrieves the registered known Nether backup through production HOME deps
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/weapon-backup.test.ts:66:51
+     64|  expect(isIdent(s.candidate,s.deps)).toBe(true);
+     65|  expect(s.ctx.world.self.trait[BI.RNTHR]).toBe(0);
+     66|  expect(borgThinkHomeBuySwapWeapon(s.ctx,s.deps)).toBe(true);
+       |                                                   ^
+     67|  expect(borgThinkShopBuy(s.ctx,7,s.deps)).toMatchObject({code:"home-ge…
+     68|  expect(s.queries()).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/store/weapon-backup.test.ts > includes the carried backup value instead of treating it as dead weight
+AssertionError: expected 0 to be greater than 100000
+ ❯ src/store/weapon-backup.test.ts:72:69
+     70| it("includes the carried backup value instead of treating it as dead w…
+     71|  const baseline=scene({home:false}),carried=scene({carry:true,home:fal…
+     72|  expect(carried.ctx.world.self.power-baseline.ctx.world.self.power).to…
+       |                                                                     ^
+     73| });
+     74| it("selects a backup handle during normal notice, without wearing it",…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/store/weapon-backup.test.ts > selects a backup handle during normal notice, without wearing it
+AssertionError: expected undefined to be 2 // Object.is equality
+
+- Expected:
+2
+
++ Received:
+undefined
+
+ ❯ src/store/weapon-backup.test.ts:77:23
+     75|  const s=scene({carry:true});
+     76|  const swap=(getDerived(s.ctx.world) as {weaponSwap?:{handle:number|nu…
+     77|  expect(swap?.handle).toBe(2);
+       |                       ^
+     78|  expect(swap?.value).toBeGreaterThan(100000);
+     79|  expect(s.ctx.view.equipment()[0]?.artifactName).toBe("of Pain");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/store/weapon-backup.test.ts > does not require the ordinary loadout evaluator to value carried backups
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/weapon-backup.test.ts:83:51
+     81| it("does not require the ordinary loadout evaluator to value carried b…
+     82|  const s=scene({loadout:false});
+     83|  expect(borgThinkHomeBuySwapWeapon(s.ctx,s.deps)).toBe(true);
+       |                                                   ^
+     84| });
+     85| it("requires strict improvement over the existing backup, with no equa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 10 passed (14)
+   Start at  11:13:14
+   Duration  841ms (transform 441ms, setup 159ms, import 497ms, tests 107ms, environment 0ms)
+

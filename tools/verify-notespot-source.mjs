@@ -6,6 +6,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
+import { assertFullSuite } from "./ci-profile.mjs";
 
 const artifacts = resolve(process.argv[2] ?? "");
 if (!process.argv[2]) throw new Error("Usage: node tools/verify-notespot-source.mjs /path/to/engine-tarballs");
@@ -57,8 +58,7 @@ const code = await new Promise((resolveExit, reject) => {
 });
 writeFileSync(join(receipt, "exit.json"), JSON.stringify({ code }) + "\n");
 if (code !== 0) throw new Error(`Port verify failed: ${code}; ${receipt}`);
-const plain = output.replace(/\x1b\[[0-9;]*m/g, "");
-if (!/Tests\s+896 passed \(896\)/.test(plain) || /\d+ skipped/.test(plain)) {
-  throw new Error(`Expected all 896 cases with zero skips; inspect ${receipt}`);
-}
+// Share the ordinary full-suite contract; added cases cannot leave a stale
+// compatibility-only count that rejects a successful complete test run.
+assertFullSuite(output);
 console.log(`Exact-source port gate passed; source engine 19ff25eac8997e8feb6b5e62eefa7ffe4d134631; receipts ${receipt}`);
