@@ -22,3 +22,25 @@ under the same environment/flags, not another duplicate whole suite. Do not
 weaken tests. Logs/exit codes are exact copies, private-data scan passed; hashes
 are adjacent. This evidence is outside automatic test discovery; no runtime or
 required896-case suite change is included.
+
+
+## Resumed comparison — 2026-11-06
+
+Tracked internally at [validation35](https://github.com/diegoami/neo-angband-borg-mod-tracker/issues/35).
+Exact unfixed owned base `deadbfce4ede467960c1647f2f0622c13927c298`,
+isolated detached worktree, same Node24.21.0/pnpm12.16.1/Vitest4.1.11 and
+identical installed dependencies (shared read-only-by-intent node_modules link).
+Package/lock/patch/test/config bytes match the carried78622e6/223f6d4.
+Command unchanged: `CI=1 NO_COLOR=1 pnpm exec vitest run src/play.test.ts -t "seed 42"`,
+under the shared validation lock. No NEO local-engine opt-in or assertion,
+seed, cap, timeout change. Pnpm verified the existing lock/install, no
+dependency version change. Host load/time-of-day was not controlled.
+
+**Actual baseline result:1 timeout/5 filtered cases,137.93s total,exit1.**
+The case logged134.912s and exceeded its unchanged120000ms timeout.
+This reproduces a local timing failure on the pre63–65 code too; it is not
+introduced solely by those three imports. It does not establish the exact
+cause or exclude unrelated performance changes. Product-vs-host/environment
+classification remains open; hosted896-case green remains independent.
+No further full-suite rerun or threshold weakening follows from this result.
+Exact log/exit/start receipt are adjacent, with baseline hashes below.

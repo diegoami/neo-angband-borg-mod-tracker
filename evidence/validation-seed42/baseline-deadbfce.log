@@ -1,0 +1,31 @@
+✓ Lockfile passes supply-chain policies (verified 9h ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+Done in 1.9s using pnpm v12.16.1
+
+ RUN  v4.1.11 /tmp/neo-borg-seed42-base-20261106
+
+ ❯ src/play.test.ts (6 tests | 1 failed | 5 skipped) 134915ms
+     × keeps playing for 1500 decisions (seed 42) 134912ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 42)
+Error: Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/play.test.ts:335:5
+    333|    * that showed on all four. */
+    334|   for (const seed of [1, 7, 42, 99]) {
+    335|     when(`keeps playing for 1500 decisions (seed ${String(seed)})`, ()…
+       |     ^
+    336|       const r = playRun(pack!, seed, 1500);
+    337|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 skipped (6)
+   Start at  09:27:34
+   Duration  137.93s (transform 1.57s, setup 653ms, import 2.06s, tests 134.92s, environment 0ms)
+
