@@ -1,9 +1,13 @@
-# Port source proposals and verification
+# Port source reconciliation and patch ledger — 2026-11-06
+
+Snapshot date: 2026-11-06. Linked canonical issues and PRs are authoritative
+for live bug/PR status. This ledger records disposition and patch provenance
+at this reconciliation.
 
 Source state is separate from Mandos adoption. These records do not authorize
 changing a consumer patch, rebuild, lab, save or profile.
 
-| Source scope | Actual correction/proposal | Current source state | Adoption owner |
+| Source scope | Actual correction/proposal | Fork disposition at this reconciliation | Adoption owner |
 | --- | --- | --- | --- |
 | Backup swaps, source #2 | Existing weapon/armour backup and store-swap valuation scope; no upstream backup report yet. Ring [Neo462/PR62](https://github.com/neostryder/neo-angband-mod-borg/pull/62) is resolved history | OPEN for backups only; never claimed fixed by ring62 | [Mandos #125](https://github.com/diegoami/mandos/issues/125) |
 | Escape stairs, source #23 | [Neo PR #63](https://github.com/neostryder/neo-angband-mod-borg/pull/63), `7c4992164b1c9c5c48d10b97a01f2d760a3c6372` | Open proposal; absent from `74a017d` | [Mandos #148](https://github.com/diegoami/mandos/issues/148) |
