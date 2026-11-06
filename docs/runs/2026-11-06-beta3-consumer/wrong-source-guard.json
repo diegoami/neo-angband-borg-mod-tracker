@@ -1,0 +1,6 @@
+{
+  "case": "wrong-source-core-hash",
+  "exit": 1,
+  "rejectedBeforeConsumerInstall": true,
+  "expectedError": "Wrong engine artifact"
+}

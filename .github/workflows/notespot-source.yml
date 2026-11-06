@@ -1,4 +1,4 @@
-# FORK: explicit exact-source compatibility gate, separate from published beta.1 CI.
+# FORK: explicit exact-source compatibility gate, separate from published beta.3 CI.
 name: notespot-source
 on: {"workflow_call":{},"workflow_dispatch":{}}
 jobs:
@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           repository: diegoami/neo-angband-tracker
-          ref: 19ff25eac8997e8feb6b5e62eefa7ffe4d134631
+          ref: f576b099b18e0016e0827e43a5770a369f53e279
           path: engine-source
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7

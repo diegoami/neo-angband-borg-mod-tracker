@@ -1,0 +1,23 @@
+{
+  "schema": "neo-borg/exact-source-profile@1",
+  "source": "f576b099b18e0016e0827e43a5770a369f53e279",
+  "producerTask": "https://github.com/diegoami/neo-angband-tracker/issues/299",
+  "recipeCorrection": "https://github.com/diegoami/neo-angband-tracker/issues/299#issuecomment-6691845982",
+  "versions": {
+    "node": "26.13.0",
+    "npm": "11.20.0",
+    "pnpm": "12.3.4",
+    "packages": "1.23.0-beta.3"
+  },
+  "sha256": {
+    "rpgm-tools-neo-angband-content-1.23.0-beta.3.tgz": "50339f37ba3d71d2ca9e8f4215c9f5b33509266fa9770216b913491c16a6979a",
+    "rpgm-tools-neo-angband-core-1.23.0-beta.3.tgz": "00b4f1ad5644e06fdd085be39a8c7da427143ae21497f83884fa077b6dc1047b",
+    "rpgm-tools-neo-angband-mod-sdk-1.23.0-beta.3.tgz": "9f628c0103ff51c48787982353f5a6c28c4b15e77d93b85bcc17c39a9c6916d6"
+  },
+  "manifestsPinnedOnlyInsideDisposableArchive": true,
+  "coreManifestSDKDependency": "1.23.0-beta.3",
+  "sdkOverride": "exact checked mod-sdk file artifact in generated consumer tree",
+  "sourceSDKGraphCheck": "enforced by final source CI; no source consumer full run claimed yet",
+  "publishedProfileIsSeparate": true,
+  "retiredBeta1PatchApplied": false
+}

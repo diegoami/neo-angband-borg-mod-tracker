@@ -57,3 +57,29 @@ ordinary and source profiles with no skips, and send the exact reviewed PR/head
 for parent merge. No mass upstream Borg merge or product version bump, source2
 feature work, native C/engine/Mandos edit, official C post, Rust polling, tag/
 release/npm publication, lab/profile/data or deployment action.
+
+## Final source-profile preparation
+
+Parent supplied verified engine code merge **f576b099b18e0016e0827e43a5770a369f53e279**
+after PR300's required full producer checks passed. The independent producer
+post-main result still gates consumer merge; consumers may execute now. Later
+producer packaging prose changes do not change this code pin or trigger a source
+pin chase. This supersedes the earlier hold on source-profile preparation only.
+
+The source workflow now checks out that exact commit. The recipe archives it
+into a fresh disposable directory, locks install/build/pack, builds with the
+pinned Node 26.13.0/npm 11.20.0/pnpm 12.3.4 toolchain, pins workspace dependency
+ranges **inside that archive only**, and packs Core/SDK/content. The build/pack
+exited 0; [actual hashes](source-SHA256SUMS), [log](source-build.log) and
+[machine receipt](source-profile.json) preserve its identity. No active engine
+checkout/package manifest was edited. Content matches the published archive;
+Core and SDK source archives are separately hashed and are not called registry
+artifacts merely because they also say beta.3.
+
+The refreshed verifier checks these artifact hashes, rejects a retired beta.1
+patch before any package install, and uses an explicit SDK-file override in its
+generated consumer. It asserts matching beta.3 versions and identical direct/
+transitive SDK realpaths, then applies the same four package controls, full 924
+zero-skip suite and plugin currency. No assertion/seed/timeout/case count changed.
+Required final ordinary/source hosted profiles remain pending at this preparation
+receipt. Parent reviews the exact final head and actual outcomes before merge.
