@@ -1,0 +1,15 @@
+$ pnpm typecheck && pnpm test && pnpm check
+$ tsc --noEmit
+$ vitest run
+
+ RUN  v4.1.11 /tmp/neo-borg-weapon-backup-home-20261106
+
+
+ Test Files  50 passed (50)
+      Tests  943 passed (943)
+   Start at  11:32:31
+   Duration  122.61s (transform 22.23s, setup 21.84s, import 36.06s, tests 164.19s, environment 15ms)
+
+$ node tools/build.mjs --check
+[mod-build] checking 1: borg
+[mod-build] borg: ok, and the committed plugin.js is current (671.4 KiB, api >=2.0.0 <3.0.0)

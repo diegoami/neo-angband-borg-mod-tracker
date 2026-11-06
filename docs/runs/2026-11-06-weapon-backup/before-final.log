@@ -1,0 +1,90 @@
+✓ Lockfile passes supply-chain policies (verified 8m ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+Done in 96ms using pnpm v12.16.1
+
+ RUN  v4.1.11 /tmp/neo-borg-weapon-backup-before-20261106
+
+ ❯ src/store/weapon-backup.test.ts (14 tests | 4 failed) 104ms
+   × retrieves the registered known Nether backup through production HOME deps 16ms
+   × includes the carried backup value instead of treating it as dead weight 10ms
+   × selects a backup handle during normal notice, without wearing it 8ms
+   × does not require the ordinary loadout evaluator to value carried backups 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/weapon-backup.test.ts > retrieves the registered known Nether backup through production HOME deps
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/weapon-backup.test.ts:70:51
+     68|  expect(isIdent(s.candidate,s.deps)).toBe(true);
+     69|  expect(s.ctx.world.self.trait[BI.RNTHR]).toBe(0);
+     70|  expect(borgThinkHomeBuySwapWeapon(s.ctx,s.deps)).toBe(true);
+       |                                                   ^
+     71|  expect(borgThinkShopBuy(s.ctx,7,s.deps)).toMatchObject({code:"shop-bu…
+     72|  expect(s.queries()).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/store/weapon-backup.test.ts > includes the carried backup value instead of treating it as dead weight
+AssertionError: expected 0 to be greater than 100000
+ ❯ src/store/weapon-backup.test.ts:76:69
+     74| it("includes the carried backup value instead of treating it as dead w…
+     75|  const baseline=scene({home:false}),carried=scene({carry:true,home:fal…
+     76|  expect(carried.ctx.world.self.power-baseline.ctx.world.self.power).to…
+       |                                                                     ^
+     77| });
+     78| it("selects a backup handle during normal notice, without wearing it",…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/store/weapon-backup.test.ts > selects a backup handle during normal notice, without wearing it
+AssertionError: expected undefined to be 2 // Object.is equality
+
+- Expected:
+2
+
++ Received:
+undefined
+
+ ❯ src/store/weapon-backup.test.ts:81:23
+     79|  const s=scene({carry:true});
+     80|  const swap=(getDerived(s.ctx.world) as {weaponSwap?:{handle:number|nu…
+     81|  expect(swap?.handle).toBe(2);
+       |                       ^
+     82|  expect(swap?.value).toBeGreaterThan(100000);
+     83|  expect(s.ctx.view.equipment()[0]?.artifactName).toBe("of Pain");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/store/weapon-backup.test.ts > does not require the ordinary loadout evaluator to value carried backups
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/weapon-backup.test.ts:87:51
+     85| it("does not require the ordinary loadout evaluator to value carried b…
+     86|  const s=scene({loadout:false});
+     87|  expect(borgThinkHomeBuySwapWeapon(s.ctx,s.deps)).toBe(true);
+       |                                                   ^
+     88| });
+     89| it("requires strict improvement over the existing backup, with no equa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 10 passed (14)
+   Start at  11:20:30
+   Duration  778ms (transform 399ms, setup 153ms, import 443ms, tests 104ms, environment 0ms)
+

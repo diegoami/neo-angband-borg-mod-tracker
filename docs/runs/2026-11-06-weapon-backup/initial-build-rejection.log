@@ -1,0 +1,8 @@
+✓ Lockfile passes supply-chain policies (verified 11m ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+Done in 39ms using pnpm v12.16.1
+$ node tools/build.mjs
+[mod-build] building 1: borg
+[mod-build] borg: plugin.js does not import cleanly - Cannot read properties of undefined (reading 'HAFTED')
+[ELIFECYCLE] Command failed with exit code 1.

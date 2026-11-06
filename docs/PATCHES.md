@@ -138,3 +138,16 @@ accepted. The maintainer-cited394825525 is not publicly resolvable; accessible
 `0e24e79c47adb9fd14eacdf87ba1f9be269759fa` supplies source equivalence against
 owned19ff25ea/5928146b (hook differs only in comment). This does not remove
 the owned beta.1 carry or claim an owned dependency upgrade.
+
+
+## Weapon-backup/HOME local proposal — 2026-11-06
+
+Source2/Neo469: clean source commit `a2d73659140be6913c4abed6aaa80ae48b96da10`
+restores selected carried weapon-backup handle/value, power contribution
+and HOME strict-improvement evaluation/retrieval. The owned attributable
+import keeps core/SDK/contentbeta.1 plus explicit noteSpot, with no dependency
+upgrade. [Bounded scope and verification](runs/2026-11-06-weapon-backup/README.md).
+Armour/tactical swaps remain open; named-curse power is not publicly produced
+and is conservatively excluded by default. HOME retrieval requires a real
+free slot, including when replacing an existing backup; that host-capacity
+limit is not evidence of a native C defect.
