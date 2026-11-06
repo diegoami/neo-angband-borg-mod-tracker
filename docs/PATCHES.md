@@ -2,17 +2,19 @@
 
 Snapshot date: 2026-11-06. Linked canonical issues and PRs are authoritative
 for live bug/PR status. This ledger records disposition and patch provenance
-at this reconciliation.
+at this reconciliation. The resumed targeted update below covers sources2/23/22/32
+and validation35; untouched rows retain their earlier snapshot, not a fresh
+broad upstream audit.
 
 Source state is separate from Mandos adoption. These records do not authorize
 changing a consumer patch, rebuild, lab, save or profile.
 
 | Source scope | Actual correction/proposal | Fork disposition at this reconciliation | Adoption owner |
 | --- | --- | --- | --- |
-| Backup swaps, source #2 | Existing weapon/armour backup and store-swap valuation scope; no upstream backup report yet. Ring [Neo462/PR62](https://github.com/neostryder/neo-angband-mod-borg/pull/62) is resolved history | OPEN for backups only; never claimed fixed by ring62 | [Mandos #125](https://github.com/diegoami/mandos/issues/125) |
-| Escape stairs, source #23 | [Neo PR #63](https://github.com/neostryder/neo-angband-mod-borg/pull/63), `7c4992164b1c9c5c48d10b97a01f2d760a3c6372` | Open proposal; absent from `74a017d` | [Mandos #148](https://github.com/diegoami/mandos/issues/148) |
-| Store knowledge/unit values, source #22 | [Neo PR #64](https://github.com/neostryder/neo-angband-mod-borg/pull/64), `329459c0b35e5370363340b3df07694a52ee8a2a` | Open proposal; absent | [Mandos #146](https://github.com/diegoami/mandos/issues/146) |
-| Home random powers, source #32 | [Neo PR #65](https://github.com/neostryder/neo-angband-mod-borg/pull/65), `5416c6118bd016030cdbf00ee6644b2c13337267` | Open independent proposal; absent | Mandos #146 (existing aggregate consumer) |
+| Backup swaps, source #2 | [Neo469](https://github.com/neostryder/neo-angband/issues/469): weapon-backup value/HOME acquisition; armour/tactical work remains separate. Ring [Neo462/PR62](https://github.com/neostryder/neo-angband-mod-borg/pull/62) is resolved history | OPEN for backups only; never claimed fixed by ring62 | [Mandos #125](https://github.com/diegoami/mandos/issues/125) |
+| Escape stairs, source #23 | [Neo PR #63](https://github.com/neostryder/neo-angband-mod-borg/pull/63), `7c4992164b1c9c5c48d10b97a01f2d760a3c6372` | Accepted via upstream69 at `b8de975`; incorporated by owned34/`223f6d4`, normal full checks passed; source23 CLOSED | [Mandos #148](https://github.com/diegoami/mandos/issues/148) |
+| Store knowledge/unit values, source #22 | [Neo PR #64](https://github.com/neostryder/neo-angband-mod-borg/pull/64), `329459c0b35e5370363340b3df07694a52ee8a2a` | Accepted via upstream69 at `5915f9b`; incorporated by owned34/`223f6d4`, normal full checks passed; source22 CLOSED | [Mandos #146](https://github.com/diegoami/mandos/issues/146) |
+| Home random powers, source #32 | [Neo PR #65](https://github.com/neostryder/neo-angband-mod-borg/pull/65), `5416c6118bd016030cdbf00ee6644b2c13337267` | Accepted via upstream69 at `2a7bf7a`; incorporated by owned34/`223f6d4`, normal full checks passed; source32 CLOSED | Mandos #146 (existing aggregate consumer) |
 | Spell content coverage, source #24 | [Neo PR #66](https://github.com/neostryder/neo-angband-mod-borg/pull/66), `e71bd21df75010486c10a8e1c6748c4b546d1f10` | Upstream66 open; owned loader adopted and normal full gate verified | [Mandos #149](https://github.com/diegoami/mandos/issues/149) |
 | Stall affliction visibility, source #15 | `1909262` plus accepted `6c7bc298278ba66d67eb71029c20ee0ac2b75c6e` ([Neo PR #51](https://github.com/neostryder/neo-angband-mod-borg/pull/51)) | Incorporated and verified; source15 CLOSED. Bounded current-runtime follow-up establishes no new failure | [Mandos #140](https://github.com/diegoami/mandos/issues/140), independently owned |
 | Play/rest content, source #25 | [Neo issue #468](https://github.com/neostryder/neo-angband/issues/468), [draft port PR #67](https://github.com/neostryder/neo-angband-mod-borg/pull/67), `1d1793258b887efae5c862a15a92683b8258c33c` | Upstream draft/unmerged; owned loaders incorporated and normal beta.1 + explicit noteSpot carry verified | [Mandos #150](https://github.com/diegoami/mandos/issues/150) |
@@ -41,8 +43,10 @@ and [full ordinary before/after receipts](runs/2026-11-06-beta1-notespot-carry/R
 The unpatched published beta.1 negative control remains a real four-failure
 baseline; it is not the current declared fork profile. Independent
 [exact-source compatibility](runs/2026-11-05-supported-engine/README.md) stays
-separate. Current normal/source full gates execute all 866 cases without skips.
-Upstream63–67 remain open; our own28/30 merges are not upstream acceptance.
+separate. At that earlier stage, normal/source full gates executed866 cases without skips.
+The resumed carry verification below supersedes that count and the earlier
+open63–65 status. Untouched66/67 rows are historical snapshots; canonical
+issues remain authoritative. Our own28/30 merges alone were not upstream acceptance.
 
 The owner-approved [source lifecycle audit](https://github.com/diegoami/angband-workspace/issues/11)
 keeps real scopes separate: source2 now names only never-delivered backup
@@ -71,12 +75,48 @@ run records remain unchanged; no gameplay fix or new upstream report follows.
 
 ## Owned proposal carry batch — 2026-11-06
 
-The next owned integration applies the existing clean63/64/65 proposals as
-separate attributed imports, while their linked source issues23/22/32 remain
-open for actual upstream resolution. [Immutable before/after integration
+Owned [PR34](https://github.com/diegoami/neo-angband-borg-mod-tracker/pull/34)
+merged at `223f6d4c0734429e5334f6a046c39a469dae0afa`, incorporating existing
+63/64/65 as separate attributed imports. The original carry preceded upstream
+acceptance; the resumed targeted reconciliation below closes23/22/32. [Immutable before/after integration
 receipts](runs/2026-11-06-owned-port-carries/README.md) record original/new
 commits and the complete896-case suite (866 baseline +16/9/5 unchanged new
 proposal cases). The beta.1 core/SDK/content selection and explicit noteSpot
 patch stay unchanged; source19ff compatibility exercises the same896 cases.
-This is an owned carry, not upstream acceptance or Mandos adoption. Backup
+The carry alone was not upstream acceptance or Mandos adoption. Backup
 source2 is an assigned bounded follow-up and is not claimed implemented here.
+
+
+## Resumed targeted reconciliation — 2026-11-06
+
+Upstream maintainer explicitly confirms63/64/65 landed through merged
+[upstream69](https://github.com/neostryder/neo-angband-mod-borg/pull/69), merge
+`7ed986b1b09970d8dbcc593b9c2a5198b2747788`, with authorship retained.
+Accepted corrections `b8de9750b5970cb73d141fbf088f78cc0d601ad6`,
+`5915f9bdd68982b9b28201d1d5dda99011ab75b4` and
+`2a7bf7a878995a6db59cccc8907fee2800975b4c` match the respective imported
+runtime paths. Upstream63–65 are CLOSED without individual merge records;
+69 is the actual delivery. Engine-board463–465 still OPEN does not override
+the maintainer's explicit accepted/landed statements.
+
+Already completed required hosted42147590447 passed896/896 with zero skips
+in ordinary beta.1+noteSpot and exact-source19ff profiles; actual post-merge
+42149096196 passed. Sources23/22/32 therefore CLOSED under RULES9. No new
+full suite is required for this unchanged-code bookkeeping. Mandos148/146
+adoption is independently owned and notified through the parent.
+
+Backup source2 now links [Neo469](https://github.com/neostryder/neo-angband/issues/469)
+and [public before-case](https://github.com/diegoami/neo-angband-borg-mod-tracker/tree/b769bc955060bbca81fce54c97d64b91934375f5/evidence/backup-weapon):
+2 expected parity failures/2 controls. Targeted current upstreama443788
+backup paths still match owned223f6d4. Weapon-backup value/selected handle,
+power contribution and HOME strict-improvement/retrieval are the proposed
+first faithful slice; no implementation, armour/tactical work, native-C
+execution or survival claim is included.
+
+[Validation35](https://github.com/diegoami/neo-angband-borg-mod-tracker/issues/35)
+separately tracks the preserved local seed42 timeouts, UNCLASSIFIED despite
+hosted green. Its bounded unchanged-base comparison and durable evidence
+are on that issue. Unfixed deadbfce also timed out (137.93s,exit1) under
+the same Node24/install/flags, so the failure is not introduced solely by
+63–65. [Exact baseline logs/exit/hashes](https://github.com/diegoami/neo-angband-borg-mod-tracker/tree/6748f5f/evidence/validation-seed42)
+are preserved; exact cause remains unclassified. No test cap/seed/assertion/timeout is weakened.
