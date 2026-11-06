@@ -116,3 +116,15 @@ and its exact blob is retained in commit2d916e6. Original raw SHA256:
 The adjacent manifest records the normalized copy's new hash. No scanner
 rule/allowlist is weakened and no published commit is rewritten. This is
 evidence hygiene, not another runtime correction.
+
+
+## Final corrected fixture authority
+
+[CORRECTED-FIXTURE.md](CORRECTED-FIXTURE.md) supersedes earlier fixture
+identity/legal-view claims while preserving every older outcome as history.
+Actual engine-known source7b8d618 passed corrected17/17 and full943/943,
+zero skips,113.70s; corrected identical before17 fails6/passes11 solely on
+missing producer/value/selection. Owned corrected17 passes on beta.1+carry.
+Runtime/plugin/pins/counts unchanged; fresh final owned924-profile gates
+remain mandatory. Public runner normalization and actual scanner pass are
+recorded above, with original rawjob/hash retained.

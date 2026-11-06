@@ -1,0 +1,130 @@
+✓ Lockfile passes supply-chain policies (verified 45m ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+Done in 41ms using pnpm v12.16.1
+
+ RUN  v4.1.11 /tmp/neo-borg-weapon-backup-before-20261106
+
+ ❯ src/store/weapon-backup.test.ts (17 tests | 6 failed) 995ms
+   × retrieves the registered known Nether backup through production HOME deps 153ms
+   × includes the carried backup value instead of treating it as dead weight 4ms
+   × selects a backup handle during normal notice, without wearing it 2ms
+   × does not require the ordinary loadout evaluator to value carried backups 1ms
+   × keeps HOME evaluation on the same explicit public knowledge profile as notice 2ms
+   × does not repeatedly attempt impossible full-pack retrieval with an existing backup 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/weapon-backup.test.ts > retrieves the registered known Nether backup through production HOME deps
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/weapon-backup.test.ts:127:51
+    125|  expect(isIdent(s.candidate,s.deps)).toBe(true);
+    126|  expect(s.ctx.world.self.trait[BI.RNTHR]).toBe(0);
+    127|  expect(borgThinkHomeBuySwapWeapon(s.ctx,s.deps)).toBe(true);
+       |                                                   ^
+    128|  expect(borgThinkShopBuy(s.ctx,7,s.deps)).toMatchObject({code:"shop-bu…
+    129|  expect(s.queries()).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  src/store/weapon-backup.test.ts > includes the carried backup value instead of treating it as dead weight
+AssertionError: expected 0 to be greater than 100000
+ ❯ src/store/weapon-backup.test.ts:133:69
+    131| it("includes the carried backup value instead of treating it as dead w…
+    132|  const baseline=scene({home:false}),carried=scene({carry:true,home:fal…
+    133|  expect(carried.ctx.world.self.power-baseline.ctx.world.self.power).to…
+       |                                                                     ^
+    134| });
+    135| it("selects a backup handle during normal notice, without wearing it",…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  src/store/weapon-backup.test.ts > selects a backup handle during normal notice, without wearing it
+AssertionError: expected undefined to be 2 // Object.is equality
+
+- Expected:
+2
+
++ Received:
+undefined
+
+ ❯ src/store/weapon-backup.test.ts:138:23
+    136|  const s=scene({carry:true});
+    137|  const swap=(getDerived(s.ctx.world) as {weaponSwap?:{handle:number|nu…
+    138|  expect(swap?.handle).toBe(2);
+       |                       ^
+    139|  expect(swap?.value).toBeGreaterThan(100000);
+    140|  expect(s.ctx.view.equipment()[0]?.artifactName).toBe("of Pain");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  src/store/weapon-backup.test.ts > does not require the ordinary loadout evaluator to value carried backups
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/weapon-backup.test.ts:144:51
+    142| it("does not require the ordinary loadout evaluator to value carried b…
+    143|  const s=scene({loadout:false});
+    144|  expect(borgThinkHomeBuySwapWeapon(s.ctx,s.deps)).toBe(true);
+       |                                                   ^
+    145| });
+    146| it("requires strict improvement over the existing backup, with no equa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  src/store/weapon-backup.test.ts > keeps HOME evaluation on the same explicit public knowledge profile as notice
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/weapon-backup.test.ts:193:51
+    191|  borgNotice(s.ctx,opts);borgPower(s.ctx,opts);
+    192|  // This control supplies missing curse knowledge, never a positive ev…
+    193|  expect(borgThinkHomeBuySwapWeapon(s.ctx,s.deps)).toBe(true);
+       |                                                   ^
+    194| });
+    195| it("does not mix an explicitly disabled notice profile with active def…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  src/store/weapon-backup.test.ts > does not repeatedly attempt impossible full-pack retrieval with an existing backup
+AssertionError: expected undefined to be 2 // Object.is equality
+
+- Expected:
+2
+
++ Received:
+undefined
+
+ ❯ src/store/weapon-backup.test.ts:203:53
+    201|  const s=scene({full:true,pack:[normalWeapon(2)]});
+    202|  expect(borgInventoryFull(s.ctx,s.deps)).toBe(true);
+    203|  expect(getDerived(s.ctx.world).weaponSwap?.handle).toBe(2);
+       |                                                     ^
+    204|  for(let attempt=0;attempt<3;attempt++) {
+    205|   expect(borgThinkHomeBuySwapWeapon(s.ctx,s.deps)).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 11 passed (17)
+   Start at  11:56:58
+   Duration  1.64s (transform 376ms, setup 150ms, import 417ms, tests 995ms, environment 0ms)
+
