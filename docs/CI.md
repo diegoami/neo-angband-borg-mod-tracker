@@ -51,3 +51,6 @@ real Git diffs/merge bases/renames and CLI outputs, unknown/data fixtures,
 trigger/concurrency negative controls, final-gate failure/cancellation paths,
 and missing/skipped full-suite rejection. They are explicit Node controls
 outside Vitest discovery, preserving the existing 866-case suite unchanged.
+
+This temporary validation branch exercises the documentation-only CI route
+against the implementation branch before integration; it is not a merge target.
