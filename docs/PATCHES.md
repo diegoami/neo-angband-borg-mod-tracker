@@ -18,7 +18,7 @@ changing a consumer patch, rebuild, lab, save or profile.
 | Spell content coverage, source #24 | [Neo PR #66](https://github.com/neostryder/neo-angband-mod-borg/pull/66), `e71bd21df75010486c10a8e1c6748c4b546d1f10` | Accepted via upstream69 at `f7699de`; exact owned loader incorporated/normal checks passed; source24 CLOSED | [Mandos #149](https://github.com/diegoami/mandos/issues/149) |
 | Stall affliction visibility, source #15 | `1909262` plus accepted `6c7bc298278ba66d67eb71029c20ee0ac2b75c6e` ([Neo PR #51](https://github.com/neostryder/neo-angband-mod-borg/pull/51)) | Incorporated and verified; source15 CLOSED. Bounded current-runtime follow-up establishes no new failure | [Mandos #140](https://github.com/diegoami/mandos/issues/140), independently owned |
 | Play/rest content, source #25 | [Neo issue #468](https://github.com/neostryder/neo-angband/issues/468), [port PR #67](https://github.com/neostryder/neo-angband-mod-borg/pull/67), `1d1793258b887efae5c862a15a92683b8258c33c` | Accepted via upstream70 at `440d8d9`; exact owned loaders incorporated and normal beta.1 + explicit noteSpot verified; source25 CLOSED | [Mandos #150](https://github.com/diegoami/mandos/issues/150) |
-| Play/rest engine boundary, source #25 links to engine #4 | Engine `noteSpot`: [engine source #4](https://github.com/diegoami/neo-angband-tracker/issues/4), [Neo PR #429](https://github.com/neostryder/neo-angband/pull/429), `2553cb496da46692fd64eade5f089acecdc5088e` | Upstream429 accepted at `394825525`; parent owns engine source4 reconciliation; owned beta.1 noteSpot declaration unchanged | [Mandos #126](https://github.com/diegoami/mandos/issues/126) |
+| Play/rest engine boundary, source #25 links to engine #4 | Engine `noteSpot`: [engine source #4](https://github.com/diegoami/neo-angband-tracker/issues/4), [Neo PR #429](https://github.com/neostryder/neo-angband/pull/429), `2553cb496da46692fd64eade5f089acecdc5088e` | Upstream429 accepted (maintainer cites non-public `394825525`); accessible `0e24e79c47adb9fd14eacdf87ba1f9be269759fa` matches owned hook; engine source4 CLOSED; owned beta.1 noteSpot declaration unchanged | [Mandos #126](https://github.com/diegoami/mandos/issues/126) |
 
 The 2026-11-05 reconciliation and exact verification receipts are in
 [the run record](runs/2026-11-05-port-reconciliation/README.md). Earlier scenario
@@ -132,3 +132,9 @@ with enginebeta.3; that does not silently upgrade this fork's beta.1+explicit
 carry profile. Parent owns engine source4 resolution and Mandos owns149/150.
 Engine429's original acceptance initially left428 open; live428 is now
 CLOSED/completed, and its closure evidence belongs to the engine parent pass.
+
+Parent engine reconciliation closes source4 after upstream428 completed and429
+accepted. The maintainer-cited394825525 is not publicly resolvable; accessible
+`0e24e79c47adb9fd14eacdf87ba1f9be269759fa` supplies source equivalence against
+owned19ff25ea/5928146b (hook differs only in comment). This does not remove
+the owned beta.1 carry or claim an owned dependency upgrade.
