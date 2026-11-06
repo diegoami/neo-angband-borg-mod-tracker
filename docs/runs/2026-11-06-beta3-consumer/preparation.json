@@ -1,0 +1,39 @@
+{
+  "schema": "neo-borg/beta3-consumer-preparation@1",
+  "task": "https://github.com/diegoami/neo-angband-borg-mod-tracker/issues/39",
+  "base": "5d18be3aa4648e1557aaaf728a7868e639eb365f",
+  "profile": "matching-published-beta3-unpatched",
+  "release": "97ceec2925e6715ba725624a61866ab93a196a12",
+  "versions": {
+    "core": "1.23.0-beta.3",
+    "mod-sdk": "1.23.0-beta.3",
+    "content": "1.23.0-beta.3"
+  },
+  "sdkResolution": {
+    "direct": "1.23.0-beta.3",
+    "coreTransitive": "1.23.0-beta.3",
+    "sameRealpath": true
+  },
+  "retiredApplication": {
+    "package": "@rpgm-tools/neo-angband-core@1.23.0-beta.1",
+    "patchSHA256": "87d2625eb64471e652a60c895d58dc56152f069007b8670f1b2e096bb99a79dd",
+    "historicalFilePreserved": true
+  },
+  "focused": {
+    "packageControls": 4,
+    "vitestCases": 42,
+    "vitestFiles": 3,
+    "skipped": 0,
+    "exit": 0,
+    "durationSeconds": 119.48
+  },
+  "typecheck": "passed",
+  "grants": "passed",
+  "pluginBuildAndCurrency": "passed",
+  "pluginSHA256": "baa1aa19eafa1aa0bfdea67309e46c720ae9093b5e8219142c8936f2095b7eaa",
+  "pluginIdenticalToBase": true,
+  "requiredOrdinaryFull": "not-run-held-for-final-producer-GO",
+  "requiredSourceFull": "not-run-held-for-final-producer-pin",
+  "sourceFilesChanged": false,
+  "labDeployment": false
+}

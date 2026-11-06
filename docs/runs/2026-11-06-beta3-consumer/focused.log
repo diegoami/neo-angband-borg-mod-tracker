@@ -1,0 +1,31 @@
+{
+  "package": "1.23.0-beta.3",
+  "checks": [
+    {
+      "name": "seen change updates remembered terrain immediately",
+      "pass": true
+    },
+    {
+      "name": "unseen remote change preserves prior memory",
+      "pass": true
+    },
+    {
+      "name": "player square updates without seen flag",
+      "pass": true
+    },
+    {
+      "name": "generation without live hook does not memorize",
+      "pass": true
+    }
+  ]
+}
+$ vitest run src/play.test.ts src/rest-and-store-verification.test.ts src/item/magic-play.test.ts
+
+ RUN  v4.1.11 <task-tree>
+
+
+ Test Files  3 passed (3)
+      Tests  42 passed (42)
+   Start at  18:59:33
+   Duration  119.48s (transform 1.11s, setup 475ms, import 1.41s, tests 140.30s, environment 0ms)
+

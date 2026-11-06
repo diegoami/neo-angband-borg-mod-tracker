@@ -133,7 +133,7 @@ carry profile. Parent owns engine source4 resolution and Mandos owns149/150.
 Engine429's original acceptance initially left428 open; live428 is now
 CLOSED/completed, and its closure evidence belongs to the engine parent pass.
 
-Parent engine reconciliation closes source4 after upstream428 completed and429
+Parent engine reconciliation closes source4 after upstream428 completed and 429
 accepted. The maintainer-cited394825525 is not publicly resolvable; accessible
 `0e24e79c47adb9fd14eacdf87ba1f9be269759fa` supplies source equivalence against
 owned19ff25ea/5928146b (hook differs only in comment). This does not remove
@@ -151,3 +151,20 @@ Armour/tactical swaps remain open; named-curse power is not publicly produced
 and is conservatively excluded by default. HOME retrieval requires a real
 free slot, including when replacing an existing backup; that host-capacity
 limit is not evidence of a native C defect.
+
+## Beta.3 package replacement — task39
+
+The new declared profile selects matching published Core/SDK/content
+1.23.0-beta.3 from release 97ceec2925e6715ba725624a61866ab93a196a12.
+The sole beta.1 noteSpot patchedDependency is removed from the candidate
+workspace/lock only after its four unchanged installed-package controls and
+all 42 focused play/rest/spell cases pass against unpatched beta.3. Historical
+patch bytes and every earlier receipt remain unchanged. No source2 gameplay
+change or independent C correction is imported.
+
+[Task39 receipts](runs/2026-11-06-beta3-consumer/README.md) distinguish the focused
+replacement proof from the required ordinary and exact-source full gates.
+Source25/engine4 remain closed for their accepted/imported original scopes;
+upstream72/source2 and timing35 remain open. A beta.3 version does not close
+input-flush432 or seed433, and this port did not carry those package units.
+Mandos owns those independently. No consumer or lab update is implied.
