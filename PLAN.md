@@ -1,12 +1,18 @@
 # Port-repair session plan
 
-1. Read the checkpoint and this fork's current issues. Inspect upstream Neo
-   mod/engine boards and source movement before another fix. Reconcile actual
-   code, package/build consumers, applied backports and issue state.
-2. Prioritize reproduced failures and the transferred play/rest coverage
-   investigation (original Mandos123). Its published beta.1 setup executes
-   ten cases with explicit content: six pass, four repeated-open failures.
-   Compare existing engine fixes/stall handling before inventing another bug.
+1. Read checkpoint26, current canonical issues and open PR/task claims before
+   selecting work. Reconcile source/consumer state first. Broad upstream review
+   is a weekly manual batch or owner request; use targeted reads for active
+   blockers, duplicates and closure evidence. Do not run an unaudited watcher
+   or routinely poll/fetch borg-rs; it reports directly on the C source board.
+2. Keep the declared verified package/backport baseline. Source24/25 content
+   discovery and the noteSpot delivery are resolved history, not a fresh pending
+   queue; current issues/checkpoint retain authority. Source2's weapon-value/HOME
+   leaf is integrated, while actual armour/tactical and named public-API limits
+   remain separate. Armour-value/HOME is a possible bounded next parity slice,
+   queued until parent/owner selects it. Timing35 needs a repeated normal failure
+   and a specifically authorised slow-case diagnosis, not reflex full reruns or
+   a timeout increase. Current scoped assignments come from the checkpoint.
 3. For a port defect, compare C4.2.6/current C and the TypeScript implementation.
    Restore a proved omission using available declared APIs. A C defect copied
    faithfully belongs in the engine/C fork; do not silently change parity
