@@ -1,0 +1,27 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-integrate-port-20261106
+
+ ❯ src/play.test.ts (6 tests | 1 failed | 5 skipped) 163559ms
+     × keeps playing for 1500 decisions (seed 42) 163555ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 42)
+Error: Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/play.test.ts:335:5
+    333|    * that showed on all four. */
+    334|   for (const seed of [1, 7, 42, 99]) {
+    335|     when(`keeps playing for 1500 decisions (seed ${String(seed)})`, ()…
+       |     ^
+    336|       const r = playRun(pack!, seed, 1500);
+    337|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 skipped (6)
+   Start at  03:26:25
+   Duration  167.21s (transform 1.78s, setup 991ms, import 2.38s, tests 163.56s, environment 0ms)
+

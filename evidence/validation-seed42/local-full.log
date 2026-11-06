@@ -1,0 +1,54 @@
+$ pnpm typecheck && pnpm check:engine-carry && pnpm test && pnpm check
+$ tsc --noEmit
+$ node tools/check-notespot-package.mjs
+{
+  "package": "1.23.0-beta.1",
+  "checks": [
+    {
+      "name": "seen change updates remembered terrain immediately",
+      "pass": true
+    },
+    {
+      "name": "unseen remote change preserves prior memory",
+      "pass": true
+    },
+    {
+      "name": "player square updates without seen flag",
+      "pass": true
+    },
+    {
+      "name": "generation without live hook does not memorize",
+      "pass": true
+    }
+  ]
+}
+$ vitest run
+
+ RUN  v4.1.11 /tmp/neo-borg-integrate-port-20261106
+
+ ❯ src/play.test.ts (6 tests | 1 failed) 288563ms
+     × keeps playing for 1500 decisions (seed 42) 123902ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/play.test.ts > the Borg plays a real game > keeps playing for 1500 decisions (seed 42)
+Error: Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/play.test.ts:335:5
+    333|    * that showed on all four. */
+    334|   for (const seed of [1, 7, 42, 99]) {
+    335|     when(`keeps playing for 1500 decisions (seed ${String(seed)})`, ()…
+       |     ^
+    336|       const r = playRun(pack!, seed, 1500);
+    337|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 46 passed (47)
+      Tests  1 failed | 895 passed (896)
+   Start at  03:00:29
+   Duration  295.89s (transform 60.27s, setup 58.77s, import 106.84s, tests 410.34s, environment 22ms)
+
+[ELIFECYCLE] Test failed. See above for more details.
+[ELIFECYCLE] Command failed with exit code 1.
