@@ -1,0 +1,559 @@
+﻿2026-11-06T10:37:43.3690826Z Current runner version: '2.338.2'
+2026-11-06T10:37:43.3711838Z ##[group]Runner Image Provisioner
+2026-11-06T10:37:43.3712549Z Hosted Compute Agent
+2026-11-06T10:37:43.3713057Z Version: 20261028.624
+2026-11-06T10:37:43.3713750Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+2026-11-06T10:37:43.3714364Z Build Date: 2026-10-28T21:51:42Z
+2026-11-06T10:37:43.3714982Z Worker ID: {a0df3bb9-e84e-42d4-9a5e-64998fd4fa84}
+2026-11-06T10:37:43.3715584Z Region: westus3
+2026-11-06T10:37:43.3716040Z Cloud: Azure
+2026-11-06T10:37:43.3716766Z ##[endgroup]
+2026-11-06T10:37:43.3718132Z ##[group]Operating System
+2026-11-06T10:37:43.3718705Z Ubuntu
+2026-11-06T10:37:43.3719171Z 24.04.5
+2026-11-06T10:37:43.3719616Z LTS
+2026-11-06T10:37:43.3720122Z ##[endgroup]
+2026-11-06T10:37:43.3720639Z ##[group]Runner Image
+2026-11-06T10:37:43.3721165Z Image: ubuntu-24.04
+2026-11-06T10:37:43.3721672Z Version: 20261101.360.1
+2026-11-06T10:37:43.3722751Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261101.360/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-06T10:37:43.3724033Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261101.360
+2026-11-06T10:37:43.3724848Z ##[endgroup]
+2026-11-06T10:37:43.3725834Z ##[group]GITHUB_TOKEN Permissions
+2026-11-06T10:37:43.3727937Z Contents: read
+2026-11-06T10:37:43.3728506Z Metadata: read
+2026-11-06T10:37:43.3728989Z Packages: read
+2026-11-06T10:37:43.3729497Z ##[endgroup]
+2026-11-06T10:37:43.3731162Z Secret source: Actions
+2026-11-06T10:37:43.3732075Z Cache mode: write
+2026-11-06T10:37:43.3732915Z Prepare workflow directory
+2026-11-06T10:37:43.3992727Z Prepare all required actions
+2026-11-06T10:37:43.4032547Z Getting action download info
+2026-11-06T10:37:43.7097266Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-06T10:37:43.8603448Z Download action repository 'pnpm/action-setup@v6' (SHA:73e46992e05b19abd31f2f3c20e0e7370d762115)
+2026-11-06T10:37:44.3765982Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+2026-11-06T10:37:44.5681969Z Uses: diegoami/neo-angband-borg-mod-tracker/.github/workflows/notespot-source.yml@refs/pull/37/merge (b6da5201611712e5674ec2a8aa034edd3e907d70)
+2026-11-06T10:37:44.5685681Z Complete job name: exact-source / exact-source
+2026-11-06T10:37:44.6387522Z ##[group]Run actions/checkout@v7
+2026-11-06T10:37:44.6388229Z with:
+2026-11-06T10:37:44.6388687Z   repository: diegoami/neo-angband-borg-mod-tracker
+2026-11-06T10:37:44.6392032Z   token: ***
+2026-11-06T10:37:44.6392423Z   ssh-strict: true
+2026-11-06T10:37:44.6392822Z   ssh-user: git
+2026-11-06T10:37:44.6393216Z   persist-credentials: true
+2026-11-06T10:37:44.6393655Z   clean: true
+2026-11-06T10:37:44.6394051Z   sparse-checkout-cone-mode: true
+2026-11-06T10:37:44.6394516Z   fetch-depth: 1
+2026-11-06T10:37:44.6394894Z   fetch-tags: false
+2026-11-06T10:37:44.6395293Z   show-progress: true
+2026-11-06T10:37:44.6395685Z   lfs: false
+2026-11-06T10:37:44.6396054Z   submodules: false
+2026-11-06T10:37:44.6396620Z   set-safe-directory: true
+2026-11-06T10:37:44.6397062Z   allow-unsafe-pr-checkout: false
+2026-11-06T10:37:44.6397679Z ##[endgroup]
+2026-11-06T10:37:44.9019731Z Syncing repository: diegoami/neo-angband-borg-mod-tracker
+2026-11-06T10:37:44.9021792Z ##[group]Getting Git version info
+2026-11-06T10:37:44.9022730Z Working directory is '/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker'
+2026-11-06T10:37:44.9023817Z [command]/usr/bin/git version
+2026-11-06T10:37:44.9098336Z git version 2.56.0
+2026-11-06T10:37:44.9114839Z ##[endgroup]
+2026-11-06T10:37:44.9123552Z Temporarily overriding HOME='/home/runner/work/_temp/dc7f353f-c317-4264-b7f8-7838ecffed95' before making global git config changes
+2026-11-06T10:37:44.9125576Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-06T10:37:44.9130148Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker
+2026-11-06T10:37:44.9179124Z Deleting the contents of '/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker'
+2026-11-06T10:37:44.9181597Z ##[group]Determining repository object format
+2026-11-06T10:37:44.9182826Z ##[endgroup]
+2026-11-06T10:37:44.9183506Z ##[group]Initializing the repository
+2026-11-06T10:37:44.9187211Z [command]/usr/bin/git init /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker
+2026-11-06T10:37:44.9299564Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-06T10:37:44.9300711Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-06T10:37:44.9301530Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-06T10:37:44.9302183Z hint: call:
+2026-11-06T10:37:44.9302545Z hint:
+2026-11-06T10:37:44.9303026Z hint: 	git config --global init.defaultBranch <name>
+2026-11-06T10:37:44.9303575Z hint:
+2026-11-06T10:37:44.9304275Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-06T10:37:44.9305141Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-06T10:37:44.9305797Z hint:
+2026-11-06T10:37:44.9306434Z hint: 	git branch -m <name>
+2026-11-06T10:37:44.9306991Z hint:
+2026-11-06T10:37:44.9307562Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-06T10:37:44.9311711Z Initialized empty Git repository in /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/
+2026-11-06T10:37:44.9321717Z [command]/usr/bin/git remote add origin https://github.com/diegoami/neo-angband-borg-mod-tracker
+2026-11-06T10:37:44.9367728Z ##[endgroup]
+2026-11-06T10:37:44.9368420Z ##[group]Disabling automatic garbage collection
+2026-11-06T10:37:44.9371440Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-06T10:37:44.9401002Z ##[endgroup]
+2026-11-06T10:37:44.9401988Z ##[group]Setting up auth
+2026-11-06T10:37:44.9402449Z Removing SSH command configuration
+2026-11-06T10:37:44.9407507Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-06T10:37:44.9442141Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-06T10:37:44.9862397Z Removing HTTP extra header
+2026-11-06T10:37:44.9867104Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-06T10:37:44.9905648Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-06T10:37:45.0108363Z Removing includeIf entries pointing to credentials config files
+2026-11-06T10:37:45.0111419Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-06T10:37:45.0148037Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-06T10:37:45.0353091Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-06T10:37:45.0393495Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path /home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:37:45.0470667Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:37:45.0473257Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:37:45.0514370Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:37:45.0562220Z ##[endgroup]
+2026-11-06T10:37:45.0562843Z ##[group]Fetching the repository
+2026-11-06T10:37:45.0568630Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +b6da5201611712e5674ec2a8aa034edd3e907d70:refs/remotes/pull/37/merge
+2026-11-06T10:37:45.8276119Z From https://github.com/diegoami/neo-angband-borg-mod-tracker
+2026-11-06T10:37:45.8277927Z  * [new ref]         b6da5201611712e5674ec2a8aa034edd3e907d70 -> pull/37/merge
+2026-11-06T10:37:45.8281478Z ##[endgroup]
+2026-11-06T10:37:45.8282588Z ##[group]Determining the checkout info
+2026-11-06T10:37:45.8283720Z ##[endgroup]
+2026-11-06T10:37:45.8286672Z [command]/usr/bin/git sparse-checkout disable
+2026-11-06T10:37:45.8343422Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-06T10:37:45.8380766Z ##[group]Checking out the ref
+2026-11-06T10:37:45.8384076Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/37/merge
+2026-11-06T10:37:45.8602834Z Note: switching to 'refs/remotes/pull/37/merge'.
+2026-11-06T10:37:45.8603785Z 
+2026-11-06T10:37:45.8604491Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-06T10:37:45.8606043Z changes and commit them, and you can discard any commits you make in this
+2026-11-06T10:37:45.8608256Z state without impacting any branches by switching back to a branch.
+2026-11-06T10:37:45.8609830Z 
+2026-11-06T10:37:45.8610884Z If you want to create a new branch to retain commits you create, you may
+2026-11-06T10:37:45.8613423Z do so (now or later) by using -c with the switch command. Example:
+2026-11-06T10:37:45.8614918Z 
+2026-11-06T10:37:45.8615569Z   git switch -c <new-branch-name>
+2026-11-06T10:37:45.8616812Z 
+2026-11-06T10:37:45.8617488Z Or undo this operation with:
+2026-11-06T10:37:45.8618486Z 
+2026-11-06T10:37:45.8619106Z   git switch -
+2026-11-06T10:37:45.8619778Z 
+2026-11-06T10:37:45.8620859Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-06T10:37:45.8622453Z 
+2026-11-06T10:37:45.8624629Z HEAD is now at b6da520 Merge 59823a7796b4bdaa80683c8d0640bf27277147e9 into b83c5e0a1fad497c912926cc9f30bbe5ff2d2198
+2026-11-06T10:37:45.8630188Z ##[endgroup]
+2026-11-06T10:37:45.8664251Z [command]/usr/bin/git log -1 --format=%H
+2026-11-06T10:37:45.8695757Z b6da5201611712e5674ec2a8aa034edd3e907d70
+2026-11-06T10:37:45.9044961Z ##[group]Run actions/checkout@v7
+2026-11-06T10:37:45.9045927Z with:
+2026-11-06T10:37:45.9046953Z   repository: diegoami/neo-angband-tracker
+2026-11-06T10:37:45.9048104Z   ref: 19ff25eac8997e8feb6b5e62eefa7ffe4d134631
+2026-11-06T10:37:45.9049215Z   path: engine-source
+2026-11-06T10:37:45.9057248Z   token: ***
+2026-11-06T10:37:45.9058028Z   ssh-strict: true
+2026-11-06T10:37:45.9058835Z   ssh-user: git
+2026-11-06T10:37:45.9059641Z   persist-credentials: true
+2026-11-06T10:37:45.9060564Z   clean: true
+2026-11-06T10:37:45.9061388Z   sparse-checkout-cone-mode: true
+2026-11-06T10:37:45.9062362Z   fetch-depth: 1
+2026-11-06T10:37:45.9063149Z   fetch-tags: false
+2026-11-06T10:37:45.9063967Z   show-progress: true
+2026-11-06T10:37:45.9064780Z   lfs: false
+2026-11-06T10:37:45.9065540Z   submodules: false
+2026-11-06T10:37:45.9066447Z   set-safe-directory: true
+2026-11-06T10:37:45.9067390Z   allow-unsafe-pr-checkout: false
+2026-11-06T10:37:45.9068349Z ##[endgroup]
+2026-11-06T10:37:45.9770018Z Syncing repository: diegoami/neo-angband-tracker
+2026-11-06T10:37:45.9772716Z ##[group]Getting Git version info
+2026-11-06T10:37:45.9782285Z Working directory is '/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source'
+2026-11-06T10:37:45.9801287Z [command]/usr/bin/git version
+2026-11-06T10:37:45.9840212Z git version 2.56.0
+2026-11-06T10:37:45.9889736Z ##[endgroup]
+2026-11-06T10:37:45.9897781Z Temporarily overriding HOME='/home/runner/work/_temp/aa7ca53a-472a-426a-a727-42543e9b2002' before making global git config changes
+2026-11-06T10:37:45.9901344Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-06T10:37:45.9904963Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source
+2026-11-06T10:37:45.9933271Z ##[group]Determining repository object format
+2026-11-06T10:37:45.9935330Z ##[endgroup]
+2026-11-06T10:37:45.9936947Z ##[group]Initializing the repository
+2026-11-06T10:37:45.9939477Z [command]/usr/bin/git init /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source
+2026-11-06T10:37:45.9980747Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-06T10:37:45.9983296Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-06T10:37:45.9985477Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-06T10:37:45.9987482Z hint: call:
+2026-11-06T10:37:45.9988667Z hint:
+2026-11-06T10:37:45.9989775Z hint: 	git config --global init.defaultBranch <name>
+2026-11-06T10:37:45.9990899Z hint:
+2026-11-06T10:37:45.9991955Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-06T10:37:45.9993637Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-06T10:37:45.9994979Z hint:
+2026-11-06T10:37:45.9995770Z hint: 	git branch -m <name>
+2026-11-06T10:37:45.9997212Z hint:
+2026-11-06T10:37:45.9998838Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-06T10:37:46.0002494Z Initialized empty Git repository in /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/
+2026-11-06T10:37:46.0008067Z [command]/usr/bin/git remote add origin https://github.com/diegoami/neo-angband-tracker
+2026-11-06T10:37:46.0026605Z ##[endgroup]
+2026-11-06T10:37:46.0028150Z ##[group]Disabling automatic garbage collection
+2026-11-06T10:37:46.0029758Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-06T10:37:46.0061806Z ##[endgroup]
+2026-11-06T10:37:46.0063068Z ##[group]Setting up auth
+2026-11-06T10:37:46.0064006Z Removing SSH command configuration
+2026-11-06T10:37:46.0067241Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-06T10:37:46.0108404Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-06T10:37:46.0327844Z Removing HTTP extra header
+2026-11-06T10:37:46.0333040Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-06T10:37:46.0371345Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-06T10:37:46.0590233Z Removing includeIf entries pointing to credentials config files
+2026-11-06T10:37:46.0592681Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-06T10:37:46.0650246Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-06T10:37:46.0882711Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-06T10:37:46.0928668Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path /home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:37:46.0968101Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:37:46.1007772Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/engine-source/.git.path /github/runner_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:37:46.1045785Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/engine-source/.git/worktrees/*.path /github/runner_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:37:46.1080731Z ##[endgroup]
+2026-11-06T10:37:46.1081984Z ##[group]Fetching the repository
+2026-11-06T10:37:46.1086023Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 19ff25eac8997e8feb6b5e62eefa7ffe4d134631
+2026-11-06T10:37:48.4918145Z From https://github.com/diegoami/neo-angband-tracker
+2026-11-06T10:37:48.4918982Z  * branch            19ff25eac8997e8feb6b5e62eefa7ffe4d134631 -> FETCH_HEAD
+2026-11-06T10:37:48.4926998Z [command]/usr/bin/git rev-parse --verify --quiet 19ff25eac8997e8feb6b5e62eefa7ffe4d134631^{object}
+2026-11-06T10:37:48.4963963Z 19ff25eac8997e8feb6b5e62eefa7ffe4d134631
+2026-11-06T10:37:48.4972993Z ##[endgroup]
+2026-11-06T10:37:48.4973542Z ##[group]Determining the checkout info
+2026-11-06T10:37:48.4974070Z ##[endgroup]
+2026-11-06T10:37:48.4974444Z [command]/usr/bin/git sparse-checkout disable
+2026-11-06T10:37:48.5022322Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-06T10:37:48.5064713Z ##[group]Checking out the ref
+2026-11-06T10:37:48.5065175Z [command]/usr/bin/git checkout --progress --force 19ff25eac8997e8feb6b5e62eefa7ffe4d134631
+2026-11-06T10:37:48.8533812Z Note: switching to '19ff25eac8997e8feb6b5e62eefa7ffe4d134631'.
+2026-11-06T10:37:48.8534246Z 
+2026-11-06T10:37:48.8534513Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-06T10:37:48.8535122Z changes and commit them, and you can discard any commits you make in this
+2026-11-06T10:37:48.8535707Z state without impacting any branches by switching back to a branch.
+2026-11-06T10:37:48.8536069Z 
+2026-11-06T10:37:48.8536504Z If you want to create a new branch to retain commits you create, you may
+2026-11-06T10:37:48.8537067Z do so (now or later) by using -c with the switch command. Example:
+2026-11-06T10:37:48.8537386Z 
+2026-11-06T10:37:48.8537529Z   git switch -c <new-branch-name>
+2026-11-06T10:37:48.8537781Z 
+2026-11-06T10:37:48.8537933Z Or undo this operation with:
+2026-11-06T10:37:48.8538137Z 
+2026-11-06T10:37:48.8538250Z   git switch -
+2026-11-06T10:37:48.8538718Z 
+2026-11-06T10:37:48.8539012Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-06T10:37:48.8539406Z 
+2026-11-06T10:37:48.8539658Z HEAD is now at 19ff25e Merge PR #200: keep live setFeat terrain memory current
+2026-11-06T10:37:48.8549249Z ##[endgroup]
+2026-11-06T10:37:48.8603734Z [command]/usr/bin/git log -1 --format=%H
+2026-11-06T10:37:48.8642684Z 19ff25eac8997e8feb6b5e62eefa7ffe4d134631
+2026-11-06T10:37:48.8821067Z ##[group]Run pnpm/action-setup@v6
+2026-11-06T10:37:48.8821317Z with:
+2026-11-06T10:37:48.8821484Z   dest: ~/setup-pnpm
+2026-11-06T10:37:48.8821668Z   run_install: null
+2026-11-06T10:37:48.8821836Z   cache: false
+2026-11-06T10:37:48.8822027Z   cache_dependency_path: pnpm-lock.yaml
+2026-11-06T10:37:48.8822261Z   package_json_file: package.json
+2026-11-06T10:37:48.8822464Z   standalone: false
+2026-11-06T10:37:48.8822635Z ##[endgroup]
+2026-11-06T10:37:49.0026113Z ##[group]Running self-installer...
+2026-11-06T10:37:51.2370954Z 
+2026-11-06T10:37:51.2371488Z added 2 packages, and audited 3 packages in 2s
+2026-11-06T10:37:51.2376791Z 
+2026-11-06T10:37:51.2376979Z found 0 vulnerabilities
+2026-11-06T10:37:51.2844723Z Checking for updates...
+2026-11-06T10:37:51.6224769Z Switching pnpm from v12.17.0 to v12.16.1...
+2026-11-06T10:37:52.3858062Z Downloading @pnpm/exe.linux-x64@12.16.1: 0.00 B/25.62 MB
+2026-11-06T10:37:52.4675615Z Packages are copied from the content-addressable store to the virtual store.
+2026-11-06T10:37:52.4676587Z   Content-addressable store is at: /home/runner/setup-pnpm/node_modules/.bin/store/v11
+2026-11-06T10:37:52.4698390Z   Virtual store is at:             node_modules/.bin/global/v11/8e8-18e56e7449360586-0/node_modules/.pnpm
+2026-11-06T10:37:52.8347000Z .../global/v11/8e8-18e56e7449360586-0    | Progress: resolved 2, reused 0, downloaded 2, added 2, done
+2026-11-06T10:37:53.0818639Z Successfully updated pnpm to v12.16.1
+2026-11-06T10:37:53.0893665Z ##[endgroup]
+2026-11-06T10:37:53.0893959Z Installation Completed!
+2026-11-06T10:37:53.1047789Z ##[group]Run actions/setup-node@v7
+2026-11-06T10:37:53.1048014Z with:
+2026-11-06T10:37:53.1048181Z   node-version: 26.13.0
+2026-11-06T10:37:53.1048369Z   check-latest: false
+2026-11-06T10:37:53.1050218Z   token: ***
+2026-11-06T10:37:53.1050414Z   package-manager-cache: true
+2026-11-06T10:37:53.1050627Z env:
+2026-11-06T10:37:53.1050838Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-11-06T10:37:53.1051090Z ##[endgroup]
+2026-11-06T10:37:53.2061667Z Attempting to download 26.13.0...
+2026-11-06T10:37:54.1915533Z Acquiring 26.13.0 - x64 from https://github.com/actions/node-versions/releases/download/26.13.0-41378513395/node-26.13.0-linux-x64.tar.gz
+2026-11-06T10:37:54.6606017Z Extracting ...
+2026-11-06T10:37:54.6718876Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/73fced90-e4ea-4ce4-a4f6-62eab8509fbe -f /home/runner/work/_temp/5edb90a5-af15-428c-aad9-0847d902a30e
+2026-11-06T10:37:55.8600024Z Adding to the cache ...
+2026-11-06T10:37:57.8329821Z ##[group]Environment details
+2026-11-06T10:37:58.0151352Z node: v26.13.0
+2026-11-06T10:37:58.0151601Z npm: 11.20.0
+2026-11-06T10:37:58.0151775Z yarn: 1.22.22
+2026-11-06T10:37:58.0152201Z ##[endgroup]
+2026-11-06T10:37:58.0321823Z ##[group]Run npm install --global npm@11.20.0
+2026-11-06T10:37:58.0322147Z [36;1mnpm install --global npm@11.20.0[0m
+2026-11-06T10:37:58.0343873Z shell: /usr/bin/bash -e {0}
+2026-11-06T10:37:58.0344088Z env:
+2026-11-06T10:37:58.0344306Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-11-06T10:37:58.0344579Z ##[endgroup]
+2026-11-06T10:38:01.0088515Z 
+2026-11-06T10:38:01.0093733Z changed 10 packages in 3s
+2026-11-06T10:38:01.0494468Z ##[group]Run bash tools/build-notespot-artifacts.sh engine-source "$RUNNER_TEMP/engine-artifacts"
+2026-11-06T10:38:01.0495059Z [36;1mbash tools/build-notespot-artifacts.sh engine-source "$RUNNER_TEMP/engine-artifacts"[0m
+2026-11-06T10:38:01.0514047Z shell: /usr/bin/bash -e {0}
+2026-11-06T10:38:01.0514250Z env:
+2026-11-06T10:38:01.0514467Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-11-06T10:38:01.0514727Z ##[endgroup]
+2026-11-06T10:38:02.4449588Z Scope: all 9 workspace projects
+2026-11-06T10:38:02.4799067Z ? Verifying lockfile against supply-chain policies (815 entries)...
+2026-11-06T10:38:02.6283316Z Packages are hard linked from the content-addressable store to the virtual store.
+2026-11-06T10:38:02.6285777Z   Content-addressable store is at: /home/runner/work/_temp/engine-artifacts/store/v11
+2026-11-06T10:38:02.6286934Z   Virtual store is at:             node_modules/.pnpm
+2026-11-06T10:38:03.2307882Z Downloading @rolldown/binding-linux-x64-gnu@1.2.1: 0.00 B/7.93 MB
+2026-11-06T10:38:03.2447091Z Downloading electron-winstaller@5.4.0: 0.00 B/9.14 MB
+2026-11-06T10:38:04.2502785Z Progress: resolved 738, reused 0, downloaded 602, added 576
+2026-11-06T10:38:04.6413104Z ✓ Lockfile passes supply-chain policies (815 entries in 2.2s)
+2026-11-06T10:38:04.6413808Z Lockfile is up to date, resolution step is skipped
+2026-11-06T10:38:04.7132195Z Packages: +738
+2026-11-06T10:38:04.7132717Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-11-06T10:38:04.7634156Z Progress: resolved 738, reused 0, downloaded 738, added 738, done
+2026-11-06T10:38:05.2332013Z 
+2026-11-06T10:38:05.2332786Z devDependencies:
+2026-11-06T10:38:05.2333158Z + @eslint/js 10.0.1
+2026-11-06T10:38:05.2333481Z + @playwright/test 1.63.0
+2026-11-06T10:38:05.2333840Z + @types/node 24.13.3
+2026-11-06T10:38:05.2334374Z + eslint 10.8.0
+2026-11-06T10:38:05.2334633Z + jsdom 30.1.1
+2026-11-06T10:38:05.2335057Z + playwright 1.63.0
+2026-11-06T10:38:05.2335349Z + typescript 5.9.3
+2026-11-06T10:38:05.2335676Z + typescript-eslint 8.65.0
+2026-11-06T10:38:05.2335975Z + vitest 4.1.11
+2026-11-06T10:38:05.2336246Z 
+2026-11-06T10:38:05.2683573Z Done in 2.8s using pnpm v12.3.4
+2026-11-06T10:38:05.3403938Z synced 20 SDK authoring documents to docs/
+2026-11-06T10:38:20.1857890Z core: dependencies.@rpgm-tools/neo-angband-mod-sdk workspace:* -> 1.23.0-beta.2
+2026-11-06T10:38:20.4080518Z 
+2026-11-06T10:38:20.4081370Z > @rpgm-tools/neo-angband-mod-sdk@1.23.0-beta.2 prepack
+2026-11-06T10:38:20.4081919Z > node scripts/sync-docs.mjs
+2026-11-06T10:38:20.4082133Z 
+2026-11-06T10:38:20.4433532Z synced 20 SDK authoring documents to docs/
+2026-11-06T10:38:23.9115982Z ##[group]Run node tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"
+2026-11-06T10:38:23.9116728Z [36;1mnode tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"[0m
+2026-11-06T10:38:23.9134591Z shell: /usr/bin/bash -e {0}
+2026-11-06T10:38:23.9134795Z env:
+2026-11-06T10:38:23.9135011Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-11-06T10:38:23.9135277Z ##[endgroup]
+2026-11-06T10:38:23.9810458Z Preserved verification tree/logs: /tmp/neo-borg-notespot-verify-ISNZqJ
+2026-11-06T10:38:24.0174433Z ? Verifying lockfile against supply-chain policies (103 entries)...
+2026-11-06T10:38:24.2334277Z Packages are hard linked from the content-addressable store to the virtual store.
+2026-11-06T10:38:24.2348103Z   Content-addressable store is at: /tmp/neo-borg-notespot-verify-ISNZqJ/store/v11
+2026-11-06T10:38:24.2349615Z   Virtual store is at:             node_modules/.pnpm
+2026-11-06T10:38:24.2500933Z Downloading @rolldown/binding-linux-x64-gnu@1.2.6: 0.00 B/7.96 MB
+2026-11-06T10:38:24.8536053Z ✓ Lockfile passes supply-chain policies (103 entries in 836ms)
+2026-11-06T10:38:24.8536846Z Lockfile is up to date, resolution step is skipped
+2026-11-06T10:38:24.8545193Z Packages: +53
+2026-11-06T10:38:24.8545578Z +++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-11-06T10:38:24.8657299Z Progress: resolved 53, reused 0, downloaded 53, added 53, done
+2026-11-06T10:38:24.9806917Z 
+2026-11-06T10:38:24.9807508Z devDependencies:
+2026-11-06T10:38:24.9807962Z + @rpgm-tools/neo-angband-content 1.23.0-beta.1
+2026-11-06T10:38:24.9808443Z + @rpgm-tools/neo-angband-core 1.23.0-beta.1
+2026-11-06T10:38:24.9808888Z + @rpgm-tools/neo-angband-mod-sdk 1.23.0-beta.1
+2026-11-06T10:38:24.9809294Z + @types/node 22.20.1
+2026-11-06T10:38:24.9809572Z + esbuild 0.28.2
+2026-11-06T10:38:24.9809847Z + typescript 5.9.3
+2026-11-06T10:38:24.9810109Z + vitest 4.1.11
+2026-11-06T10:38:24.9810264Z 
+2026-11-06T10:38:24.9839428Z Done in 983ms using pnpm v12.16.1
+2026-11-06T10:38:25.0648539Z ✓ Lockfile passes supply-chain policies (verified 211ms ago)
+2026-11-06T10:38:25.8377032Z Packages: +3 -3
+2026-11-06T10:38:25.8377351Z +++---
+2026-11-06T10:38:25.8434916Z Progress: resolved 3, reused 50, downloaded 3, added 3, done
+2026-11-06T10:38:25.8517703Z 
+2026-11-06T10:38:25.8518010Z devDependencies:
+2026-11-06T10:38:25.8518475Z - @rpgm-tools/neo-angband-content 1.23.0-beta.1
+2026-11-06T10:38:25.8519022Z + @rpgm-tools/neo-angband-content 1.23.0-beta.2
+2026-11-06T10:38:25.8519507Z - @rpgm-tools/neo-angband-core 1.23.0-beta.1
+2026-11-06T10:38:25.8519965Z + @rpgm-tools/neo-angband-core 1.23.0-beta.2
+2026-11-06T10:38:25.8521642Z - @rpgm-tools/neo-angband-mod-sdk 1.23.0-beta.1
+2026-11-06T10:38:25.8522321Z + @rpgm-tools/neo-angband-mod-sdk 1.23.0-beta.2
+2026-11-06T10:38:25.8536749Z 
+2026-11-06T10:38:25.8549591Z Done in 843ms using pnpm v12.16.1
+2026-11-06T10:38:25.9495731Z $ pnpm typecheck && pnpm check:engine-carry && pnpm test && pnpm check
+2026-11-06T10:38:25.9621499Z $ tsc --noEmit
+2026-11-06T10:38:29.3737842Z $ node tools/check-notespot-package.mjs
+2026-11-06T10:38:29.6960838Z {
+2026-11-06T10:38:29.6961100Z   "package": "1.23.0-beta.2",
+2026-11-06T10:38:29.6961403Z   "checks": [
+2026-11-06T10:38:29.6961911Z     {
+2026-11-06T10:38:29.6962189Z       "name": "seen change updates remembered terrain immediately",
+2026-11-06T10:38:29.6962489Z       "pass": true
+2026-11-06T10:38:29.6962663Z     },
+2026-11-06T10:38:29.6962816Z     {
+2026-11-06T10:38:29.6963047Z       "name": "unseen remote change preserves prior memory",
+2026-11-06T10:38:29.6963305Z       "pass": true
+2026-11-06T10:38:29.6963466Z     },
+2026-11-06T10:38:29.6963618Z     {
+2026-11-06T10:38:29.6963841Z       "name": "player square updates without seen flag",
+2026-11-06T10:38:29.6964091Z       "pass": true
+2026-11-06T10:38:29.6964270Z     },
+2026-11-06T10:38:29.6964421Z     {
+2026-11-06T10:38:29.6964657Z       "name": "generation without live hook does not memorize",
+2026-11-06T10:38:29.6964922Z       "pass": true
+2026-11-06T10:38:29.6965328Z     }
+2026-11-06T10:38:29.6965479Z   ]
+2026-11-06T10:38:29.6965625Z }
+2026-11-06T10:38:29.7191060Z $ vitest run
+2026-11-06T10:38:29.9529338Z 
+2026-11-06T10:38:29.9534451Z  RUN  v4.1.11 /tmp/neo-borg-notespot-verify-ISNZqJ/source
+2026-11-06T10:38:29.9535262Z 
+2026-11-06T10:38:31.0598048Z  ✓ src/store/store.test.ts (49 tests) 119ms
+2026-11-06T10:38:31.1117817Z  ✓ src/think-session.test.ts (51 tests) 161ms
+2026-11-06T10:38:31.5423758Z  ✓ src/fight/fight.test.ts (73 tests) 589ms
+2026-11-06T10:38:32.0207788Z  ✓ src/item/junk-space.test.ts (25 tests) 294ms
+2026-11-06T10:38:32.0829794Z  ✓ src/resolvers.test.ts (23 tests) 42ms
+2026-11-06T10:38:32.4411699Z  ✓ src/recall.test.ts (51 tests) 799ms
+2026-11-06T10:38:33.5069653Z  ✓ src/item/no-light.test.ts (41 tests) 515ms
+2026-11-06T10:38:34.3335213Z  ✓ src/api2/controller.test.ts (33 tests) 338ms
+2026-11-06T10:38:34.8732466Z  ✓ src/item/item.test.ts (31 tests) 35ms
+2026-11-06T10:38:35.4320888Z  ✓ src/perceive.test.ts (28 tests) 2816ms
+2026-11-06T10:38:35.4357495Z      ✓ purges perceived records through the controller and permits a step  2705ms
+2026-11-06T10:38:38.4039898Z  ✓ src/item/magic-play.test.ts (32 tests) 5791ms
+2026-11-06T10:38:38.4046860Z      ✓ recognizes every Mage book by its registered kind  800ms
+2026-11-06T10:38:38.4068379Z      ✓ recognizes every Druid book by its registered kind  595ms
+2026-11-06T10:38:38.4069258Z      ✓ recognizes every Priest book by its registered kind  529ms
+2026-11-06T10:38:38.4070128Z      ✓ recognizes every Necromancer book by its registered kind  559ms
+2026-11-06T10:38:42.2609859Z  ✓ src/vault.test.ts (18 tests) 3310ms
+2026-11-06T10:38:42.2691355Z      ✓ defers a bored vault town trip until the C timeout  505ms
+2026-11-06T10:38:42.2767437Z      ✓ draws the loop abort before checking the vault exemption  326ms
+2026-11-06T10:38:42.2788880Z      ✓ requires a known interior dungeon wall and resets the vault fact on level change  650ms
+2026-11-06T10:38:42.2848267Z      ✓ omits grid fear only for monsters adjacent to permanent vault walls  304ms
+2026-11-06T10:38:42.9250822Z  ✓ src/rest.test.ts (20 tests) 147ms
+2026-11-06T10:38:43.3878986Z  ✓ src/api2/bridge.test.ts (22 tests) 43ms
+2026-11-06T10:38:47.2985552Z  ✓ src/wiring.test.ts (2 tests) 3199ms
+2026-11-06T10:38:47.2988342Z      ✓ allows exactly the documented unwritten reads  3123ms
+2026-11-06T10:38:48.0339396Z  ✓ src/flow/play-step.test.ts (32 tests) 187ms
+2026-11-06T10:38:48.6267756Z  ✓ src/flow/flow.test.ts (18 tests) 161ms
+2026-11-06T10:38:49.9287842Z  ✓ src/adapter-boundary.test.ts (40 tests) 767ms
+2026-11-06T10:38:49.9357551Z      ✓ finds no host read outside the adapter  749ms
+2026-11-06T10:38:50.4032281Z  ✓ src/settings.test.ts (18 tests) 40ms
+2026-11-06T10:38:51.7907490Z  ✓ src/foundation.test.ts (20 tests) 835ms
+2026-11-06T10:38:52.3037789Z  ✓ src/trait/trait.test.ts (17 tests) 35ms
+2026-11-06T10:38:52.8612350Z  ✓ src/danger/danger.test.ts (21 tests) 69ms
+2026-11-06T10:38:53.5933559Z  ✓ src/store/weapon-backup.test.ts (17 tests) 220ms
+2026-11-06T10:38:54.0069156Z  ✓ title.test.ts (14 tests) 10ms
+2026-11-06T10:38:54.5650451Z  ✓ src/trait/buff-timers.test.ts (11 tests) 53ms
+2026-11-06T10:38:55.8284367Z  ✓ plugin.test.ts (16 tests) 405ms
+2026-11-06T10:38:56.9937713Z  ✓ src/core-import-census.test.ts (9 tests) 506ms
+2026-11-06T10:38:56.9957113Z      ✓ has no value importer at all  497ms
+2026-11-06T10:38:57.5977927Z  ✓ src/hallucination.test.ts (13 tests) 54ms
+2026-11-06T10:38:58.0778667Z  ✓ src/manifest-tunables.test.ts (5 tests) 13ms
+2026-11-06T10:38:58.6541689Z  ✓ src/store/knowledge.test.ts (9 tests) 52ms
+2026-11-06T10:39:00.1137902Z  ✓ src/truth-allowlist.test.ts (4 tests) 790ms
+2026-11-06T10:39:00.1166909Z      ✓ makes no hidden read that is not on the list  509ms
+2026-11-06T10:39:00.5429480Z  ✓ src/store/home-random-power.test.ts (5 tests) 33ms
+2026-11-06T10:39:00.9177789Z  ✓ src/top-level-core-use.test.ts (3 tests) 26ms
+2026-11-06T10:39:01.3999842Z  ✓ src/trait/weapon-swap.test.ts (10 tests) 34ms
+2026-11-06T10:39:02.4790719Z  ✓ src/position-history.test.ts (5 tests) 562ms
+2026-11-06T10:39:02.4800252Z      ✓ compacts at 75 once per decision, including the first zero-filled tail  385ms
+2026-11-06T10:39:02.9852243Z  ✓ src/item/necro-light.test.ts (5 tests) 40ms
+2026-11-06T10:39:03.7130972Z  ✓ src/flow/flow-recover.test.ts (67 tests) 220ms
+2026-11-06T10:39:04.3443917Z  ✓ src/store/weapon-backup-capacity.test.ts (1 test) 222ms
+2026-11-06T10:39:05.2027921Z  ✓ src/think.test.ts (7 tests) 438ms
+2026-11-06T10:39:05.6348241Z  ✓ src/world/panel.test.ts (7 tests) 6ms
+2026-11-06T10:39:06.0523893Z  ✓ docs-sync.test.ts (2 tests) 8ms
+2026-11-06T10:39:06.4816483Z  ✓ src/manifest-capabilities.test.ts (5 tests) 6ms
+2026-11-06T10:39:06.9625688Z  ✓ src/fight/escape-stair.test.ts (16 tests) 70ms
+2026-11-06T10:39:07.2832187Z  ✓ src/activate.test.ts (6 tests) 5ms
+2026-11-06T10:39:07.6819051Z  ✓ src/fight/bf-census.test.ts (3 tests) 6ms
+2026-11-06T10:39:08.1298005Z  ✓ version-sync.test.ts (3 tests) 10ms
+2026-11-06T10:39:08.5860592Z  ✓ src/time-to-stay.test.ts (4 tests) 11ms
+2026-11-06T10:39:08.9929878Z  ✓ src/world/kill.test.ts (2 tests) 3ms
+2026-11-06T10:39:08.9971988Z stdout | src/rest-and-store-verification.test.ts > the Borg's ladder reaches rest and the store > issue #3: HP below max, in a safe town, triggers a real multi-turn rest
+2026-11-06T10:39:08.9978076Z [rest] 7/10 seeds rested; not-rested (took a higher-priority action first): [2,9,10]
+2026-11-06T10:39:08.9981082Z 
+2026-11-06T10:39:16.2910267Z stdout | src/rest-and-store-verification.test.ts > the Borg's ladder reaches rest and the store > issue #4: physically in a real shop, the store ladder trades with a real effect
+2026-11-06T10:39:16.2911677Z [store] bought=3 sold=10 neither=[]
+2026-11-06T10:39:16.2913065Z 
+2026-11-06T10:39:16.2929852Z  ✓ src/rest-and-store-verification.test.ts (4 tests) 40240ms
+2026-11-06T10:39:16.2933769Z      ✓ uses class flags for SP recovery with stairs=false  464ms
+2026-11-06T10:39:16.2935264Z      ✓ issue #3: HP below max, in a safe town, triggers a real multi-turn rest  32313ms
+2026-11-06T10:39:16.2936402Z      ✓ issue #4: physically in a real shop, the store ladder trades with a real effect  7294ms
+2026-11-06T10:41:31.7011753Z  ✓ src/play.test.ts (6 tests) 175998ms
+2026-11-06T10:41:31.7012178Z      ✓ keeps playing for 1500 decisions (seed 1)  8978ms
+2026-11-06T10:41:31.7012647Z      ✓ keeps playing for 1500 decisions (seed 7)  56734ms
+2026-11-06T10:41:31.7014596Z      ✓ keeps playing for 1500 decisions (seed 42)  72174ms
+2026-11-06T10:41:31.7015072Z      ✓ keeps playing for 1500 decisions (seed 99)  32839ms
+2026-11-06T10:41:31.7015634Z      ✓ gets into the dungeon and back out under its own steam  5270ms
+2026-11-06T10:41:31.7078356Z 
+2026-11-06T10:41:31.7083224Z  Test Files  50 passed (50)
+2026-11-06T10:41:31.7092604Z       Tests  924 passed (924)
+2026-11-06T10:41:31.7093087Z    Start at  10:38:29
+2026-11-06T10:41:31.7093665Z    Duration  181.74s (transform 2.31s, setup 13.00s, import 7.05s, tests 240.33s, environment 5ms)
+2026-11-06T10:41:31.7094162Z 
+2026-11-06T10:41:31.7803185Z $ node tools/build.mjs --check
+2026-11-06T10:41:31.8468887Z [mod-build] checking 1: borg
+2026-11-06T10:41:31.9415846Z [mod-build] borg: ok, and the committed plugin.js is current (669.3 KiB, api >=2.0.0 <3.0.0)
+2026-11-06T10:41:31.9555564Z file:///home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/tools/verify-notespot-source.mjs:62
+2026-11-06T10:41:31.9557328Z   throw new Error(`Expected all 896 cases with zero skips; inspect ${receipt}`);
+2026-11-06T10:41:31.9557960Z         ^
+2026-11-06T10:41:31.9558257Z 
+2026-11-06T10:41:31.9558746Z Error: Expected all 896 cases with zero skips; inspect /tmp/neo-borg-notespot-verify-ISNZqJ
+2026-11-06T10:41:31.9559441Z     at file:///home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/tools/verify-notespot-source.mjs:62:9
+2026-11-06T10:41:31.9560054Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+2026-11-06T10:41:31.9560329Z 
+2026-11-06T10:41:31.9560405Z Node.js v26.13.0
+2026-11-06T10:41:31.9592394Z ##[error]Process completed with exit code 1.
+2026-11-06T10:41:31.9689774Z Post job cleanup.
+2026-11-06T10:41:32.0853023Z Pruning is unnecessary.
+2026-11-06T10:41:32.0972216Z Post job cleanup.
+2026-11-06T10:41:32.1767070Z [command]/usr/bin/git version
+2026-11-06T10:41:32.1811505Z git version 2.56.0
+2026-11-06T10:41:32.1850855Z Temporarily overriding HOME='/home/runner/work/_temp/2816d1b4-658f-489e-830e-75ae9628f8fd' before making global git config changes
+2026-11-06T10:41:32.1852202Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-06T10:41:32.1855845Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source
+2026-11-06T10:41:32.1895110Z Removing SSH command configuration
+2026-11-06T10:41:32.1902398Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-06T10:41:32.1962039Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-06T10:41:32.2225535Z Removing HTTP extra header
+2026-11-06T10:41:32.2231054Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-06T10:41:32.2267675Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-06T10:41:32.2487296Z Removing includeIf entries pointing to credentials config files
+2026-11-06T10:41:32.2500522Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-06T10:41:32.2533865Z includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path
+2026-11-06T10:41:32.2535405Z includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path
+2026-11-06T10:41:32.2536775Z includeif.gitdir:/github/workspace/engine-source/.git.path
+2026-11-06T10:41:32.2537714Z includeif.gitdir:/github/workspace/engine-source/.git/worktrees/*.path
+2026-11-06T10:41:32.2542022Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path
+2026-11-06T10:41:32.2575009Z /home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:41:32.2584713Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-d437627d\-b001\-40e2\-8d5c\-088be175fa55\.config
+2026-11-06T10:41:32.2640624Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path
+2026-11-06T10:41:32.2672653Z /home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:41:32.2682902Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/engine-source/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-d437627d\-b001\-40e2\-8d5c\-088be175fa55\.config
+2026-11-06T10:41:32.2721795Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/engine-source/.git.path
+2026-11-06T10:41:32.2749533Z /github/runner_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:41:32.2756395Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/engine-source/.git.path \/github\/runner_temp\/git\-credentials\-d437627d\-b001\-40e2\-8d5c\-088be175fa55\.config
+2026-11-06T10:41:32.2794101Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/engine-source/.git/worktrees/*.path
+2026-11-06T10:41:32.2822937Z /github/runner_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config
+2026-11-06T10:41:32.2830471Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/engine-source/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-d437627d\-b001\-40e2\-8d5c\-088be175fa55\.config
+2026-11-06T10:41:32.2868837Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-06T10:41:32.3073875Z Removing credentials config '/home/runner/work/_temp/git-credentials-d437627d-b001-40e2-8d5c-088be175fa55.config'
+2026-11-06T10:41:32.3222434Z Post job cleanup.
+2026-11-06T10:41:32.3932477Z [command]/usr/bin/git version
+2026-11-06T10:41:32.3973006Z git version 2.56.0
+2026-11-06T10:41:32.3999976Z Temporarily overriding HOME='/home/runner/work/_temp/2f6367df-05a7-4e96-b47b-01ab01cd7288' before making global git config changes
+2026-11-06T10:41:32.4000895Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-06T10:41:32.4004374Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker
+2026-11-06T10:41:32.4038026Z Removing SSH command configuration
+2026-11-06T10:41:32.4043522Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-06T10:41:32.4075260Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-06T10:41:32.4308111Z Removing HTTP extra header
+2026-11-06T10:41:32.4312816Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-06T10:41:32.4353965Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-06T10:41:32.4580380Z Removing includeIf entries pointing to credentials config files
+2026-11-06T10:41:32.4586938Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-06T10:41:32.4629027Z includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path
+2026-11-06T10:41:32.4630455Z includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path
+2026-11-06T10:41:32.4631548Z includeif.gitdir:/github/workspace/.git.path
+2026-11-06T10:41:32.4632379Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-06T10:41:32.4637834Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path
+2026-11-06T10:41:32.4677487Z /home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:41:32.4686573Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-d3868c0b\-83a4\-44ae\-bc8a\-42be0f4b51b6\.config
+2026-11-06T10:41:32.4745391Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path
+2026-11-06T10:41:32.4774965Z /home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:41:32.4783442Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-d3868c0b\-83a4\-44ae\-bc8a\-42be0f4b51b6\.config
+2026-11-06T10:41:32.4821178Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-06T10:41:32.4849554Z /github/runner_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:41:32.4856336Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-d3868c0b\-83a4\-44ae\-bc8a\-42be0f4b51b6\.config
+2026-11-06T10:41:32.4894385Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-06T10:41:32.4923452Z /github/runner_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config
+2026-11-06T10:41:32.4930651Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-d3868c0b\-83a4\-44ae\-bc8a\-42be0f4b51b6\.config
+2026-11-06T10:41:32.4968586Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-06T10:41:32.5175754Z Removing credentials config '/home/runner/work/_temp/git-credentials-d3868c0b-83a4-44ae-bc8a-42be0f4b51b6.config'
+2026-11-06T10:41:32.5322849Z Cleaning up orphan processes

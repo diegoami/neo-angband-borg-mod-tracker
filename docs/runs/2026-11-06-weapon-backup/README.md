@@ -86,3 +86,19 @@ plugin generated. Counts differ from the clean source profile's targeted161
 because their existing baseline tests differ; all28 new cases are identical.
 Required owned ordinary924/exact-source924 hosted gates are pending at PR
 creation, not inferred from source943 or focused145.
+
+
+## First owned hosted result and count-guard correction
+
+Exact head59823a7 run42204095358 is RED: ordinary checks passed4m30s;
+exact-source runtime passed924/924,50files/zero skips,181.74s, then its
+separate verifier erroneously required896 and failed the job/finalgate.
+This is an actual CI rejection, not a gameplay regression or green gate.
+The previous commit updated ordinary count/controls but missed this third
+hardcoded compatibility check. Actual job127846327040 log is preserved.
+
+The corrective new commit delegates compatibility verification to the SAME
+assertFullSuite already used for ordinary logs. Existing31 routing/contract
+controls accept924 and reject old896/skips. No runtime/test/package/plugin
+change is made by this fix. Old jobs completed before the new push, so no
+valid active run was cancelled; final exact-head required profiles must pass.
