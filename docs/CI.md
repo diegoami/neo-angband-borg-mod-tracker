@@ -22,7 +22,7 @@ There is no top-level path filter that can strand required checks.
 | Changed inputs | Required checks |
 | --- | --- |
 | Explicit audited prose names; inert receipt `.md`, `.log`, `.exit`, `.txt` files immediately below a run directory | Session, routing controls, privacy, actual `docs-sync.test.ts` and `version-sync.test.ts` contracts |
-| Source, tests, dependencies/lockfiles, patches, scripts, CI/workflows, JSON/data or executable fixtures anywhere, unknown paths, empty/unavailable/invalid diff | Full ordinary typecheck, four installed-package carry controls, all 896 port tests with zero skips, grants/plugin currency, session/privacy/routing controls, exact-source compatibility |
+| Source, tests, dependencies/lockfiles, patches, scripts, CI/workflows, JSON/data or executable fixtures anywhere, unknown paths, empty/unavailable/invalid diff | Full ordinary typecheck, four installed-package memory controls, all 924 port tests with zero skips, grants/plugin currency, session/privacy/routing controls, exact-source compatibility |
 
 The allowlist is intentionally narrow, not `docs/**`. `docs/README.md` is
 read as settings data by the docs contract; `CHANGELOG.md` is read by the
@@ -44,7 +44,7 @@ The existing `notespot-source` workflow is reusable/manual-only. Automatic
 CI calls it only for a relevant full profile, including workflow changes;
 it no longer separately reacts to every PR. Direct manual invocation remains
 available. This independent source-artifact compatibility receipt never
-substitutes for the ordinary declared beta.1-plus-carry gate.
+substitutes for the ordinary declared published-beta.3 gate.
 
 Run `node --test tools/ci-profile-checks.mjs` for routing controls. They exercise
 real Git diffs/merge bases/renames and CLI outputs, unknown/data fixtures,
@@ -52,7 +52,8 @@ trigger/concurrency negative controls, final-gate failure/cancellation paths,
 and missing/skipped full-suite rejection. They are explicit Node controls
 outside Vitest discovery; routing controls do not add or remove gameplay cases.
 
-The declared 896 cases preserve all 866 baseline cases and add only the existing
-proposal regressions: 16 escape-stair cases (63), 9 store-knowledge cases (64),
-and 5 home random-power cases (65). Both full-profile guards require the whole
-expanded suite; baseline-only 866 output is a failing control.
+The current 924 cases retain the earlier 866 baseline, accepted proposal
+regressions and owned weapon-backup/HOME controls. The shared ordinary/source
+full-suite guard rejects skipped or incomplete output. Historical run records
+retain their original counts and dependency profiles; beta.3 upgrade task39
+updates the source artifact recipe only from the engine producer's verified pin.

@@ -33,9 +33,9 @@
     "check:engine-carry": "node tools/check-notespot-package.mjs"
   },
   "devDependencies": {
-    "@rpgm-tools/neo-angband-content": "1.23.0-beta.1",
-    "@rpgm-tools/neo-angband-core": "1.23.0-beta.1",
-    "@rpgm-tools/neo-angband-mod-sdk": "1.23.0-beta.1",
+    "@rpgm-tools/neo-angband-content": "1.23.0-beta.3",
+    "@rpgm-tools/neo-angband-core": "1.23.0-beta.3",
+    "@rpgm-tools/neo-angband-mod-sdk": "1.23.0-beta.3",
     "@types/node": "^22.20.1",
     "esbuild": "^0.28.1",
     "typescript": "^5.9.3",
@@ -44,9 +44,9 @@
   "engines": {
     "node": ">=22"
   },
-  "//forkEngineCarry": [
-    "FORK: declared engine profile is published beta.1 + explicit carried noteSpot.",
-    "pnpm patchedDependencies names the core-only engine #4 / upstream429 backport.",
-    "Matching SDK/content remain beta.1; this does not claim npm or upstream delivery."
+  "//forkEngineProfile": [
+    "FORK: declared engine profile is matching published Core/SDK/content beta.3.",
+    "The beta.1 noteSpot patch is retained only as historical evidence; four installed-package controls verify its beta.3 replacement.",
+    "Exact fork-source compatibility is a separate profile with explicit artifact and SDK resolution."
   ]
 }

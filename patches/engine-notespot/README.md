@@ -1,4 +1,19 @@
-# Explicit core beta.1 noteSpot carry
+# Historical beta.1 noteSpot carry
+
+## Beta.3 replacement candidate — port39
+
+The current candidate upgrades to matching published beta.3 and removes only
+this old patch's application from pnpm workspace/lock. Four unchanged package
+controls and 42 focused play/rest/spell cases pass; typecheck/grants and plugin
+build/check also pass. The plugin is byte-identical. Required ordinary and
+exact-source full gates remain separate on [task39](https://github.com/diegoami/neo-angband-borg-mod-tracker/issues/39).
+The patch file below remains immutable historical provenance, not an active
+beta.3 dependency patch. Source25/engine4 have since closed after accepted and
+verified upstream incorporation; the older open/draft wording below is part of
+the original import receipt, not current status.
+
+## Original beta.1 import receipt
+
 
 This is an owned-fork engine dependency carry, not a Neo Borg behavior change.
 The declared profile is **published beta.1 + explicit carried noteSpot**:

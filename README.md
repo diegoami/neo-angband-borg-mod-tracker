@@ -7,7 +7,7 @@ live in diegoami/mandos. Original C Borg/game and Neo engine defects belong
 in diegoami/neo-angband-tracker, not this port queue.
 
 Start at [AGENTS](AGENTS.md), [RULES](RULES.md), [PLAN](PLAN.md) and the latest
-checkpoint. [Three-session map](docs/SESSION.md). Root master intentionally
+checkpoint. [Component-session map](docs/SESSION.md). Root master intentionally
 contains fork session docs; source-fix branches start at upstream/master so
 those docs never leak into an upstream repair PR.
 
@@ -15,12 +15,15 @@ Use Node22+ and the packageManager in package.json; install with
 pnpm install --frozen-lockfile. Gate relevant work with pnpm typecheck,
 focused fail-before/pass-after tests, rebuild plugin.js when runtime source
 changes, and pnpm verify. Record required content and engine pins explicitly.
-The upstream baseline has documented optional content-suite skips and known
-play failures; the checkpoint/port issue transferred from Mandos123 owns that
-investigation. Never report a full no-skip gate unless it actually executed.
+The historical bootstrap baseline below records optional content-suite skips
+and repeated-open failures. Their defined source scopes have since been
+accepted, incorporated and closed. Current task39 owns the beta.3 dependency
+upgrade; never infer a full no-skip gate or consumer deployment from a version.
 
-Upstream PRs63–66 use isolated topic branches; their presence does
-not imply this default source or a running Mandos consumer includes them.
+Upstream PRs63–67 were accepted through successor PRs69/70 and their scoped
+corrections are incorporated here. Source2's weapon-backup/HOME leaf is local
+and proposed as upstream72; armour/tactical work remains separate. The
+canonical issues own live status, independently of Mandos adoption.
 Consumer carry/fixed labels live only on linked Mandos adoption issues; source issues here track source resolution.
 [Upstream product README](docs/upstream-reference/README.md) and
 [upstream planning snapshot](docs/upstream-reference/PLANNED.md) remain
@@ -55,11 +58,24 @@ and fetch its master before cutting an isolated source-fix branch.
 
 ## Owned fork engine dependency profile
 
-The current integration proposal declares **published beta.1 + explicit
-carried noteSpot** through pnpm patchedDependencies. Core/SDK/content stay
-at matching beta.1; the core-only engine call restoration is named and
-hashed in [the carry ledger](patches/engine-notespot/README.md). A normal
-`pnpm install --frozen-lockfile` installs it and `CI=1 pnpm verify` runs its
-package controls plus all 866 port cases. This does not claim the published
-package itself contains the correction or that upstream429 has merged.
-Upstream PR67 remains separate and draft; Mandos owns its independent carry.
+[Integration task39](https://github.com/diegoami/neo-angband-borg-mod-tracker/issues/39)
+upgrades the owned dependency profile to matching published Core, SDK and content
+**1.23.0-beta.3**, npm gitHead 97ceec2925e6715ba725624a61866ab93a196a12.
+The four installed-package memory controls and all 42 focused play/rest/spell
+cases pass without the former beta.1 noteSpot patch. Its historical file and
+[provenance](patches/engine-notespot/README.md) remain; no patch is applied to
+beta.3. [Current scoped receipts and remaining gates](docs/runs/2026-11-06-beta3-consumer/README.md)
+distinguish focused proof, required ordinary/exact-source profiles and deployment.
+
+The separate exact fork-source profile retains its own verified source/artifact
+identity and exact transitive SDK selection. It is not the registry artifact
+merely because both manifests say beta.3. The default suite retains all 924 owned
+cases and every existing port fix; no source policy, seed, assertion or timeout
+changes in this upgrade.
+
+Source25 and engine4 are CLOSED after explicit upstream acceptance and normal
+incorporation checks; upstream67 closed without its own merge marker after
+acceptance through70. Upstream468's remaining open state does not reopen the
+accepted defined scope. Port source2/upstream72 and timing35 stay independently
+open. Mandos owns its package carries and consumer state; no lab update follows
+from this source task.

@@ -1,0 +1,3 @@
+$ node tools/build.mjs
+[mod-build] building 1: borg
+[mod-build] borg: wrote plugin.js (669.3 KiB, api >=2.0.0 <3.0.0)
