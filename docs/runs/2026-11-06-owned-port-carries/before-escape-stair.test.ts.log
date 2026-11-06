@@ -1,0 +1,73 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-integrate-port-20261106
+
+ ❯ src/fight/escape-stair.test.ts (16 tests | 10 failed) 71ms
+     × 'level 3' returns ascent even with no phase resource 19ms
+     × 'level 4' returns ascent even with no phase resource 5ms
+     × 'level 5' returns ascent even with no phase resource 8ms
+     × 'level 6' returns ascent even with no phase resource 2ms
+     × 'level 8' returns ascent even with no phase resource 2ms
+     × 'level 3' does not gate stairs on the phase anti-summon timer 2ms
+     × 'level 4' does not gate stairs on the phase anti-summon timer 3ms
+     × 'level 5' does not gate stairs on the phase anti-summon timer 3ms
+     × 'level 6' does not gate stairs on the phase anti-summon timer 4ms
+     × 'level 8' does not gate stairs on the phase anti-summon timer 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/fight/escape-stair.test.ts > escape returns the queued C stair action > 'level 3' returns ascent even with no phase resource
+ FAIL  src/fight/escape-stair.test.ts > escape returns the queued C stair action > 'level 4' returns ascent even with no phase resource
+ FAIL  src/fight/escape-stair.test.ts > escape returns the queued C stair action > 'level 5' returns ascent even with no phase resource
+ FAIL  src/fight/escape-stair.test.ts > escape returns the queued C stair action > 'level 6' returns ascent even with no phase resource
+ FAIL  src/fight/escape-stair.test.ts > escape returns the queued C stair action > 'level 8' returns ascent even with no phase resource
+AssertionError: expected null to deeply equal { code: 'ascend' }
+
+- Expected:
+{
+  "code": "ascend",
+}
+
++ Received:
+null
+
+ ❯ src/fight/escape-stair.test.ts:46:44
+     44|     const { ctx } = scene(branch, true, 100);
+     45|     // C borg_escape_stair queues '<' before later phase predicates ru…
+     46|     expect(borgEscape(ctx, branch.danger)).toEqual({ code: "ascend" });
+       |                                            ^
+     47|     expect(ctx.world.self.escapes).toBe(7);
+     48|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  src/fight/escape-stair.test.ts > escape returns the queued C stair action > 'level 3' does not gate stairs on the phase anti-summon timer
+ FAIL  src/fight/escape-stair.test.ts > escape returns the queued C stair action > 'level 4' does not gate stairs on the phase anti-summon timer
+ FAIL  src/fight/escape-stair.test.ts > escape returns the queued C stair action > 'level 5' does not gate stairs on the phase anti-summon timer
+ FAIL  src/fight/escape-stair.test.ts > escape returns the queued C stair action > 'level 6' does not gate stairs on the phase anti-summon timer
+ FAIL  src/fight/escape-stair.test.ts > escape returns the queued C stair action > 'level 8' does not gate stairs on the phase anti-summon timer
+AssertionError: expected null to deeply equal { code: 'ascend' }
+
+- Expected:
+{
+  "code": "ascend",
+}
+
++ Received:
+null
+
+ ❯ src/fight/escape-stair.test.ts:53:46
+     51|     for (const elapsed of [0, 50]) {
+     52|       const { ctx } = scene(branch, true, elapsed);
+     53|       expect(borgEscape(ctx, branch.danger)).toEqual({ code: "ascend" …
+       |                                              ^
+     54|     }
+     55|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 failed | 6 passed (16)
+   Start at  02:45:33
+   Duration  1.65s (transform 884ms, setup 369ms, import 1.02s, tests 71ms, environment 0ms)
+

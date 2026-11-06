@@ -1,0 +1,161 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-integrate-port-20261106
+
+ ❯ src/store/knowledge.test.ts (9 tests | 8 failed) 52ms
+     × keeps a single unknown-rune weapon instead of selecting it for sale 17ms
+     × does not count the unknown-rune spare as saleable stair-choice loot 4ms
+     × retains the unknown-rune guard on the full sale selector 3ms
+     × selects the cheaper unit-price stack rather than the cheaper stack total 6ms
+     × counts unidentified home wares with loadout evaluator=false 4ms
+     × counts unidentified home wares with loadout evaluator=true 4ms
+     × prices a stack per item and preserves charge rounding 3ms
+     × rejects adverse-flag value while retaining the One Ring exception 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/knowledge.test.ts > store decisions receive C item knowledge > keeps a single unknown-rune weapon instead of selecting it for sale
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/store/knowledge.test.ts:59:66
+     57|   it("keeps a single unknown-rune weapon instead of selecting it for s…
+     58|     const { ctx, deps } = scene([item({ unknownRunes: true })]);
+     59|     expect(borgGoodSell(ctx, ctx.view.inventory()[0]!, 2, deps)).toBe(…
+       |                                                                  ^
+     60|     expect(borgThinkShopSellUseless(ctx, deps)).toBe(false);
+     61|     expect(borgCountSell(ctx, deps)).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  src/store/knowledge.test.ts > store decisions receive C item knowledge > does not count the unknown-rune spare as saleable stair-choice loot
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/store/knowledge.test.ts:65:38
+     63|   it("does not count the unknown-rune spare as saleable stair-choice l…
+     64|     const { ctx, deps } = scene([item({ unknownRunes: true })]);
+     65|     expect(borgCountSell(ctx, deps)).toBe(0);
+       |                                      ^
+     66|   });
+     67|   it("retains the unknown-rune guard on the full sale selector", () =>…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  src/store/knowledge.test.ts > store decisions receive C item knowledge > retains the unknown-rune guard on the full sale selector
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/store/knowledge.test.ts:69:49
+     67|   it("retains the unknown-rune guard on the full sale selector", () =>…
+     68|     const { ctx, deps } = scene([item({ unknownRunes: true })]);
+     69|     expect(borgThinkShopSellUseless(ctx, deps)).toBe(false);
+       |                                                 ^
+     70|   });
+     71|   it("selects the cheaper unit-price stack rather than the cheaper sta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  src/store/knowledge.test.ts > store decisions receive C item knowledge > selects the cheaper unit-price stack rather than the cheaper stack total
+AssertionError: expected { code: 'shop-sell', …(1) } to match object { code: 'shop-sell', …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "handle": 1,
++     "handle": 2,
+    },
+    "code": "shop-sell",
+  }
+
+ ❯ src/store/knowledge.test.ts:75:45
+     73|       item({ handle: 2, kindKey: "kind:1", value: 200 })]);
+     74|     expect(borgThinkShopSellUseless(ctx, deps)).toBe(true);
+     75|     expect(borgThinkShopSell(ctx, 2, deps)).toMatchObject({ code: "sho…
+       |                                             ^
+     76|   });
+     77|   it("still selects and emits the sale for the fully known control", (…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  src/store/knowledge.test.ts > store decisions receive C item knowledge > counts unidentified home wares with loadout evaluator=false
+ FAIL  src/store/knowledge.test.ts > store decisions receive C item knowledge > counts unidentified home wares with loadout evaluator=true
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/store/knowledge.test.ts:85:72
+     83|     const unknown = item({ unknownRunes: true });
+     84|     const { ctx, deps } = scene([], evaluator);
+     85|     expect(borgNoticeHome(ctx, { items: [unknown] }, deps).home_un_id)…
+       |                                                                        ^
+     86|     expect(borgNoticeHome(ctx, { items: [item()] }, deps).home_un_id).…
+     87|     expect(isAware(item({ aware: false }), deps)).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  src/store/knowledge.test.ts > store decisions receive C item knowledge > prices a stack per item and preserves charge rounding
+AssertionError: expected 400 to be 100 // Object.is equality
+
+- Expected
++ Received
+
+- 100
++ 400
+
+ ❯ src/store/knowledge.test.ts:93:62
+     91|   it("prices a stack per item and preserves charge rounding", () => {
+     92|     const { deps } = scene([]);
+     93|     expect(itemValue(item({ number: 4, value: 400 }), deps)).toBe(100);
+       |                                                              ^
+     94|     expect(itemValue(item({ tval: TV.WAND, number: 2, pval: 3, value: …
+     95|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  src/store/knowledge.test.ts > store decisions receive C item knowledge > rejects adverse-flag value while retaining the One Ring exception
+AssertionError: expected 2000 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 2000
+
+ ❯ src/store/knowledge.test.ts:98:74
+     96|   it("rejects adverse-flag value while retaining the One Ring exceptio…
+     97|     const { deps } = scene([]);
+     98|     expect(itemValue(item({ flags: ["AGGRAVATE"], value: 2000 }), deps…
+       |                                                                          ^
+     99|     const ring = item({ tval: TV.RING, artifact: true, artifactName: "…
+    100|     expect(isOneRing(ring, deps)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 1 passed (9)
+   Start at  02:45:35
+   Duration  1.36s (transform 784ms, setup 273ms, import 867ms, tests 52ms, environment 0ms)
+
