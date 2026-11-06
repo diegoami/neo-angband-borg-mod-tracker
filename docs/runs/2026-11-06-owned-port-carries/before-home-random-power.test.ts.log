@@ -1,0 +1,73 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-integrate-port-20261106
+
+ ❯ src/store/home-random-power.test.ts (5 tests | 3 failed) 41ms
+     × keeps known random-power egos out of the duplicate penalty 17ms
+     × does not pull a useful random-power cloak from home as duplicate clutter 5ms
+     × counts only random-power unknown egos for the ID premium (random=false) 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/home-random-power.test.ts > home random-power ego classification (B81) > keeps known random-power egos out of the duplicate penalty
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/store/home-random-power.test.ts:71:40
+     69|     const { ctx, deps } = scene([], true, wares);
+     70|     const counts = borgNoticeHome(ctx, { items: wares }, deps);
+     71|     expect(counts.num_duplicate_items).toBe(0);
+       |                                        ^
+     72|     expect(borgPowerHomeFrom(ctx, counts)).toBe(borgPowerHomeFrom(ctx,…
+     73|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/store/home-random-power.test.ts > home random-power ego classification (B81) > does not pull a useful random-power cloak from home as duplicate clutter
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/store/home-random-power.test.ts:80:49
+     78|     ];
+     79|     const { ctx, deps } = scene([], true, wares);
+     80|     expect(borgThinkHomeGrabUseless(ctx, deps)).toBe(false);
+       |                                                 ^
+     81|   });
+     82|   it("still penalizes known fixed-power duplicates", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/store/home-random-power.test.ts > home random-power ego classification (B81) > counts only random-power unknown egos for the ID premium (random=false)
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/store/home-random-power.test.ts:92:28
+     90|     const { ctx, deps } = scene([], true, wares);
+     91|     const counts = borgNoticeHome(ctx, { items: wares }, deps);
+     92|     expect(counts.num_ego).toBe(random ? 1 : 0);
+       |                            ^
+     93|     expect(counts.home_un_id).toBe(1);
+     94|     expect(counts.num_duplicate_items).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  02:45:37
+   Duration  1.35s (transform 801ms, setup 302ms, import 881ms, tests 41ms, environment 0ms)
+

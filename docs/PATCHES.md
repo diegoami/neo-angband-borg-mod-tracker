@@ -68,3 +68,15 @@ found **no new bug**: shipped plugin/real engine/public bridge, confusion 50→0
 releases on entry 41 as designed. The old within-grade-open note is superseded.
 This does not alter Mandos140 or establish any new source failure. Historical
 run records remain unchanged; no gameplay fix or new upstream report follows.
+
+## Owned proposal carry batch — 2026-11-06
+
+The next owned integration applies the existing clean63/64/65 proposals as
+separate attributed imports, while their linked source issues23/22/32 remain
+open for actual upstream resolution. [Immutable before/after integration
+receipts](runs/2026-11-06-owned-port-carries/README.md) record original/new
+commits and the complete896-case suite (866 baseline +16/9/5 unchanged new
+proposal cases). The beta.1 core/SDK/content selection and explicit noteSpot
+patch stay unchanged; source19ff compatibility exercises the same896 cases.
+This is an owned carry, not upstream acceptance or Mandos adoption. Backup
+source2 is an assigned bounded follow-up and is not claimed implemented here.

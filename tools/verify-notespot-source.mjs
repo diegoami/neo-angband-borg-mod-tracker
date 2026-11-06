@@ -58,7 +58,7 @@ const code = await new Promise((resolveExit, reject) => {
 writeFileSync(join(receipt, "exit.json"), JSON.stringify({ code }) + "\n");
 if (code !== 0) throw new Error(`Port verify failed: ${code}; ${receipt}`);
 const plain = output.replace(/\x1b\[[0-9;]*m/g, "");
-if (!/Tests\s+866 passed \(866\)/.test(plain) || /\d+ skipped/.test(plain)) {
-  throw new Error(`Expected all 866 cases with zero skips; inspect ${receipt}`);
+if (!/Tests\s+896 passed \(896\)/.test(plain) || /\d+ skipped/.test(plain)) {
+  throw new Error(`Expected all 896 cases with zero skips; inspect ${receipt}`);
 }
 console.log(`Exact-source port gate passed; source engine 19ff25eac8997e8feb6b5e62eefa7ffe4d134631; receipts ${receipt}`);
