@@ -38,14 +38,26 @@
    correct C or TypeScript build environment; state pins/options/RNG/perception
    and practical limits. Do not change assertions/seeds or waive relevant
    skips to get green. Baseline failures require attribution and tracking.
-9. Source issues here use open/closed for source/upstream correction state.
-   Do not put carried/fixed/partial/not-carried or patch-active consumer tags
-   on source issues. Link a distinct Mandos adoption issue where applicable.
-   There carried means fixed on our side but still open until the correction
-   is fixed upstream AND adopted downstream with our changes, rebuilt and
-   verified. Then fixed/closed; partial scope stays open. patch-active belongs
-   only on consumer backport maintenance, independently of closure. Proposals
-   or stored patches alone are not applied corrections. No release wait alone.
+9. Source issues track a defined upstream defect, separately from Mandos
+   adoption. Accept upstream's claimed-fixed/accepted resolution, incorporate
+   the correction with our changes and run the normal required checks, then
+   close the whole defined original source issue. Do not hold it open for a
+   release, consumer deployment, exhaustive absence proof or hypothetical
+   residual. A concrete failure found after adoption gets a NEW linked bug;
+   the original remains closed.
+   `merged-upstream` is TEMPORARY only when that upstream correction is
+   accepted but our fork still awaits import/verification. Remove it on
+   verified incorporation/closure. An open PR's proposed Fixes text, an own-fork
+   merge, a duplicate/wontfix closure or a merged link covering only another
+   scope does not qualify. Split or narrow real distinct bucket scopes rather
+   than claim the vendor fixed a broader case it never claimed to fix.
+   `triage:needed` marks only an unassessed incoming report; remove it once
+   assessed. Known proposals and verified corrections are already assessed.
+   Consumer carried/fixed/partial/patch-active labels belong on
+   the linked consumer issue only. Consumer verification/state stays with its
+   owner and does not gate closing an incorporated source correction.
+   Internal CI tasks, audit tasks and checkpoints have their own completion
+   criteria and do not acquire upstream delivery labels.
 10. Preserve owner saves, browser profiles, install data and the running lab.
     A source merge is not a deployment. Read-only references stay pristine;
     work in task worktrees. Run records/evidence already committed are append-only.
