@@ -144,3 +144,21 @@ repo-relative `.`; raw hosted output is preserved in task artifacts. No credenti
 or owner-data finding was reported, and no test output/assertion changed.
 The official scanner at Neo ee910382 is run locally before publishing this
 evidence-only follow-up; current runtime test jobs retain their own outcomes.
+
+### Architecture guards exposed the fixture's source placement
+
+At3bcfe2f, ordinary hosted verification reached930pass/2fail/932; all83 earlier
+fixture failures were corrected. [The two failures](ordinary-boundary-failure.log)
+were the unchanged adapter-boundary and runtime-import census guards: the new
+registered fixture imported Core and registries from inside src/, which those
+guards intentionally classify as production. No gameplay assertion failed.
+The exact-source job was still active when this follow-up was prepared; it was
+not cancelled or treated as successful from the ordinary outcome.
+
+The unchanged-behavior fixture now lives at test/fixtures/known-light.ts, outside
+production source, with corrected test/adapter-relative imports. No boundary test
+or allowlist is relaxed. It remains transitively typechecked and absent from the
+plugin import graph. [Affected suites plus both architecture guards](architecture-qualified.log):
+**483tests/15files PASS**,18.21s. Types/plugin currency and official full/staged
+privacy checks pass before publication. Production, package and plugin bytes
+still match2ee4f82. The final exact-head required full profiles remain pending.
