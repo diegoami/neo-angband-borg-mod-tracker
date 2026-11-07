@@ -135,3 +135,12 @@ The frozen eight registered light-base tests remain byte-identical to6e2c71b
 The runtime/manifest/dependencies/plugin bytes remain exactly2ee4f82; this follow-up
 changes only fixture inputs and evidence. A fresh exact-head ordinary/source full
 gate is required before merge, not inferred from focus.
+
+### Public evidence path normalization
+
+Hosted scan42367485769 rejected one user-home-path occurrence: the ordinary
+Vitest RUN header named its hosted checkout directory. Only that header is now
+repo-relative `.`; raw hosted output is preserved in task artifacts. No credential
+or owner-data finding was reported, and no test output/assertion changed.
+The official scanner at Neo ee910382 is run locally before publishing this
+evidence-only follow-up; current runtime test jobs retain their own outcomes.

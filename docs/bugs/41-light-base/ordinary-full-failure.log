@@ -1,4 +1,4 @@
-RUN  v4.1.11 /home/runner/work/neo-angband-borg-mod-tracker/neo-angband-borg-mod-tracker
+RUN  v4.1.11 .
 
  ✓ src/store/store.test.ts (49 tests) 153ms
  ❯ src/think-session.test.ts (51 tests | 4 failed) 158ms
