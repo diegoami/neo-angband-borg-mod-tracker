@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-backup-tactical-50
+
+ ❯ src/item/backup-public.test.ts (7 tests | 1 failed) 988ms
+   × lets Core split a nonartifact stack and own overflow without emitting a drop strategy 155ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/item/backup-public.test.ts > lets Core split a nonartifact stack and own overflow without emitting a drop strategy
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/item/backup-public.test.ts:104:45
+    102|   expect(inventory.find(i=>i.handle===weapon)?.number).toBe(1);
+    103|   expect(f.gear.pack).not.toContain(f.main);expect(inventory.some(i=>i…
+    104|   const dropped=floorMain();expect(dropped).toHaveLength(1);expect(dro…
+       |                                             ^
+    105|   // dropNear may place it adjacent; floorHere alone is not an overflo…
+    106| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 8 passed (9)
+   Start at  21:28:51
+   Duration  3.77s (transform 1.28s, setup 576ms, import 1.67s, tests 3.96s, environment 0ms)
+

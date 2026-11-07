@@ -1,0 +1,29 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-backup-tactical-50
+
+ ❯ src/item/backup-tactical.test.ts (42 tests | 1 failed) 448ms
+   × keeps the digger exception available below armour's depth50 gate 38ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/item/backup-tactical.test.ts > keeps the digger exception available below armour's depth50 gate
+Error: Missing registered kind: Mattock~
+ ❯ registeredKnownItem test/fixtures/registered-items.ts:31:22
+     29|     if (spec.artifact && !artifact) throw Error("Missing registered ar…
+     30|     const kind = artifact ? reg.lookupKind(artifact.tval, artifact.sva…
+     31|     if (!kind) throw Error("Missing registered kind: " + spec.kind);
+       |                      ^
+     32|     const obj = Core.objectPrep(state.rng, reg, game.booted.registries…
+     33|     if (artifact) { obj.artifact = artifact; Core.copyArtifactData(sta…
+ ❯ known src/item/backup-tactical.test.ts:30:72
+ ❯ scene src/item/backup-tactical.test.ts:31:56
+ ❯ src/item/backup-tactical.test.ts:87:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 69 passed (70)
+   Start at  21:08:44
+   Duration  932ms (transform 637ms, setup 358ms, import 738ms, tests 496ms, environment 0ms)
+

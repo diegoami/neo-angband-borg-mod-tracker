@@ -97,6 +97,6 @@ test("stable final gate accepts only complete matching profiles", () => {
   const unexpected=needs("docs"); unexpected["exact-source"].result="success"; assert.throws(()=>assertGate(unexpected));
 });
 test("ordinary and exact-source shared logs reject missing cases, failures and any skips", () => {
-  assertFullSuite("Tests 1000 passed (1000)\n");
-  for (const text of ["Tests 830 passed | 36 skipped (866)","Tests 862 passed | 4 failed (866)","Tests 866 passed (866)","Tests 896 passed (896)","Tests 924 passed (924)","Tests 932 passed (932)","Tests 951 passed (951)","Tests 954 passed (954)","Tests 994 passed (994)","Tests 1000 passed (1000)\n1 skipped","Tests 1000 passed | 1 failed (1001)", "Tests 5 passed (5)", ""]) assert.throws(()=>assertFullSuite(text));
+  assertFullSuite("Tests 1056 passed (1056)\n");
+  for (const text of ["Tests 830 passed | 36 skipped (866)","Tests 862 passed | 4 failed (866)","Tests 866 passed (866)","Tests 896 passed (896)","Tests 924 passed (924)","Tests 932 passed (932)","Tests 951 passed (951)","Tests 954 passed (954)","Tests 994 passed (994)","Tests 1000 passed (1000)","Tests 1056 passed (1056)\n1 skipped","Tests 1056 passed | 1 failed (1057)", "Tests 5 passed (5)", ""]) assert.throws(()=>assertFullSuite(text));
 });

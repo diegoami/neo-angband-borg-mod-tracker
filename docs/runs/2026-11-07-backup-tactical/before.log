@@ -1,0 +1,199 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-backup-tactical-50
+
+ ❯ src/item/backup-tactical.test.ts (18 tests | 8 failed) 216ms
+   × folds selected actual Nether/FREE_ACT/CONF boots into backup availability without base resistance 197ms
+   × folds the selected actual Nether weapon independently of armour 1ms
+   × retains backup capabilities under FALSE after the selected item leaves the scratch pack 1ms
+   × copies selected capabilities into an isolated scratch world without live mutation 1ms
+   × emits the ordinary weapon command for the original C82 higher-danger winner 1ms
+   × keeps equal-danger ties on the weapon 1ms
+   × can wear the sole armour candidate when it clears the native ceiling 1ms
+   × can wear the sole weapon candidate and does not require the armour depth50 gate 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/item/backup-tactical.test.ts > folds selected actual Nether/FREE_ACT/CONF boots into backup availability without base resistance
+AssertionError: expected [ +0, +0, +0 ] to deeply equal [ 1, 1, 1 ]
+
+- Expected
++ Received
+
+  [
+-   1,
+-   1,
+-   1,
++   0,
++   0,
++   0,
+  ]
+
+ ❯ src/item/backup-tactical.test.ts:44:52
+     42|   expect(getDerived(s.ctx.world).armourSwap.handle).toBe(3);
+     43|   expect(t[BI.RNTHR]).toBe(0); expect(t[BI.FRACT]).toBe(0); expect(t[B…
+     44|   expect([t[BI.SRNTHR],t[BI.SFRACT],t[BI.SRCONF]]).toEqual([1,1,1]);
+       |                                                    ^
+     45| });
+     46| it("folds the selected actual Nether weapon independently of armour", …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  src/item/backup-tactical.test.ts > folds the selected actual Nether weapon independently of armour
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/item/backup-tactical.test.ts:49:45
+     47|   const s=scene({armour:false}); expect(s.spare.resists).toContainEqua…
+     48|   expect(getDerived(s.ctx.world).weaponSwap.handle).toBe(2); expect(s.…
+     49|   expect(s.ctx.world.self.trait[BI.SRNTHR]).toBe(1);
+       |                                             ^
+     50| });
+     51| it("retains backup capabilities under FALSE after the selected item le…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  src/item/backup-tactical.test.ts > retains backup capabilities under FALSE after the selected item leaves the scratch pack
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/item/backup-tactical.test.ts:53:104
+     51| it("retains backup capabilities under FALSE after the selected item le…
+     52|   const s=scene({weapon:false}); s.inventory.length=0; borgNotice(s.ct…
+     53|   expect(getDerived(s.ctx.world).armourSwap.handle).toBe(3); expect(s.…
+       |                                                                                                        ^
+     54|   borgNotice(s.ctx); expect(getDerived(s.ctx.world).armourSwap.handle)…
+     55| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  src/item/backup-tactical.test.ts > copies selected capabilities into an isolated scratch world without live mutation
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/item/backup-tactical.test.ts:60:47
+     58|   const scratch={...s.ctx,world:new BorgWorld(),view:{...s.ctx.view,in…
+     59|   inheritWeaponSwap(scratch.world,s.ctx.world); borgNotice(scratch,{no…
+     60|   expect(scratch.world.self.trait[BI.SFRACT]).toBe(1); expect(getDeriv…
+       |                                               ^
+     61| });
+     62| it("emits the ordinary weapon command for the original C82 higher-dang…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  src/item/backup-tactical.test.ts > emits the ordinary weapon command for the original C82 higher-danger winner
+AssertionError: expected null to deeply equal { code: 'wield', args: { handle: 2 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 2,
+  },
+  "code": "wield",
+}
+
++ Received:
+null
+
+ ❯ src/item/backup-tactical.test.ts:64:22
+     62| it("emits the ordinary weapon command for the original C82 higher-dang…
+     63|   const s=scene(); expect(getDerived(s.ctx.world).weaponSwap.handle).t…
+     64|   expect(run(s.ctx)).toEqual({code:"wield",args:{handle:2}}); // armou…
+       |                      ^
+     65| });
+     66| it("keeps equal-danger ties on the weapon", () => { const s=scene(); e…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  src/item/backup-tactical.test.ts > keeps equal-danger ties on the weapon
+AssertionError: expected null to deeply equal { code: 'wield', args: { handle: 2 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 2,
+  },
+  "code": "wield",
+}
+
++ Received:
+null
+
+ ❯ src/item/backup-tactical.test.ts:66:133
+     64|   expect(run(s.ctx)).toEqual({code:"wield",args:{handle:2}}); // armou…
+     65| });
+     66| it("keeps equal-danger ties on the weapon", () => { const s=scene(); e…
+       |                                                                                                                                     ^
+     67| it("can wear the sole armour candidate when it clears the native ceili…
+     68| it("can wear the sole weapon candidate and does not require the armour…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  src/item/backup-tactical.test.ts > can wear the sole armour candidate when it clears the native ceiling
+AssertionError: expected null to deeply equal { code: 'wield', args: { handle: 3 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 3,
+  },
+  "code": "wield",
+}
+
++ Received:
+null
+
+ ❯ src/item/backup-tactical.test.ts:67:134
+     65| });
+     66| it("keeps equal-danger ties on the weapon", () => { const s=scene(); e…
+     67| it("can wear the sole armour candidate when it clears the native ceili…
+       |                                                                                                                                      ^
+     68| it("can wear the sole weapon candidate and does not require the armour…
+     69|   const s=scene({armour:false}); expect(run(s.ctx)).toEqual({code:"wie…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  src/item/backup-tactical.test.ts > can wear the sole weapon candidate and does not require the armour depth50 gate
+AssertionError: expected null to deeply equal { code: 'wield', args: { handle: 2 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 2,
+  },
+  "code": "wield",
+}
+
++ Received:
+null
+
+ ❯ src/item/backup-tactical.test.ts:69:53
+     67| it("can wear the sole armour candidate when it clears the native ceili…
+     68| it("can wear the sole weapon candidate and does not require the armour…
+     69|   const s=scene({armour:false}); expect(run(s.ctx)).toEqual({code:"wie…
+       |                                                     ^
+     70| });
+     71| it.each([BI.ISHUNGRY,BI.ISWEAK])("refuses the maneuver under condition…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 10 passed (18)
+   Start at  20:36:30
+   Duration  636ms (transform 177ms, setup 152ms, import 184ms, tests 216ms, environment 0ms)
+

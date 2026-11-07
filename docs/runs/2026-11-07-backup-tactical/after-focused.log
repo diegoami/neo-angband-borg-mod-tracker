@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-backup-tactical-50
+
+
+ Test Files  21 passed (21)
+      Tests  506 passed (506)
+   Start at  21:25:49
+   Duration  14.89s (transform 30.33s, setup 26.70s, import 43.07s, tests 44.84s, environment 6ms)
+
