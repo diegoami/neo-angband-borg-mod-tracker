@@ -1,0 +1,62 @@
+{
+  "schema": "neo-borg/upstream-engine-profile@1",
+  "base": "3ff8406ce2ecdaae42daadd5483cf32bd0ac5827",
+  "normalBorgMerge": "6c8b88e8dd5d62156b7af045b97bba61556c2bbc",
+  "officialBorg": "a4437882b4f0674dd0e25878e1b93d0fdac65e47",
+  "officialBorgRelease": "c103aae9ac477aededc405b4b334605d2cb19146",
+  "BorgVersion": "1.4.0-beta.3",
+  "defaultPackages": "unmodified published Core/SDK/content1.23.0-beta.3",
+  "producerReceipt": "047f9a625b4d5c59a20f39daf7a0a2a955417e2d",
+  "exactSourceProfile": {
+    "profile": "official06a-source-beta3",
+    "sourceCommit": "06a2321ce30a414df20d1b20d486446e7688171c",
+    "version": "1.23.0-beta.3",
+    "artifacts": [
+      {
+        "name": "@rpgm-tools/neo-angband-content",
+        "version": "1.23.0-beta.3",
+        "filename": "rpgm-tools-neo-angband-content-1.23.0-beta.3.tgz",
+        "bytes": 316761,
+        "sha256": "eeec7c55a996fc5cc452b89eab99ae2342dada8450274a68c582f1cf308c6cfb",
+        "integrity": "sha512-u5wDfrsgB11mcIsV3EfUoSVcf1ZzmPIeETWmiyFuBGNTywuHdQdhoCyoAshB4A1coeiX/1ZnqXk/0frp4dW/Ag==",
+        "dependencies": {}
+      },
+      {
+        "name": "@rpgm-tools/neo-angband-core",
+        "version": "1.23.0-beta.3",
+        "filename": "rpgm-tools-neo-angband-core-1.23.0-beta.3.tgz",
+        "bytes": 5356982,
+        "sha256": "ab7a0adf00d05b5e4ce07ba34b6f2b8f22989a5da0ea45068c3bbc8444a7acdc",
+        "integrity": "sha512-Fv8Y7Zik5rt9gxOJ7P0s+lmXgbgIp1wmVufeeuINc2kqrb8bfElWPpgys6IKyAnxc4QYeqie0hvdWZT2RtZJYQ==",
+        "dependencies": {
+          "@rpgm-tools/neo-angband-mod-sdk": "1.23.0-beta.3"
+        }
+      },
+      {
+        "name": "@rpgm-tools/neo-angband-mod-sdk",
+        "version": "1.23.0-beta.3",
+        "filename": "rpgm-tools-neo-angband-mod-sdk-1.23.0-beta.3.tgz",
+        "bytes": 1115155,
+        "sha256": "6f70f63c4ac9376101b8a2158100d66f0e041795b38d0bdb204b923cdede6917",
+        "integrity": "sha512-iiKKep6b1d69RirtESkqNagClyCKDqJOWY4i8p+a2ajw2v6Nl9Dp64d7iPt+sgFBYivVHmimlT3RsKKWlSj0Jg==",
+        "dependencies": {
+          "acorn": "^8.18.0"
+        }
+      }
+    ]
+  },
+  "defaultFocused": {
+    "tests": 127,
+    "files": 9,
+    "skips": 0
+  },
+  "collectedInventory": {
+    "tests": 951,
+    "files": 51,
+    "previousTests": 932,
+    "officialWiringNewTests": 19
+  },
+  "rawSourceFocused": "pending",
+  "requiredHostedFull": "pending",
+  "producerHostedFull": "engine375 pending; not inferred from consumer focus"
+}

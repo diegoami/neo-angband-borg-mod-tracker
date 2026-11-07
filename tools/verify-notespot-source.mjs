@@ -12,9 +12,9 @@ import { assertFullSuite } from "./ci-profile.mjs";
 const artifacts = resolve(process.argv[2] ?? "");
 if (!process.argv[2]) throw new Error("Usage: node tools/verify-notespot-source.mjs /path/to/engine-tarballs");
 const tuple = {
-  core: "00b4f1ad5644e06fdd085be39a8c7da427143ae21497f83884fa077b6dc1047b",
-  "mod-sdk": "9f628c0103ff51c48787982353f5a6c28c4b15e77d93b85bcc17c39a9c6916d6",
-  content: "50339f37ba3d71d2ca9e8f4215c9f5b33509266fa9770216b913491c16a6979a",
+  core: "ab7a0adf00d05b5e4ce07ba34b6f2b8f22989a5da0ea45068c3bbc8444a7acdc",
+  "mod-sdk": "6f70f63c4ac9376101b8a2158100d66f0e041795b38d0bdb204b923cdede6917",
+  content: "eeec7c55a996fc5cc452b89eab99ae2342dada8450274a68c582f1cf308c6cfb",
 };
 const files = Object.keys(tuple).map((name) => {
   const file = join(artifacts, `rpgm-tools-neo-angband-${name}-1.23.0-beta.3.tgz`);
@@ -59,7 +59,9 @@ if (graph.core !== "1.23.0-beta.3" || graph.directSDK !== "1.23.0-beta.3" ||
   throw new Error(`Incoherent source dependency graph: ${JSON.stringify(graph)}`);
 }
 writeFileSync(join(receipt, "profile.json"), JSON.stringify({
-  source: "f576b099b18e0016e0827e43a5770a369f53e279",
+  source: "06a2321ce30a414df20d1b20d486446e7688171c",
+  profile: "official06a-source-beta3",
+  producerReceipt: "047f9a625b4d5c59a20f39daf7a0a2a955417e2d",
   artifacts: tuple, graph, sdkOverride: "exact checked SDK artifact",
 }, null, 2) + "\n");
 console.log(`Exact-source dependency graph: ${JSON.stringify(graph)}`);
@@ -84,4 +86,4 @@ if (code !== 0) throw new Error(`Port verify failed: ${code}; ${receipt}`);
 // Share the ordinary full-suite contract; added cases cannot leave a stale
 // compatibility-only count that rejects a successful complete test run.
 assertFullSuite(output);
-console.log(`Exact-source port gate passed; source engine f576b099b18e0016e0827e43a5770a369f53e279; receipts ${receipt}`);
+console.log(`Exact-source port gate passed; source engine 06a2321ce30a414df20d1b20d486446e7688171c; receipts ${receipt}`);
