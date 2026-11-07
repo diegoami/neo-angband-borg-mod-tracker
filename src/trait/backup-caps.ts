@@ -1,4 +1,4 @@
-/** Frozen selected-backup globals from borg-trait-swap.c; no hidden object reads. */
+/** Frozen selected-backup globals: C4.2.6 f3082213/current e473720 borg-trait-swap.c; no hidden object reads. */
 import type { ItemView } from "@rpgm-tools/neo-angband-core";
 import type { BorgContext } from "../context.js";
 import type { BorgDerived } from "./state.js";
@@ -24,11 +24,25 @@ export function foldBackupCaps(ctx: BorgContext, d: BorgDerived, spells?: BorgSp
   const t=ctx.world.self.trait;
   const legal=(name:"RESISTANCE"|"RESIST_POISON") => spells ? spells.spellLegalFail(name,15) : borgSpellLegalFail(ctx,Spell[name],15);
   const resist=legal("RESISTANCE"), poison=legal("RESIST_POISON");
-  for (const [sr,base] of [[BI.SRACID,BI.RACID],[BI.SRELEC,BI.RELEC],[BI.SRFIRE,BI.RFIRE],[BI.SRCOLD,BI.RCOLD],
-    [BI.SRPOIS,BI.RPOIS],[BI.SRFEAR,BI.RFEAR],[BI.SRLITE,BI.RLITE],[BI.SRDARK,BI.RDARK],[BI.SRBLIND,BI.RBLIND],
-    [BI.SRCONF,BI.RCONF],[BI.SRSND,BI.RSND],[BI.SRSHRD,BI.RSHRD],[BI.SRNXUS,BI.RNXUS],[BI.SRNTHR,BI.RNTHR],
-    [BI.SRKAOS,BI.RKAOS],[BI.SRDIS,BI.RDIS],[BI.SHLIFE,BI.HLIFE],[BI.SFRACT,BI.FRACT]] as const) {
-    const spell=sr===BI.SRPOIS ? poison : [BI.SRACID,BI.SRELEC,BI.SRFIRE,BI.SRCOLD].includes(sr) && resist;
-    t[sr]=t[base] || d.weaponSwapCaps[sr] || d.armourSwapCaps[sr] || spell ? 1 : 0;
-  }
+  const available=(sr:BI,base:BI,spell=false):number =>
+    t[base] || d.weaponSwapCaps[sr] || d.armourSwapCaps[sr] || spell ? 1 : 0;
+  // Keep explicit C-order writers visible to the existing unwritten-trait guard.
+  t[BI.SRACID]=available(BI.SRACID,BI.RACID,resist);
+  t[BI.SRELEC]=available(BI.SRELEC,BI.RELEC,resist);
+  t[BI.SRFIRE]=available(BI.SRFIRE,BI.RFIRE,resist);
+  t[BI.SRCOLD]=available(BI.SRCOLD,BI.RCOLD,resist);
+  t[BI.SRPOIS]=available(BI.SRPOIS,BI.RPOIS,poison);
+  t[BI.SRFEAR]=available(BI.SRFEAR,BI.RFEAR);
+  t[BI.SRLITE]=available(BI.SRLITE,BI.RLITE);
+  t[BI.SRDARK]=available(BI.SRDARK,BI.RDARK);
+  t[BI.SRBLIND]=available(BI.SRBLIND,BI.RBLIND);
+  t[BI.SRCONF]=available(BI.SRCONF,BI.RCONF);
+  t[BI.SRSND]=available(BI.SRSND,BI.RSND);
+  t[BI.SRSHRD]=available(BI.SRSHRD,BI.RSHRD);
+  t[BI.SRNXUS]=available(BI.SRNXUS,BI.RNXUS);
+  t[BI.SRNTHR]=available(BI.SRNTHR,BI.RNTHR);
+  t[BI.SRKAOS]=available(BI.SRKAOS,BI.RKAOS);
+  t[BI.SRDIS]=available(BI.SRDIS,BI.RDIS);
+  t[BI.SHLIFE]=available(BI.SHLIFE,BI.HLIFE);
+  t[BI.SFRACT]=available(BI.SFRACT,BI.FRACT);
 }
