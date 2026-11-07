@@ -1,0 +1,88 @@
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/adapter-boundary.test.ts > only the adapter reads the host > finds no host read outside the adapter
+AssertionError: expected [ { …(2) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "file": "src/test-known-light.ts",
++     "reads": [
++       "a runtime engine import",
++       "a registry read",
++     ],
++   },
++ ]
+
+ ❯ src/adapter-boundary.test.ts:138:23
+    136|       .map((f) => ({ file: f.rel, reads: violations(readFileSync(f.p, …
+    137|       .filter((o) => o.reads.length > 0);
+    138|     expect(offenders).toEqual([]);
+       |                       ^
+    139|   });
+    140|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/core-import-census.test.ts > nothing in the plugin bundle reaches the engine for a runtime value > has no value importer at all
+AssertionError: expected [ 'test-known-light.ts' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "test-known-light.ts",
++ ]
+
+ ❯ src/core-import-census.test.ts:102:23
+    100|       .filter((f) => valueImportsOfEngine(readFileSync(f, "utf8")).len…
+    101|       .map((f) => relative(srcRoot, f).replaceAll("\\", "/"));
+    102|     expect(offenders).toEqual([]);
+       |                       ^
+    103|   });
+    104|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 49 passed (51)
+      Tests  2 failed | 930 passed (932)
+   Start at  11:17:01
+   Duration  189.09s (transform 2.68s, setup 11.30s, import 7.62s, tests 242.73s, environment 4ms)
+
+
+##[error]AssertionError: expected [ { …(2) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "file": "src/test-known-light.ts",
++     "reads": [
++       "a runtime engine import",
++       "a registry read",
++     ],
++   },
++ ]
+
+ ❯ src/adapter-boundary.test.ts:138:23
+
+
+
+##[error]AssertionError: expected [ 'test-known-light.ts' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "test-known-light.ts",
++ ]
+
+ ❯ src/core-import-census.test.ts:102:23
