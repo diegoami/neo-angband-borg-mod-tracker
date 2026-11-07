@@ -1,0 +1,208 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-light-base-41
+
+ ❯ src/item/no-light.test.ts (41 tests | 8 failed) 763ms
+     × uses the charged wand through the defense simulation and execution 17ms
+     × uses the same direction through the brave ladder 17ms
+     × uses the C's 20 percent spell failure limit 5ms
+     × rejects the C's north and south panel-edge rows 6ms
+     × chooses east and west after north and south are known 6ms
+     × keeps the C's zero-radius west loop empty 11ms
+     × counts remembered diagonal walls before recovery rest 7ms
+     × counts torchlight flags instead of visible floors before recovery rest 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/item/no-light.test.ts > corridor beams (borg-light.c:673-904; borg-fight-defend.c:2802-2810) > uses the charged wand through the defense simulation and execution
+AssertionError: expected null to deeply equal { code: 'aim-wand', …(2) }
+
+- Expected:
+{
+  "args": {
+    "handle": 42,
+  },
+  "code": "aim-wand",
+  "dir": 8,
+}
+
++ Received:
+null
+
+ ❯ src/item/no-light.test.ts:238:34
+    236|     const s = corridor();
+    237|     s.world.self.temp.needSeeInvis = 100;
+    238|     expect(borgDefend(s.ctx, 0)).toEqual({ code: "aim-wand", args: { h…
+       |                                  ^
+    239|   });
+    240|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  src/item/no-light.test.ts > corridor beams (borg-light.c:673-904; borg-fight-defend.c:2802-2810) > uses the same direction through the brave ladder
+AssertionError: expected { code: 'walk', dir: 8 } to deeply equal { code: 'aim-wand', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "handle": 42,
+-   },
+-   "code": "aim-wand",
++   "code": "walk",
+    "dir": 8,
+  }
+
+ ❯ src/item/no-light.test.ts:242:32
+    240|
+    241|   it("uses the same direction through the brave ladder", () => {
+    242|     expect(corridor().brave()).toEqual({ code: "aim-wand", args: { han…
+       |                                ^
+    243|   });
+    244|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  src/item/no-light.test.ts > corridor beams (borg-light.c:673-904; borg-fight-defend.c:2802-2810) > uses the C's 20 percent spell failure limit
+AssertionError: expected null to deeply equal { code: 'cast', …(2) }
+
+- Expected:
+{
+  "args": {
+    "spell": 7,
+  },
+  "code": "cast",
+  "dir": 8,
+}
+
++ Received:
+null
+
+ ❯ src/item/no-light.test.ts:250:36
+    248|         spells: [Spell.SPEAR_OF_LIGHT], inventory: [], fail });
+    249|       s.world.self.temp.needSeeInvis = 100;
+    250|       expect(borgDefend(s.ctx, 0)).toEqual(fail === 20 ? { code: "cast…
+       |                                    ^
+    251|     }
+    252|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  src/item/no-light.test.ts > corridor beams (borg-light.c:673-904; borg-fight-defend.c:2802-2810) > rejects the C's north and south panel-edge rows
+AssertionError: expected null to deeply equal { code: 'aim-wand', …(2) }
+
+- Expected:
+{
+  "args": {
+    "handle": 42,
+  },
+  "code": "aim-wand",
+  "dir": 8,
+}
+
++ Received:
+null
+
+ ❯ src/item/no-light.test.ts:259:68
+    257|         cells: { [`10,${y + dy * 2}`]: { feat: FEAT.NONE, known: false…
+    258|         inventory: [item({ handle: 42, tval: TV.WAND, sval: SVAL.wand.…
+    259|       expect(light.borgLightBeam(s.ctx, buildItemDeps(s.session))).toE…
+       |                                                                    ^
+    260|     }
+    261|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  src/item/no-light.test.ts > corridor beams (borg-light.c:673-904; borg-fight-defend.c:2802-2810) > chooses east and west after north and south are known
+AssertionError: expected null to deeply equal { code: 'aim-wand', …(2) }
+
+- Expected:
+{
+  "args": {
+    "handle": 42,
+  },
+  "code": "aim-wand",
+  "dir": 6,
+}
+
++ Received:
+null
+
+ ❯ src/item/no-light.test.ts:267:68
+    265|       const s = scenario({ player: { light: 1 }, spells: [], cells: { …
+    266|         inventory: [item({ handle: 42, tval: TV.WAND, sval: SVAL.wand.…
+    267|       expect(light.borgLightBeam(s.ctx, buildItemDeps(s.session))).toE…
+       |                                                                    ^
+    268|     }
+    269|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  src/item/no-light.test.ts > corridor beams (borg-light.c:673-904; borg-fight-defend.c:2802-2810) > keeps the C's zero-radius west loop empty
+AssertionError: expected { code: 'walk', dir: 8 } to deeply equal { code: 'aim-wand', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "handle": 42,
+-   },
+-   "code": "aim-wand",
++   "code": "walk",
+    "dir": 8,
+  }
+
+ ❯ src/item/no-light.test.ts:280:32
+    278|
+    279|   it("keeps the C's zero-radius west loop empty", () => {
+    280|     expect(corridor().brave()).toEqual({ code: "aim-wand", args: { han…
+       |                                ^
+    281|     const s = scenario({ spells: [], cells: { "9,10": { known: false, …
+    282|       inventory: [item({ tval: TV.WAND, sval: SVAL.wand.light!, pval: …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  src/item/no-light.test.ts > recovery illumination scans (borg-light.c:139-220) > counts remembered diagonal walls before recovery rest
+AssertionError: expected undefined to be 'rest' // Object.is equality
+
+- Expected:
+"rest"
+
++ Received:
+undefined
+
+ ❯ src/item/no-light.test.ts:292:64
+    290|       equipment: [item({ artifact: true, artifactName: "ILLUMINATION",…
+    291|     for (const [x, y] of [[9, 9], [11, 9], [9, 11]] as const) s.world.…
+    292|     expect(borgRecover(s.ctx, buildItemDeps(s.session))?.code).toBe("r…
+       |                                                                ^
+    293|   });
+    294|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  src/item/no-light.test.ts > recovery illumination scans (borg-light.c:139-220) > counts torchlight flags instead of visible floors before recovery rest
+AssertionError: expected undefined to be 'rest' // Object.is equality
+
+- Expected:
+"rest"
+
++ Received:
+undefined
+
+ ❯ src/item/no-light.test.ts:299:64
+    297|       equipment: [item({ artifact: true, artifactName: "ILLUMINATION",…
+    298|     for (let y = 8; y <= 12; y++) for (let x = 8; x <= 12; x++) s.worl…
+    299|     expect(borgRecover(s.ctx, buildItemDeps(s.session))?.code).toBe("r…
+       |                                                                ^
+    300|   });
+    301| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  1 failed | 6 passed (7)
+      Tests  8 failed | 112 passed (120)
+   Start at  11:58:03
+   Duration  5.51s (transform 6.93s, setup 4.03s, import 8.55s, tests 5.01s, environment 1ms)

@@ -67,3 +67,27 @@ artifacts. No failure text or assertions were altered.
 No engine/package/SDK change, no C238 repair, no other derived-stat correction,
 no strategy change, owner save/profile/data, lab deployment or Rust polling.
 Final focused/default and exact-source verification are recorded after repair.
+
+## Correction and focused qualification
+
+The port now retains the freshly cleared BI_LIGHT zero base before its existing
+equipment scan. Only the extra PlayerView.light assignment is removed; the
+original-C double modifier, fuel and Necromancer ordering are unchanged. The
+incorrect fidelity prose is corrected. [Focused results](focused.log):120 tests
+across7 files pass, including all8 registered public-frame cases. Types, session,
+grants, own rebuild and [plugin currency](currency.log) pass (669.2KiB/API2).
+
+The first broader focus gave112pass/8fail; its [output is preserved](focused-initial-failure.log).
+Eight existing beam/recovery policy cases supplied only synthetic player.light,
+with no corresponding equipment. They had depended on the incorrect assignment
+for their chosen model radius. Their fixture now names that input lightRadius
+and applies it explicitly to the model after Notice/before perception. This is
+a model-level policy-test boundary, not legal gameplay/engine-light proof. Every
+beam/recovery/threshold assertion remains unchanged; there is no seed, timeout or
+policy waiver, default-radius override or production trait injection. The new
+registered light-base tests never force BI_LIGHT and exercise real calculation.
+
+Exact-head hosted ordinary and exact-source full verification remain required
+before a ready-for-merge claim. No duplicate local full is run. Source41 remains
+open pending actual official upstream acceptance/import; own-fork delivery is not
+that acceptance. Parent owns merge, actual-master verification and consumer196.
