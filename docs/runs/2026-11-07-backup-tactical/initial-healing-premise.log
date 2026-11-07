@@ -1,0 +1,39 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-backup-tactical-50
+
+ ❯ src/item/backup-tactical.test.ts (45 tests | 1 failed) 2612ms
+   × keeps healing ahead of the backup attempt in the production caution rung 186ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/item/backup-tactical.test.ts > keeps healing ahead of the backup attempt in the production caution rung
+AssertionError: expected { code: 'wield', args: { handle: 2 } } to deeply equal { code: 'quaff', args: { handle: 4 } }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "handle": 4,
++     "handle": 2,
+    },
+-   "code": "quaff",
++   "code": "wield",
+  }
+
+ ❯ src/item/backup-tactical.test.ts:162:49
+    160|   let calls=0;const session=buildThinkSession({loadoutDangerAnswer:()=…
+    161|   installThinkSession(s.ctx.world,session);primeSession(session,s.ctx)…
+    162|   expect(borgCaution(s.ctx,session.flow.state)).toEqual({code:"quaff",…
+       |                                                 ^
+    163| });
+    164|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 81 passed (82)
+   Start at  21:23:10
+   Duration  8.07s (transform 8.85s, setup 1.85s, import 11.65s, tests 11.60s, environment 1ms)
+

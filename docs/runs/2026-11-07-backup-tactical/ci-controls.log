@@ -1,0 +1,39 @@
+✔ audited prose and inert run receipts use real docs contracts (1.096127ms)
+✔ plugin.ts keeps ordinary and source full gates (0.113278ms)
+✔ src/play.test.ts keeps ordinary and source full gates (0.079452ms)
+✔ package.json keeps ordinary and source full gates (0.088012ms)
+✔ pnpm-lock.yaml keeps ordinary and source full gates (0.140471ms)
+✔ pnpm-workspace.yaml keeps ordinary and source full gates (0.063014ms)
+✔ patches/engine-notespot/README.md keeps ordinary and source full gates (0.048545ms)
+✔ .github/workflows/ci.yml keeps ordinary and source full gates (0.06938ms)
+✔ tools/ci-profile.mjs keeps ordinary and source full gates (0.069351ms)
+✔ tools/build-notespot-artifacts.sh keeps ordinary and source full gates (0.652264ms)
+✔ docs/runs/new/result.json keeps ordinary and source full gates (0.135879ms)
+✔ docs/runs/new/control.py keeps ordinary and source full gates (0.05574ms)
+✔ docs/runs/new/repro.sh keeps ordinary and source full gates (0.053555ms)
+✔ docs/fixtures/input.md keeps ordinary and source full gates (0.033688ms)
+✔ docs/fixture.json keeps ordinary and source full gates (0.029329ms)
+✔ docs/new-unknown.md keeps ordinary and source full gates (0.042052ms)
+✔ new-config keeps ordinary and source full gates (0.023879ms)
+✔ docs/img/borg-autoplay.jpg keeps ordinary and source full gates (0.028741ms)
+✔ empty, unavailable and malformed paths fail safe (0.060626ms)
+✔ manual and unsupported or malformed events do not silently choose docs (0.247651ms)
+✔ PR merge-base diff excludes unrelated default-branch movement (34.974439ms)
+✔ default push diffs and code-to-doc renames cannot hide source changes (44.06876ms)
+✔ binary documentation changes remain full (20.986055ms)
+✔ mode documentation changes remain full (19.300777ms)
+✔ symlink documentation changes remain full (18.022859ms)
+✔ unavailable git objects and empty commit diffs stay full (16.089937ms)
+✔ CLI writes complete boolean outputs on an actual git diff (47.359458ms)
+✔ one automatic workflow preserves PR/master/manual triggers and concurrency (1.485354ms)
+✔ trigger negative controls reject duplicates, issue events and bypasses (0.388448ms)
+✔ stable final gate accepts only complete matching profiles (0.271857ms)
+✔ ordinary and exact-source shared logs reject missing cases, failures and any skips (0.178894ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 261.799053

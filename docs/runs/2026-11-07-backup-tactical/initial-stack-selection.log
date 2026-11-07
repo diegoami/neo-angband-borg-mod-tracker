@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-backup-tactical-50
+
+ ❯ src/item/backup-public.test.ts (6 tests | 1 failed) 462ms
+   × lets Core split a nonartifact stack and own overflow without emitting a drop strategy 54ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/item/backup-public.test.ts > lets Core split a nonartifact stack and own overflow without emitting a drop strategy
+AssertionError: expected null to be 8 // Object.is equality
+
+- Expected:
+8
+
++ Received:
+null
+
+ ❯ src/item/backup-public.test.ts:83:136
+     81| });
+     82| it("lets Core split a nonartifact stack and own overflow without emitt…
+     83|   const f=fixture(),weapon=f.add({kind:"& Mattock~"},2);f.fill();const…
+       |                                                                                                                                        ^
+     84|   const before=Core.buildKnownWorld(f.state,{reg:f.reg}).floorHere??[]…
+     85|   const cmd=borgBackupSwap(ctx,50,{randarts:false,backupEval:()=>safe(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 75 passed (76)
+   Start at  21:15:04
+   Duration  1.35s (transform 1.20s, setup 585ms, import 1.47s, tests 1.02s, environment 0ms)
+
