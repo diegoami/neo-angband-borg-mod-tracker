@@ -1,0 +1,7 @@
+RUN  v4.1.11 /tmp/neo-borg-notice-swap-46
+
+
+ Test Files  12 passed (12)
+      Tests  226 passed (226)
+   Start at  19:15:17
+   Duration  2.26s (transform 3.49s, setup 3.43s, import 4.72s, tests 2.97s, environment 1ms)

@@ -1,0 +1,7 @@
+RUN  v4.1.11 /tmp/neo-borg46-raw-focus.KrKQrB
+
+
+ Test Files  12 passed (12)
+      Tests  226 passed (226)
+   Start at  19:19:34
+   Duration  6.12s (transform 8.12s, setup 8.31s, import 10.88s, tests 8.21s, environment 3ms)
