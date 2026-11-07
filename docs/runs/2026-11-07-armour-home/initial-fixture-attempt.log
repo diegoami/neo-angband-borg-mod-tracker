@@ -1,0 +1,161 @@
+RUN  v4.1.11 /tmp/neo-borg-armour-home-48
+
+ ❯ src/store/armour-backup.test.ts (18 tests | 9 failed) 2825ms
+   × selects the actual known Nether boots as a carried armour backup without wearing them 401ms
+   × includes the carried armour value in power 11ms
+   × retrieves the registered armour through normal HOME dependencies 9ms
+   × does not depend on the optional worn-loadout evaluator for armour HOME value 6ms
+   × applies the C armour depth gate at 50 16ms
+   × applies the C armour depth gate at 89 5ms
+   × keeps C's excluded type/OneRing guard for 'The One Ring' 72ms
+   × chooses the later equal-score nonartifact pack item without adding an AC reward 194ms
+   × preserves the armour snapshot when noticeSwap is false and reselects on true 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/armour-backup.test.ts > selects the actual known Nether boots as a carried armour backup without wearing them
+AssertionError: expected undefined to be 2 // Object.is equality
+
+- Expected:
+2
+
++ Received:
+undefined
+
+ ❯ src/store/armour-backup.test.ts:55:33
+     53|   expect(s.wanted.resists).toContainEqual({ element: "NETHER", level: …
+     54|   expect(s.ctx.world.self.trait[BI.RNTHR]).toBe(0);
+     55|   expect(armour(s.ctx)?.handle).toBe(2);
+       |                                 ^
+     56|   expect(armour(s.ctx)?.value).toBeGreaterThan(100000);
+     57|   expect(s.ctx.view.equipment()[0]?.artifactName).toBe("of Pain");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  src/store/armour-backup.test.ts > includes the carried armour value in power
+AssertionError: expected 0 to be greater than 100000
+ ❯ src/store/armour-backup.test.ts:61:69
+     59| it("includes the carried armour value in power", () => {
+     60|   const empty = scene({ home: false }), carried = scene({ carry: true,…
+     61|   expect(carried.ctx.world.self.power - empty.ctx.world.self.power).to…
+       |                                                                     ^
+     62| });
+     63| it("retrieves the registered armour through normal HOME dependencies",…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  src/store/armour-backup.test.ts > retrieves the registered armour through normal HOME dependencies
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/armour-backup.test.ts:65:53
+     63| it("retrieves the registered armour through normal HOME dependencies",…
+     64|   const s = scene();
+     65|   expect(borgThinkHomeBuySwapArmour(s.ctx, s.deps)).toBe(true);
+       |                                                     ^
+     66|   expect(borgThinkShopBuy(s.ctx, 7, s.deps)).toMatchObject({ code: "sh…
+     67| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  src/store/armour-backup.test.ts > does not depend on the optional worn-loadout evaluator for armour HOME value
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/armour-backup.test.ts:70:53
+     68| it("does not depend on the optional worn-loadout evaluator for armour …
+     69|   const s = scene({ loadout: false });
+     70|   expect(borgThinkHomeBuySwapArmour(s.ctx, s.deps)).toBe(true);
+       |                                                     ^
+     71| });
+     72| it.each([[49, false], [50, true], [89, true], [90, false]] as const)("…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  src/store/armour-backup.test.ts > applies the C armour depth gate at 50
+ FAIL  src/store/armour-backup.test.ts > applies the C armour depth gate at 89
+AssertionError: expected null to be 2 // Object.is equality
+
+- Expected:
+2
+
++ Received:
+null
+
+ ❯ src/store/armour-backup.test.ts:74:41
+     72| it.each([[49, false], [50, true], [89, true], [90, false]] as const)("…
+     73|   const s = scene({ carry: true, maxDepth });
+     74|   expect(armour(s.ctx)?.handle ?? null).toBe(chosen ? 2 : null);
+       |                                         ^
+     75| });
+     76| it("keeps swaps disabled when the owner option is off", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  src/store/armour-backup.test.ts > keeps C's excluded type/OneRing guard for 'The One Ring'
+Error: Public object identity mismatch
+ ❯ registeredKnownItem test/fixtures/registered-items.ts:46:13
+     44|     const candidate = Core.buildKnownWorld(state, { reg }).inventory!.…
+     45|     if (!candidate || candidate.tval !== kind.tval || candidate.sval !…
+     46|       throw Error("Public object identity mismatch");
+       |             ^
+     47|     if (spec.known !== false && (candidate.unknownRunes || candidate.a…
+     48|       throw Error("Public object knowledge/dice mismatch");
+ ❯ known src/store/armour-backup.test.ts:24:86
+ ❯ src/store/armour-backup.test.ts:82:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  src/store/armour-backup.test.ts > chooses the later equal-score nonartifact pack item without adding an AC reward
+AssertionError: expected undefined to be 3 // Object.is equality
+
+- Expected:
+3
+
++ Received:
+undefined
+
+ ❯ src/store/armour-backup.test.ts:89:33
+     87|   expect(mithril.ac).toBeGreaterThan(leather.ac);
+     88|   const s = scene({ home: false, pack: [leather, mithril] });
+     89|   expect(armour(s.ctx)?.handle).toBe(3);
+       |                                 ^
+     90|   const reversed = scene({ home: false, pack: [mithril, leather] });
+     91|   expect(armour(reversed.ctx)?.handle).toBe(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  src/store/armour-backup.test.ts > preserves the armour snapshot when noticeSwap is false and reselects on true
+AssertionError: expected undefined to be 2 // Object.is equality
+
+- Expected:
+2
+
++ Received:
+undefined
+
+ ❯ src/store/armour-backup.test.ts:115:25
+    113|   const s = scene({ carry: true });
+    114|   const found = armour(s.ctx);
+    115|   expect(found?.handle).toBe(2);
+       |                         ^
+    116|   const emptied = { ...s.ctx, view: { ...s.ctx.view, inventory: () => …
+    117|   borgNotice(emptied, { noticeSwap: false });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 9 passed (18)
+   Start at  19:48:51
+   Duration  5.42s (transform 1.37s, setup 805ms, import 1.55s, tests 2.82s, environment 0ms)
