@@ -8,7 +8,9 @@
 2. Keep the declared verified package/backport baseline. Source24/25 content
    discovery and the noteSpot delivery are resolved history, not a fresh pending
    queue; current issues/checkpoint retain authority. Source2's weapon-value/HOME
-   leaf and source48 armour data/value/HOME leaf are integrated; actual tactical
+   leaf and source48 armour data/value/HOME leaf are integrated. Source51 corrects
+   its known-negative-flag curse predicate; source50 tactical/SR work is paused
+   until that follow-up is verified. Actual tactical
    equip/SR-availability and named public-API limits remain separate. Source2
    is not a completed swap subsystem; select the tactical parity leaf only after
    the parent verifies the data-leaf delivery. Timing35 needs a repeated normal failure
