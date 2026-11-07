@@ -70,8 +70,8 @@ distinguish focused proof, required ordinary/exact-source profiles and deploymen
 
 The separate exact fork-source profile retains its own verified source/artifact
 identity and exact transitive SDK selection. It is not the registry artifact
-merely because both manifests say beta.3. The default suite now retains all 994
-cases: the previous 954 plus forty armour data/value/HOME and capacity controls. No source
+merely because both manifests say beta.3. The default suite now retains all 1000
+cases: the previous 994 plus six known-negative-flag armour-curse controls. No source
 policy, seed, assertion or timeout is weakened. The separate exact-source profile
 selects official06a (edge.218 source) with raw beta.3-versioned artifacts; it is
 not the registry beta.3 or the separately stamped desktop build.
