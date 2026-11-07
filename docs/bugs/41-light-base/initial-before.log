@@ -1,0 +1,52 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-light-base-41
+
+ ❯ src/trait/light-base.test.ts (8 tests | 2 failed) 853ms
+     × Warrior with phial preserves C equipment-light calculation 94ms
+     × Necromancer with phial preserves C equipment-light calculation 54ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Warrior with phial preserves C equipment-light calculation
+AssertionError: expected 12 to be 8 // Object.is equality
+
+- Expected
++ Received
+
+- 8
++ 12
+
+ ❯ src/trait/light-base.test.ts:81:44
+     79|       expect(item!.modifiers).toContainEqual({ code: "LIGHT", value: 4…
+     80|     }
+     81|     expect(ctx.world.self.trait[BI.LIGHT]).toBe(expected);
+       |                                            ^
+     82|   });
+     83| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Necromancer with phial preserves C equipment-light calculation
+AssertionError: expected 10 to be 7 // Object.is equality
+
+- Expected
++ Received
+
+- 7
++ 10
+
+ ❯ src/trait/light-base.test.ts:81:44
+     79|       expect(item!.modifiers).toContainEqual({ code: "LIGHT", value: 4…
+     80|     }
+     81|     expect(ctx.world.self.trait[BI.LIGHT]).toBe(expected);
+       |                                            ^
+     82|   });
+     83| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 passed (8)
+   Start at  11:54:21
+   Duration  2.10s (transform 448ms, setup 525ms, import 466ms, tests 853ms, environment 0ms)

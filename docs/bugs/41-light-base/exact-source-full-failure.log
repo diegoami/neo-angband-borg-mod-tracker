@@ -1,0 +1,3030 @@
+RUN  v4.1.11 /tmp/neo-borg-notespot-verify-9iRmX9/source
+
+ ✓ src/store/store.test.ts (49 tests) 142ms
+ ❯ src/think-session.test.ts (51 tests | 4 failed) 153ms
+     ✓ supplies no wearEval at all when the seam is not wired 4ms
+     ✓ asks for the power of WEARING the candidate, by its gear handle 3ms
+     ✓ cancels a systematic offset between the live and simulated derives 1ms
+     ✓ hands back the CURRENT power when the engine cannot answer 1ms
+     ✓ makes borg_wear_stuff actually wear the thing, end to end 8ms
+     ✓ keeps cursed gear when removing it lowers power or the answer is unavailable 2ms
+     ✓ removes the last qualifying slot and counts the action 1ms
+     ✓ respects the full guard 1ms
+     ✓ respects the hungry guard 1ms
+     ✓ respects the weak guard 1ms
+     ✓ respects the level guard 1ms
+     ✓ respects the panel guard 1ms
+     ✓ keeps protected equipment {"aware":false} 1ms
+     ✓ keeps protected equipment {"inscription":"??"} 1ms
+     ✓ keeps protected equipment {"artifact":true,"artifactName":"'The One Ring'","curses":["slowness"]} 1ms
+     ✓ allows unknown runes on cursed gear at the exact time limits 1ms
+     × uses the C glyph chain at failure 30 with scroll true 27ms
+     × uses the C glyph chain at failure 31 with scroll true 6ms
+     ✓ uses the C glyph chain at failure 31 with scroll false 7ms
+     ✓ rejects a charging glyph activation 8ms
+     × finds a Mage bolt without a launcher and rejects a blocked bolt 9ms
+     ✓ finds a Necromancer bolt without a launcher and rejects a blocked bolt 7ms
+     ✓ uses quiver ammunition and does not treat shots without ammunition as an attack 4ms
+     ✓ draws for both spell probes before falling back to arrows, even without known spells 2ms
+     × moves to a position with a bolt path and restores the real position 11ms
+     ✓ waits for the C random check when both fingers are full 1ms
+     ✓ compares tight then loose and applies the final strict power gate: {"powers":[2000,2000],"handle":30} 1ms
+     ✓ compares tight then loose and applies the final strict power gate: {"powers":[2000,1500],"handle":20} 1ms
+     ✓ compares tight then loose and applies the final strict power gate: {"powers":[1000,1000],"handle":null} 1ms
+     ✓ compares tight then loose and applies the final strict power gate: {"powers":[1001,1000],"handle":20} 1ms
+     ✓ uses the C danger gate: {"danger":10,"dangers":[10,11],"handle":null} 1ms
+     ✓ uses the C danger gate: {"danger":10,"dangers":[9,10],"handle":20} 1ms
+     ✓ uses the C danger gate: {"danger":0,"dangers":[0,0],"handle":30} 1ms
+     ✓ considers a cursed worn ring and still draws before the One Ring shortcut 1ms
+     ✓ draws after a successful non-ring comparison, but not after a rejected one 8ms
+     ✓ wears the last best ring with both fingers empty and keeps the 50-point margin out of this rung 1ms
+     ✓ keeps a lone loose One Ring and removes an ordinary lone loose ring only in town 1ms
+     ✓ queues the C's second town takeoff through the session and ladder 2ms
+     ✓ restores a queued takeoff when the controller retries the decision 7ms
+     ✓ respects the empty-finger space guard 0ms
+     ✓ respects the empty-finger level guard 0ms
+     ✓ respects the empty-finger hungry guard 0ms
+     ✓ respects the empty-finger weak guard 0ms
+     ✓ respects the empty-finger unaware guard 0ms
+     ✓ respects the town reordering space and time guards and protects the tight One Ring 6ms
+     ✓ supplies none of the store evals when the seam is not wired 1ms
+     ✓ prices a non-wieldable ware as a purchase into the pack 0ms
+     ✓ prices a wieldable ware as worn, and carries the rest of the stack 0ms
+     ✓ addresses a ware by its own stock index, not by its position in a filter 0ms
+     ✓ prices a sale as giving the stack up, and the home check as giving up ONE 0ms
+     ✓ wires weapon-backup value while leaving armour backup separate 0ms
+ ❯ src/fight/fight.test.ts (73 tests | 18 failed) 459ms
+     ✓ fire brand vs non-immune -> x3 2ms
+     ✓ fire brand vs IM_FIRE -> x1 (no bonus) 0ms
+     ✓ fire brand vs HURT_FIRE -> x6 (vuln doubles) 0ms
+     ✓ slay EVIL vs evil -> x2 0ms
+     ✓ slay UNDEAD vs undead -> x3 0ms
+     ✓ *slay* UNDEAD_5 vs undead -> x5 0ms
+     ✓ 2d6 warrior, chance capped at 95% -> 6 14ms
+     ✓ unique below town gets the x6 targeting bonus (dam += dam*5) 2ms
+     ✓ FIRE, no immunity -> full damage 10ms
+     ✓ FIRE vs IM_FIRE -> 0 3ms
+     ✓ FIRE vs HURT_FIRE -> doubled 6ms
+     ✓ HOLY_ORB vs EVIL -> doubled 5ms
+     ✓ no monsters -> null (yield) 2ms
+     ✓ adjacent monster, warrior -> a melee (walk) command 7ms
+     ✓ targets a monster the borg perceives, with the grid flags play really sets 9ms
+     ✓ healthy, no monsters -> null (nothing to do) 6ms
+     ✓ takes an up staircase it is standing on while leaving (caution.c:1169) 4ms
+     ✓ takes a down staircase it is standing on while leaving (caution.c:1188) 5ms
+     ✓ prefers up over down when there is an up stair and the borg is hungry 5ms
+     ✓ does not touch a staircase when it has no reason to leave 8ms
+     ✓ steps away from an adjacent monster down a corridor 4ms
+     ✓ stands its ground when the danger is not worth a step 2ms
+     ✓ stays put while the anti-summon corridor timer is running 3ms
+     ✓ cannot predict where a step lands while confused 2ms
+     × scores mass genocide at 120 percent danger, reads before casting, and forgets non-uniques across the level 18ms
+     × rejects lethal mass-genocide strain and discounts a crowd during the Morgoth fight 11ms
+     × banishes a distant level threat by default symbol and preserves uniques sharing it 8ms
+     × subtracts both fear caches before the immediate-danger gates and keeps the C's <= gate 5ms
+     × counts nasties once, keeps historical counts, chooses the last qualifying symbol, and resets only that count 10ms
+     × uses banishment for assumed hounds through the production controller 94ms
+     ✓ rejects genocide manoeuvres under status 112 3ms
+     ✓ rejects genocide manoeuvres under status 114 2ms
+     ✓ rejects genocide manoeuvres under status 121 3ms
+     × scores teleport-away, targets the remembered grid, and requires ten glyphs 3ms
+     × uses the glyph and low-mana teleport values in C order 3ms
+     × scores crowded banishment at 1500, counts close monsters twice, and casts mass before evil 11ms
+     ✓ requires more than seven weighted targets and filters non-evil monsters for banish evil 19ms
+     × lights a dark path to Morgoth using the tracked position, with 500 simulation and 200 execution values 5ms
+     × scores and casts the prayer at level 29 7ms
+     × scores and casts the prayer at level 30 4ms
+     ✓ applies 4 to tval 10 sval 0 aware false with penalty 20 7ms
+     ✓ applies 4 to tval 10 sval 0 aware true with penalty 0 4ms
+     ✓ applies 6 to tval 10 sval 0 aware false with penalty 20 3ms
+     ✓ applies 6 to tval 10 sval 0 aware true with penalty 0 4ms
+     ✓ applies 5 to tval 21 sval 5 aware false with penalty 20 5ms
+     ✓ applies 5 to tval 21 sval 5 aware true with penalty 2000 6ms
+     ✓ applies 7 to tval 26 sval 11 aware true with penalty 2000 3ms
+     ✓ applies 7 to tval 26 sval 12 aware true with penalty 2000 3ms
+     ✓ applies 7 to tval 26 sval 13 aware true with penalty 2000 3ms
+     ✓ applies 7 to tval 26 sval 8 aware false with penalty 2000 8ms
+     ✓ applies 7 to tval 26 sval 8 aware true with penalty 20 3ms
+     ✓ applies 2 to tval 26 sval 13 aware true with penalty 0 3ms
+     ✓ protects inc_str only while the stat needs raising 4ms
+     ✓ protects inc_int only while the stat needs raising 4ms
+     ✓ protects inc_wis only while the stat needs raising 18ms
+     ✓ protects inc_dex only while the stat needs raising 4ms
+     ✓ protects inc_con only while the stat needs raising 3ms
+     ✓ uses the mass-genocide activation ahead of its spell 4ms
+     × prefers a genocide spell to its activation when spell=true 4ms
+     ✓ prefers a genocide spell to its activation when spell=false 3ms
+     ✓ prefers a nasty activation to its staff and spell when activation=true 3ms
+     ✓ prefers a nasty activation to its staff and spell when activation=false 3ms
+     ✓ uses a staff when no other genocide source exists 3ms
+     ✓ scores nasty health/depth { hp: 249, maxHp: 250, depth: 25 } at danger 0 as 0 2ms
+     × scores nasty health/depth { hp: 250, maxHp: 250, depth: 25 } at danger 25 as 10 13ms
+     ✓ scores nasty health/depth { hp: 250, maxHp: 250, depth: 24 } at danger 0 as 0 3ms
+     ✓ scores nasty health/depth { hp: 699, maxHp: 1000, depth: 25 } at danger 0 as 0 3ms
+     × scores nasty health/depth { hp: 700, maxHp: 1000, depth: 25 } at danger 0 as 10 2ms
+     ✓ scores nasty health/depth { hp: 700, maxHp: 1000, depth: 25 } at danger 26 as 0 2ms
+     × rejects a genocide level threat below 375 HP or at 75 monsters 3ms
+     × casts banish evil on a crowd and preserves uniques while forgetting all other races 3ms
+     × uses Morgoth light fallback 74 12ms
+     ✓ uses Morgoth light fallback 103 4ms
+ ✓ src/resolvers.test.ts (23 tests) 53ms
+ ❯ src/item/junk-space.test.ts (25 tests | 2 failed) 266ms
+     ✓ makes a full-pack hole by dropping the whole least-cost stack, breaking ties by total weight 7ms
+     ✓ retries desperately when only unidentified boots remain, but preserves artifacts, food and books 10ms
+     ✓ values retained power above sale price when making a hole 1ms
+     ✓ uses the C danger exception only at full HP, and consumes useful food before dropping it 5ms
+     ✓ sheds one heavy item when slow, using simulated power, weight and greed 2ms
+     ✓ restricts weight shedding to dungeon decisions with low danger and ordinary play 1ms
+     ✓ penalizes expensive weight loss but ignores prices below the C greed threshold 1ms
+     ✓ dumps a whole bad quiver stack, preserving good matching ammo 2ms
+     ✓ keeps quiver membership through the production view without duplicating ammo or pack slots 2ms
+     ✓ keeps unidentified boots and unknown runes while choosing a whole known stack 6ms
+     ✓ compares stack prices once for a hole and one item's price for slowness 8ms
+     ✓ applies the C unaware price and cursed-item zero before multiplying quantities 3ms
+     ✓ uses the remaining missile count for the hole's preservation penalty 9ms
+     ✓ counts quiver entries for power and weighted quantities for pack capacity 10ms
+     ✓ preserves unknown matching quiver runes and drops the earliest mismatched stack 3ms
+     × excludes quiver timeouts from recharge selection and requires a completed wear for R75 13ms
+     ✓ rewinds a speculative drop before a settled candidate wins through the controller 35ms
+     ✓ rewinds the quiver rung's panel increment and discard memory before deciding again 17ms
+     ✓ refreshes a pending baseline after a speculative controller pass 16ms
+     ✓ visits quiver entries after pack entries when weight-loss scores tie 4ms
+     ✓ uses the inventory listing order for tied hole candidates and permits foreign books 9ms
+     × reaches worn recharge through the controller after the earlier inventory rungs yield 94ms
+     ✓ rests for 75 turns for an equipped activation and excludes torch fuel 4ms
+     ✓ wears a carried activation and queues its following rest 1ms
+     ✓ continues the wired wear/rest sequence before another ladder decision 2ms
+ ❯ src/recall.test.ts (51 tests | 31 failed) 628ms
+     × crawls rather than recalling to an unstocked depth 100 23ms
+     × lets risky play bypass town preparedness 16ms
+     × waits until max depth 10 when worshipping gold 11ms
+     ✓ leaves depth 100 only during the first ten turns when unprepared 20ms
+     × uses level teleportation before stairs when unprepared on depth 100 7ms
+     × gates rising recall at trip age 200 10ms
+     × includes time spent on previous dungeon levels 6ms
+     × recalls immediately for restocking after the 100-turn level grace 7ms
+     ✓ walks up from depth 100 when unprepared for 99 6ms
+     × recalls from a shallow level after 1000 turns without up stairs 6ms
+     ✓ stays on depth 1 for 200 turns to rotate shops 9ms
+     × returns after a long trip 5ms
+     ✓ returns after 3500 turns of shallow scumming 6ms
+     × recalls immediately to collect battle supplies from home 4ms
+     ✓ returns to store battle potions 9ms
+     ✓ climbs from 99 to scum after Sauron dies 6ms
+     ✓ returns to sell without boredom: {"level":14,"gold":false} 7ms
+     ✓ returns to sell without boredom: {"level":25,"gold":true} 5ms
+     × stops boredom and rising while Morgoth was recently seen 6ms
+     ✓ records a new Morgoth sighting before deciding whether to leave 11ms
+     × rests 100 turns to recharge a recall rod 8ms
+     ✓ activates recall through the real session resolver 2ms
+     ✓ short-circuits after the rod and leaves shopping goals alone 3ms
+     × clears shopping goals after the recall scroll 2ms
+     × rests 500 turns while safe in the dungeon 4ms
+     ✓ rests nine turns without light while recalling 4ms
+     ✓ waits nine turns at the ladder tail when caution cannot rest 5ms
+     × prepares for recall just before leaving town 6ms
+     × prepares 'Protection from Evil' before town recall 3ms
+     × prepares 'Bless' before town recall 3ms
+     × prepares 'Demon Bane' before town recall 3ms
+     × buys time during recall with 'phase_door' 3ms
+     ✓ buys time during recall with 'cure_light' 3ms
+     ✓ buys time during recall with 'healing' 2ms
+     × recalls from the caution rung when fleeing 3ms
+     ✓ discards a reset request when a decision is retried 77ms
+     ✓ re-explores and re-shops at clock 12000 66ms
+     ✓ re-explores and re-shops at clock 25000 40ms
+     ✓ requests a reset only after the town and clock thresholds 145ms
+     ✓ discards the old depth answer before choosing another command 6ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":40,"live":5,"answer":true} 9ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":127,"live":0,"answer":false} 6ms
+     × answers through the tick using the recall decision: {"depth":35,"maxDepth":60,"hunted":40,"live":5,"answer":false} 5ms
+     × answers through the tick using the recall decision: {"depth":45,"maxDepth":60,"hunted":40,"live":5,"answer":true} 5ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":45,"hunted":40,"live":5,"answer":false} 5ms
+     × answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"answer":false} 4ms
+     × answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"winner":true,"answer":true} 4ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":4,"answer":false} 6ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":5,"answer":true} 4ms
+     × answers through the tick using the recall decision: {"depth":80,"maxDepth":99,"hunted":80,"live":0,"sauron":true,"answer":true} 4ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":0,"munchkin":true,"answer":true} 4ms
+ ✓ src/item/no-light.test.ts (41 tests) 419ms
+ ❯ src/api2/controller.test.ts (33 tests | 1 failed) 259ms
+     ✓ turn a command into the intent the game takes 2ms
+     ✓ record a target choice for submitting ahead of the command, and hand each over once 0ms
+     ✓ acknowledges, confirms, takes the default, and cancels what it cannot answer 0ms
+     × preserves wear/rest order when a loadout retry starts with pending rest=false 31ms
+     ✓ preserves wear/rest order when a loadout retry starts with pending rest=true 9ms
+     ✓ submits the targets, under a fresh token, and then the command 1ms
+     ✓ reads the loadout questions it asked and decides again, up to a limit 2ms
+     ✓ stops reading loadout questions when none are answered 0ms
+     ✓ says once that it is playing 1ms
+     ✓ hands the keyboard back after a run of idle decisions, then starts counting again 1ms
+     ✓ does not count an idle decision between two commands against the run 1ms
+     ✓ hands the keyboard back after a run of refusals, and logs the first 0ms
+     ✓ forgets the grid an accepted command keeps aiming at when the scene never changes 0ms
+     ✓ hands the keyboard back when the same command changes nothing for a long run 4ms
+     ✓ does not count a command whose scene changes between decisions 1ms
+     ✓ resets the stall count when 'blind' clears in the published view 16ms
+     ✓ resets the stall count when 'confused' clears in the published view 14ms
+     ✓ resets the stall count when 'afraid' clears in the published view 14ms
+     ✓ resets the stall count when 'poisoned' clears in the published view 9ms
+     ✓ resets the stall count when 'paralyzed' clears in the published view 14ms
+     ✓ resets the stall count when 'cut' clears in the published view 21ms
+     ✓ resets the stall count when 'stun' clears in the published view 17ms
+     ✓ resets the stall count when 'cut' crosses a published grade boundary 10ms
+     ✓ resets the stall count when 'stun' crosses a published grade boundary 16ms
+     ✓ counts identical commands while 'blind' stays in one published grade 15ms
+     ✓ counts identical commands while 'confused' stays in one published grade 13ms
+     ✓ counts identical commands while 'afraid' stays in one published grade 13ms
+     ✓ counts identical commands while 'poisoned' stays in one published grade 7ms
+     ✓ counts identical commands while 'paralyzed' stays in one published grade 6ms
+     ✓ counts identical commands while 'cut' stays in one published grade 6ms
+     ✓ counts identical commands while 'stun' stays in one published grade 4ms
+     ✓ counts identical commands when only the published food percentage changes 6ms
+     ✓ reads no world at a wait with a prompt, and waits out a death or other phase 0ms
+ ✓ src/item/item.test.ts (31 tests) 34ms
+ ✓ src/perceive.test.ts (28 tests) 3233ms
+     ✓ purges perceived records through the controller and permits a step  3116ms
+ ✓ src/item/magic-play.test.ts (32 tests) 4848ms
+     ✓ recognizes every Mage book by its registered kind  651ms
+     ✓ recognizes every Druid book by its registered kind  408ms
+     ✓ recognizes every Priest book by its registered kind  474ms
+     ✓ recognizes every Necromancer book by its registered kind  459ms
+ ❯ src/vault.test.ts (18 tests | 9 failed) 2686ms
+     ✓ detects interior permanent walls before choosing a vault over a distant remembered monster 223ms
+     × excavates a vault wall from range before pursuing a distant monster 67ms
+     ✓ uses the constant range for close monsters before excavating 48ms
+     × tries the special-level targets in C order 61ms
+     ✓ defers a bored vault town trip until the C timeout  479ms
+     ✓ defers potion delivery in a vault for trait 215 95ms
+     ✓ defers potion delivery in a vault for trait 216 92ms
+     × keeps the excavated floor while unseen and refreshes it when seen 46ms
+     × uses max_range minus two and requires line of sight and a 30 percent spell 50ms
+     × requires a castable digging spell even when a melting activation is equipped 97ms
+     × uses the spell, ring and activation order and restricts Shatter Stone to adjacent walls 46ms
+     × melts walls before tunneling with the session spell and equipment dependencies 32ms
+     ✓ draws the loop abort before checking the vault exemption 287ms
+     ✓ requires a known interior dungeon wall and resets the vault fact on level change  604ms
+     ✓ omits grid fear only for monsters adjacent to permanent vault walls 272ms
+     × takes remembered objects within 35 before excavating 24ms
+     × mines remembered veins within 35 before excavating 39ms
+     ✓ explores nearby interesting grids before pursuing distant monsters on vault levels 120ms
+ ❯ src/rest.test.ts (20 tests | 3 failed) 124ms
+     ✓ splits a template at its tags, keeping only the literal parts 2ms
+     ✓ matches a real message on the fragments around the tag 0ms
+     ✓ raises regional fear from an unseen spellcaster 10ms
+     ✓ raises regional fear, which is what stops it resting 8ms
+     ✓ asks for detect invisible, timestamped so the maneuver becomes legal 3ms
+     ✓ fears a miss half as much as a hit 2ms
+     ✓ recognises nothing at all without the blow-method table 2ms
+     ✓ raises no regional fear, because the monster's own danger covers it 6ms
+     ✓ still fears one it cannot match to anything adjacent 4ms
+     ✓ drops the fear when the attacker finally shows itself 6ms
+     ✓ loses a point every ten borg turns, and stops blocking rest 37ms
+     ✓ is forgotten outright on a new level 2ms
+     ✓ all run down, so a prep spell does not block resting forever 5ms
+     ✓ starts and finishes a recall from the game's own messages 3ms
+     ✓ asks borg_check_rest rather than assuming it is safe 5ms
+     × refuses to rest for four turns after a tracked multiplier's record is deleted 10ms
+     ✓ does not arm the guard for an ordinary monster's death 3ms
+     ✓ never rests at full HP for a class that regains SP only in combat 3ms
+     × still lets the same character rest when it is hurt 3ms
+     × still lets a class without the flag rest for SP at full HP 3ms
+ ✓ src/api2/bridge.test.ts (22 tests) 37ms
+ ✓ src/wiring.test.ts (2 tests) 2669ms
+     ✓ allows exactly the documented unwritten reads  2605ms
+ ❯ src/flow/play-step.test.ts (32 tests | 9 failed) 187ms
+     × resolves DISABLE_TRAPS on charged equipment 19ms
+     ✓ resolves DESTROY_DOORS on charged equipment 16ms
+     ✓ resolves STONE_TO_MUD on charged equipment 6ms
+     × falls back when DISABLE_TRAPS is charging or carried in the pack 5ms
+     ✓ falls back when DESTROY_DOORS is charging or carried in the pack 14ms
+     ✓ falls back when STONE_TO_MUD is charging or carried in the pack 10ms
+     × prefers the trap activation to its spell 5ms
+     × gates the trap spell at 80 of 100 mana 5ms
+     × gates the trap spell at 81 of 100 mana 7ms
+     × uses the trap spell after a charging activation 5ms
+     ✓ walks across a trap when the player guard rejects disarming: {"light":0} 4ms
+     ✓ walks across a trap when the player guard rejects disarming: {"status":{"blind":1}} 4ms
+     ✓ walks across a trap when the player guard rejects disarming: {"status":{"confused":1}} 3ms
+     × prefers the destruction spell to destruction and melting activations 8ms
+     ✓ prefers the destruction activation to the melting activation 4ms
+     × prefers the Druid melting spell to item melting 4ms
+     × prefers the Blackguard melting spell to item melting 8ms
+     ✓ prefers a charged digging ring to the melting activation 11ms
+     ✓ walks across a trap when perception records a scary monster 4ms
+     ✓ draws twice before opening at 499 panel turns 4ms
+     ✓ draws twice before opening at 500 panel turns 3ms
+     ✓ stops at the paranoia draw before attempting magic 3ms
+     ✓ checks adjacent monsters at level 14 with fear false 3ms
+     ✓ checks adjacent monsters at level 14 with fear true 6ms
+     ✓ checks adjacent monsters at level 15 with fear false 3ms
+     ✓ uses the second draw 0 and panel time 499 4ms
+     ✓ uses the second draw 1 and panel time 499 4ms
+     ✓ uses the second draw 1 and panel time 500 4ms
+     ✓ with unique true at depth 0 and level 3 3ms
+     ✓ with unique true at depth 0 and level 5 2ms
+     ✓ with unique true at depth 2 and level 3 3ms
+     ✓ with unique false at depth 0 and level 3 3ms
+ ✓ src/store/weapon-backup.test.ts (17 tests) 1959ms
+   ✓ retrieves the registered known Nether backup through production HOME deps  331ms
+   ✓ requires an empty pack slot when there is no existing backup  1249ms
+ ✓ src/flow/flow.test.ts (18 tests) 148ms
+ ✓ src/adapter-boundary.test.ts (40 tests) 761ms
+     ✓ finds no host read outside the adapter  750ms
+ ✓ src/settings.test.ts (18 tests) 40ms
+ ✓ src/foundation.test.ts (20 tests) 624ms
+ ✓ src/trait/trait.test.ts (17 tests) 30ms
+ ✓ src/danger/danger.test.ts (21 tests) 66ms
+ ✓ title.test.ts (14 tests) 8ms
+ ❯ src/trait/buff-timers.test.ts (11 tests | 1 failed) 44ms
+     ✓ clears a flag the engine reports as expired 1ms
+     ✓ raises a flag whose on-message was missed 0ms
+     ✓ never lowers haste or protection from evil from the timer (:3013-3022) 0ms
+     ✓ reads haste from either the haste or the sprint timer 0ms
+     ✓ reads the shield flag from either mystic shield or stoneskin 0ms
+     ✓ leaves the message-derived flags alone when no timers are reported 0ms
+     ✓ leaves the flags upstream cross-checks but the view cannot report 0ms
+     × leaves the flag latched until the cross-check clears it, and the Borg blesses again the same turn 22ms
+     ✓ does not recast while the engine says the buff is genuinely still up 7ms
+     ✓ leaves a stale flag latched when the toggle is off 8ms
+     ✓ is on by default, so an absent Bug Fixes still runs the safety net 3ms
+ ✓ plugin.test.ts (16 tests) 377ms
+ ✓ src/core-import-census.test.ts (9 tests) 521ms
+     ✓ has no value importer at all  513ms
+ ✓ src/hallucination.test.ts (13 tests) 45ms
+ ✓ src/manifest-tunables.test.ts (5 tests) 9ms
+ ✓ src/store/knowledge.test.ts (9 tests) 42ms
+ ✓ src/truth-allowlist.test.ts (4 tests) 729ms
+     ✓ makes no hidden read that is not on the list  422ms
+     ✓ makes each listed read somewhere, so the list never names a read the code dropped  302ms
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Warrior with none preserves C equipment-light calculation
+{"cls":"Warrior","light":"none","publicLight":0,"derivedLight":0,"borgLight":0,"equipment":[]}
+
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Warrior with torch preserves C equipment-light calculation
+{"cls":"Warrior","light":"torch","publicLight":2,"derivedLight":2,"borgLight":2,"equipment":[{"label":"& Wooden Torch~","flags":["BURNS_OUT","LIGHT_2"],"modifiers":[],"timeout":5000,"tval":19}]}
+
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Warrior with spent-torch preserves C equipment-light calculation
+{"cls":"Warrior","light":"spent-torch","publicLight":0,"derivedLight":0,"borgLight":0,"equipment":[{"label":"& Wooden Torch~","flags":["BURNS_OUT","LIGHT_2"],"modifiers":[],"timeout":0,"tval":19}]}
+
+stdout | src/rest-and-store-verification.test.ts > the Borg's ladder reaches rest and the store > issue #3: HP below max, in a safe town, triggers a real multi-turn rest
+[rest] 7/10 seeds rested; not-rested (took a higher-priority action first): [2,9,10]
+
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Warrior with phial preserves C equipment-light calculation
+{"cls":"Warrior","light":"phial","publicLight":4,"derivedLight":4,"borgLight":8,"equipment":[{"label":"& Phial~","flags":["NO_FUEL"],"modifiers":[{"code":"LIGHT","value":4}],"timeout":0,"tval":19}]}
+
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Necromancer with none preserves C equipment-light calculation
+{"cls":"Necromancer","light":"none","publicLight":0,"derivedLight":0,"borgLight":1,"equipment":[]}
+
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Necromancer with torch preserves C equipment-light calculation
+{"cls":"Necromancer","light":"torch","publicLight":2,"derivedLight":2,"borgLight":2,"equipment":[{"label":"& Wooden Torch~","flags":["BURNS_OUT","LIGHT_2"],"modifiers":[],"timeout":5000,"tval":19}]}
+
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Necromancer with spent-torch preserves C equipment-light calculation
+{"cls":"Necromancer","light":"spent-torch","publicLight":0,"derivedLight":0,"borgLight":1,"equipment":[{"label":"& Wooden Torch~","flags":["BURNS_OUT","LIGHT_2"],"modifiers":[],"timeout":0,"tval":19}]}
+
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Necromancer with phial preserves C equipment-light calculation
+{"cls":"Necromancer","light":"phial","publicLight":3,"derivedLight":3,"borgLight":7,"equipment":[{"label":"& Phial~","flags":["NO_FUEL"],"modifiers":[{"code":"LIGHT","value":4}],"timeout":0,"tval":19}]}
+
+ ✓ src/trait/light-base.test.ts (8 tests) 688ms
+ ✓ src/store/home-random-power.test.ts (5 tests) 37ms
+ ✓ src/top-level-core-use.test.ts (3 tests) 21ms
+ ✓ src/trait/weapon-swap.test.ts (10 tests) 19ms
+ ✓ src/position-history.test.ts (5 tests) 713ms
+     ✓ compacts at 75 once per decision, including the first zero-filled tail  490ms
+ ✓ src/item/necro-light.test.ts (5 tests) 37ms
+ ❯ src/flow/flow-recover.test.ts (67 tests | 3 failed) 161ms
+     ✓ uses the class and SP that borgNotice reads from the view 16ms
+     ✓ selects a recovery destination for the primary caster branch 8ms
+     ✓ recovers at one third HP and stays put above it with sufficient SP 4ms
+     ✓ recovers for the status {"cut":1} with sufficient SP 2ms
+     ✓ recovers for the status {"stun":1} with sufficient SP 3ms
+     ✓ recovers for the status {"stun":51} with sufficient SP 3ms
+     ✓ recovers for the status {"afraid":1} with sufficient SP 3ms
+     ✓ uses the class and SP that borgNotice reads from the view 3ms
+     × selects a recovery destination for the primary caster branch 9ms
+     ✓ recovers at one third HP and stays put above it with sufficient SP 7ms
+     ✓ recovers for the status {"cut":1} with sufficient SP 3ms
+     ✓ recovers for the status {"stun":1} with sufficient SP 3ms
+     ✓ recovers for the status {"stun":51} with sufficient SP 6ms
+     ✓ recovers for the status {"afraid":1} with sufficient SP 1ms
+     ✓ uses the class and SP that borgNotice reads from the view 1ms
+     × selects a recovery destination for the primary caster branch 2ms
+     ✓ recovers at one third HP and stays put above it with sufficient SP 2ms
+     ✓ recovers for the status {"cut":1} with sufficient SP 1ms
+     ✓ recovers for the status {"stun":1} with sufficient SP 2ms
+     ✓ recovers for the status {"stun":51} with sufficient SP 2ms
+     ✓ recovers for the status {"afraid":1} with sufficient SP 2ms
+     ✓ uses the class and SP that borgNotice reads from the view 2ms
+     × selects a recovery destination for the primary caster branch 3ms
+     ✓ recovers at one third HP and stays put above it with sufficient SP 4ms
+     ✓ recovers for the status {"cut":1} with sufficient SP 2ms
+     ✓ recovers for the status {"stun":1} with sufficient SP 2ms
+     ✓ recovers for the status {"stun":51} with sufficient SP 1ms
+     ✓ recovers for the status {"afraid":1} with sufficient SP 1ms
+     ✓ uses the class and SP that borgNotice reads from the view 2ms
+     ✓ selects a recovery destination for the primary caster branch 6ms
+     ✓ recovers at one third HP and stays put above it with sufficient SP 5ms
+     ✓ recovers for the status {"cut":1} with sufficient SP 2ms
+     ✓ recovers for the status {"stun":1} with sufficient SP 1ms
+     ✓ recovers for the status {"stun":51} with sufficient SP 1ms
+     ✓ recovers for the status {"afraid":1} with sufficient SP 1ms
+     ✓ uses the class and SP that borgNotice reads from the view 1ms
+     ✓ selects a recovery destination for the primary caster branch 1ms
+     ✓ recovers at one third HP and stays put above it with sufficient SP 2ms
+     ✓ recovers for the status {"cut":1} with sufficient SP 1ms
+     ✓ recovers for the status {"stun":1} with sufficient SP 2ms
+     ✓ recovers for the status {"stun":51} with sufficient SP 1ms
+     ✓ recovers for the status {"afraid":1} with sufficient SP 1ms
+     ✓ uses the class and SP that borgNotice reads from the view 1ms
+     ✓ selects a recovery destination for the primary caster branch 1ms
+     ✓ recovers at one third HP and stays put above it with sufficient SP 2ms
+     ✓ recovers for the status {"cut":1} with sufficient SP 1ms
+     ✓ recovers for the status {"stun":1} with sufficient SP 1ms
+     ✓ recovers for the status {"stun":51} with sufficient SP 1ms
+     ✓ recovers for the status {"afraid":1} with sufficient SP 1ms
+     ✓ uses the class and SP that borgNotice reads from the view 1ms
+     ✓ selects a recovery destination for the primary caster branch 1ms
+     ✓ recovers at one third HP and stays put above it with sufficient SP 2ms
+     ✓ recovers for the status {"cut":1} with sufficient SP 1ms
+     ✓ recovers for the status {"stun":1} with sufficient SP 2ms
+     ✓ recovers for the status {"stun":51} with sufficient SP 1ms
+     ✓ recovers for the status {"afraid":1} with sufficient SP 1ms
+     ✓ uses the class and SP that borgNotice reads from the view 1ms
+     ✓ selects a recovery destination for the primary caster branch 1ms
+     ✓ recovers at one third HP and stays put above it with sufficient SP 2ms
+     ✓ recovers for the status {"cut":1} with sufficient SP 1ms
+     ✓ recovers for the status {"stun":1} with sufficient SP 1ms
+     ✓ recovers for the status {"stun":51} with sufficient SP 1ms
+     ✓ recovers for the status {"afraid":1} with sufficient SP 1ms
+     ✓ recovers at one quarter SP and stays put above it or at zero capacity 3ms
+     ✓ recovers at one quarter SP and stays put above it or at zero capacity 3ms
+     ✓ recovers at one quarter SP and stays put above it or at zero capacity 2ms
+     ✓ recovers at one quarter SP and stays put above it or at zero capacity 3ms
+ ✓ src/store/weapon-backup-capacity.test.ts (1 test) 190ms
+ ✓ src/think.test.ts (7 tests) 441ms
+ ✓ src/world/panel.test.ts (7 tests) 4ms
+ ✓ docs-sync.test.ts (2 tests) 6ms
+ ✓ src/manifest-capabilities.test.ts (5 tests) 5ms
+ ✓ src/fight/escape-stair.test.ts (16 tests) 68ms
+ ✓ src/activate.test.ts (6 tests) 7ms
+ ✓ src/fight/bf-census.test.ts (3 tests) 8ms
+ ✓ version-sync.test.ts (3 tests) 6ms
+ ✓ src/time-to-stay.test.ts (4 tests) 12ms
+stdout | src/rest-and-store-verification.test.ts > the Borg's ladder reaches rest and the store > issue #4: physically in a real shop, the store ladder trades with a real effect
+[store] bought=3 sold=10 neither=[]
+
+ ❯ src/rest-and-store-verification.test.ts (4 tests | 2 failed) 30203ms
+     × uses class flags for SP recovery with stairs=false 354ms
+     × uses class flags for SP recovery with stairs=true 127ms
+     ✓ issue #3: HP below max, in a safe town, triggers a real multi-turn rest  21649ms
+     ✓ issue #4: physically in a real shop, the store ladder trades with a real effect  8071ms
+ ✓ src/world/kill.test.ts (2 tests) 2ms
+ ✓ src/play.test.ts (6 tests) 180693ms
+     ✓ keeps playing for 1500 decisions (seed 1)  63025ms
+     ✓ keeps playing for 1500 decisions (seed 7)  15859ms
+     ✓ keeps playing for 1500 decisions (seed 42)  18759ms
+     ✓ keeps playing for 1500 decisions (seed 99)  33509ms
+     ✓ gets into the dungeon and back out under its own steam  49537ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 83 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/recall.test.ts > town recall decisions > crawls rather than recalling to an unstocked depth 100
+AssertionError: expected 'restock light radius < 1' to be null
+
+- Expected:
+null
+
++ Received:
+"restock light radius < 1"
+
+ ❯ src/recall.test.ts:85:37
+     83|   it("crawls rather than recalling to an unstocked depth 100", () => {
+     84|     const s = scenario({ player: { depth: 0, maxDepth: 100 } });
+     85|     expect(borgPrepared(s.ctx, 60)).toBeNull();
+       |                                     ^
+     86|     expect(borgRestock(s.ctx, 100)).not.toBeNull();
+     87|     expect(s.leave(true)?.code).toBe("walk");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/83]⎯
+
+ FAIL  src/recall.test.ts > town recall decisions > lets risky play bypass town preparedness
+AssertionError: expected undefined to be 'walk' // Object.is equality
+
+- Expected:
+"walk"
+
++ Received:
+undefined
+
+ ❯ src/recall.test.ts:105:33
+    103|   it("lets risky play bypass town preparedness", () => {
+    104|     const s = scenario({ player: { depth: 0, maxDepth: 20, maxLevel: 1…
+    105|     expect(s.leave(true)?.code).toBe("walk");
+       |                                 ^
+    106|     setBorgCfg({ playsRisky: true });
+    107|     expect(s.leave(true)?.code).toBe("read");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/83]⎯
+
+ FAIL  src/recall.test.ts > town recall decisions > waits until max depth 10 when worshipping gold
+AssertionError: expected undefined to be 'walk' // Object.is equality
+
+- Expected:
+"walk"
+
++ Received:
+undefined
+
+ ❯ src/recall.test.ts:114:35
+    112|     for (const maxDepth of [8, 9, 10]) {
+    113|       const s = scenario({ player: { depth: 0, maxDepth } });
+    114|       expect(s.leave(true)?.code).toBe(maxDepth < 10 ? "walk" : "read"…
+       |                                   ^
+    115|     }
+    116|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/83]⎯
+
+ FAIL  src/recall.test.ts > upward recall decisions > uses level teleportation before stairs when unprepared on depth 100
+AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'read', args: { handle: 42 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "handle": 42,
+-   },
+-   "code": "read",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/recall.test.ts:130:30
+    128|     const scroll = scenario({ player: { depth: 100, maxDepth: 100 } });
+    129|     scroll.inventory.push(item({ handle: 42, tval: TV.SCROLL, sval: SV…
+    130|     expect(scroll.caution()).toEqual({ code: "read", args: { handle: 4…
+       |                              ^
+    131|     const activation = scenario({ player: { depth: 100, maxDepth: 100 …
+    132|       equipment: [item({ handle: 43, artifact: true, artifactName: "TE…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/83]⎯
+
+ FAIL  src/recall.test.ts > upward recall decisions > gates rising recall at trip age 200
+AssertionError: expected 'walk' to be 'read' // Object.is equality
+
+Expected: "read"
+Received: "walk"
+
+ ❯ src/recall.test.ts:139:31
+    137|       const s = scenario({ player: { depth: 9, maxDepth: 9, light: 1 }…
+    138|       s.world.self.goal.rising = true;
+    139|       expect(s.leave()?.code).toBe(age === 200 ? "walk" : "read");
+       |                               ^
+    140|     }
+    141|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/83]⎯
+
+ FAIL  src/recall.test.ts > upward recall decisions > includes time spent on previous dungeon levels
+AssertionError: expected 'walk' to be 'read' // Object.is equality
+
+Expected: "read"
+Received: "walk"
+
+ ❯ src/recall.test.ts:147:29
+    145|     s.world.self.goal.rising = true;
+    146|     getFightState(s.world).timeTown = 201;
+    147|     expect(s.leave()?.code).toBe("read");
+       |                             ^
+    148|   });
+    149|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/83]⎯
+
+ FAIL  src/recall.test.ts > upward recall decisions > recalls immediately for restocking after the 100-turn level grace
+AssertionError: expected 'walk' to be 'read' // Object.is equality
+
+Expected: "read"
+Received: "walk"
+
+ ❯ src/recall.test.ts:154:29
+    152|     s.inventory.splice(1, 1);
+    153|     borgNotice(s.ctx);
+    154|     expect(s.leave()?.code).toBe("read");
+       |                             ^
+    155|   });
+    156|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/83]⎯
+
+ FAIL  src/recall.test.ts > upward recall decisions > recalls from a shallow level after 1000 turns without up stairs
+AssertionError: expected undefined to be 'read' // Object.is equality
+
+- Expected:
+"read"
+
++ Received:
+undefined
+
+ ❯ src/recall.test.ts:167:33
+    165|     const s = scenario({ player: { depth: 3, maxDepth: 3, light: 1, le…
+    166|     s.world.self.goal.rising = true;
+    167|     expect(s.leave(true)?.code).toBe("read");
+       |                                 ^
+    168|   });
+    169|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/83]⎯
+
+ FAIL  src/recall.test.ts > upward recall decisions > returns after a long trip
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/recall.test.ts:185:40
+    183|       const s = scenario({ player: { depth: 30, maxDepth: 30 }, age });
+    184|       s.leave(true);
+    185|       expect(s.world.self.goal.rising).toBe(age > 8000);
+       |                                        ^
+    186|     }
+    187|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/83]⎯
+
+ FAIL  src/recall.test.ts > upward recall decisions > recalls immediately to collect battle supplies from home
+AssertionError: expected 'restock light radius < 1' to be 'Collect from house (20 potions).' // Object.is equality
+
+Expected: "Collect from house (20 potions)."
+Received: "restock light radius < 1"
+
+ ❯ src/recall.test.ts:201:37
+    199|     borgNotice(s.ctx);
+    200|     s.world.facts.vaultOnLevel = true;
+    201|     expect(borgPrepared(s.ctx, 98)).toBe("Collect from house (20 potio…
+       |                                     ^
+    202|     expect(s.leave()?.code).toBe("read");
+    203|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/83]⎯
+
+ FAIL  src/recall.test.ts > upward recall decisions > stops boredom and rising while Morgoth was recently seen
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/recall.test.ts:242:38
+    240|     s.world.self.goal.leaving = true;
+    241|     s.leave(true);
+    242|     expect(s.world.self.goal.rising).toBe(false);
+       |                                      ^
+    243|     expect(s.world.self.goal.leaving).toBe(false);
+    244|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/83]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > rests 100 turns to recharge a recall rod
+AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'rest', args: { count: 100 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "count": 100,
+-   },
+-   "code": "rest",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/recall.test.ts:260:23
+    258|     s.inventory.push(item({ handle: 42, tval: TV.ROD, sval: SVAL.rod.r…
+    259|     s.world.self.inShop = true;
+    260|     expect(s.think()).toEqual({ code: "rest", args: { count: 100 } });
+       |                       ^
+    261|     expect(s.world.self.inShop).toBe(false);
+    262|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/83]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > clears shopping goals after the recall scroll
+AssertionError: expected undefined to be 'read' // Object.is equality
+
+- Expected:
+"read"
+
++ Received:
+undefined
+
+ ❯ src/recall.test.ts:281:37
+    279|     const s = scenario();
+    280|     Object.assign(s.world.self.goal, { shop: 1, ware: 2, item: 3 });
+    281|     expect(borgRecall(s.ctx)?.code).toBe("read");
+       |                                     ^
+    282|     expect([s.world.self.goal.shop, s.world.self.goal.ware, s.world.se…
+    283|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/83]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > rests 500 turns while safe in the dungeon
+AssertionError: expected { code: 'rest', args: { count: 9 } } to deeply equal { code: 'rest', args: { count: 500 } }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "count": 500,
++     "count": 9,
+    },
+    "code": "rest",
+  }
+
+ ❯ src/recall.test.ts:288:23
+    286|     const s = scenario();
+    287|     s.world.self.goal.recalling = 10000;
+    288|     expect(s.think()).toEqual({ code: "rest", args: { count: 500 } });
+       |                       ^
+    289|   });
+    290|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/83]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > prepares for recall just before leaving town
+AssertionError: expected null to deeply equal { code: 'cast', args: { spell: 18 } }
+
+- Expected:
+{
+  "args": {
+    "spell": 18,
+  },
+  "code": "cast",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:317:25
+    315|     s.inventory.push(item({ handle: 42, tval: TV.NATURE_BOOK, sval: 1 …
+    316|     s.world.self.goal.recalling = s.world.self.gameRatio * 2;
+    317|     expect(s.caution()).toEqual({ code: "cast", args: { spell: 18 } });
+       |                         ^
+    318|     expect(s.world.self.noRestPrep).toBe(5000);
+    319|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/83]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > prepares 'Protection from Evil' before town recall
+AssertionError: expected null to deeply equal { code: 'cast', args: { spell: 10 } }
+
+- Expected:
+{
+  "args": {
+    "spell": 10,
+  },
+  "code": "cast",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:331:27
+    329|       s.inventory.push(item({ handle: 42, tval: TV.PRAYER_BOOK, sval: …
+    330|       s.world.self.goal.recalling = s.world.self.gameRatio * 2;
+    331|       expect(s.caution()).toEqual({ code: "cast", args: { spell: sidx …
+       |                           ^
+    332|       expect(s.world.self.noRestPrep).toBe(rest);
+    333|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/83]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > prepares 'Bless' before town recall
+AssertionError: expected null to deeply equal { code: 'cast', args: { spell: 3 } }
+
+- Expected:
+{
+  "args": {
+    "spell": 3,
+  },
+  "code": "cast",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:331:27
+    329|       s.inventory.push(item({ handle: 42, tval: TV.PRAYER_BOOK, sval: …
+    330|       s.world.self.goal.recalling = s.world.self.gameRatio * 2;
+    331|       expect(s.caution()).toEqual({ code: "cast", args: { spell: sidx …
+       |                           ^
+    332|       expect(s.world.self.noRestPrep).toBe(rest);
+    333|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/83]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > prepares 'Demon Bane' before town recall
+AssertionError: expected null to deeply equal { code: 'cast', args: { spell: 22 } }
+
+- Expected:
+{
+  "args": {
+    "spell": 22,
+  },
+  "code": "cast",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:331:27
+    329|       s.inventory.push(item({ handle: 42, tval: TV.PRAYER_BOOK, sval: …
+    330|       s.world.self.goal.recalling = s.world.self.gameRatio * 2;
+    331|       expect(s.caution()).toEqual({ code: "cast", args: { spell: sidx …
+       |                           ^
+    332|       expect(s.world.self.noRestPrep).toBe(rest);
+    333|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/83]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > buys time during recall with 'phase_door'
+AssertionError: expected null to deeply equal { code: 'read', args: { handle: 42 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 42,
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:349:25
+    347|     getFearCaches(s.world).monsters2d[10]![10] = 3000;
+    348|     expect(borgDanger(s.ctx, 10, 10, 1, true, false)).toBeGreaterThan(…
+    349|     expect(s.caution()).toEqual({ code, args: { handle: 42 } });
+       |                         ^
+    350|   });
+    351|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/83]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > recalls from the caution rung when fleeing
+AssertionError: expected null to deeply equal { code: 'read', args: { handle: 10 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 10,
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:355:25
+    353|     const s = scenario();
+    354|     s.world.self.goal.fleeing = true;
+    355|     expect(s.caution()).toEqual({ code: "read", args: { handle: 10 } }…
+       |                         ^
+    356|     s.world.self.goal.fleeingToTown = true;
+    357|     expect(s.caution()).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/83]⎯
+
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":40,"live":5,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":127,"live":0,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":35,"maxDepth":60,"hunted":40,"live":5,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":45,"maxDepth":60,"hunted":40,"live":5,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":45,"hunted":40,"live":5,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"winner":true,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":4,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":5,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":80,"maxDepth":99,"hunted":80,"live":0,"sauron":true,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":0,"munchkin":true,"answer":true}
+AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+    446|     borg.world.self.trait[BI.SAURON_DEAD] = Number("sauron" in options…
+    447|     borg.world.self.goal.fleeingMunchkin = "munchkin" in options;
+    448|     expect(borgRecall(ctx)).not.toBeNull();
+       |                                 ^
+    449|     const game = fakeGame();
+    450|     const tick = createTick({ setInput: () => undefined } as unknown a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/83]⎯
+
+ FAIL  src/rest-and-store-verification.test.ts > the Borg's ladder reaches rest and the store > uses class flags for SP recovery with stairs=false
+AssertionError: Mage: {"code":"drop","args":{"handle":1,"quantity":1}}: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/rest-and-store-verification.test.ts:271:70
+    269|       expect(borg.world.self.trait[BI.MAXSP], cls).toBe(20);
+    270|       expect(cmd, cls).not.toBeNull();
+    271|       expect(cmd?.code === "rest", `${cls}: ${JSON.stringify(cmd)}`).t…
+       |                                                                      ^
+    272|       if (onStairs) {
+    273|         expect(buildItemDeps(session).canRest, cls).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/83]⎯
+
+ FAIL  src/rest-and-store-verification.test.ts > the Borg's ladder reaches rest and the store > uses class flags for SP recovery with stairs=true
+AssertionError: Mage: {"code":"descend"}: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/rest-and-store-verification.test.ts:271:70
+    269|       expect(borg.world.self.trait[BI.MAXSP], cls).toBe(20);
+    270|       expect(cmd, cls).not.toBeNull();
+    271|       expect(cmd?.code === "rest", `${cls}: ${JSON.stringify(cmd)}`).t…
+       |                                                                      ^
+    272|       if (onStairs) {
+    273|         expect(buildItemDeps(session).canRest, cls).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/83]⎯
+
+ FAIL  src/rest.test.ts > the breeder-rest guard (when_last_kill_mult) > refuses to rest for four turns after a tracked multiplier's record is deleted
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/rest.test.ts:394:7
+    392|     expect(
+    393|       borgCheckRest(ctx, createFlowState(), world.self.c.y, world.self…
+    394|     ).toBe(true);
+       |       ^
+    395|   });
+    396|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/83]⎯
+
+ FAIL  src/rest.test.ts > resting when SP only returns in combat > still lets the same character rest when it is hurt
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/rest.test.ts:444:83
+    442|   it("still lets the same character rest when it is hurt", () => {
+    443|     const { ctx, world } = fed({ player: { ...blackguard, hp: 10 } });
+    444|     expect(borgCheckRest(ctx, createFlowState(), world.self.c.y, world…
+       |                                                                                   ^
+    445|   });
+    446|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/83]⎯
+
+ FAIL  src/rest.test.ts > resting when SP only returns in combat > still lets a class without the flag rest for SP at full HP
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/rest.test.ts:449:83
+    447|   it("still lets a class without the flag rest for SP at full HP", () …
+    448|     const { ctx, world } = fed({ player: { ...blackguard, classFlags: …
+    449|     expect(borgCheckRest(ctx, createFlowState(), world.self.c.y, world…
+       |                                                                                   ^
+    450|   });
+    451| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/83]⎯
+
+ FAIL  src/think-session.test.ts > glyph and re-aim capability chains > uses the C glyph chain at failure 30 with scroll true
+AssertionError: expected 'activate' to be 'cast' // Object.is equality
+
+Expected: "cast"
+Received: "activate"
+
+ ❯ src/think-session.test.ts:277:46
+    275|       flow.glyphX = ctx.world.self.c.x;
+    276|       flow.glyphY = ctx.world.self.c.y;
+    277|       expect(borgFlowGlyph(ctx, flow)?.code).toBe(code);
+       |                                              ^
+    278|       expect(flow.glyph.num).toBe(1);
+    279|     },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/83]⎯
+
+ FAIL  src/think-session.test.ts > glyph and re-aim capability chains > uses the C glyph chain at failure 31 with scroll true
+AssertionError: expected 'activate' to be 'read' // Object.is equality
+
+Expected: "read"
+Received: "activate"
+
+ ❯ src/think-session.test.ts:277:46
+    275|       flow.glyphX = ctx.world.self.c.x;
+    276|       flow.glyphY = ctx.world.self.c.y;
+    277|       expect(borgFlowGlyph(ctx, flow)?.code).toBe(code);
+       |                                              ^
+    278|       expect(flow.glyph.num).toBe(1);
+    279|     },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/83]⎯
+
+ FAIL  src/think-session.test.ts > glyph and re-aim capability chains > finds a Mage bolt without a launcher and rejects a blocked bolt
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/think-session.test.ts:295:55
+    293|       getFightState(ctx.world).simulate = true;
+    294|       getFightState(ctx.world).successfulTarget = 0;
+    295|       expect(flow.hooks.hasDistanceAttack(ctx.world)).toBe(true);
+       |                                                       ^
+    296|       ctx.world.map.at(23, 12).feat = FEAT.GRANITE;
+    297|       expect(flow.hooks.hasDistanceAttack(ctx.world)).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/83]⎯
+
+ FAIL  src/think-session.test.ts > glyph and re-aim capability chains > moves to a position with a bolt path and restores the real position
+AssertionError: expected null to match object { code: 'walk' }
+
+- Expected:
+{
+  "code": "walk",
+}
+
++ Received:
+null
+
+ ❯ src/think-session.test.ts:335:46
+    333|     getFightState(ctx.world).simulate = true;
+    334|     getFightState(ctx.world).successfulTarget = 0;
+    335|     expect(borgFlowKillAim(ctx, flow, true)).toMatchObject({ code: "wa…
+       |                                              ^
+    336|     expect(ctx.world.self.c).toEqual({ x: 20, y: 12 });
+    337|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/83]⎯
+
+ FAIL  src/vault.test.ts > vault decisions through the session and ladder > excavates a vault wall from range before pursuing a distant monster
+AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:105:20
+    103|     });
+    104|     session.flow.state.vein.add(10, 5);
+    105|     expect(main()).toEqual({ code: "cast", args: { spell: 8 } });
+       |                    ^
+    106|     expect(act.targets).toEqual([{ x: 5, y: 10 }]);
+    107|     expect(ctx.world.map.at(5, 10).feat).toBe(FEAT.FLOOR);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/83]⎯
+
+ FAIL  src/vault.test.ts > vault decisions through the session and ladder > tries the special-level targets in C order
+AssertionError: expected 'walk' to be 'cast' // Object.is equality
+
+Expected: "cast"
+Received: "walk"
+
+ ❯ src/vault.test.ts:128:26
+    126|     const takes = vi.spyOn(session.flow, "toTakes");
+    127|     const veins = vi.spyOn(session.flow, "toVein");
+    128|     expect(main()?.code).toBe("cast");
+       |                          ^
+    129|     expect(kills).toHaveBeenCalledWith(ctx, 21, false);
+    130|     expect(takes).toHaveBeenCalledWith(ctx, false, 35);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/83]⎯
+
+ FAIL  src/vault.test.ts > vault excavation guards and side effects > keeps the excavated floor while unseen and refreshes it when seen
+AssertionError: expected 'walk' to be 'cast' // Object.is equality
+
+Expected: "cast"
+Received: "walk"
+
+ ❯ src/vault.test.ts:163:26
+    161|   it("keeps the excavated floor while unseen and refreshes it when see…
+    162|     const { ctx, memo, main } = run({ player: { cls: "Druid" }, spells…
+    163|     expect(main()?.code).toBe("cast");
+       |                          ^
+    164|     const remembered: AgentView = { ...ctx.view, cell: (x, y) => {
+    165|       const cell = ctx.view.cell(x, y);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/83]⎯
+
+ FAIL  src/vault.test.ts > vault excavation guards and side effects > uses max_range minus two and requires line of sight and a 30 percent spell
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/vault.test.ts:188:39
+    186|           ...(options.blocked ? { "13,10": { feat: FEAT.GRANITE } } : …
+    187|       });
+    188|       expect(main()?.code === "cast").toBe(options.cast);
+       |                                       ^
+    189|       expect(ctx.world.map.at(options.x, 10).feat).toBe(options.cast ?…
+    190|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/83]⎯
+
+ FAIL  src/vault.test.ts > vault excavation guards and side effects > requires a castable digging spell even when a melting activation is equipped
+AssertionError: expected 'walk' to be 'activate' // Object.is equality
+
+Expected: "activate"
+Received: "walk"
+
+ ❯ src/vault.test.ts:198:28
+    196|         equipment: [item({ handle: 42, artifact: true, artifactName: "…
+    197|       });
+    198|       expect(main()?.code).toBe(spells ? "activate" : "walk");
+       |                            ^
+    199|       expect(ctx.world.map.at(5, 10).feat).toBe(spells ? FEAT.FLOOR : …
+    200|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/83]⎯
+
+ FAIL  src/vault.test.ts > vault excavation guards and side effects > uses the spell, ring and activation order and restricts Shatter Stone to adjacent walls
+AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:217:22
+    215|           [`${options.x - 1},9`]: { feat: FEAT.PERM } },
+    216|       });
+    217|       expect(main()).toEqual(options.command);
+       |                      ^
+    218|       expect(act.targets).toEqual([{ x: options.x, y: 10 }]);
+    219|       expect(ctx.world.map.at(options.x, 10).feat).toBe(options.comman…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/83]⎯
+
+ FAIL  src/vault.test.ts > vault wall steps through committed ladder flows > melts walls before tunneling with the session spell and equipment dependencies
+AssertionError: expected { code: 'tunnel', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "tunnel",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:242:22
+    240|       ctx.world.self.goal.type = GOAL_VAULT;
+    241|       const draw = vi.spyOn(ctx.rng, "randint0");
+    242|       expect(main()).toEqual(options.command);
+       |                      ^
+    243|       expect(act.targets).toEqual([{ x: 9, y: 10 }]);
+    244|       expect(st.vein.num).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/83]⎯
+
+ FAIL  src/vault.test.ts > vault target priority > takes remembered objects within 35 before excavating
+AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'walk', dir: 6 }
+
+- Expected
++ Received
+
+  {
+    "code": "walk",
+-   "dir": 6,
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:311:22
+    309|         floor: { [`${x},10`]: [item({ tval: TV.AMULET })] },
+    310|       });
+    311|       expect(main()).toEqual(x === 45 ? { code: "walk", dir: 6 } : { c…
+       |                      ^
+    312|       if (x === 45) expect(ctx.world.self.goal.type).toBe(GOAL_TAKE);
+    313|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/83]⎯
+
+ FAIL  src/vault.test.ts > vault target priority > mines remembered veins within 35 before excavating
+AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:322:22
+    320|       });
+    321|       session.flow.state.vein.add(10, x);
+    322|       expect(main()).toEqual(x === 45 ? { code: "walk", dir: 6 } : { c…
+       |                      ^
+    323|       if (x === 45) expect(ctx.world.self.goal.type).toBe(GOAL_TAKE);
+    324|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/83]⎯
+
+ FAIL  src/api2/controller.test.ts > recharge continuation across API2 retries > preserves wear/rest order when a loadout retry starts with pending rest=false
+AssertionError: expected [] to deeply equal [ { kind: 'command', …(1) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "command": {
+-       "args": {
+-         "handle": 7,
+-       },
+-       "code": "wield",
+-     },
+-     "kind": "command",
+-   },
+- ]
++ []
+
+ ❯ src/api2/controller.test.ts:135:59
+    133|       await tick(game.mod, game.input());
+    134|       expect(rounds).toBe(1);
+    135|       expect(game.submitted.map((entry) => entry.intent)).toEqual([
+       |                                                           ^
+    136|         { kind: "command", command: pendingRest
+    137|           ? { code: "rest", args: { count: 75 } }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/83]⎯
+
+ FAIL  src/fight/fight.test.ts > genocide defences through notice and perceive > scores mass genocide at 120 percent danger, reads before casting, and forgets non-uniques across the level
+AssertionError: expected null to deeply equal { code: 'read', args: { handle: 7 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 7,
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/fight/fight.test.ts:426:34
+    424|     expect(defenseScore(ctx, BD.MASS_GENOCIDE, 120)).toBe(117);
+    425|     expect([...ctx.world.kills.entries()]).toHaveLength(3);
+    426|     expect(borgDefend(ctx, 120)).toEqual({ code: "read", args: { handl…
+       |                                  ^
+    427|     expect([...ctx.world.kills.entries()].map(([, k]) => k.rIdx)).toEq…
+    428|     expect(ctx.world.map.at(21, 12).kill).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/83]⎯
+
+ FAIL  src/fight/fight.test.ts > genocide defences through notice and perceive > rejects lethal mass-genocide strain and discounts a crowd during the Morgoth fight
+AssertionError: expected +0 to be 104 // Object.is equality
+
+- Expected
++ Received
+
+- 104
++ 0
+
+ ❯ src/fight/fight.test.ts:436:54
+    434|     const { ctx } = defenseScenario({ monsters }, [Spell.MASS_BANISHME…
+    435|     getFightState(ctx.world).fightingUnique = 10;
+    436|     expect(defenseScore(ctx, BD.MASS_GENOCIDE, 120)).toBe(104);
+       |                                                      ^
+    437|     ctx.world.self.trait[BI.CURHP] = 32;
+    438|     expect(defenseScore(ctx, BD.MASS_GENOCIDE, 120)).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/83]⎯
+
+ FAIL  src/fight/fight.test.ts > genocide defences through notice and perceive > banishes a distant level threat by default symbol and preserves uniques sharing it
+AssertionError: expected null to deeply equal { code: 'read', …(1) }
+
+- Expected:
+{
+  "args": {
+    "handle": 7,
+    "tgtsymbol": "o",
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/fight/fight.test.ts:447:32
+    445|     ], inventory: [item({ handle: 7, tval: TV.SCROLL, sval: SVAL.scrol…
+    446|     expect(defenseScore(ctx, BD.GENOCIDE)).toBe(2000);
+    447|     expect(borgDefend(ctx, 0)).toEqual({ code: "read", args: { handle:…
+       |                                ^
+    448|     expect([...ctx.world.kills.entries()].map(([, k]) => k.rIdx)).toEq…
+    449|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/83]⎯
+
+ FAIL  src/fight/fight.test.ts > genocide defences through notice and perceive > subtracts both fear caches before the immediate-danger gates and keeps the C's <= gate
+AssertionError: expected +0 to be 1000 // Object.is equality
+
+- Expected
++ Received
+
+- 1000
++ 0
+
+ ❯ src/fight/fight.test.ts:456:50
+    454|       { raceIndex: 2, grid: { x: 20, y: 13 } },
+    455|     ] }, [Spell.BANISHMENT], { 1: "a", 2: "b" }, 100);
+    456|     expect(defenseScore(ctx, BD.GENOCIDE, 3000)).toBe(1000);
+       |                                                  ^
+    457|     const fear = getFearCaches(ctx.world);
+    458|     fear.region2d[1]![1] = 100;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/83]⎯
+
+ FAIL  src/fight/fight.test.ts > genocide defences through notice and perceive > counts nasties once, keeps historical counts, chooses the last qualifying symbol, and resets only that count
+AssertionError: expected +0 to be 10 // Object.is equality
+
+- Expected
++ Received
+
+- 10
++ 0
+
+ ❯ src/fight/fight.test.ts:475:52
+    473|     expect(ctx.world.facts.nastiesCount).toEqual([25, 0, 0, 0, 0, 0, 1…
+    474|     ctx.world.kills.delete(1);
+    475|     expect(defenseScore(ctx, BD.GENOCIDE_NASTIES)).toBe(10);
+       |                                                    ^
+    476|     expect(borgDefend(ctx, 0)).toEqual({ code: "cast", args: { spell: …
+    477|     expect(ctx.world.facts.nastiesCount).toEqual([25, 0, 0, 0, 0, 0, 0…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/83]⎯
+
+ FAIL  src/fight/fight.test.ts > genocide defences through notice and perceive > uses banishment for assumed hounds through the production controller
+AssertionError: expected { code: 'walk', dir: 2 } to deeply equal { code: 'cast', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 27,
+-     "tgtsymbol": "Z",
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 2,
+  }
+
+ ❯ src/fight/fight.test.ts:490:40
+    488|       resolveMonsterFacts: getDangerGlobals(ctx.world).resolveFacts,
+    489|     } });
+    490|     expect(borg.controller(view, act)).toEqual({ code: "cast", args: {…
+       |                                        ^
+    491|     expect(borg.world.facts.nastiesCount[0]).toBe(0);
+    492|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/83]⎯
+
+ FAIL  src/fight/fight.test.ts > Morgoth defences through notice and perceive > scores teleport-away, targets the remembered grid, and requires ten glyphs
+AssertionError: expected +0 to be 100 // Object.is equality
+
+- Expected
++ Received
+
+- 100
++ 0
+
+ ❯ src/fight/fight.test.ts:506:53
+    504|       item({ tval: TV.SCROLL, sval: SVAL.scroll.rune_of_protection!, n…
+    505|     ] }, [Spell.TELEPORT_OTHER]);
+    506|     expect(defenseScore(ctx, BD.TELE_AWAY_MORGOTH)).toBe(100);
+       |                                                     ^
+    507|     expect(act.targets).toEqual([]);
+    508|     expect(borgDefend(ctx, 0)).toEqual({ code: "cast", args: { spell: …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/83]⎯
+
+ FAIL  src/fight/fight.test.ts > Morgoth defences through notice and perceive > uses the glyph and low-mana teleport values in C order
+AssertionError: expected +0 to be 300 // Object.is equality
+
+- Expected
++ Received
+
+- 300
++ 0
+
+ ❯ src/fight/fight.test.ts:523:53
+    521|     ctx.world.map.at(29, 12).glyph = true;
+    522|     getDangerGlobals(ctx.world).morgothPosition = true;
+    523|     expect(defenseScore(ctx, BD.TELE_AWAY_MORGOTH)).toBe(300);
+       |                                                     ^
+    524|     ctx.world.self.trait[BI.CURSP] = 35;
+    525|     expect(defenseScore(ctx, BD.TELE_AWAY_MORGOTH)).toBe(150);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/83]⎯
+
+ FAIL  src/fight/fight.test.ts > Morgoth defences through notice and perceive > scores crowded banishment at 1500, counts close monsters twice, and casts mass before evil
+AssertionError: expected +0 to be 1500 // Object.is equality
+
+- Expected
++ Received
+
+- 1500
++ 0
+
+ ❯ src/fight/fight.test.ts:532:54
+    530|       ...Array.from({ length: 4 }, (_, i) => ({ grid: { x: 22 + i, y: …
+    531|     ] }, [Spell.MASS_BANISHMENT]);
+    532|     expect(defenseScore(ctx, BD.BANISHMENT_MORGOTH)).toBe(1500);
+       |                                                      ^
+    533|     expect([...ctx.world.kills.entries()]).toHaveLength(5);
+    534|     expect(defenseScore(ctx, BD.BANISHMENT_MORGOTH, 0, false)).toBe(10…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/83]⎯
+
+ FAIL  src/fight/fight.test.ts > Morgoth defences through notice and perceive > lights a dark path to Morgoth using the tracked position, with 500 simulation and 200 execution values
+AssertionError: expected +0 to be 500 // Object.is equality
+
+- Expected
++ Received
+
+- 500
++ 0
+
+ ❯ src/fight/fight.test.ts:552:49
+    550|     expect(defenseScore(ctx, BD.LIGHT_MORGOTH)).toBe(0);
+    551|     getDangerGlobals(ctx.world).morgothPosition = true;
+    552|     expect(defenseScore(ctx, BD.LIGHT_MORGOTH)).toBe(500);
+       |                                                 ^
+    553|     expect(act.targets).toEqual([]);
+    554|     expect(defenseScore(ctx, BD.LIGHT_MORGOTH, 0, false)).toBe(200);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/83]⎯
+
+ FAIL  src/fight/fight.test.ts > Orb of Draining (attack.c:3904) > scores and casts the prayer at level 29
+AssertionError: expected +0 to be 106 // Object.is equality
+
+- Expected
++ Received
+
+- 106
++ 0
+
+ ❯ src/fight/fight.test.ts:573:80
+    571|     fs.tempY[0] = 12;
+    572|     const expected = level === 29 ? 106 : 136;
+    573|     expect(borgCalculateAttackEffectiveness(ctx, fs, BF.PRAYER_HOLY_OR…
+       |                                                                                ^
+    574|     expect(act.targets).toEqual([]);
+    575|     expect(borgAttack(ctx)).toEqual({ code: "cast", args: { spell: 6 }…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/83]⎯
+
+ FAIL  src/fight/fight.test.ts > Orb of Draining (attack.c:3904) > scores and casts the prayer at level 30
+AssertionError: expected +0 to be 136 // Object.is equality
+
+- Expected
++ Received
+
+- 136
++ 0
+
+ ❯ src/fight/fight.test.ts:573:80
+    571|     fs.tempY[0] = 12;
+    572|     const expected = level === 29 ? 106 : 136;
+    573|     expect(borgCalculateAttackEffectiveness(ctx, fs, BF.PRAYER_HOLY_OR…
+       |                                                                                ^
+    574|     expect(act.targets).toEqual([]);
+    575|     expect(borgAttack(ctx)).toEqual({ code: "cast", args: { spell: 6 }…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/83]⎯
+
+ FAIL  src/fight/fight.test.ts > banishment action order > prefers a genocide spell to its activation when spell=true
+AssertionError: expected { code: 'activate', …(1) } to deeply equal { code: 'cast', …(1) }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "spell": 27,
++     "handle": 42,
+      "tgtsymbol": "o",
+    },
+-   "code": "cast",
++   "code": "activate",
+  }
+
+ ❯ src/fight/fight.test.ts:641:46
+    639|     activation(ctx);
+    640|     expect(defenseScore(ctx, BD.GENOCIDE, 0, false)).toBe(2000);
+    641|     expect(getFightState(ctx.world).pending).toEqual(spell
+       |                                              ^
+    642|       ? { code: "cast", args: { spell: 27, tgtsymbol: "o" } }
+    643|       : { code: "activate", args: { handle: 42, tgtsymbol: "o" } });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/83]⎯
+
+ FAIL  src/fight/fight.test.ts > defence boundaries from the C > scores nasty health/depth { hp: 250, maxHp: 250, depth: 25 } at danger 25 as 10
+ FAIL  src/fight/fight.test.ts > defence boundaries from the C > scores nasty health/depth { hp: 700, maxHp: 1000, depth: 25 } at danger 0 as 10
+AssertionError: expected +0 to be 10 // Object.is equality
+
+- Expected
++ Received
+
+- 10
++ 0
+
+ ❯ src/fight/fight.test.ts:679:60
+    677|   ] as const)("scores nasty health/depth %o at danger %s as %s", (play…
+    678|     const { ctx } = defenseScenario({ player }, [Spell.BANISHMENT]);
+    679|     expect(defenseScore(ctx, BD.GENOCIDE_NASTIES, danger)).toBe(value);
+       |                                                            ^
+    680|   });
+    681|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/83]⎯
+
+ FAIL  src/fight/fight.test.ts > defence boundaries from the C > rejects a genocide level threat below 375 HP or at 75 monsters
+AssertionError: expected +0 to be 2000 // Object.is equality
+
+- Expected
++ Received
+
+- 2000
++ 0
+
+ ❯ src/fight/fight.test.ts:688:44
+    686|     expect(defenseScore(low, BD.GENOCIDE)).toBe(0);
+    687|     low.world.self.trait[BI.CURHP] = 375;
+    688|     expect(defenseScore(low, BD.GENOCIDE)).toBe(2000);
+       |                                            ^
+    689|     const pit = defenseScenario({ monsters: Array.from({ length: 75 },…
+    690|       grid: { x: 45 + i % 20, y: 2 + Math.trunc(i / 20) },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/83]⎯
+
+ FAIL  src/fight/fight.test.ts > defence boundaries from the C > casts banish evil on a crowd and preserves uniques while forgetting all other races
+AssertionError: expected +0 to be 1500 // Object.is equality
+
+- Expected
++ Received
+
+- 1500
++ 0
+
+ ❯ src/fight/fight.test.ts:702:54
+    700|       { raceIndex: 2, grid: { x: 50, y: 12 } },
+    701|     ] }, [Spell.BANISH_EVIL]);
+    702|     expect(defenseScore(ctx, BD.BANISHMENT_MORGOTH)).toBe(1500);
+       |                                                      ^
+    703|     expect(borgDefend(ctx, 0)).toEqual({ code: "cast", args: { spell: …
+    704|     expect([...ctx.world.kills.entries()].map(([, k]) => k.rIdx)).toEq…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/83]⎯
+
+ FAIL  src/fight/fight.test.ts > defence boundaries from the C > uses Morgoth light fallback 74
+AssertionError: expected +0 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 0
+
+ ❯ src/fight/fight.test.ts:712:59
+    710|     }, [spell]);
+    711|     getDangerGlobals(ctx.world).morgothPosition = true;
+    712|     expect(defenseScore(ctx, BD.LIGHT_MORGOTH, 0, false)).toBe(200);
+       |                                                           ^
+    713|     expect(getFightState(ctx.world).pending).toEqual({ code: "cast", a…
+    714|     ctx.world.kills.at(1).pos.x = 25;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/83]⎯
+
+ FAIL  src/flow/flow-recover.test.ts > Mage recovery > selects a recovery destination for the primary caster branch
+ FAIL  src/flow/flow-recover.test.ts > Druid recovery > selects a recovery destination for the primary caster branch
+ FAIL  src/flow/flow-recover.test.ts > Priest recovery > selects a recovery destination for the primary caster branch
+AssertionError: expected undefined to be 'walk' // Object.is equality
+
+- Expected:
+"walk"
+
++ Received:
+undefined
+
+ ❯ src/flow/flow-recover.test.ts:68:25
+     66|     const cmd = borgFlowRecover(ctx, flow, 50);
+     67|     if (primary) {
+     68|       expect(cmd?.code).toBe("walk");
+       |                         ^
+     69|       expect(ctx.world.self.goal.type).toBe(GOAL_RECOVER);
+     70|       /* borg-flow-misc.c:288-294 admits the stair seven grids away. */
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/83]⎯
+
+ FAIL  src/flow/play-step.test.ts > borg_play_step through the session item dependencies > resolves DISABLE_TRAPS on charged equipment
+AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'activate', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "handle": 42,
+-   },
+-   "code": "activate",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/flow/play-step.test.ts:118:20
+    116|   ] as const)("resolves %s on charged equipment", (name, trap, targete…
+    117|     const { ctx, flow, act, play } = step({ trap, equipment: [activati…
+    118|     expect(play()).toEqual({ code: "activate", args: { handle: 42 } });
+       |                    ^
+    119|     expect(act.targets).toEqual(targeted ? [{ x: 11, y: 10 }] : []);
+    120|     expect(flow.closed.num).toBe(closed);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/83]⎯
+
+ FAIL  src/flow/play-step.test.ts > borg_play_step through the session item dependencies > falls back when DISABLE_TRAPS is charging or carried in the pack
+AssertionError: expected 'walk' to be 'disarm' // Object.is equality
+
+Expected: "disarm"
+Received: "walk"
+
+ ❯ src/flow/play-step.test.ts:128:28
+    126|     for (const gear of [{ equipment: [activation(name, 42, 1)] }, { in…
+    127|       const { ctx, flow, act, play } = step({ trap: name === "DISABLE_…
+    128|       expect(play()?.code).toBe(name === "DISABLE_TRAPS" ? "disarm" : …
+       |                            ^
+    129|       expect(act.targets).toEqual([]);
+    130|       expect(ctx.world.self.noRestPrep).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/83]⎯
+
+ FAIL  src/flow/play-step.test.ts > borg_play_step through the session item dependencies > prefers the trap activation to its spell
+AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'activate', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "handle": 42,
+-   },
+-   "code": "activate",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/flow/play-step.test.ts:138:20
+    136|   it("prefers the trap activation to its spell", () => {
+    137|     const { play } = step({ trap: true, equipment: [activation("DISABL…
+    138|     expect(play()).toEqual({ code: "activate", args: { handle: 42 } });
+       |                    ^
+    139|   });
+    140|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/83]⎯
+
+ FAIL  src/flow/play-step.test.ts > borg_play_step through the session item dependencies > gates the trap spell at 80 of 100 mana
+AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'disarm', dir: 6 }
+
+- Expected
++ Received
+
+  {
+-   "code": "disarm",
++   "code": "walk",
+    "dir": 6,
+  }
+
+ ❯ src/flow/play-step.test.ts:144:20
+    142|     const { ctx, act, play } = step({ trap: true, player: { cls: "Mage…
+    143|     expect(ctx.world.self.trait[BI.CURSP]).toBe(sp);
+    144|     expect(play()).toEqual(sp === 81 ? { code: "cast", args: { spell: …
+       |                    ^
+    145|     expect(ctx.world.self.noRestPrep).toBe(sp === 81 ? 3000 : 0);
+    146|     expect(ctx.world.map.at(11, 10).trap).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/83]⎯
+
+ FAIL  src/flow/play-step.test.ts > borg_play_step through the session item dependencies > gates the trap spell at 81 of 100 mana
+AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'cast', args: { spell: 13 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 13,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/flow/play-step.test.ts:144:20
+    142|     const { ctx, act, play } = step({ trap: true, player: { cls: "Mage…
+    143|     expect(ctx.world.self.trait[BI.CURSP]).toBe(sp);
+    144|     expect(play()).toEqual(sp === 81 ? { code: "cast", args: { spell: …
+       |                    ^
+    145|     expect(ctx.world.self.noRestPrep).toBe(sp === 81 ? 3000 : 0);
+    146|     expect(ctx.world.map.at(11, 10).trap).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/83]⎯
+
+ FAIL  src/flow/play-step.test.ts > borg_play_step through the session item dependencies > uses the trap spell after a charging activation
+AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'cast', args: { spell: 13 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 13,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/flow/play-step.test.ts:152:20
+    150|   it("uses the trap spell after a charging activation", () => {
+    151|     const { play } = step({ trap: true, equipment: [activation("DISABL…
+    152|     expect(play()).toEqual({ code: "cast", args: { spell: 13 } });
+       |                    ^
+    153|   });
+    154|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[64/83]⎯
+
+ FAIL  src/flow/play-step.test.ts > borg_play_step through the session item dependencies > prefers the destruction spell to destruction and melting activations
+AssertionError: expected { code: 'activate', …(1) } to deeply equal { code: 'cast', args: { spell: 13 } }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "spell": 13,
++     "handle": 42,
+    },
+-   "code": "cast",
++   "code": "activate",
+  }
+
+ ❯ src/flow/play-step.test.ts:169:20
+    167|   it("prefers the destruction spell to destruction and melting activat…
+    168|     const { flow, act, play } = step({ player: { cls: "Mage", sp: 10 }…
+    169|     expect(play()).toEqual({ code: "cast", args: { spell: 13 } });
+       |                    ^
+    170|     expect(flow.closed.num).toBe(1);
+    171|     expect(act.targets).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[65/83]⎯
+
+ FAIL  src/flow/play-step.test.ts > borg_play_step through the session item dependencies > prefers the Druid melting spell to item melting
+AssertionError: expected { code: 'activate', …(1) } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "spell": 8,
++     "handle": 42,
+    },
+-   "code": "cast",
++   "code": "activate",
+  }
+
+ ❯ src/flow/play-step.test.ts:182:20
+    180|   it.each([["Druid", 8], ["Blackguard", 3]] as const)("prefers the %s …
+    181|     const { flow, act, play } = step({ player: { cls }, spells: true, …
+    182|     expect(play()).toEqual({ code: "cast", args: { spell } });
+       |                    ^
+    183|     expect(flow.closed.num).toBe(0);
+    184|     expect(act.targets).toEqual([{ x: 11, y: 10 }]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[66/83]⎯
+
+ FAIL  src/flow/play-step.test.ts > borg_play_step through the session item dependencies > prefers the Blackguard melting spell to item melting
+AssertionError: expected { code: 'activate', …(1) } to deeply equal { code: 'cast', args: { spell: 3 } }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "spell": 3,
++     "handle": 42,
+    },
+-   "code": "cast",
++   "code": "activate",
+  }
+
+ ❯ src/flow/play-step.test.ts:182:20
+    180|   it.each([["Druid", 8], ["Blackguard", 3]] as const)("prefers the %s …
+    181|     const { flow, act, play } = step({ player: { cls }, spells: true, …
+    182|     expect(play()).toEqual({ code: "cast", args: { spell } });
+       |                    ^
+    183|     expect(flow.closed.num).toBe(0);
+    184|     expect(act.targets).toEqual([{ x: 11, y: 10 }]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[67/83]⎯
+
+ FAIL  src/item/junk-space.test.ts > production inventory decisions > excludes quiver timeouts from recharge selection and requires a completed wear for R75
+AssertionError: expected null to match object { code: 'wield', args: { handle: 7 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 7,
+  },
+  "code": "wield",
+}
+
++ Received:
+null
+
+ ❯ src/item/junk-space.test.ts:258:59
+    256|     const food = item({ handle: 9, tval: TV.FOOD, sval: SVAL.food.rati…
+    257|     const { ctx, session, worn, items } = production([food, amulet, am…
+    258|     expect(borgWearRecharge(ctx, buildItemDeps(session))).toMatchObjec…
+       |                                                           ^
+    259|     expect(session.rechargeRest).toBe(7);
+    260|     worn.push(items.splice(items.findIndex((entry) => entry.handle ===…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[68/83]⎯
+
+ FAIL  src/item/junk-space.test.ts > production inventory decisions > reaches worn recharge through the controller after the earlier inventory rungs yield
+AssertionError: expected { code: 'rest' } to match object { code: 'wield', args: { handle: 7 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "handle": 7,
+-   },
+-   "code": "wield",
++   "code": "rest",
+  }
+
+ ❯ src/item/junk-space.test.ts:341:54
+    339|     };
+    340|     const borg = createBorg({ resolvers: makeCoreResolvers({}), rngSee…
+    341|     expect(borg.controller(view, makeFakeActions())).toMatchObject({ c…
+       |                                                      ^
+    342|     const session = getThinkSession(borg.world);
+    343|     expect(session.rechargeRest).toBe(7);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[69/83]⎯
+
+ FAIL  src/trait/buff-timers.test.ts > a buff-off message that never arrives > leaves the flag latched until the cross-check clears it, and the Borg blesses again the same turn
+AssertionError: expected null to deeply equal { code: 'read', args: { handle: 1 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 1,
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/trait/buff-timers.test.ts:149:33
+    147|      * returning 0 on a set flag, so a latched flag would have removed…
+    148|     getDangerGlobals(world).avoidance = 100;
+    149|     expect(borgDefend(ctx, 10)).toEqual({
+       |                                 ^
+    150|       code: "read",
+    151|       args: { handle: 1 },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[70/83]⎯
+
+
+ Test Files  11 failed | 40 passed (51)
+      Tests  83 failed | 849 passed (932)
+   Start at  11:01:45
+   Duration  185.49s (transform 2.04s, setup 10.42s, import 6.29s, tests 234.92s, environment 4ms)
+
+
+##[error]AssertionError: expected 'restock light radius < 1' to be null
+
+- Expected:
+null
+
++ Received:
+"restock light radius < 1"
+
+ ❯ src/recall.test.ts:85:37
+
+
+
+##[error]AssertionError: expected undefined to be 'walk' // Object.is equality
+
+- Expected:
+"walk"
+
++ Received:
+undefined
+
+ ❯ src/recall.test.ts:105:33
+
+
+
+##[error]AssertionError: expected undefined to be 'walk' // Object.is equality
+
+- Expected:
+"walk"
+
++ Received:
+undefined
+
+ ❯ src/recall.test.ts:114:35
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'read', args: { handle: 42 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "handle": 42,
+-   },
+-   "code": "read",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/recall.test.ts:130:30
+
+
+
+##[error]AssertionError: expected 'walk' to be 'read' // Object.is equality
+
+Expected: "read"
+Received: "walk"
+
+ ❯ src/recall.test.ts:139:31
+
+
+
+##[error]AssertionError: expected 'walk' to be 'read' // Object.is equality
+
+Expected: "read"
+Received: "walk"
+
+ ❯ src/recall.test.ts:147:29
+
+
+
+##[error]AssertionError: expected 'walk' to be 'read' // Object.is equality
+
+Expected: "read"
+Received: "walk"
+
+ ❯ src/recall.test.ts:154:29
+
+
+
+##[error]AssertionError: expected undefined to be 'read' // Object.is equality
+
+- Expected:
+"read"
+
++ Received:
+undefined
+
+ ❯ src/recall.test.ts:167:33
+
+
+
+##[error]AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/recall.test.ts:185:40
+
+
+
+##[error]AssertionError: expected 'restock light radius < 1' to be 'Collect from house (20 potions).' // Object.is equality
+
+Expected: "Collect from house (20 potions)."
+Received: "restock light radius < 1"
+
+ ❯ src/recall.test.ts:201:37
+
+
+
+##[error]AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/recall.test.ts:242:38
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'rest', args: { count: 100 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "count": 100,
+-   },
+-   "code": "rest",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/recall.test.ts:260:23
+
+
+
+##[error]AssertionError: expected undefined to be 'read' // Object.is equality
+
+- Expected:
+"read"
+
++ Received:
+undefined
+
+ ❯ src/recall.test.ts:281:37
+
+
+
+##[error]AssertionError: expected { code: 'rest', args: { count: 9 } } to deeply equal { code: 'rest', args: { count: 500 } }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "count": 500,
++     "count": 9,
+    },
+    "code": "rest",
+  }
+
+ ❯ src/recall.test.ts:288:23
+
+
+
+##[error]AssertionError: expected null to deeply equal { code: 'cast', args: { spell: 18 } }
+
+- Expected:
+{
+  "args": {
+    "spell": 18,
+  },
+  "code": "cast",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:317:25
+
+
+
+##[error]AssertionError: expected null to deeply equal { code: 'cast', args: { spell: 10 } }
+
+- Expected:
+{
+  "args": {
+    "spell": 10,
+  },
+  "code": "cast",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:331:27
+
+
+
+##[error]AssertionError: expected null to deeply equal { code: 'cast', args: { spell: 3 } }
+
+- Expected:
+{
+  "args": {
+    "spell": 3,
+  },
+  "code": "cast",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:331:27
+
+
+
+##[error]AssertionError: expected null to deeply equal { code: 'cast', args: { spell: 22 } }
+
+- Expected:
+{
+  "args": {
+    "spell": 22,
+  },
+  "code": "cast",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:331:27
+
+
+
+##[error]AssertionError: expected null to deeply equal { code: 'read', args: { handle: 42 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 42,
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:349:25
+
+
+
+##[error]AssertionError: expected null to deeply equal { code: 'read', args: { handle: 10 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 10,
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/recall.test.ts:355:25
+
+
+
+##[error]AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+
+
+
+##[error]AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+
+
+
+##[error]AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+
+
+
+##[error]AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+
+
+
+##[error]AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+
+
+
+##[error]AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+
+
+
+##[error]AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+
+
+
+##[error]AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+
+
+
+##[error]AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+
+
+
+##[error]AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+
+
+
+##[error]AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:448:33
+
+
+
+##[error]AssertionError: Mage: {"code":"drop","args":{"handle":1,"quantity":1}}: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/rest-and-store-verification.test.ts:271:70
+
+
+
+##[error]AssertionError: Mage: {"code":"descend"}: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/rest-and-store-verification.test.ts:271:70
+
+
+
+##[error]AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/rest.test.ts:394:7
+
+
+
+##[error]AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/rest.test.ts:444:83
+
+
+
+##[error]AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/rest.test.ts:449:83
+
+
+
+##[error]AssertionError: expected 'activate' to be 'cast' // Object.is equality
+
+Expected: "cast"
+Received: "activate"
+
+ ❯ src/think-session.test.ts:277:46
+
+
+
+##[error]AssertionError: expected 'activate' to be 'read' // Object.is equality
+
+Expected: "read"
+Received: "activate"
+
+ ❯ src/think-session.test.ts:277:46
+
+
+
+##[error]AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/think-session.test.ts:295:55
+
+
+
+##[error]AssertionError: expected null to match object { code: 'walk' }
+
+- Expected:
+{
+  "code": "walk",
+}
+
++ Received:
+null
+
+ ❯ src/think-session.test.ts:335:46
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:105:20
+
+
+
+##[error]AssertionError: expected 'walk' to be 'cast' // Object.is equality
+
+Expected: "cast"
+Received: "walk"
+
+ ❯ src/vault.test.ts:128:26
+
+
+
+##[error]AssertionError: expected 'walk' to be 'cast' // Object.is equality
+
+Expected: "cast"
+Received: "walk"
+
+ ❯ src/vault.test.ts:163:26
+
+
+
+##[error]AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/vault.test.ts:188:39
+
+
+
+##[error]AssertionError: expected 'walk' to be 'activate' // Object.is equality
+
+Expected: "activate"
+Received: "walk"
+
+ ❯ src/vault.test.ts:198:28
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:217:22
+
+
+
+##[error]AssertionError: expected { code: 'tunnel', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "tunnel",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:242:22
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'walk', dir: 6 }
+
+- Expected
++ Received
+
+  {
+    "code": "walk",
+-   "dir": 6,
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:311:22
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:322:22
+
+
+
+##[error]AssertionError: expected [] to deeply equal [ { kind: 'command', …(1) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "command": {
+-       "args": {
+-         "handle": 7,
+-       },
+-       "code": "wield",
+-     },
+-     "kind": "command",
+-   },
+- ]
++ []
+
+ ❯ src/api2/controller.test.ts:135:59
+
+
+
+##[error]AssertionError: expected null to deeply equal { code: 'read', args: { handle: 7 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 7,
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/fight/fight.test.ts:426:34
+
+
+
+##[error]AssertionError: expected +0 to be 104 // Object.is equality
+
+- Expected
++ Received
+
+- 104
++ 0
+
+ ❯ src/fight/fight.test.ts:436:54
+
+
+
+##[error]AssertionError: expected null to deeply equal { code: 'read', …(1) }
+
+- Expected:
+{
+  "args": {
+    "handle": 7,
+    "tgtsymbol": "o",
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/fight/fight.test.ts:447:32
+
+
+
+##[error]AssertionError: expected +0 to be 1000 // Object.is equality
+
+- Expected
++ Received
+
+- 1000
++ 0
+
+ ❯ src/fight/fight.test.ts:456:50
+
+
+
+##[error]AssertionError: expected +0 to be 10 // Object.is equality
+
+- Expected
++ Received
+
+- 10
++ 0
+
+ ❯ src/fight/fight.test.ts:475:52
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 2 } to deeply equal { code: 'cast', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 27,
+-     "tgtsymbol": "Z",
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 2,
+  }
+
+ ❯ src/fight/fight.test.ts:490:40
+
+
+
+##[error]AssertionError: expected +0 to be 100 // Object.is equality
+
+- Expected
++ Received
+
+- 100
++ 0
+
+ ❯ src/fight/fight.test.ts:506:53
+
+
+
+##[error]AssertionError: expected +0 to be 300 // Object.is equality
+
+- Expected
++ Received
+
+- 300
++ 0
+
+ ❯ src/fight/fight.test.ts:523:53
+
+
+
+##[error]AssertionError: expected +0 to be 1500 // Object.is equality
+
+- Expected
++ Received
+
+- 1500
++ 0
+
+ ❯ src/fight/fight.test.ts:532:54
+
+
+
+##[error]AssertionError: expected +0 to be 500 // Object.is equality
+
+- Expected
++ Received
+
+- 500
++ 0
+
+ ❯ src/fight/fight.test.ts:552:49
+
+
+
+##[error]AssertionError: expected +0 to be 106 // Object.is equality
+
+- Expected
++ Received
+
+- 106
++ 0
+
+ ❯ src/fight/fight.test.ts:573:80
+
+
+
+##[error]AssertionError: expected +0 to be 136 // Object.is equality
+
+- Expected
++ Received
+
+- 136
++ 0
+
+ ❯ src/fight/fight.test.ts:573:80
+
+
+
+##[error]AssertionError: expected { code: 'activate', …(1) } to deeply equal { code: 'cast', …(1) }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "spell": 27,
++     "handle": 42,
+      "tgtsymbol": "o",
+    },
+-   "code": "cast",
++   "code": "activate",
+  }
+
+ ❯ src/fight/fight.test.ts:641:46
+
+
+
+##[error]AssertionError: expected +0 to be 10 // Object.is equality
+
+- Expected
++ Received
+
+- 10
++ 0
+
+ ❯ src/fight/fight.test.ts:679:60
+
+
+
+##[error]AssertionError: expected +0 to be 10 // Object.is equality
+
+- Expected
++ Received
+
+- 10
++ 0
+
+ ❯ src/fight/fight.test.ts:679:60
+
+
+
+##[error]AssertionError: expected +0 to be 2000 // Object.is equality
+
+- Expected
++ Received
+
+- 2000
++ 0
+
+ ❯ src/fight/fight.test.ts:688:44
+
+
+
+##[error]AssertionError: expected +0 to be 1500 // Object.is equality
+
+- Expected
++ Received
+
+- 1500
++ 0
+
+ ❯ src/fight/fight.test.ts:702:54
+
+
+
+##[error]AssertionError: expected +0 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 0
+
+ ❯ src/fight/fight.test.ts:712:59
+
+
+
+##[error]AssertionError: expected undefined to be 'walk' // Object.is equality
+
+- Expected:
+"walk"
+
++ Received:
+undefined
+
+ ❯ src/flow/flow-recover.test.ts:68:25
+
+
+
+##[error]AssertionError: expected undefined to be 'walk' // Object.is equality
+
+- Expected:
+"walk"
+
++ Received:
+undefined
+
+ ❯ src/flow/flow-recover.test.ts:68:25
+
+
+
+##[error]AssertionError: expected undefined to be 'walk' // Object.is equality
+
+- Expected:
+"walk"
+
++ Received:
+undefined
+
+ ❯ src/flow/flow-recover.test.ts:68:25
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'activate', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "handle": 42,
+-   },
+-   "code": "activate",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/flow/play-step.test.ts:118:20
+
+
+
+##[error]AssertionError: expected 'walk' to be 'disarm' // Object.is equality
+
+Expected: "disarm"
+Received: "walk"
+
+ ❯ src/flow/play-step.test.ts:128:28
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'activate', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "handle": 42,
+-   },
+-   "code": "activate",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/flow/play-step.test.ts:138:20
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'disarm', dir: 6 }
+
+- Expected
++ Received
+
+  {
+-   "code": "disarm",
++   "code": "walk",
+    "dir": 6,
+  }
+
+ ❯ src/flow/play-step.test.ts:144:20
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'cast', args: { spell: 13 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 13,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/flow/play-step.test.ts:144:20
+
+
+
+##[error]AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'cast', args: { spell: 13 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 13,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/flow/play-step.test.ts:152:20
+
+
+
+##[error]AssertionError: expected { code: 'activate', …(1) } to deeply equal { code: 'cast', args: { spell: 13 } }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "spell": 13,
++     "handle": 42,
+    },
+-   "code": "cast",
++   "code": "activate",
+  }
+
+ ❯ src/flow/play-step.test.ts:169:20
+
+
+
+##[error]AssertionError: expected { code: 'activate', …(1) } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "spell": 8,
++     "handle": 42,
+    },
+-   "code": "cast",
++   "code": "activate",
+  }
+
+ ❯ src/flow/play-step.test.ts:182:20
+
+
+
+##[error]AssertionError: expected { code: 'activate', …(1) } to deeply equal { code: 'cast', args: { spell: 3 } }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "spell": 3,
++     "handle": 42,
+    },
+-   "code": "cast",
++   "code": "activate",
+  }
+
+ ❯ src/flow/play-step.test.ts:182:20
+
+
+
+##[error]AssertionError: expected null to match object { code: 'wield', args: { handle: 7 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 7,
+  },
+  "code": "wield",
+}
+
++ Received:
+null
+
+ ❯ src/item/junk-space.test.ts:258:59
+
+
+
+##[error]AssertionError: expected { code: 'rest' } to match object { code: 'wield', args: { handle: 7 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "handle": 7,
+-   },
+-   "code": "wield",
++   "code": "rest",
+  }
+
+ ❯ src/item/junk-space.test.ts:341:54
+
+
+
+##[error]AssertionError: expected null to deeply equal { code: 'read', args: { handle: 1 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 1,
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/trait/buff-timers.test.ts:149:33
