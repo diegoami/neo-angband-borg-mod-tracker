@@ -8,9 +8,10 @@
 2. Keep the declared verified package/backport baseline. Source24/25 content
    discovery and the noteSpot delivery are resolved history, not a fresh pending
    queue; current issues/checkpoint retain authority. Source2's weapon-value/HOME
-   leaf is integrated, while actual armour/tactical and named public-API limits
-   remain separate. Armour-value/HOME is a possible bounded next parity slice,
-   queued until parent/owner selects it. Timing35 needs a repeated normal failure
+   leaf and source48 armour data/value/HOME leaf are integrated; actual tactical
+   equip/SR-availability and named public-API limits remain separate. Source2
+   is not a completed swap subsystem; select the tactical parity leaf only after
+   the parent verifies the data-leaf delivery. Timing35 needs a repeated normal failure
    and a specifically authorised slow-case diagnosis, not reflex full reruns or
    a timeout increase. Current scoped assignments come from the checkpoint.
 3. For a port defect, compare C4.2.6/current C and the TypeScript implementation.

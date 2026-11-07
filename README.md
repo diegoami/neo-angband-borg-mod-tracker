@@ -22,7 +22,8 @@ upgrade; never infer a full no-skip gate or consumer deployment from a version.
 
 Upstream PRs63–67 were accepted through successor PRs69/70 and their scoped
 corrections are incorporated here. Source2's weapon-backup/HOME leaf is local
-and proposed as upstream72; armour/tactical work remains separate. The
+and accepted as upstream72. Armour-backup data/value and strict HOME retrieval
+are restored in source48; tactical equip and SR-availability folds remain separate. The
 canonical issues own live status, independently of Mandos adoption.
 Consumer carry/fixed labels live only on linked Mandos adoption issues; source issues here track source resolution.
 [Upstream product README](docs/upstream-reference/README.md) and
@@ -69,8 +70,8 @@ distinguish focused proof, required ordinary/exact-source profiles and deploymen
 
 The separate exact fork-source profile retains its own verified source/artifact
 identity and exact transitive SDK selection. It is not the registry artifact
-merely because both manifests say beta.3. The default suite now retains all 954
-cases: the previous 951 plus three accepted backup-notice simulation controls. No source
+merely because both manifests say beta.3. The default suite now retains all 994
+cases: the previous 954 plus forty armour data/value/HOME and capacity controls. No source
 policy, seed, assertion or timeout is weakened. The separate exact-source profile
 selects official06a (edge.218 source) with raw beta.3-versioned artifacts; it is
 not the registry beta.3 or the separately stamped desktop build.

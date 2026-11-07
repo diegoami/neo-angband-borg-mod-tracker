@@ -1,0 +1,10 @@
+{
+  "source": "06a2321ce30a414df20d1b20d486446e7688171c",
+  "runtime": "79fc5a5883b0fca6cf24d61401e704027ddd9d97",
+  "core": "1.23.0-beta.3",
+  "directSDK": "1.23.0-beta.3",
+  "transitiveSDK": "1.23.0-beta.3",
+  "sameSDK": true,
+  "SDKExports": 250,
+  "coreExports": 2036
+}

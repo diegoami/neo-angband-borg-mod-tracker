@@ -1,0 +1,3 @@
+$ node tools/build.mjs --check
+[mod-build] checking 1: borg
+[mod-build] borg: ok, and the committed plugin.js is current (678.3 KiB, api >=2.0.0 <3.0.0)

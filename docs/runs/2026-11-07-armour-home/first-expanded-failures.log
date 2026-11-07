@@ -1,0 +1,54 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-armour-home-48
+
+ ❯ src/trait/trait.test.ts (33 tests | 1 failed) 50ms
+     × computes the fixed baseline for an empty warrior 5ms
+ ❯ src/think-session.test.ts (51 tests | 1 failed) 106ms
+     × wires weapon-backup value while leaving armour backup separate 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/think-session.test.ts > the loadout seam reaches the store decisions > wires weapon-backup value while leaving armour backup separate
+AssertionError: expected [Function armourSwapEval] to be undefined
+
+- Expected:
+undefined
+
++ Received:
+[Function armourSwapEval]
+
+ ❯ src/think-session.test.ts:555:33
+    553|     const deps = buildStoreDeps(session);
+    554|     expect(typeof deps.weaponSwapEval).toBe("function");
+    555|     expect(deps.armourSwapEval).toBeUndefined();
+       |                                 ^
+    556|   });
+    557| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/trait/trait.test.ts > borg_power weights (borg-power.c) > computes the fixed baseline for an empty warrior
+AssertionError: expected 329998 to be 329999 // Object.is equality
+
+- Expected
++ Received
+
+- 329999
++ 329998
+
+ ❯ src/trait/trait.test.ts:291:28
+    289|     const ctx = mkCtx({}, [], []);
+    290|     ctx.world.self.trait = zeroTrait();
+    291|     expect(borgPower(ctx)).toBe(329999);
+       |                            ^
+    292|     expect(ctx.world.self.power).toBe(329999);
+    293|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 6 passed (8)
+      Tests  2 failed | 190 passed (192)
+   Start at  19:58:23
+   Duration  2.35s (transform 2.39s, setup 1.83s, import 3.11s, tests 3.05s, environment 1ms)
+

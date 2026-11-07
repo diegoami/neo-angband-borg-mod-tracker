@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-armour-home-48
+
+
+ Test Files  13 passed (13)
+      Tests  258 passed (258)
+   Start at  20:13:29
+   Duration  3.56s (transform 4.83s, setup 4.56s, import 6.05s, tests 5.40s, environment 1ms)
+
