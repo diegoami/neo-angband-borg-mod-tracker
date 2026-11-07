@@ -1,0 +1,86 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-light-base-41
+
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Warrior with torch preserves C equipment-light calculation
+{"cls":"Warrior","light":"torch","publicLight":2,"derivedLight":2,"borgLight":2,"equipment":[{"label":"& Wooden Torch~","flags":["BURNS_OUT","LIGHT_2"],"modifiers":[],"timeout":0,"tval":19}]}
+
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Warrior with phial preserves C equipment-light calculation
+{"cls":"Warrior","light":"phial","publicLight":4,"derivedLight":4,"borgLight":12,"equipment":[{"label":"& Phial~","flags":["NO_FUEL"],"modifiers":[{"code":"LIGHT","value":4}],"timeout":0,"tval":19}]}
+
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Necromancer with torch preserves C equipment-light calculation
+{"cls":"Necromancer","light":"torch","publicLight":2,"derivedLight":2,"borgLight":2,"equipment":[{"label":"& Wooden Torch~","flags":["BURNS_OUT","LIGHT_2"],"modifiers":[],"timeout":0,"tval":19}]}
+
+stdout | src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Necromancer with phial preserves C equipment-light calculation
+{"cls":"Necromancer","light":"phial","publicLight":3,"derivedLight":3,"borgLight":10,"equipment":[{"label":"& Phial~","flags":["NO_FUEL"],"modifiers":[{"code":"LIGHT","value":4}],"timeout":0,"tval":19}]}
+
+ ❯ src/trait/light-base.test.ts (8 tests | 4 failed) 1073ms
+     × Warrior with torch preserves C equipment-light calculation 193ms
+     × Warrior with phial preserves C equipment-light calculation 126ms
+     × Necromancer with torch preserves C equipment-light calculation 80ms
+     × Necromancer with phial preserves C equipment-light calculation 67ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Warrior with torch preserves C equipment-light calculation
+ FAIL  src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Necromancer with torch preserves C equipment-light calculation
+AssertionError: expected +0 to be 5000 // Object.is equality
+
+- Expected
++ Received
+
+- 5000
++ 0
+
+ ❯ src/trait/light-base.test.ts:81:30
+     79|       const torch = publicFrame.equipment.find(i => i?.flags.includes(…
+     80|       expect(torch).toBeDefined();
+     81|       expect(torch!.timeout).toBe(5000);
+       |                              ^
+     82|     }
+     83|     if (light === "phial") {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Warrior with phial preserves C equipment-light calculation
+AssertionError: expected 12 to be 8 // Object.is equality
+
+- Expected
++ Received
+
+- 8
++ 12
+
+ ❯ src/trait/light-base.test.ts:88:44
+     86|       expect(item!.modifiers).toContainEqual({ code: "LIGHT", value: 4…
+     87|     }
+     88|     expect(ctx.world.self.trait[BI.LIGHT]).toBe(expected);
+       |                                            ^
+     89|   });
+     90| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/trait/light-base.test.ts > light base from actual known loadouts (port41) > Necromancer with phial preserves C equipment-light calculation
+AssertionError: expected 10 to be 7 // Object.is equality
+
+- Expected
++ Received
+
+- 7
++ 10
+
+ ❯ src/trait/light-base.test.ts:88:44
+     86|       expect(item!.modifiers).toContainEqual({ code: "LIGHT", value: 4…
+     87|     }
+     88|     expect(ctx.world.self.trait[BI.LIGHT]).toBe(expected);
+       |                                            ^
+     89|   });
+     90| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 4 passed (8)
+   Start at  11:55:45
+   Duration  2.27s (transform 465ms, setup 494ms, import 471ms, tests 1.07s, environment 0ms)
