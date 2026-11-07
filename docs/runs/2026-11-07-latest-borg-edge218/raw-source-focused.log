@@ -1,0 +1,7 @@
+RUN  v4.1.11 /tmp/neo-borg43-raw-focus.Wzispp
+
+
+ Test Files  9 passed (9)
+      Tests  127 passed (127)
+   Start at  13:25:26
+   Duration  4.80s (transform 3.67s, setup 3.80s, import 4.70s, tests 5.88s, environment 2ms)

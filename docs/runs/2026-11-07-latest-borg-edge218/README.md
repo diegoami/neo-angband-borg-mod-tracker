@@ -76,3 +76,22 @@ engine/mod repository. Local port ownership remains this repository; consumer
 adoption belongs in Mandos. The closed moved report is not a fixed resolution.
 Native-C/BetterC sessions remain independent. No Rust polling, private data,
 source-policy relaxation or new strategy work occurs in this task.
+
+## Independently qualified raw-source consumer
+
+Frozen candidate95aa912 was archived to a fresh disposable consumer. All three
+producer tarball SHA256/size checks passed before install; only that copy's
+devDependencies/workspace SDK override changed. Bare imports report Core/SDK
+beta.3, Core.ENGINE_VERSION beta.3,250 SDK exports, resolved content and the SAME
+actual direct/transitive SDK file ([graph](raw-source-graph.json)). No local-Core
+or content-checkout override was set. The source identity is06a, not registry
+beta.3 and not a stamped edge package.
+
+Types, [four installed-package controls](raw-source-package-controls.log),
+[own committed plugin currency](raw-source-plugin.log) and [source focus](raw-source-focused.log)
+passed:127tests/9files/zero skips,4.80s,671.3KiB plugin. Thus the same source and
+committed plugin work in the supported published default and the exact latest
+source graph. This focus is not a full/default/desktop acceptance claim. The
+hosted recipe will reproduce the tuple and independently execute all951 cases.
+No local engine rebuild or duplicate full was used. Parent review and producer
+plus consumer required/actual-main results still control merges/adoption.
