@@ -1,0 +1,41 @@
+{
+  "schema": "neo-borg/accepted-notice-import@1",
+  "base": "88f79967a6cbb81bfb3fe2a63d71379bd45a8eae",
+  "upstream": "235a6f9b28beb82a8bb4b30dc8d3a6c807108170",
+  "normalMerge": "07af34e6fa5ae0979cafe9c3ed43a2cfb5a04d88",
+  "upstreamIssue": "neostryder/neo-angband#480",
+  "upstreamPR": "neostryder/neo-angband-mod-borg#76",
+  "originalUpstreamResolution": "fixed/closed, accepted",
+  "noticeTestSha256": "b141f081b9b83467d8cba4d4331c831b899729278bb6b9a5d5fc7304ef779143",
+  "pluginSha256": "3d8248112fc2164a44f39ea7222114f48d1c46712b8fe52d17893746629e02c3",
+  "defaultFocused": {
+    "tests": 226,
+    "files": 12,
+    "skips": 0,
+    "seconds": 2.26
+  },
+  "rawFocused": {
+    "tests": 226,
+    "files": 12,
+    "skips": 0,
+    "seconds": 6.12
+  },
+  "rawSDKGraph": {
+    "profile": "official06a-source-beta3",
+    "source": "06a2321ce30a414df20d1b20d486446e7688171c",
+    "core": "1.23.0-beta.3",
+    "directSDK": "1.23.0-beta.3",
+    "transitiveSDK": "1.23.0-beta.3",
+    "sameSDK": true,
+    "SDKExports": 250,
+    "engineVersion": "1.23.0-beta.3"
+  },
+  "inventory": {
+    "tests": 954,
+    "files": 52
+  },
+  "CIRoutingControls": 31,
+  "sourceAndDefaultDependencyProfile": "unchanged from base",
+  "publisher": "disabled_manually observed",
+  "requiredHostedFull": "pending parent frozen-head review"
+}

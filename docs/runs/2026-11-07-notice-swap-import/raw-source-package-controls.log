@@ -1,0 +1,21 @@
+{
+  "package": "1.23.0-beta.3",
+  "checks": [
+    {
+      "name": "seen change updates remembered terrain immediately",
+      "pass": true
+    },
+    {
+      "name": "unseen remote change preserves prior memory",
+      "pass": true
+    },
+    {
+      "name": "player square updates without seen flag",
+      "pass": true
+    },
+    {
+      "name": "generation without live hook does not memorize",
+      "pass": true
+    }
+  ]
+}
