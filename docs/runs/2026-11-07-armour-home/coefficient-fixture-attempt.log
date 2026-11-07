@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 /tmp/neo-borg-armour-home-48
+
+ ❯ src/store/armour-backup.test.ts (39 tests | 1 failed) 2307ms
+   × keeps the C coefficient and all-four-resist reward without an AC term 40ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/armour-backup.test.ts > keeps the C coefficient and all-four-resist reward without an AC term
+AssertionError: expected 14474 to be 12874 // Object.is equality
+
+- Expected
++ Received
+
+- 12874
++ 14474
+
+ ❯ src/store/armour-backup.test.ts:257:53
+    255|   for (const bi of [BI.RACID, BI.RELEC, BI.RFIRE, BI.RCOLD, BI.RBLIND]…
+    256|   // -1 + (1*3*35)*5 + 20*100 + 10*35 + all-four10000 =12874.
+    257|   expect(borgArmourSwap(s.ctx, {}, [shield]).value).toBe(12874);
+       |                                                     ^
+    258| });
+    259| it("does not invent a PROT_FEAR value absent from the C scorer", () =>…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 12 passed (13)
+      Tests  1 failed | 257 passed (258)
+   Start at  20:08:16
+   Duration  4.13s (transform 5.72s, setup 5.35s, import 7.92s, tests 5.96s, environment 2ms)
+
