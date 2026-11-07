@@ -162,3 +162,18 @@ plugin import graph. [Affected suites plus both architecture guards](architectur
 **483tests/15files PASS**,18.21s. Types/plugin currency and official full/staged
 privacy checks pass before publication. Production, package and plugin bytes
 still match2ee4f82. The final exact-head required full profiles remain pending.
+
+### Required count contract follows the eight new regressions
+
+At7148520 both complete runtime suites passed **932tests/51files/zero skips**,
+ordinary319.15s and source317.63s, with current669.2KiB plugin. The overall jobs
+still failed: the shared full-suite count guard remained exactly924 and rejected
+the larger valid suite. This was a missed count update when the eight registered
+regressions were added, not a gameplay failure or a waived gate.
+
+The current shared ordinary/source guard and its documentation now require
+exactly932. Its Node controls accept932 and reject old924, missing output,
+failed cases and skipped cases. Historical counts and original red jobs remain
+unchanged. Both actual932 logs are checked against the updated guard locally;
+required new-head hosted gates remain mandatory. No source/test/plugin/dependency
+or workflow-trigger/classification policy is changed by this bookkeeping fix.
