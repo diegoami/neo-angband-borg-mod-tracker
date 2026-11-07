@@ -69,9 +69,11 @@ distinguish focused proof, required ordinary/exact-source profiles and deploymen
 
 The separate exact fork-source profile retains its own verified source/artifact
 identity and exact transitive SDK selection. It is not the registry artifact
-merely because both manifests say beta.3. The default suite retains all 924 owned
-cases and every existing port fix; no source policy, seed, assertion or timeout
-changes in this upgrade.
+merely because both manifests say beta.3. The default suite now retains all 951
+cases: the previous 932 plus nineteen official wiring regressions. No source
+policy, seed, assertion or timeout is weakened. The separate exact-source profile
+selects official06a (edge.218 source) with raw beta.3-versioned artifacts; it is
+not the registry beta.3 or the separately stamped desktop build.
 
 Source25 and engine4 are CLOSED after explicit upstream acceptance and normal
 incorporation checks; upstream67 closed without its own merge marker after

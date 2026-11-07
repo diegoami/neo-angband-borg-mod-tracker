@@ -1,0 +1,7 @@
+RUN  v4.1.11 /tmp/neo-borg-latest-edge218-43
+
+
+ Test Files  9 passed (9)
+      Tests  127 passed (127)
+   Start at  13:18:39
+   Duration  3.65s (transform 2.99s, setup 3.20s, import 3.56s, tests 4.53s, environment 1ms)

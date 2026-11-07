@@ -22,8 +22,10 @@
 5. No angband/angband issues, PRs or comments from us under the standing pause.
    Keep C proposals in diegoami repositories with reproducible native legal
    scenarios, controls, human consequence and patch links. Confirmed Neo
-   engine/port reports may use their correct neostryder repository after
-   reproduction, provenance and duplicate checks. Local proposals may be
+   engine/port issue reports go to neostryder/neo-angband after reproduction,
+   provenance and duplicate checks: the maintainer centralizes ALL Neo issues
+   there (mod73 was moved to Neo478). Code proposals use the appropriate engine
+   or mod repository. Local source ownership is unchanged. Local proposals may be
    closed/unmerged with c-proposal/postponed while retaining branches/patches.
 6. Owned default branches contain session docs. Preserve those commits and
    integrate upstream by normal merge when needed; do not reset them to a

@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      # Frozen install retains published beta.1 + the explicit core-only noteSpot carry.
+      # Default remains the unchanged, unpatched published beta.3 tuple.
       - run: pnpm install --frozen-lockfile
       - run: node tools/check-session.mjs
       - if: ${{ hashFiles('tools/c-bugs.mjs') != '' }}
