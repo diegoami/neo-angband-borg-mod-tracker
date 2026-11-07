@@ -1,0 +1,95 @@
+RUN  v4.1.11 /tmp/neo-borg-light-base-41
+
+ ❯ src/recall.test.ts (51 tests | 13 failed) 605ms
+     × rests 100 turns to recharge a recall rod 12ms
+     × rests 500 turns while safe in the dungeon 3ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":40,"live":5,"answer":true} 4ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":127,"live":0,"answer":false} 4ms
+     × answers through the tick using the recall decision: {"depth":35,"maxDepth":60,"hunted":40,"live":5,"answer":false} 4ms
+     × answers through the tick using the recall decision: {"depth":45,"maxDepth":60,"hunted":40,"live":5,"answer":true} 3ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":45,"hunted":40,"live":5,"answer":false} 3ms
+     × answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"answer":false} 3ms
+     × answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"winner":true,"answer":true} 3ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":4,"answer":false} 3ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":5,"answer":true} 3ms
+     × answers through the tick using the recall decision: {"depth":80,"maxDepth":99,"hunted":80,"live":0,"sauron":true,"answer":true} 3ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":0,"munchkin":true,"answer":true} 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > rests 100 turns to recharge a recall rod
+AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'rest', args: { count: 100 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "count": 100,
+-   },
+-   "code": "rest",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/recall.test.ts:270:23
+    268|     s.inventory.push(item({ handle: 42, tval: TV.ROD, sval: SVAL.rod.r…
+    269|     s.world.self.inShop = true;
+    270|     expect(s.think()).toEqual({ code: "rest", args: { count: 100 } });
+       |                       ^
+    271|     expect(s.world.self.inShop).toBe(false);
+    272|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > rests 500 turns while safe in the dungeon
+AssertionError: expected { code: 'rest', args: { count: 9 } } to deeply equal { code: 'rest', args: { count: 500 } }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "count": 500,
++     "count": 9,
+    },
+    "code": "rest",
+  }
+
+ ❯ src/recall.test.ts:298:23
+    296|     const s = scenario();
+    297|     s.world.self.goal.recalling = 10000;
+    298|     expect(s.think()).toEqual({ code: "rest", args: { count: 500 } });
+       |                       ^
+    299|   });
+    300|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":40,"live":5,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":127,"live":0,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":35,"maxDepth":60,"hunted":40,"live":5,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":45,"maxDepth":60,"hunted":40,"live":5,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":45,"hunted":40,"live":5,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"winner":true,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":4,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":5,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":80,"maxDepth":99,"hunted":80,"live":0,"sauron":true,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":0,"munchkin":true,"answer":true}
+AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:458:33
+    456|     borg.world.self.trait[BI.SAURON_DEAD] = Number("sauron" in options…
+    457|     borg.world.self.goal.fleeingMunchkin = "munchkin" in options;
+    458|     expect(borgRecall(ctx)).not.toBeNull();
+       |                                 ^
+    459|     const game = fakeGame();
+    460|     const tick = createTick({ setInput: () => undefined } as unknown a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+
+ Test Files  1 failed | 12 passed (13)
+      Tests  13 failed | 421 passed (434)
+   Start at  12:14:20
+   Duration  18.01s (transform 4.35s, setup 3.52s, import 6.73s, tests 22.53s, environment 2ms)

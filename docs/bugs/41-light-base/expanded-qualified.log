@@ -1,0 +1,7 @@
+RUN  v4.1.11 /tmp/neo-borg-light-base-41
+
+
+ Test Files  13 passed (13)
+      Tests  434 passed (434)
+   Start at  12:15:20
+   Duration  17.91s (transform 4.37s, setup 3.29s, import 6.84s, tests 22.31s, environment 1ms)

@@ -91,3 +91,47 @@ Exact-head hosted ordinary and exact-source full verification remain required
 before a ready-for-merge claim. No duplicate local full is run. Source41 remains
 open pending actual official upstream acceptance/import; own-fork delivery is not
 that acceptance. Parent owns merge, actual-master verification and consumer196.
+
+## Required full gate exposed further fixture contracts
+
+Exact2ee4f82 hosted run42366332011 FAILED honestly in both ordinary and exact-source
+profiles: **849pass/83fail,932tests/51files**. [Ordinary](ordinary-full-failure.log)
+and [source](exact-source-full-failure.log) retain the test-stage output only; raw
+full hosted logs remain in task artifacts. Authentication/setup/cleanup logs are
+not copied into public evidence. These were not waived because narrower focus
+passed. Required real play.test.ts passed all6 actual Core cases in the ordinary
+run (245.73s); the two rest/store failures were its class-flag synthetic proxy,
+not the unscripted actual rest/store cases. No extra independent lives are counted.
+
+The83 failures came from these synthetic fixture contracts: think-session4,
+fight18, junk-space2, recall31, API2controller1, vault9, rest3, play-step9,
+buff-timers1, flow-recover3 and the rest/store class proxy2.
+
+- Pure model helpers now name modelLightRadius, after real Notice/before
+  perception, with their documented original lit default. Explicit recall
+  darkness/radius1 and play-step darkness cases migrate to that named input.
+  Recall's explicit policy re-notices use a fixture notice() wrapper that calls
+  real Notice before restoring that model input; it does not intercept production.
+- Repeated-controller cases opt into actual registered known Torch or Lantern
+  data and matching public light from test-known-light.ts. This test-only factory
+  uses the real published same-loadout public adapter/fuel contract. Its copied
+  public item gets a reserved unit-view handle9900/9901 to avoid aliasing unrelated
+  synthetic gear (the first real Torch handle collided with test amulet7). No
+  actual engine command is claimed under those unit handles. No global fixture
+  or production default/trait override is added.
+- Recall's11 prompt cases and2 repeated-ladder rest cases explicitly use Lantern3.
+  Vault's repeated-ladder cases replace their unsupported synthetic light1 with
+  actual Torch2 as a lit-gate fixture; all geometry, spell/resources, target and
+  action assertions remain unchanged. The real rest/store class proxy now retains
+  engine.equipment from the same actual frame instead of silently dropping it.
+
+[First expanded attempt](expanded-first.log):403pass/31fail, including a fixture BI
+import error and the Torch-handle alias. [Next](expanded-recall-attempt.log):421pass/
+13fail, all remaining recall cases needing explicit repeated-Notice light gear.
+These attempts remain preserved; no assertion, seed, cap or timeout was changed.
+The frozen eight registered light-base tests remain byte-identical to6e2c71b
+(SHA256ed9838fe7ff61af2ddabd597a68f800f9a4c182c795b3c6f76c2dc8c7409df46).
+**Final affected focus:434tests/13files PASS**,17.91s, plus types and current plugin.
+The runtime/manifest/dependencies/plugin bytes remain exactly2ee4f82; this follow-up
+changes only fixture inputs and evidence. A fresh exact-head ordinary/source full
+gate is required before merge, not inferred from focus.

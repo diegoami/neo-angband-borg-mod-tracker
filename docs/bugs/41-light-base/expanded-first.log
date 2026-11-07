@@ -1,0 +1,451 @@
+RUN  v4.1.11 /tmp/neo-borg-light-base-41
+
+ ❯ src/trait/buff-timers.test.ts (11 tests | 4 failed) 21ms
+     × leaves the flag latched until the cross-check clears it, and the Borg blesses again the same turn 8ms
+     × does not recast while the engine says the buff is genuinely still up 5ms
+     × leaves a stale flag latched when the toggle is off 2ms
+     × is on by default, so an absent Bug Fixes still runs the safety net 2ms
+ ❯ src/item/junk-space.test.ts (25 tests | 1 failed) 488ms
+     × reaches worn recharge through the controller after the earlier inventory rungs yield 51ms
+ ❯ src/recall.test.ts (51 tests | 17 failed) 714ms
+     × crawls rather than recalling to an unstocked depth 100 38ms
+     × recalls immediately for restocking after the 100-turn level grace 10ms
+     × recalls immediately to collect battle supplies from home 7ms
+     × stops boredom and rising while Morgoth was recently seen 4ms
+     × rests 100 turns to recharge a recall rod 7ms
+     × rests 500 turns while safe in the dungeon 3ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":40,"live":5,"answer":true} 4ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":127,"live":0,"answer":false} 7ms
+     × answers through the tick using the recall decision: {"depth":35,"maxDepth":60,"hunted":40,"live":5,"answer":false} 4ms
+     × answers through the tick using the recall decision: {"depth":45,"maxDepth":60,"hunted":40,"live":5,"answer":true} 3ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":45,"hunted":40,"live":5,"answer":false} 5ms
+     × answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"answer":false} 4ms
+     × answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"winner":true,"answer":true} 4ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":4,"answer":false} 4ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":5,"answer":true} 4ms
+     × answers through the tick using the recall decision: {"depth":80,"maxDepth":99,"hunted":80,"live":0,"sauron":true,"answer":true} 5ms
+     × answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":0,"munchkin":true,"answer":true} 5ms
+ ❯ src/vault.test.ts (18 tests | 9 failed) 2112ms
+     × excavates a vault wall from range before pursuing a distant monster 67ms
+     × tries the special-level targets in C order 50ms
+     × keeps the excavated floor while unseen and refreshes it when seen 27ms
+     × uses max_range minus two and requires line of sight and a 30 percent spell 27ms
+     × requires a castable digging spell even when a melting activation is equipped 56ms
+     × uses the spell, ring and activation order and restricts Shatter Stone to adjacent walls 30ms
+     × melts walls before tunneling with the session spell and equipment dependencies 19ms
+     × takes remembered objects within 35 before excavating 28ms
+     × mines remembered veins within 35 before excavating 42ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 31 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/recall.test.ts > town recall decisions > crawls rather than recalling to an unstocked depth 100
+AssertionError: expected undefined to be 'walk' // Object.is equality
+
+- Expected:
+"walk"
+
++ Received:
+undefined
+
+ ❯ src/recall.test.ts:102:41
+    100|       stocked.inventory.push(item({ tval: TV.POTION, sval: SVAL.potion…
+    101|       borgNotice(stocked.ctx);
+    102|       expect(stocked.leave(true)?.code).toBe(code);
+       |                                         ^
+    103|     }
+    104|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/31]⎯
+
+ FAIL  src/recall.test.ts > upward recall decisions > recalls immediately for restocking after the 100-turn level grace
+AssertionError: expected 'walk' to be 'read' // Object.is equality
+
+Expected: "read"
+Received: "walk"
+
+ ❯ src/recall.test.ts:157:29
+    155|     s.inventory.splice(1, 1);
+    156|     borgNotice(s.ctx);
+    157|     expect(s.leave()?.code).toBe("read");
+       |                             ^
+    158|   });
+    159|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/31]⎯
+
+ FAIL  src/recall.test.ts > upward recall decisions > recalls immediately to collect battle supplies from home
+AssertionError: expected 'restock light radius < 1' to be 'Collect from house (20 potions).' // Object.is equality
+
+Expected: "Collect from house (20 potions)."
+Received: "restock light radius < 1"
+
+ ❯ src/recall.test.ts:204:37
+    202|     borgNotice(s.ctx);
+    203|     s.world.facts.vaultOnLevel = true;
+    204|     expect(borgPrepared(s.ctx, 98)).toBe("Collect from house (20 potio…
+       |                                     ^
+    205|     expect(s.leave()?.code).toBe("read");
+    206|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/31]⎯
+
+ FAIL  src/recall.test.ts > upward recall decisions > stops boredom and rising while Morgoth was recently seen
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/recall.test.ts:245:38
+    243|     s.world.self.goal.leaving = true;
+    244|     s.leave(true);
+    245|     expect(s.world.self.goal.rising).toBe(false);
+       |                                      ^
+    246|     expect(s.world.self.goal.leaving).toBe(false);
+    247|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/31]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > rests 100 turns to recharge a recall rod
+AssertionError: expected { code: 'walk', dir: 6 } to deeply equal { code: 'rest', args: { count: 100 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "count": 100,
+-   },
+-   "code": "rest",
++   "code": "walk",
++   "dir": 6,
+  }
+
+ ❯ src/recall.test.ts:263:23
+    261|     s.inventory.push(item({ handle: 42, tval: TV.ROD, sval: SVAL.rod.r…
+    262|     s.world.self.inShop = true;
+    263|     expect(s.think()).toEqual({ code: "rest", args: { count: 100 } });
+       |                       ^
+    264|     expect(s.world.self.inShop).toBe(false);
+    265|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/31]⎯
+
+ FAIL  src/recall.test.ts > recall means and waiting > rests 500 turns while safe in the dungeon
+AssertionError: expected { code: 'rest', args: { count: 9 } } to deeply equal { code: 'rest', args: { count: 500 } }
+
+- Expected
++ Received
+
+  {
+    "args": {
+-     "count": 500,
++     "count": 9,
+    },
+    "code": "rest",
+  }
+
+ ❯ src/recall.test.ts:291:23
+    289|     const s = scenario();
+    290|     s.world.self.goal.recalling = 10000;
+    291|     expect(s.think()).toEqual({ code: "rest", args: { count: 500 } });
+       |                       ^
+    292|   });
+    293|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/31]⎯
+
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":40,"live":5,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":60,"hunted":127,"live":0,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":35,"maxDepth":60,"hunted":40,"live":5,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":45,"maxDepth":60,"hunted":40,"live":5,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":45,"hunted":40,"live":5,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":100,"maxDepth":110,"hunted":100,"live":5,"winner":true,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":4,"answer":false}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":5,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":80,"maxDepth":99,"hunted":80,"live":0,"sauron":true,"answer":true}
+ FAIL  src/recall.test.ts > recall depth prompts > answers through the tick using the recall decision: {"depth":40,"maxDepth":99,"hunted":40,"live":0,"munchkin":true,"answer":true}
+AssertionError: expected null not to be null
+ ❯ src/recall.test.ts:451:33
+    449|     borg.world.self.trait[BI.SAURON_DEAD] = Number("sauron" in options…
+    450|     borg.world.self.goal.fleeingMunchkin = "munchkin" in options;
+    451|     expect(borgRecall(ctx)).not.toBeNull();
+       |                                 ^
+    452|     const game = fakeGame();
+    453|     const tick = createTick({ setInput: () => undefined } as unknown a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/31]⎯
+
+ FAIL  src/vault.test.ts > vault decisions through the session and ladder > excavates a vault wall from range before pursuing a distant monster
+AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:108:20
+    106|     });
+    107|     session.flow.state.vein.add(10, 5);
+    108|     expect(main()).toEqual({ code: "cast", args: { spell: 8 } });
+       |                    ^
+    109|     expect(act.targets).toEqual([{ x: 5, y: 10 }]);
+    110|     expect(ctx.world.map.at(5, 10).feat).toBe(FEAT.FLOOR);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/31]⎯
+
+ FAIL  src/vault.test.ts > vault decisions through the session and ladder > tries the special-level targets in C order
+AssertionError: expected 'walk' to be 'cast' // Object.is equality
+
+Expected: "cast"
+Received: "walk"
+
+ ❯ src/vault.test.ts:131:26
+    129|     const takes = vi.spyOn(session.flow, "toTakes");
+    130|     const veins = vi.spyOn(session.flow, "toVein");
+    131|     expect(main()?.code).toBe("cast");
+       |                          ^
+    132|     expect(kills).toHaveBeenCalledWith(ctx, 21, false);
+    133|     expect(takes).toHaveBeenCalledWith(ctx, false, 35);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/31]⎯
+
+ FAIL  src/vault.test.ts > vault excavation guards and side effects > keeps the excavated floor while unseen and refreshes it when seen
+AssertionError: expected 'walk' to be 'cast' // Object.is equality
+
+Expected: "cast"
+Received: "walk"
+
+ ❯ src/vault.test.ts:166:26
+    164|   it("keeps the excavated floor while unseen and refreshes it when see…
+    165|     const { ctx, memo, main } = run({ player: { cls: "Druid" }, spells…
+    166|     expect(main()?.code).toBe("cast");
+       |                          ^
+    167|     const remembered: AgentView = { ...ctx.view, cell: (x, y) => {
+    168|       const cell = ctx.view.cell(x, y);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/31]⎯
+
+ FAIL  src/vault.test.ts > vault excavation guards and side effects > uses max_range minus two and requires line of sight and a 30 percent spell
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/vault.test.ts:191:39
+    189|           ...(options.blocked ? { "13,10": { feat: FEAT.GRANITE } } : …
+    190|       });
+    191|       expect(main()?.code === "cast").toBe(options.cast);
+       |                                       ^
+    192|       expect(ctx.world.map.at(options.x, 10).feat).toBe(options.cast ?…
+    193|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/31]⎯
+
+ FAIL  src/vault.test.ts > vault excavation guards and side effects > requires a castable digging spell even when a melting activation is equipped
+AssertionError: expected 'walk' to be 'activate' // Object.is equality
+
+Expected: "activate"
+Received: "walk"
+
+ ❯ src/vault.test.ts:201:28
+    199|         equipment: [item({ handle: 42, artifact: true, artifactName: "…
+    200|       });
+    201|       expect(main()?.code).toBe(spells ? "activate" : "walk");
+       |                            ^
+    202|       expect(ctx.world.map.at(5, 10).feat).toBe(spells ? FEAT.FLOOR : …
+    203|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/31]⎯
+
+ FAIL  src/vault.test.ts > vault excavation guards and side effects > uses the spell, ring and activation order and restricts Shatter Stone to adjacent walls
+AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:220:22
+    218|           [`${options.x - 1},9`]: { feat: FEAT.PERM } },
+    219|       });
+    220|       expect(main()).toEqual(options.command);
+       |                      ^
+    221|       expect(act.targets).toEqual([{ x: options.x, y: 10 }]);
+    222|       expect(ctx.world.map.at(options.x, 10).feat).toBe(options.comman…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/31]⎯
+
+ FAIL  src/vault.test.ts > vault wall steps through committed ladder flows > melts walls before tunneling with the session spell and equipment dependencies
+AssertionError: expected { code: 'tunnel', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "tunnel",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:245:22
+    243|       ctx.world.self.goal.type = GOAL_VAULT;
+    244|       const draw = vi.spyOn(ctx.rng, "randint0");
+    245|       expect(main()).toEqual(options.command);
+       |                      ^
+    246|       expect(act.targets).toEqual([{ x: 9, y: 10 }]);
+    247|       expect(st.vein.num).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/31]⎯
+
+ FAIL  src/vault.test.ts > vault target priority > takes remembered objects within 35 before excavating
+AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'walk', dir: 6 }
+
+- Expected
++ Received
+
+  {
+    "code": "walk",
+-   "dir": 6,
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:314:22
+    312|         floor: { [`${x},10`]: [item({ tval: TV.AMULET })] },
+    313|       });
+    314|       expect(main()).toEqual(x === 45 ? { code: "walk", dir: 6 } : { c…
+       |                      ^
+    315|       if (x === 45) expect(ctx.world.self.goal.type).toBe(GOAL_TAKE);
+    316|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/31]⎯
+
+ FAIL  src/vault.test.ts > vault target priority > mines remembered veins within 35 before excavating
+AssertionError: expected { code: 'walk', dir: 4 } to deeply equal { code: 'cast', args: { spell: 8 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "spell": 8,
+-   },
+-   "code": "cast",
++   "code": "walk",
++   "dir": 4,
+  }
+
+ ❯ src/vault.test.ts:325:22
+    323|       });
+    324|       session.flow.state.vein.add(10, x);
+    325|       expect(main()).toEqual(x === 45 ? { code: "walk", dir: 6 } : { c…
+       |                      ^
+    326|       if (x === 45) expect(ctx.world.self.goal.type).toBe(GOAL_TAKE);
+    327|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/31]⎯
+
+ FAIL  src/item/junk-space.test.ts > production inventory decisions > reaches worn recharge through the controller after the earlier inventory rungs yield
+AssertionError: expected { code: 'rest' } to match object { code: 'wield', args: { handle: 7 } }
+
+- Expected
++ Received
+
+  {
+-   "args": {
+-     "handle": 7,
+-   },
+-   "code": "wield",
++   "code": "rest",
+  }
+
+ ❯ src/item/junk-space.test.ts:351:54
+    349|     expect(session.rechargeRest).toBe(false);
+    350|     expect(borg.controller(view, makeFakeActions())).toMatchObject({ c…
+    351|     expect(borg.controller(view, makeFakeActions())).toMatchObject({ c…
+       |                                                      ^
+    352|     worn.push(items.splice(items.findIndex((entry) => entry.handle ===…
+    353|     expect(borg.controller(view, makeFakeActions())).toMatchObject({ c…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/31]⎯
+
+ FAIL  src/trait/buff-timers.test.ts > a buff-off message that never arrives > leaves the flag latched until the cross-check clears it, and the Borg blesses again the same turn
+TypeError: Cannot read properties of undefined (reading 'LIGHT')
+ ❯ tick src/trait/buff-timers.test.ts:297:23
+    295|   borgNotice(ctx);
+    296|   // Isolate buff expiry from equipment-light calculation.
+    297|   world.self.trait[BI.LIGHT] = scenario.modelLightRadius ?? 1;
+       |                       ^
+    298|   perceive(world, view, memo);
+    299|   return ctx;
+ ❯ src/trait/buff-timers.test.ts:131:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/31]⎯
+
+ FAIL  src/trait/buff-timers.test.ts > a buff-off message that never arrives > does not recast while the engine says the buff is genuinely still up
+TypeError: Cannot read properties of undefined (reading 'LIGHT')
+ ❯ tick src/trait/buff-timers.test.ts:297:23
+    295|   borgNotice(ctx);
+    296|   // Isolate buff expiry from equipment-light calculation.
+    297|   world.self.trait[BI.LIGHT] = scenario.modelLightRadius ?? 1;
+       |                       ^
+    298|   perceive(world, view, memo);
+    299|   return ctx;
+ ❯ src/trait/buff-timers.test.ts:158:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/31]⎯
+
+ FAIL  src/trait/buff-timers.test.ts > the Bug Fixes cross-mod gate (neo-angband#32) > leaves a stale flag latched when the toggle is off
+TypeError: Cannot read properties of undefined (reading 'LIGHT')
+ ❯ tick src/trait/buff-timers.test.ts:297:23
+    295|   borgNotice(ctx);
+    296|   // Isolate buff expiry from equipment-light calculation.
+    297|   world.self.trait[BI.LIGHT] = scenario.modelLightRadius ?? 1;
+       |                       ^
+    298|   perceive(world, view, memo);
+    299|   return ctx;
+ ❯ src/trait/buff-timers.test.ts:181:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/31]⎯
+
+ FAIL  src/trait/buff-timers.test.ts > the Bug Fixes cross-mod gate (neo-angband#32) > is on by default, so an absent Bug Fixes still runs the safety net
+TypeError: Cannot read properties of undefined (reading 'LIGHT')
+ ❯ tick src/trait/buff-timers.test.ts:297:23
+    295|   borgNotice(ctx);
+    296|   // Isolate buff expiry from equipment-light calculation.
+    297|   world.self.trait[BI.LIGHT] = scenario.modelLightRadius ?? 1;
+       |                       ^
+    298|   perceive(world, view, memo);
+    299|   return ctx;
+ ❯ src/trait/buff-timers.test.ts:199:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/31]⎯
+
+
+ Test Files  4 failed | 9 passed (13)
+      Tests  31 failed | 403 passed (434)
+   Start at  12:11:07
+   Duration  21.07s (transform 5.17s, setup 4.05s, import 8.27s, tests 26.11s, environment 2ms)
