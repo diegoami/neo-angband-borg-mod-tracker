@@ -17,13 +17,13 @@ focused fail-before/pass-after tests, rebuild plugin.js when runtime source
 changes, and pnpm verify. Record required content and engine pins explicitly.
 The historical bootstrap baseline below records optional content-suite skips
 and repeated-open failures. Their defined source scopes have since been
-accepted, incorporated and closed. Current task39 owns the beta.3 dependency
-upgrade; never infer a full no-skip gate or consumer deployment from a version.
+accepted, incorporated and closed. The default engine dependencies remain published beta.3; never infer a full no-skip gate or consumer deployment from a version.
 
 Upstream PRs63–67 were accepted through successor PRs69/70 and their scoped
 corrections are incorporated here. Source2's weapon-backup/HOME leaf is local
 and accepted as upstream72. Armour-backup data/value and strict HOME retrieval
-are restored in source48; tactical equip and SR-availability folds remain separate. The
+are accepted upstream through PR78 and incorporated here. Tactical equip and
+SR-availability folds from source50 remain a separate pending proposal (PR79). The
 canonical issues own live status, independently of Mandos adoption.
 Consumer carry/fixed labels live only on linked Mandos adoption issues; source issues here track source resolution.
 [Upstream product README](docs/upstream-reference/README.md) and
@@ -82,3 +82,17 @@ acceptance through70. Upstream468's remaining open state does not reopen the
 accepted defined scope. Port source2/upstream72 and timing35 stay independently
 open. Mandos owns its package carries and consumer state; no lab update follows
 from this source task.
+
+## Borg beta.4 reconciliation, 2026-11-08
+
+The official release is **Borg1.4.0-beta.4**, tag
+[`48ee6e1c`](https://github.com/neostryder/neo-angband-mod-borg/tree/v1.4.0-beta.4).
+The incorporated upstream source is later commit
+[`a10655c3`](https://github.com/neostryder/neo-angband-mod-borg/commit/a10655c3b8113848092a7d66405ca3ec5e2222f9):
+PR74's light correction and PR78's armour/HOME correction were accepted after
+the release tag. They must not be attributed to the unchanged beta.4 tag itself.
+Our repair fork additionally retains the unaccepted source50 tactical/SR proposal,
+without translating original-C gameplay corrections. The engine tuple stays
+Core/SDK/content1.23.0-beta.3; no new published engine dependency is required.
+See the [reconciliation receipt](docs/runs/2026-11-08-borg-beta4/README.md) and
+checkpoint26 for actual current gates and source-resolution state.

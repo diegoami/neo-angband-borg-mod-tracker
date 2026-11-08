@@ -11,8 +11,9 @@
    leaf and source48 armour data/value/HOME leaf are integrated. Source51 corrects
    its known-negative-flag curse predicate. Source50 restores tactical equip/SR
    availability with the original C quirks and explicit public-API limits.
-   Current verification, consumer adoption and upstream acceptance remain on
-   source2/source50 and the checkpoint, rather than inferred from this plan. Timing35 needs a repeated normal failure
+   Upstream74/78 light and armour corrections are accepted and incorporated through
+   a10655c3; source50/PR79 tactical/SR remains unaccepted. Source closure follows
+   the reconciliation checks recorded on checkpoint26, independently of consumers. Timing35 needs a repeated normal failure
    and a specifically authorised slow-case diagnosis, not reflex full reruns or
    a timeout increase. Current scoped assignments come from the checkpoint.
 3. For a port defect, compare C4.2.6/current C and the TypeScript implementation.
