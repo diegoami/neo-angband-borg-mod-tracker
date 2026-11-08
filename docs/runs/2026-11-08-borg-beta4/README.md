@@ -32,6 +32,39 @@ RAW official06a compatibility is a separate source profile, not an npm release
 or the newer official edge225/API2.1 source. No engine source upgrade, lab
 deployment, profile/save/data change or tag/release is performed here.
 
-Required exact PR and actual-master check results will be recorded in the
-checkpoint and final follow-up receipt. Source41/48 closure waits for those
-normal incorporation gates; Mandos independently owns consumer adoption.
+## Verified delivery
+
+Owned PR54 exact a6176d0aac036b7daf06f4e4a471dcd2ffef523e normally merged as
+78e271c21690b0d72a01bd7416ce6476921d325a. Its [required gate42487980780](https://github.com/diegoami/neo-angband-borg-mod-tracker/actions/runs/42487980780)
+passed1056 tests/57 files/zero skips in each profile: published276.27s and
+RAW06a219.53s. [Actual-master42488477042](https://github.com/diegoami/neo-angband-borg-mod-tracker/actions/runs/42488477042)
+passed1056/57/zero in each profile: published264.32s and RAW240.90s. Both
+include types/current691.0KiB plugin/session/profile/privacy/final gate.
+Plugin SHA256 is25c2835df1e6cbf92924bbd642fd1ec83031c55e64fa778a19c7df4e53d290fd,
+byte-identical to the prior verified28c0. Local types/current/session,31CI
+controls and5docs/version contracts also passed; no extra local full was run.
+
+Source41 and48 can now close for accepted upstream corrections actually
+incorporated and normally verified here. Source51 stays completed local
+proposal repair. Source50 and aggregate2 stay OPEN for the still-unaccepted
+tactical proposal. Mandos independently owns its consumer adoption/state.
+
+## Clean tactical proposal
+
+The original published6956308 topic normally merged accepted a106 as
+cc64c1ccc62f7197f5bef24a4a6d23cc96155e5f; no amend/rebase/force. The delta
+against current official a106 is exactly15 tactical source/test/plugin files,
+without bootstrap/internal metadata or original-C corrections. Runtime/tests/
+plugin match the verified owned producer. Its separate [upstream CI42488085030](https://github.com/neostryder/neo-angband-mod-borg/actions/runs/42488085030)
+passed1056/57/zero319.21s/current691.0KiB; [privacy42488085038](https://github.com/neostryder/neo-angband-mod-borg/actions/runs/42488085038)
+passed. Local clean types/current and114/9 focus passed.
+
+PR79 is now ready for review and mergeable, because78 is accepted and this
+new head passed its own gate. It is still OPEN/unaccepted; green CI or our
+fork merge is not upstream acceptance. The older clean1048-case result
+remains historical; the accepted light8 now explains its1056-case inventory.
+
+An additional optional5-file focus was queued behind a valid independent
+native shared-lock job, never started, and only our empty waiter was
+canceled after checking it had no child. No native job was interrupted and
+no optional focus result is claimed. No local validation job remains.
