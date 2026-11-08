@@ -79,8 +79,9 @@ not the registry beta.3 or the separately stamped desktop build.
 Source25 and engine4 are CLOSED after explicit upstream acceptance and normal
 incorporation checks; upstream67 closed without its own merge marker after
 acceptance through70. Upstream468's remaining open state does not reopen the
-accepted defined scope. Port source2/upstream72 and timing35 stay independently
-open. Mandos owns its package carries and consumer state; no lab update follows
+accepted defined scope. Source2 remains OPEN only for the unaccepted tactical/SR scope (source50/PR79);
+upstream72 is accepted and its weapon/HOME scope is complete. Timing35 stays
+independently open. Mandos owns its package carries and consumer state; no lab update follows
 from this source task.
 
 ## Borg beta.4 reconciliation, 2026-11-08
@@ -95,4 +96,6 @@ Our repair fork additionally retains the unaccepted source50 tactical/SR proposa
 without translating original-C gameplay corrections. The engine tuple stays
 Core/SDK/content1.23.0-beta.3; no new published engine dependency is required.
 See the [reconciliation receipt](docs/runs/2026-11-08-borg-beta4/README.md) and
-checkpoint26 for actual current gates and source-resolution state.
+checkpoint26 for actual current gates and source-resolution state. Both required
+profiles and actual-master1056-case profiles pass. PR79 is now ready for review
+after dependency78 acceptance and its own1056-case clean gate; it remains OPEN.
