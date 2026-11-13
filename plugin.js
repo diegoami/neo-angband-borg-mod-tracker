@@ -3928,12 +3928,17 @@ function defaultHomeSeam() {
 function defaultFrame() {
   return {};
 }
-function resolveOpts(opts = {}) {
+function contextFrame(ctx) {
+  if (!ctx?.frame) return null;
+  const p = ctx.view.player();
+  return ctx.frame(p.race, p.cls);
+}
+function resolveOpts(opts = {}, ctx) {
   return {
     cfg: { ...borgCfg(), ...opts.cfg },
     spells: opts.spells ?? defaultSpellSeam(),
     home: opts.home ?? defaultHomeSeam(),
-    frame: opts.frame ?? defaultFrame(),
+    frame: opts.frame ?? contextFrame(ctx) ?? defaultFrame(),
     svals: opts.svals ?? flatSvals(),
     uncursable: opts.uncursable ?? ((item) => item.curses.length > 0)
   };
@@ -4004,7 +4009,7 @@ var OTHER_CURSES = /* @__PURE__ */ new Set([
   "air swing"
 ]);
 function borgArmourSwap(ctx, opts = {}, inventory = ctx.view.inventory(), selectedWeapon = null) {
-  const R2 = resolveOpts(opts), t = ctx.world.self.trait;
+  const R2 = resolveOpts(opts, ctx), t = ctx.world.self.trait;
   const trait4 = (bi) => t[bi] ?? 0;
   if (!R2.cfg.usesSwaps || trait4(106 /* MAXDEPTH */) < 50 || trait4(106 /* MAXDEPTH */) >= 90) return NONE();
   const allowed = [
@@ -4651,7 +4656,7 @@ function borgWeaponSwap(ctx, opts = {}, inventory = ctx.view.inventory()) {
     TV.GLOVES,
     TV.BOOTS
   ];
-  const R2 = resolveOpts(opts), t = ctx.world.self.trait;
+  const R2 = resolveOpts(opts, ctx), t = ctx.world.self.trait;
   const trait4 = (bi) => t[bi] ?? 0;
   const quiver = new Set(ctx.view.quiver?.().map((item) => item.handle) ?? []);
   let best = NONE2();
@@ -7633,7 +7638,7 @@ var TV_SHOT = 2;
 var TV_ARROW = 3;
 var TV_BOLT = 4;
 function borgNotice(ctx, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const view = ctx.view;
   const p = view.player();
   const t = new Array(BI_MAX).fill(0);
@@ -8981,7 +8986,7 @@ function borgPowerHomeFrom(ctx, c) {
 
 // src/trait/prepared.ts
 function borgPrepared(ctx, depth, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
   if (depth === 1) return null;
@@ -9218,7 +9223,7 @@ function borgPreparedAux(t, d, R2, depth) {
   return null;
 }
 function borgRestock(ctx, depth, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
   const cls = t[25 /* CLASS */];
@@ -9272,7 +9277,7 @@ function wgt(item) {
   return present(item) ? item.weight : 0;
 }
 function borgPower(ctx, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
   const equip = ctx.view.equipment();
@@ -17929,7 +17934,7 @@ function createBorg(opts = {}) {
     noAlter: false
   };
   const controller = hostController((view, act) => {
-    const ctx = { world, view, act, rng, bookKind: session.resolvers.bookKind, spellEffect: session.resolvers.spellEffect };
+    const ctx = { world, view, act, rng, bookKind: session.resolvers.bookKind, spellEffect: session.resolvers.spellEffect, frame: session.resolvers.frame };
     const recordStep = !retry;
     retry = false;
     before = {
@@ -18120,6 +18125,7 @@ function makeCoreResolvers(input) {
     resolveMonsterFacts,
     bookKind: input.bookKind,
     spellEffect: input.spellEffect,
+    frame: input.frame,
     resolveActivation,
     activateHandle: activateHandle2,
     inShop,
@@ -18282,6 +18288,52 @@ async function watchMessages(api) {
   };
 }
 
+// src/trait/frame.ts
+var STAT_KEYS = ["str", "int", "wis", "dex", "con"];
+function statsOf(record) {
+  const stats = record?.["stats"];
+  const obj = stats !== null && typeof stats === "object" && !Array.isArray(stats) ? stats : {};
+  return STAT_KEYS.map((key) => typeof obj[key] === "number" ? obj[key] : 0);
+}
+function frameFromRecords(race, cls) {
+  const r = statsOf(race);
+  const c = statsOf(cls);
+  const frame = { statAdj: r.map((v, i) => v + (c[i] ?? 0)) };
+  const magic = cls?.["magic"];
+  if (magic !== null && typeof magic === "object" && !Array.isArray(magic)) {
+    const m = magic;
+    let total = 0;
+    for (const book of Array.isArray(cls?.["book"]) ? cls["book"] : []) {
+      if (book === null || typeof book !== "object" || Array.isArray(book)) continue;
+      const spells = book["spell"];
+      if (Array.isArray(spells)) total += spells.length;
+    }
+    return {
+      ...frame,
+      ...typeof m["first"] === "number" ? { spellFirst: m["first"] } : {},
+      ...typeof m["weight"] === "number" ? { spellWeight: m["weight"] } : {},
+      totalSpells: total
+    };
+  }
+  return { ...frame, totalSpells: 0 };
+}
+function frameBook(races, classes) {
+  const byName = (records) => new Map(records.filter((r) => typeof r["name"] === "string").map((r) => [r["name"], r]));
+  const raceRecords = byName(races);
+  const classRecords = byName(classes);
+  const memo = /* @__PURE__ */ new Map();
+  return (race, cls) => {
+    const key = `${race}\0${cls}`;
+    const cached = memo.get(key);
+    if (cached !== void 0) return cached;
+    const r = raceRecords.get(race);
+    const c = classRecords.get(cls);
+    const frame = r && c ? frameFromRecords(r, c) : null;
+    memo.set(key, frame);
+    return frame;
+  };
+}
+
 // src/api2/records.ts
 async function valueOf2(call) {
   const result = await call;
@@ -18437,6 +18489,11 @@ async function magicRecords(api, effects) {
     bookKind: (tval, name) => kinds.get(`${String(tval)}:${name}`) ?? null,
     spellEffect: (cls, sidx) => spells.get(`${cls}:${String(sidx)}`) ?? null
   };
+}
+async function frameRecords(api) {
+  const [races, classes] = await Promise.all([valueOf2(api.content.records("p_race")), valueOf2(api.content.records("class"))]);
+  if (!races || !classes) return null;
+  return frameBook(races, classes);
 }
 var DEFAULT_CONSTANTS = {
   moveEnergy: 100,
@@ -18761,6 +18818,7 @@ function createBridge(mod2) {
   let blows = [];
   let spells = [];
   let magic = null;
+  let frame = null;
   let symbols = /* @__PURE__ */ new Map();
   const objects = {
     lookupKind: (tval, sval) => {
@@ -18783,6 +18841,7 @@ function createBridge(mod2) {
       blows = actions;
       spells = messages;
       magic = await magicRecords(mod2, engine.core.EFFECT_ENTRIES);
+      frame = await frameRecords(mod2);
       symbols = await monsterSymbols(mod2);
       feed = await watchMessages(mod2);
     },
@@ -18811,7 +18870,8 @@ function createBridge(mod2) {
         kindCost: (tval, sval) => facts.kinds.get(`${String(tval)}:${String(sval)}`) ?? null,
         blowMethods: blows.map((message) => ({ messages: [message] })),
         monsterSpells: spells,
-        ...magic
+        ...magic,
+        ...frame ? { frame } : {}
       };
     },
     async dispose() {

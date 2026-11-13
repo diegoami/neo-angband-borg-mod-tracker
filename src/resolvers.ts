@@ -81,6 +81,7 @@ export interface CoreResolverInput {
   raceSymbol?: (ridx: number) => string | undefined;
   bookKind?: BorgContext["bookKind"];
   spellEffect?: BorgContext["spellEffect"];
+  frame?: BorgContext["frame"];
   /** The bound monster-race registry (booted.registries...); indexed by ridx. Absent when `raceRecord` answers instead. */
   races?: readonly MonsterRace[];
   /**
@@ -266,6 +267,7 @@ export function makeCoreResolvers(input: CoreResolverInput): BorgResolvers {
     resolveMonsterFacts,
     bookKind: input.bookKind,
     spellEffect: input.spellEffect,
+    frame: input.frame,
     resolveActivation,
     activateHandle,
     inShop,

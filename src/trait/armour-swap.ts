@@ -27,7 +27,7 @@ export function borgArmourSwap(
   inventory: readonly ItemView[] = ctx.view.inventory(),
   selectedWeapon: ItemView | null = null,
 ): ArmourSwap {
-  const R = resolveOpts(opts), t = ctx.world.self.trait;
+  const R = resolveOpts(opts, ctx), t = ctx.world.self.trait;
   const trait = (bi: BI): number => t[bi] ?? 0;
   if (!R.cfg.usesSwaps || trait(BI.MAXDEPTH) < 50 || trait(BI.MAXDEPTH) >= 90) return NONE();
   // TV is filled by the host at bind time, never capture it at module evaluation.
