@@ -469,9 +469,11 @@ function makeGoals() {
     waiting: false,
     recalling: 0,
     descending: 0,
-    shop: 0,
-    ware: 0,
-    item: 0,
+    /* No shop goal: borg-update.c:2128 clears all three to -1 on every level
+     * change, and borg_choose_shop treats anything else as a goal in flight. */
+    shop: -1,
+    ware: -1,
+    item: -1,
     doBest: false
   };
 }
@@ -554,6 +556,14 @@ var BorgWorld = class {
   detect = new BorgDetectGrid();
   self = makeBorgSelf();
   facts = makeLevelFacts();
+  /**
+   * track_shop_x / track_shop_y (borg-flow-misc.c:50, allocated once at
+   * borg-flow-misc.c:1391): the door of shop i, written by borg_update_map
+   * (borg-update.c, "Shop Doors") and read by borg_flow_shop_entry. Zero means
+   * not seen yet. Never wiped: the C keeps them across levels.
+   */
+  shopX = new Array(9).fill(0);
+  shopY = new Array(9).fill(0);
   /**
    * borg_t: the Borg's own clock, incremented per decision. The anti-loop
    * heuristics (boredom, twitch, monster expiry) are gated on this, so it must
@@ -1103,6 +1113,220 @@ var BORG_ADJ_STR_TH = [
   15,
   15
 ];
+var ADJ_STR_BLOW = [
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  20,
+  30,
+  40,
+  50,
+  60,
+  70,
+  80,
+  90,
+  100,
+  110,
+  120,
+  130,
+  140,
+  150,
+  160,
+  170,
+  180,
+  190,
+  200,
+  210,
+  220,
+  230,
+  240
+];
+var BORG_ADJ_DEX_BLOW = [
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  3,
+  3,
+  4,
+  4,
+  5,
+  5,
+  6,
+  6,
+  7,
+  7,
+  8,
+  8,
+  8,
+  9,
+  9,
+  9,
+  10,
+  10,
+  11,
+  11,
+  11
+];
+var BORG_BLOWS_TABLE = [
+  [100, 100, 95, 85, 75, 60, 50, 42, 35, 30, 25, 23],
+  [100, 95, 85, 75, 60, 50, 42, 35, 30, 25, 23, 21],
+  [95, 85, 75, 60, 50, 42, 35, 30, 26, 23, 21, 20],
+  [85, 75, 60, 50, 42, 36, 32, 28, 25, 22, 20, 19],
+  [75, 60, 50, 42, 36, 33, 28, 25, 23, 21, 19, 18],
+  [60, 50, 42, 36, 33, 30, 27, 24, 22, 21, 19, 17],
+  [50, 42, 36, 33, 30, 27, 25, 23, 21, 20, 18, 17],
+  [42, 36, 33, 30, 28, 26, 24, 22, 20, 19, 18, 17],
+  [36, 33, 30, 28, 26, 24, 22, 21, 20, 19, 17, 16],
+  [35, 32, 29, 26, 24, 22, 21, 20, 19, 18, 17, 16],
+  [34, 30, 27, 25, 23, 22, 21, 20, 19, 18, 17, 16],
+  [33, 29, 26, 24, 22, 21, 20, 19, 18, 17, 16, 15]
+];
+var BORG_ADJ_DEX_DIS = [
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  3,
+  3,
+  3,
+  4,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  19,
+  19
+];
+var BORG_ADJ_INT_DIS = [
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  3,
+  3,
+  3,
+  4,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  19,
+  19
+];
+var BORG_ADJ_INT_DEV = [
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  3,
+  3,
+  3,
+  3,
+  3,
+  4,
+  4,
+  5,
+  5,
+  6,
+  6,
+  7,
+  7,
+  8,
+  8,
+  9,
+  9,
+  10,
+  10,
+  11,
+  11,
+  12,
+  13
+];
 var BORG_ADJ_STR_DIG = [
   0,
   0,
@@ -1142,6 +1366,46 @@ var BORG_ADJ_STR_DIG = [
   100,
   100,
   100
+];
+var BORG_ADJ_WIS_SAV = [
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  3,
+  3,
+  3,
+  3,
+  3,
+  4,
+  4,
+  5,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19
 ];
 var BORG_ADJ_STR_WGT = [
   5,
@@ -3928,12 +4192,17 @@ function defaultHomeSeam() {
 function defaultFrame() {
   return {};
 }
-function resolveOpts(opts = {}) {
+function contextFrame(ctx) {
+  if (!ctx?.frame) return null;
+  const p = ctx.view.player();
+  return ctx.frame(p.race, p.cls);
+}
+function resolveOpts(opts = {}, ctx) {
   return {
     cfg: { ...borgCfg(), ...opts.cfg },
-    spells: opts.spells ?? defaultSpellSeam(),
+    spells: opts.spells ?? ctx?.spellSeam?.(ctx) ?? defaultSpellSeam(),
     home: opts.home ?? defaultHomeSeam(),
-    frame: opts.frame ?? defaultFrame(),
+    frame: opts.frame ?? contextFrame(ctx) ?? defaultFrame(),
     svals: opts.svals ?? flatSvals(),
     uncursable: opts.uncursable ?? ((item) => item.curses.length > 0)
   };
@@ -4004,7 +4273,7 @@ var OTHER_CURSES = /* @__PURE__ */ new Set([
   "air swing"
 ]);
 function borgArmourSwap(ctx, opts = {}, inventory = ctx.view.inventory(), selectedWeapon = null) {
-  const R2 = resolveOpts(opts), t = ctx.world.self.trait;
+  const R2 = resolveOpts(opts, ctx), t = ctx.world.self.trait;
   const trait4 = (bi) => t[bi] ?? 0;
   if (!R2.cfg.usesSwaps || trait4(106 /* MAXDEPTH */) < 50 || trait4(106 /* MAXDEPTH */) >= 90) return NONE();
   const allowed = [
@@ -4651,7 +4920,7 @@ function borgWeaponSwap(ctx, opts = {}, inventory = ctx.view.inventory()) {
     TV.GLOVES,
     TV.BOOTS
   ];
-  const R2 = resolveOpts(opts), t = ctx.world.self.trait;
+  const R2 = resolveOpts(opts, ctx), t = ctx.world.self.trait;
   const trait4 = (bi) => t[bi] ?? 0;
   const quiver = new Set(ctx.view.quiver?.().map((item) => item.handle) ?? []);
   let best = NONE2();
@@ -5098,6 +5367,7 @@ function wornInSlot(ctx, slot) {
   return null;
 }
 var BEST_ORDER = [1, 0, 6, 7, 8, 9, 10, 11, 3, 2, 5, 4];
+var BEST_EXHAUSTIVE_LOADOUTS = 2e3;
 var BEST_SLOTS = [
   "bow",
   "weapon",
@@ -5128,36 +5398,76 @@ function borgBestStuff(ctx, shopNum, d, stores) {
     let best = [...trial];
     let power = ctx.world.self.power;
     let incomplete = false;
-    const search = (n) => {
+    const score = () => {
+      const choices = trial.flatMap((choice, k) => choice ? [{ item: choice.ref, slot: BEST_ORDER[k] }] : []);
+      return d?.bestEval ? d.bestEval(choices) : ctx.world.self.power;
+    };
+    const fits = (choice, n) => {
+      const item = choice.item;
+      if (!item.number || !isAware(item, d) || !itemValue(item, d)) return false;
+      if (isCursed(item) && !d?.uncursable?.(item)) return false;
+      if (d?.randarts && item.artifact && !isIdent(item, d)) return false;
+      if (wieldSlot(item) !== BEST_SLOTS[n]) return false;
+      if (n === 9 && trial[8] === choice) return false;
+      if (n === 8 && trial[9] === choice) return false;
+      const worn = equipment2[BEST_ORDER[n]];
+      if (worn && isOneRing2(worn, stores)) return false;
+      return true;
+    };
+    const exhaustive = (n) => {
       if (n === BEST_ORDER.length) {
-        const choices = trial.flatMap((choice, k) => choice ? [{ item: choice.ref, slot: BEST_ORDER[k] }] : []);
-        const score = d?.bestEval ? d.bestEval(choices) : ctx.world.self.power;
-        if (score === null) {
+        const s = score();
+        if (s === null) {
           incomplete = true;
           return;
         }
-        if (score > power) {
-          power = score;
+        if (s > power) {
+          power = s;
           best = [...trial];
         }
         return;
       }
-      search(n + 1);
+      exhaustive(n + 1);
       for (const choice of candidates) {
-        const item = choice.item;
-        if (!item.number || !isAware(item, d) || !itemValue(item, d)) continue;
-        if (isCursed(item) && !d?.uncursable?.(item)) continue;
-        if (d?.randarts && item.artifact && !isIdent(item, d)) continue;
-        if (wieldSlot(item) !== BEST_SLOTS[n]) continue;
-        if (n === 9 && trial[8] === choice) continue;
-        const worn = equipment2[BEST_ORDER[n]];
-        if (worn && isOneRing2(worn, stores)) continue;
+        if (!fits(choice, n)) continue;
         trial[n] = choice;
-        search(n + 1);
+        exhaustive(n + 1);
         trial[n] = null;
       }
     };
-    search(0);
+    const ascent = () => {
+      for (let pass = 0; pass < BEST_ORDER.length; pass++) {
+        let improved2 = false;
+        for (let n = 0; n < BEST_ORDER.length; n++) {
+          const held = trial[n] ?? null;
+          for (const choice of [null, ...candidates]) {
+            if (choice === held) continue;
+            if (choice !== null && !fits(choice, n)) continue;
+            trial[n] = choice;
+            const s = score();
+            trial[n] = held;
+            if (s === null) {
+              incomplete = true;
+              continue;
+            }
+            if (s > power) {
+              power = s;
+              best = [...trial];
+              best[n] = choice;
+              improved2 = true;
+            }
+          }
+          trial[n] = best[n] ?? null;
+        }
+        if (!improved2 || incomplete) break;
+      }
+    };
+    let loadouts = 1;
+    for (let n = 0; n < BEST_ORDER.length && loadouts <= BEST_EXHAUSTIVE_LOADOUTS; n++) {
+      loadouts *= 1 + candidates.filter((choice) => fits(choice, n)).length;
+    }
+    if (loadouts <= BEST_EXHAUSTIVE_LOADOUTS) exhaustive(0);
+    else ascent();
     if (incomplete) return null;
     goal.bestItems = best.map((choice) => choice ? {
       tval: choice.item.tval,
@@ -5399,8 +5709,6 @@ function createFlowState(hooks = defaultFlowHooks()) {
     closed: new BorgTrack(100),
     glyph: new BorgTrack(200),
     vein: new BorgTrack(100),
-    shopX: new Array(9).fill(0),
-    shopY: new Array(9).fill(0),
     avoidance: 0,
     borgDesperate: false,
     borgDigging: false,
@@ -6126,11 +6434,11 @@ function borgFlowVein(ctx, flow, viewable, nearness) {
 function borgFlowShopEntry(ctx, flow, i) {
   const w = ctx.world;
   if (trait(w, 105 /* CDEPTH */)) return null;
-  const x = flow.shopX[i];
-  const y = flow.shopY[i];
+  const x = w.shopX[i] ?? 0;
+  const y = w.shopY[i] ?? 0;
   if (!x || !y) return null;
   if (x === w.self.c.x && y === w.self.c.y) {
-    return ctx.act.move(5);
+    return ctx.act.hold();
   }
   borgFlowClear(flow);
   borgFlowEnqueueGrid(ctx, flow, y, x);
@@ -7633,7 +7941,7 @@ var TV_SHOT = 2;
 var TV_ARROW = 3;
 var TV_BOLT = 4;
 function borgNotice(ctx, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const view = ctx.view;
   const p = view.player();
   const t = new Array(BI_MAX).fill(0);
@@ -7659,7 +7967,8 @@ function borgNotice(ctx, opts = {}) {
     quiver,
     temp: ctx.world.self.temp,
     cls,
-    spellStat
+    spellStat,
+    derive: R2.frame.skills !== void 0 && R2.frame.skillsPerTen !== void 0
   };
   borgNoticePlayer(c);
   borgNoticeEquipment(c);
@@ -7741,15 +8050,29 @@ function borgNoticePlayer(c) {
     t[10 /* CSTR */ + i] = p.stats[i] ?? 10;
     t[127 /* ISFIXSTR */ + i] = drained?.[i] ? 1 : 0;
   }
-  t[44 /* SPEED */] = p.speed;
-  t[52 /* INFRA */] = p.seeInfra;
+  if (!c.derive) t[44 /* SPEED */] = p.speed;
+  t[52 /* INFRA */] = c.derive ? c.R.frame.infra ?? 0 : p.seeInfra;
+}
+function borgCalcBlows(c, item) {
+  const t = c.t;
+  const f = c.R.frame;
+  const weight = item.weight * item.number;
+  const minWeight = f.minWeight ?? 0;
+  const div2 = Math.max(weight < minWeight ? minWeight : weight, 1);
+  let strIndex = Math.trunc(ADJ_STR_BLOW[t[15 /* STR_INDEX */]] * (f.attMultiply ?? 0) / div2);
+  if (strIndex > 11) strIndex = 11;
+  const dexIndex = Math.min(BORG_ADJ_DEX_BLOW[t[18 /* DEX_INDEX */]], 11);
+  const blowEnergy = BORG_BLOWS_TABLE[strIndex][dexIndex];
+  const blows = Math.min(Math.trunc(1e4 / blowEnergy), 100 * (f.maxAttacks ?? 1));
+  return Math.trunc(Math.max(blows + 100 * (mod(item, "BLOWS") + t[147 /* EXTRA_BLOWS */]), 100) / 100);
 }
 function borgNoticeEquipment(c) {
   const { t, p, equip } = c;
   let extraShots = 0;
   let extraMight = 0;
   let myNumFire = 1;
-  const pf = p.objectFlags;
+  const pf = c.derive ? c.R.frame.playerFlags ?? [] : p.objectFlags;
+  if (c.derive && c.R.frame.raceResistDisen) t[84 /* RDIS */] = 1;
   if (pf.includes("SLOW_DIGEST")) t[48 /* SDIG */] = 1;
   if (pf.includes("FEATHER")) t[49 /* FEATH */] = 1;
   if (pf.includes("REGEN")) t[50 /* REG */] = 1;
@@ -7769,6 +8092,21 @@ function borgNoticeEquipment(c) {
   if (pf.includes("SUST_WIS")) t[22 /* SWIS */] = 1;
   if (pf.includes("SUST_DEX")) t[23 /* SDEX */] = 1;
   if (pf.includes("SUST_CON")) t[24 /* SCON */] = 1;
+  if (c.derive) {
+    const base = c.R.frame.skills;
+    t[54 /* DISP */] = base[0] ?? 0;
+    t[55 /* DISM */] = base[1] ?? 0;
+    t[56 /* DEV */] = base[2] ?? 0;
+    t[57 /* SAV */] = base[3] ?? 0;
+    t[59 /* SRCH */] = base[4] ?? 0;
+    t[58 /* STL */] = base[5] ?? 0;
+    t[60 /* THN */] = base[6] ?? 0;
+    t[61 /* THB */] = base[7] ?? 0;
+    t[62 /* THT */] = base[8] ?? 0;
+    t[63 /* DIG */] = base[9] ?? 0;
+    if (p.status.fast || p.status.sprint) t[44 /* SPEED */] = t[44 /* SPEED */] + 10;
+    else if (p.status.terror) t[44 /* SPEED */] = t[44 /* SPEED */] + 5;
+  }
   for (let i = 0; i < equip.length; i++) {
     const item = equip[i];
     if (!present(item)) continue;
@@ -7884,6 +8222,11 @@ function borgNoticeEquipment(c) {
     t[58 /* STL */] = t[58 /* STL */] - 10;
     t[174 /* CRSAGRV */] = 1;
   }
+  if (c.derive) {
+    if (t[180 /* CRSSLOW */]) t[44 /* SPEED */] = t[44 /* SPEED */] - 5;
+    if (t[181 /* CRSANNOY */]) t[44 /* SPEED */] = t[44 /* SPEED */] - 10;
+    if (t[111 /* ISGORGED */]) t[44 /* SPEED */] = t[44 /* SPEED */] - 10;
+  }
   const statAdj = c.R.frame.statAdj;
   for (let i = 0; i < STAT_MAX; i++) {
     let add = t[5 /* ASTR */ + i];
@@ -7953,7 +8296,7 @@ function borgNoticeEquipment(c) {
     }
     t[144 /* SLING */] = bow.sval === c.R.svals.sling ? 1 : 0;
   }
-  if (present(bow) && p.shots > 0) t[148 /* SHOTS */] = Math.trunc(p.shots / 10) || 1;
+  if (!c.derive && present(bow) && p.shots > 0) t[148 /* SHOTS */] = Math.trunc(p.shots / 10) || 1;
   else t[148 /* SHOTS */] = myNumFire;
   const wep = equip[SLOT_WIELD];
   if (present(wep) && wep.curses.length === 0) {
@@ -7967,12 +8310,26 @@ function borgNoticeEquipment(c) {
       t[134 /* TOHIT */] = t[134 /* TOHIT */] + 2 * (hold - Math.trunc(wep.weight / 10));
     }
     if (hold >= wep.weight / 10) {
-      t[146 /* BLOWS */] = p.blows > 0 ? Math.trunc(p.blows / 100) || 1 : 1;
+      t[146 /* BLOWS */] = c.derive ? borgCalcBlows(c, wep) : p.blows > 0 ? Math.trunc(p.blows / 100) || 1 : 1;
       t[63 /* DIG */] = t[63 /* DIG */] + Math.trunc(wep.weight / 10);
     }
   }
   const sk = p.skills;
-  if (sk.length >= 10) {
+  if (c.derive) {
+    const per = c.R.frame.skillsPerTen;
+    const ml = t[36 /* MAXCLEVEL */];
+    const lv = (i) => Math.trunc((per[i] ?? 0) * ml / 10);
+    t[58 /* STL */] = t[58 /* STL */] + 1;
+    t[54 /* DISP */] = t[54 /* DISP */] + BORG_ADJ_DEX_DIS[t[18 /* DEX_INDEX */]] + lv(0);
+    t[55 /* DISM */] = t[55 /* DISM */] + BORG_ADJ_INT_DIS[t[16 /* INT_INDEX */]] + lv(1);
+    t[56 /* DEV */] = t[56 /* DEV */] + BORG_ADJ_INT_DEV[t[16 /* INT_INDEX */]] + lv(2);
+    t[57 /* SAV */] = t[57 /* SAV */] + BORG_ADJ_WIS_SAV[t[17 /* WIS_INDEX */]] + lv(3);
+    t[59 /* SRCH */] = t[59 /* SRCH */] + lv(4);
+    t[58 /* STL */] = t[58 /* STL */] + lv(5);
+    t[60 /* THN */] = t[60 /* THN */] + lv(6);
+    t[61 /* THB */] = t[61 /* THB */] + lv(7);
+    t[62 /* THT */] = t[62 /* THT */] + lv(8);
+  } else if (sk.length >= 10) {
     t[54 /* DISP */] = sk[0];
     t[55 /* DISM */] = sk[1];
     t[56 /* DEV */] = sk[2];
@@ -8382,6 +8739,12 @@ function applySpellGrants(c) {
 function finishNotice(c) {
   const { t, R: R2 } = c;
   t[261 /* CARRY */] = BORG_ADJ_STR_WGT[t[15 /* STR_INDEX */]] * 100;
+  if (c.derive) {
+    if (t[260 /* WEIGHT */] > t[261 /* CARRY */] / 2) {
+      t[44 /* SPEED */] = t[44 /* SPEED */] - Math.trunc((t[260 /* WEIGHT */] - Math.trunc(t[261 /* CARRY */] / 2)) / Math.trunc(t[261 /* CARRY */] / 10));
+    }
+    if (t[44 /* SPEED */] > 199) t[44 /* SPEED */] = 199;
+  }
   t[264 /* PREP_BIG_FIGHT */] = 0;
   if (t[106 /* MAXDEPTH */] >= 99) {
     let totalBigHeal = 0;
@@ -8981,7 +9344,7 @@ function borgPowerHomeFrom(ctx, c) {
 
 // src/trait/prepared.ts
 function borgPrepared(ctx, depth, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
   if (depth === 1) return null;
@@ -9218,7 +9581,7 @@ function borgPreparedAux(t, d, R2, depth) {
   return null;
 }
 function borgRestock(ctx, depth, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
   const cls = t[25 /* CLASS */];
@@ -9272,7 +9635,7 @@ function wgt(item) {
   return present(item) ? item.weight : 0;
 }
 function borgPower(ctx, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
   const equip = ctx.view.equipment();
@@ -9782,6 +10145,92 @@ function powerInventory(t, d, R2, equip, cls) {
   return value;
 }
 
+// src/trait/local-loadout.ts
+var SLOT_INDEX = {
+  weapon: 0,
+  bow: 1,
+  amulet: 4,
+  light: 5,
+  body: 6,
+  cloak: 7,
+  shield: 8,
+  helm: 9,
+  gloves: 10,
+  boots: 11
+};
+var RING_SLOTS = [2, 3];
+var wareHandle = -1;
+function applyLoadoutChange(ctx, change) {
+  const equipment2 = [...ctx.view.equipment()];
+  const inventory = [...ctx.view.inventory()];
+  const take = (ref, number) => {
+    if (ref.from === "store") {
+      const ware = ctx.view.stores()[ref.store]?.stock[ref.index];
+      if (!ware) return null;
+      return { ...ware, handle: wareHandle--, number };
+    }
+    const slot = equipment2.findIndex((item) => item?.handle === ref.handle);
+    if (slot >= 0) {
+      const worn = equipment2[slot];
+      equipment2[slot] = null;
+      return worn;
+    }
+    const at = inventory.findIndex((item) => item.handle === ref.handle);
+    if (at < 0) return null;
+    const stack = inventory[at];
+    if (stack.number <= number) {
+      inventory.splice(at, 1);
+      return stack;
+    }
+    inventory[at] = { ...stack, number: stack.number - number };
+    return { ...stack, number };
+  };
+  for (const { handle, number } of change.release ?? []) {
+    const slot = equipment2.findIndex((item) => item?.handle === handle);
+    if (slot >= 0) {
+      equipment2[slot] = null;
+      continue;
+    }
+    const at = inventory.findIndex((item) => item.handle === handle);
+    if (at < 0) return null;
+    const stack = inventory[at];
+    const n = number ?? stack.number;
+    if (n >= stack.number) inventory.splice(at, 1);
+    else inventory[at] = { ...stack, number: stack.number - n };
+  }
+  for (const slot of change.remove ?? []) {
+    const worn = equipment2[slot];
+    if (worn) inventory.push(worn);
+    equipment2[slot] = null;
+  }
+  const wearAt = (item, slot) => {
+    const displaced = equipment2[slot];
+    if (displaced) inventory.push(displaced);
+    equipment2[slot] = item;
+  };
+  const placed = [];
+  for (const { item: ref, slot } of change.wieldAt ?? []) {
+    const item = take(ref, 1);
+    if (!item) return null;
+    placed.push({ item: { ...item, number: 1 }, slot });
+  }
+  for (const { item, slot } of placed) wearAt(item, slot);
+  for (const ref of change.wield ?? []) {
+    const item = take(ref, 1);
+    if (!item) return null;
+    const kind = wieldSlot(item);
+    if (kind === null) return null;
+    const slot = kind === "ring" ? RING_SLOTS.find((s) => !equipment2[s]) ?? RING_SLOTS[0] : SLOT_INDEX[kind];
+    wearAt({ ...item, number: 1 }, slot);
+  }
+  for (const { item: ref, number } of change.carry ?? []) {
+    const item = take(ref, number ?? 1);
+    if (!item) return null;
+    inventory.push(item);
+  }
+  return { equipment: equipment2, inventory };
+}
+
 // src/trait/simulate.ts
 function shadowWorld(world) {
   const sim = Object.create(world);
@@ -9821,8 +10270,7 @@ function borgNoticeWithout(ctx, handle) {
   return reduced;
 }
 function borgSimulatePower(ctx, change, opts = {}) {
-  const view = ctx.view;
-  const answer = view.simulateLoadout?.(change);
+  const answer = localAnswer(ctx, change, opts) ?? ctx.view.simulateLoadout?.(change);
   if (!answer) return null;
   const simCtx = {
     ...ctx,
@@ -9832,6 +10280,13 @@ function borgSimulatePower(ctx, change, opts = {}) {
   inheritWeaponSwap(simCtx.world, ctx.world);
   borgNotice(simCtx, { ...opts, noticeSwap: false });
   return borgPower(simCtx, opts);
+}
+function localAnswer(ctx, change, opts) {
+  const frame = resolveOpts(opts, ctx).frame;
+  if (frame.skills === void 0 || frame.skillsPerTen === void 0) return null;
+  const loadout = applyLoadoutChange(ctx, change);
+  if (!loadout) return null;
+  return { after: { player: ctx.view.player(), equipment: loadout.equipment, inventory: loadout.inventory } };
 }
 function borgSimulateDangerAnswer(ctx, change) {
   const answer = ctx.view.simulateLoadout?.(change);
@@ -12484,7 +12939,7 @@ function auxObject(ctx, fs) {
   let bD = -1;
   for (const item of ctx.view.inventory()) {
     if (item.number <= 0) continue;
-    if (item.tval === TV.MAGIC_BOOK || item.tval === TV.PRAYER_BOOK) continue;
+    if (canBrowse(item)) continue;
     const d = idiv(item.dd * (item.ds + 1), 2);
     if ((item.value ?? 0) > 100 && d < 5) continue;
     if (d <= 0) continue;
@@ -17652,6 +18107,13 @@ function ingestMap(world, view) {
         if (c.inView) g.info &= ~BORG_IGNORE_MAP;
       }
       g.trap = c.trap;
+      g.store = FEAT.HOME - FEAT.STORE_GENERAL;
+      if (featIsShop(g.feat)) {
+        const i = g.feat - FEAT.STORE_GENERAL;
+        g.store = i;
+        world.shopX[i] = x;
+        world.shopY[i] = y;
+      }
       if (g.feat === FEAT.PERM && world.facts.depth && x && y && x !== bounds.width - 1 && y !== bounds.height - 1) {
         world.facts.vaultOnLevel = true;
       }
@@ -17898,6 +18360,34 @@ function ingestFloor(world, view, oldX, oldY, valuation) {
   }
 }
 
+// src/trait/spell-seam.ts
+function spellNamed(name) {
+  const spell = Spell[name];
+  return typeof spell === "number" ? spell : null;
+}
+function contextSpellSeam(ctx, resolveActivation) {
+  const has2 = (flag) => playerHas(ctx, flag);
+  return {
+    spellLegal: (name) => {
+      const spell = spellNamed(name);
+      return spell !== null && borgSpellLegal(ctx, spell);
+    },
+    spellLegalFail: (name, fail) => {
+      const spell = spellNamed(name);
+      return spell !== null && borgSpellLegalFail(ctx, spell, fail, has2);
+    },
+    /* Every borg_notice call passes check_charge = false (borg-trait.c). */
+    equipsItem: (act) => resolveActivation?.(ctx, act, false) ?? false,
+    equipsRing: (sval) => borgEquipsRing(ctx, sval),
+    /* spell_chance(0): the class's first spell, scored as the Borg scores a cast. */
+    spellChance: () => {
+      const first = ratingsForClass(ctx.world.self.trait[25 /* CLASS */] ?? -1)?.[0];
+      return first ? borgSpellFailRate(ctx, first.spell, has2) : 100;
+    },
+    playerHas: has2
+  };
+}
+
 // src/controller.ts
 var CONTROLLER_WORLDS = /* @__PURE__ */ new WeakMap();
 function recallDepthAnswer(controller) {
@@ -17929,7 +18419,7 @@ function createBorg(opts = {}) {
     noAlter: false
   };
   const controller = hostController((view, act) => {
-    const ctx = { world, view, act, rng, bookKind: session.resolvers.bookKind, spellEffect: session.resolvers.spellEffect };
+    const ctx = { world, view, act, rng, bookKind: session.resolvers.bookKind, spellEffect: session.resolvers.spellEffect, frame: session.resolvers.frame, spellSeam: (c) => contextSpellSeam(c, session.resolvers.resolveActivation) };
     const recordStep = !retry;
     retry = false;
     before = {
@@ -18120,6 +18610,7 @@ function makeCoreResolvers(input) {
     resolveMonsterFacts,
     bookKind: input.bookKind,
     spellEffect: input.spellEffect,
+    frame: input.frame,
     resolveActivation,
     activateHandle: activateHandle2,
     inShop,
@@ -18282,6 +18773,96 @@ async function watchMessages(api) {
   };
 }
 
+// src/trait/frame.ts
+var STAT_KEYS = ["str", "int", "wis", "dex", "con"];
+function statsOf(record) {
+  const stats = record?.["stats"];
+  const obj = stats !== null && typeof stats === "object" && !Array.isArray(stats) ? stats : {};
+  return STAT_KEYS.map((key) => typeof obj[key] === "number" ? obj[key] : 0);
+}
+var SKILL_KEYS = [
+  "skill-disarm-phys",
+  "skill-disarm-magic",
+  "skill-device",
+  "skill-save",
+  "skill-search",
+  "skill-stealth",
+  "skill-melee",
+  "skill-shoot",
+  "skill-throw",
+  "skill-dig"
+];
+function skillPart(record, key, part) {
+  const v = record?.[key];
+  if (typeof v === "number") return part === "base" ? v : 0;
+  if (v !== null && typeof v === "object" && !Array.isArray(v)) {
+    const n = v[part];
+    return typeof n === "number" ? n : 0;
+  }
+  return 0;
+}
+function flagsOf(record) {
+  const v = record?.["obj-flags"];
+  if (!Array.isArray(v)) return [];
+  return v.flatMap((entry) => typeof entry === "string" ? entry.split("|").map((f) => f.trim()).filter(Boolean) : []);
+}
+function numberOf(record, key) {
+  const v = record?.[key];
+  return typeof v === "number" ? v : void 0;
+}
+function frameFromRecords(race, cls) {
+  const r = statsOf(race);
+  const c = statsOf(cls);
+  const values = Array.isArray(race?.["values"]) ? race["values"] : [];
+  const maxAttacks = numberOf(cls, "max-attacks");
+  const minWeight = numberOf(cls, "min-weight");
+  const attMultiply = numberOf(cls, "strength-multiplier");
+  const frame = {
+    statAdj: r.map((v, i) => v + (c[i] ?? 0)),
+    skills: SKILL_KEYS.map((key) => skillPart(race, key, "base") + skillPart(cls, key, "base")),
+    skillsPerTen: SKILL_KEYS.map((key) => skillPart(cls, key, "incr")),
+    infra: numberOf(race, "infravision") ?? 0,
+    playerFlags: [.../* @__PURE__ */ new Set([...flagsOf(race), ...flagsOf(cls)])],
+    raceResistDisen: values.some((v) => typeof v === "string" && /^RES_DISEN\[[1-9]/.test(v)),
+    ...maxAttacks !== void 0 ? { maxAttacks } : {},
+    ...minWeight !== void 0 ? { minWeight } : {},
+    ...attMultiply !== void 0 ? { attMultiply } : {}
+  };
+  const magic = cls?.["magic"];
+  if (magic !== null && typeof magic === "object" && !Array.isArray(magic)) {
+    const m = magic;
+    let total = 0;
+    for (const book of Array.isArray(cls?.["book"]) ? cls["book"] : []) {
+      if (book === null || typeof book !== "object" || Array.isArray(book)) continue;
+      const spells = book["spell"];
+      if (Array.isArray(spells)) total += spells.length;
+    }
+    return {
+      ...frame,
+      ...typeof m["first"] === "number" ? { spellFirst: m["first"] } : {},
+      ...typeof m["weight"] === "number" ? { spellWeight: m["weight"] } : {},
+      totalSpells: total
+    };
+  }
+  return { ...frame, totalSpells: 0 };
+}
+function frameBook(races, classes) {
+  const byName = (records) => new Map(records.filter((r) => typeof r["name"] === "string").map((r) => [r["name"], r]));
+  const raceRecords = byName(races);
+  const classRecords = byName(classes);
+  const memo = /* @__PURE__ */ new Map();
+  return (race, cls) => {
+    const key = `${race}\0${cls}`;
+    const cached = memo.get(key);
+    if (cached !== void 0) return cached;
+    const r = raceRecords.get(race);
+    const c = classRecords.get(cls);
+    const frame = r && c ? frameFromRecords(r, c) : null;
+    memo.set(key, frame);
+    return frame;
+  };
+}
+
 // src/api2/records.ts
 async function valueOf2(call) {
   const result = await call;
@@ -18437,6 +19018,11 @@ async function magicRecords(api, effects) {
     bookKind: (tval, name) => kinds.get(`${String(tval)}:${name}`) ?? null,
     spellEffect: (cls, sidx) => spells.get(`${cls}:${String(sidx)}`) ?? null
   };
+}
+async function frameRecords(api) {
+  const [races, classes] = await Promise.all([valueOf2(api.content.records("p_race")), valueOf2(api.content.records("class"))]);
+  if (!races || !classes) return null;
+  return frameBook(races, classes);
 }
 var DEFAULT_CONSTANTS = {
   moveEnergy: 100,
@@ -18761,6 +19347,7 @@ function createBridge(mod2) {
   let blows = [];
   let spells = [];
   let magic = null;
+  let frame = null;
   let symbols = /* @__PURE__ */ new Map();
   const objects = {
     lookupKind: (tval, sval) => {
@@ -18783,6 +19370,7 @@ function createBridge(mod2) {
       blows = actions;
       spells = messages;
       magic = await magicRecords(mod2, engine.core.EFFECT_ENTRIES);
+      frame = await frameRecords(mod2);
       symbols = await monsterSymbols(mod2);
       feed = await watchMessages(mod2);
     },
@@ -18807,11 +19395,16 @@ function createBridge(mod2) {
         raceSymbol: (ridx) => symbols.get(ridx),
         objects,
         birthRandarts: () => facts.birthRandarts ?? null,
-        shopnum: () => facts.shopnum,
+        /* borg_think takes the store branch only while the store screen is
+         * up (borg-think.c:322-327 reads "Stor"/"Home" off the screen, then
+         * square_shopnum). Standing on an entrance after the screen has
+         * closed is play, not shopping. */
+        shopnum: () => input?.phase === "store" ? facts.shopnum : null,
         kindCost: (tval, sval) => facts.kinds.get(`${String(tval)}:${String(sval)}`) ?? null,
         blowMethods: blows.map((message) => ({ messages: [message] })),
         monsterSpells: spells,
-        ...magic
+        ...magic,
+        ...frame ? { frame } : {}
       };
     },
     async dispose() {

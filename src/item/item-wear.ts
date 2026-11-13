@@ -94,7 +94,7 @@ export function borgIsAmmo(tval: number): boolean {
 }
 
 /** The equipment "category" an item wields into, or null if unwearable. */
-type Slot =
+export type Slot =
   | "weapon"
   | "bow"
   | "ring"
@@ -107,7 +107,7 @@ type Slot =
   | "gloves"
   | "boots";
 
-function wieldSlot(item: ItemView): Slot | null {
+export function wieldSlot(item: ItemView): Slot | null {
   switch (item.tval) {
     case TV.DIGGING:
     case TV.HAFTED:
@@ -157,6 +157,8 @@ function wornInSlot(ctx: BorgContext, slot: Slot): ItemView | null {
 
 /** borg_best_stuff_order (borg-item-wear.c:1042-1071), in body-slot indices. */
 const BEST_ORDER = [1, 0, 6, 7, 8, 9, 10, 11, 3, 2, 5, 4] as const;
+/** Loadouts the C's exhaustive home search may score before the slot-by-slot search takes over (#61). */
+export const BEST_EXHAUSTIVE_LOADOUTS = 2000;
 const BEST_SLOTS: readonly Slot[] = [
   "bow", "weapon", "body", "cloak", "shield", "helm", "gloves", "boots",
   "ring", "ring", "light", "amulet",
@@ -185,37 +187,92 @@ export function borgBestStuff(
     let best = [...trial];
     let power = ctx.world.self.power;
     let incomplete = false;
+    const score = (): number | null => {
+      const choices = trial.flatMap((choice, k) => choice ? [{ item: choice.ref, slot: BEST_ORDER[k]! }] : []);
+      return d?.bestEval ? d.bestEval(choices) : ctx.world.self.power;
+    };
+    const fits = (choice: Choice, n: number): boolean => {
+      const item = choice.item;
+      if (!item.number || !isAware(item, d) || !itemValue(item, d)) return false;
+      if (isCursed(item) && !d?.uncursable?.(item)) return false;
+      if (d?.randarts && item.artifact && !isIdent(item, d)) return false;
+      if (wieldSlot(item) !== BEST_SLOTS[n]) return false;
+      /* One ring cannot fill both ring slots. */
+      if (n === 9 && trial[8] === choice) return false;
+      if (n === 8 && trial[9] === choice) return false;
+      const worn = equipment[BEST_ORDER[n]!];
+      if (worn && isOneRingAt(worn, stores)) return false;
+      return true;
+    };
     /* borg-item-wear.c:1210-1320 visits the current item before alternatives. */
-    const search = (n: number): void => {
+    const exhaustive = (n: number): void => {
       if (n === BEST_ORDER.length) {
-        const choices = trial.flatMap((choice, k) => choice ? [{ item: choice.ref, slot: BEST_ORDER[k]! }] : []);
-        const score = d?.bestEval ? d.bestEval(choices) : ctx.world.self.power;
-        if (score === null) {
+        const s = score();
+        if (s === null) {
           incomplete = true;
           return;
         }
-        if (score > power) {
-          power = score;
+        if (s > power) {
+          power = s;
           best = [...trial];
         }
         return;
       }
-      search(n + 1);
+      exhaustive(n + 1);
       for (const choice of candidates) {
-        const item = choice.item;
-        if (!item.number || !isAware(item, d) || !itemValue(item, d)) continue;
-        if (isCursed(item) && !d?.uncursable?.(item)) continue;
-        if (d?.randarts && item.artifact && !isIdent(item, d)) continue;
-        if (wieldSlot(item) !== BEST_SLOTS[n]) continue;
-        if (n === 9 && trial[8] === choice) continue;
-        const worn = equipment[BEST_ORDER[n]!];
-        if (worn && isOneRingAt(worn, stores)) continue;
+        if (!fits(choice, n)) continue;
         trial[n] = choice;
-        search(n + 1);
+        exhaustive(n + 1);
         trial[n] = null;
       }
     };
-    search(0);
+    /*
+     * FORK diegoami/neo-angband-borg-mod-tracker#61: borg_best_stuff_aux scores
+     * every combination of every slot's candidates - the product over twelve
+     * slots, 1.6 million loadouts for a 13-item pack and a 12-item home. The C
+     * does that in-process; one port notice + power costs about 190
+     * microseconds, so that walk would take minutes per decision. Up to
+     * BEST_EXHAUSTIVE_LOADOUTS combinations the C walk runs unchanged. Beyond it,
+     * search slot by slot (coordinate ascent): in the C slot order, try each
+     * candidate for one slot with the other slots held, keep a strictly better
+     * score (the C keeps the current item on a tie by visiting it first), and
+     * repeat until a full pass changes nothing. When the slots' contributions are
+     * independent that reaches the C's optimum; where they interact (a change
+     * that only pays together with another) it can stop where the C would not.
+     */
+    const ascent = (): void => {
+      for (let pass = 0; pass < BEST_ORDER.length; pass++) {
+        let improved = false;
+        for (let n = 0; n < BEST_ORDER.length; n++) {
+          const held = trial[n] ?? null;
+          for (const choice of [null, ...candidates]) {
+            if (choice === held) continue;
+            if (choice !== null && !fits(choice, n)) continue;
+            trial[n] = choice;
+            const s = score();
+            trial[n] = held;
+            if (s === null) {
+              incomplete = true;
+              continue;
+            }
+            if (s > power) {
+              power = s;
+              best = [...trial];
+              best[n] = choice;
+              improved = true;
+            }
+          }
+          trial[n] = best[n] ?? null;
+        }
+        if (!improved || incomplete) break;
+      }
+    };
+    let loadouts = 1;
+    for (let n = 0; n < BEST_ORDER.length && loadouts <= BEST_EXHAUSTIVE_LOADOUTS; n++) {
+      loadouts *= 1 + candidates.filter((choice) => fits(choice, n)).length;
+    }
+    if (loadouts <= BEST_EXHAUSTIVE_LOADOUTS) exhaustive(0);
+    else ascent();
     if (incomplete) return null;
     /* borg-item-wear.c:1378-1406 keeps identities across inventory reordering. */
     goal.bestItems = best.map((choice) => choice ? {

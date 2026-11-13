@@ -23,6 +23,7 @@ import { buildThinkSession, installThinkSession } from "../think-session.js";
 import { borgNotice } from "../trait/trait.js";
 import { perceive, makePerceiveMemo } from "../perceive.js";
 import type { BorgLoadoutChange } from "../trait/simulate.js";
+import { BEST_EXHAUSTIVE_LOADOUTS } from "../item/item-wear.js";
 import {
   BORG_HOME,
   SHOP_TEMPLE,
@@ -571,6 +572,9 @@ describe("the production shop ladder", () => {
 
   it.each([TV.SWORD, TV.DIGGING])("keeps ordinary weapons and artifact diggers out of the shop wear fallback (%i)", (tval) => {
     const { ctx } = shopScenario(0, [item({ handle: 20, tval: TV.SWORD, value: 100 })], [item({ tval, artifact: tval === TV.DIGGING })], [], (change) => change.wield?.length ? 1100 : 1000);
+    /* A sale already in flight: sell pack item 0 at shop 0. Fresh goals are
+     * cleared to -1 (borg-update.c:2128), so the pending sale is stated here. */
+    Object.assign(ctx.world.self.goal, { shop: 0, ware: 0, item: 0 });
     expect(think(ctx)).toMatchObject({ code: "shop-sell" });
     const fallback = shopScenario(0, [item({ handle: 20, tval: TV.SWORD, value: 100 })], [item({ tval: TV.DIGGING })], [], (change) => change.wield?.length ? 1100 : 1000);
     expect(think(fallback.ctx)).toMatchObject({ code: "wield", args: { handle: 20 } });
@@ -658,3 +662,38 @@ describe("borgCountSell", () => {
     expect(borgCountSell(ctx, { sellEval: () => 1000 })).toBe(0);
   });
 });
+
+describe("a home too big for the C's exhaustive search (#61)", () => {
+  /* 13 carried and 12 home candidates over ten slots: far more combinations
+   * than BEST_EXHAUSTIVE_LOADOUTS, so the slot-by-slot search runs. */
+  const kinds = [TV.SWORD, TV.BOW, TV.SOFT_ARMOR, TV.CLOAK, TV.SHIELD, TV.HELM, TV.GLOVES, TV.BOOTS];
+  const pack = kinds.flatMap((tval, k) => [0, 1].map((j) => item({ handle: 100 + k * 2 + j, tval, sval: j + 1, value: 100 })));
+  const rings = [item({ handle: 200, tval: TV.RING, sval: 1, value: 100 }), item({ handle: 201, tval: TV.RING, sval: 2, value: 100 })];
+  const bonus = (handle: number) => (handle % 2 === 1 ? 20 : 5);
+
+  it("finds the best item for every slot when the slots add up independently", () => {
+    let scored = 0;
+    const { ctx } = shopScenario(BORG_HOME, [...pack, ...rings], [], [], (change) => {
+      scored++;
+      return 1000 + (change.wieldAt ?? []).reduce((sum, choice) => sum + bonus(choice.item.from === "gear" ? choice.item.handle : 0), 0);
+    });
+    /* The plan starts at once with the C's first slot: the better bow. */
+    expect(think(ctx)).toMatchObject({ code: "wield", args: { handle: 103 } });
+    const plan = ctx.world.self.goal.bestItems ?? [];
+    /* Every other slot takes its odd-handled (better) item; both rings are worn. */
+    expect(plan.filter((choice) => choice !== null)).toHaveLength(kinds.length + 1);
+    for (const choice of plan) if (choice && choice.tval !== TV.RING) expect(choice.sval).toBe(2);
+    expect(scored).toBeLessThan(BEST_EXHAUSTIVE_LOADOUTS);
+    expect(ctx.world.self.goal.doBest).toBe(false);
+  });
+
+  it("documented limit: a gain that only comes from two changes together is not found", () => {
+    const { ctx } = shopScenario(BORG_HOME, [...pack, ...rings], [], [], (change) =>
+      (change.wieldAt ?? []).filter((choice) => choice.slot === 2 || choice.slot === 3).length === 2 ? 1100 : 1000);
+    think(ctx);
+    /* The C's full walk would wear both rings; the search finishes without them. */
+    expect(ctx.world.self.goal.bestItems ?? null).toBeNull();
+    expect(ctx.world.self.goal.doBest).toBe(false);
+  });
+});
+

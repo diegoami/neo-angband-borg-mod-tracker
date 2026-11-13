@@ -725,3 +725,46 @@ describe("defence boundaries from the C", () => {
     expect(defenseScore(ctx, BD.LIGHT_MORGOTH)).toBe(0);
   });
 });
+
+describe("throwing objects keeps the class's own books (attack.c:2294 obj_kind_can_browse)", () => {
+  /* A Druid's Nature book: browsable, so the view leaves its colour alone. A
+   * book of another realm is marked "slate" by the engine (entity-views.ts),
+   * which is what item/deps.ts canBrowse reads. */
+  const book = (tval: number, nameColor: string) =>
+    item({ handle: 7, tval, sval: 1, number: 1, dd: 1, ds: 1, value: 25, nameColor });
+
+  function throwScore(cls: string, inventory: ItemView[]): number {
+    /* Level 10: at or below level 20 the Borg spends missiles (attack.c:1199). */
+    const { ctx } = defenseScenario({ player: { cls, level: 10, maxLevel: 10 }, inventory, monsters: [
+      { grid: { x: 25, y: 12 }, hp: 1000, maxHp: 1000 },
+    ] });
+    /* Enough throwing skill to clear the to-hit gate (attack.c:492) and spare
+     * fuel so a flask is not held back for the lantern (attack.c:2316). */
+    ctx.world.self.trait[BI.THB] = 100;
+    ctx.world.self.trait[BI.AFUEL] = 5;
+    const fs = getFightState(ctx.world);
+    fs.simulate = true;
+    fs.tempN = 1;
+    fs.tempX[0] = 25;
+    fs.tempY[0] = 12;
+    return borgCalculateAttackEffectiveness(ctx, fs, BF.OBJECT);
+  }
+
+  it.each([
+    ["Druid", TV.NATURE_BOOK],
+    ["Necromancer", TV.SHADOW_BOOK],
+    ["Mage", TV.MAGIC_BOOK],
+    ["Priest", TV.PRAYER_BOOK],
+  ])("a %s never throws its own book", (cls, tval) => {
+    expect(throwScore(cls, [book(tval, "green")])).toBe(0);
+  });
+
+  it.each([TV.MAGIC_BOOK, TV.NATURE_BOOK])("a book the class cannot browse (tval %s) is still a throwable object, as in C", (tval) => {
+    expect(throwScore("Warrior", [book(tval, "slate")])).toBeGreaterThan(0);
+  });
+
+  it("control: an ordinary throwable is still thrown next to the class's own book", () => {
+    const flask = item({ handle: 8, tval: TV.FLASK, sval: 1, number: 5, dd: 2, ds: 6, value: 3, nameColor: "yellow" });
+    expect(throwScore("Druid", [book(TV.NATURE_BOOK, "green"), flask])).toBeGreaterThan(0);
+  });
+});

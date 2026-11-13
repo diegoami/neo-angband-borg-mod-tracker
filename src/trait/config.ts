@@ -19,6 +19,7 @@ import type { ArmourSwapKnowledge } from "./armour-swap.js";
 import type { WeaponSwapKnowledge } from "./weapon-swap.js";
 import { flatSvals } from "../item/svals.js";
 import type { ItemView } from "@rpgm-tools/neo-angband-core";
+import type { BorgContext } from "../context.js";
 
 /** borg_cfg[] settings the ported decision code reads (borg.txt defaults). */
 export interface BorgCfg {
@@ -216,11 +217,38 @@ export interface BorgFrame {
   spellWeight?: number;
   /** stat_max[i] > stat_cur[i] per stat (drained) - for BI_ISFIX* flags. */
   statDrained?: readonly boolean[];
+  /**
+   * race->r_skills + class->c_skills per skill, in SKILL order (DISARM_PHYS,
+   * DISARM_MAGIC, DEVICE, SAVE, SEARCH, STEALTH, TO_HIT_MELEE, TO_HIT_BOW,
+   * TO_HIT_THROW, DIGGING). With it, borg_notice derives the item-dependent
+   * traits as the C does (borg-trait.c:1233-2050) instead of reading the
+   * engine's figures for the gear actually worn.
+   */
+  skills?: readonly number[];
+  /** class->x_skills per skill (SKILL order): the per-ten-levels increment. */
+  skillsPerTen?: readonly number[];
+  /** race->infra. */
+  infra?: number;
+  /** player_flags(): the race's and class's object flags (OF_* names). */
+  playerFlags?: readonly string[];
+  /** race->el_info[ELEM_DISEN].res_level > 0. */
+  raceResistDisen?: boolean;
+  /** class->max_attacks, class->min_weight, class->att_multiply (borg_calc_blows). */
+  maxAttacks?: number;
+  minWeight?: number;
+  attMultiply?: number;
 }
 
 /** Neutral frame. */
 export function defaultFrame(): BorgFrame {
   return {};
+}
+
+/** The character's frame from its race/class records, when the host supplies them. */
+function contextFrame(ctx: BorgContext | undefined): BorgFrame | null {
+  if (!ctx?.frame) return null;
+  const p = ctx.view.player();
+  return ctx.frame(p.race, p.cls);
 }
 
 /**
@@ -270,13 +298,19 @@ export interface ResolvedOpts {
   uncursable: (item: ItemView) => boolean;
 }
 
-/** Fill in defaults for any unsupplied seam. */
-export function resolveOpts(opts: BorgTraitOpts = {}): ResolvedOpts {
+/**
+ * Fill in defaults for any unsupplied seam. The spell seam and the frame come
+ * from the caller, else from the context being noticed (the host's real
+ * predicates and the character's race/class records, as the C calls
+ * borg_spell_legal and reads player->race / player->class directly), else
+ * the inert ones.
+ */
+export function resolveOpts(opts: BorgTraitOpts = {}, ctx?: BorgContext): ResolvedOpts {
   return {
     cfg: { ...borgCfg(), ...opts.cfg },
-    spells: opts.spells ?? defaultSpellSeam(),
+    spells: opts.spells ?? ctx?.spellSeam?.(ctx) ?? defaultSpellSeam(),
     home: opts.home ?? defaultHomeSeam(),
-    frame: opts.frame ?? defaultFrame(),
+    frame: opts.frame ?? contextFrame(ctx) ?? defaultFrame(),
     svals: opts.svals ?? flatSvals(),
     uncursable: opts.uncursable ?? ((item) => item.curses.length > 0),
   };
