@@ -3928,10 +3928,10 @@ function defaultHomeSeam() {
 function defaultFrame() {
   return {};
 }
-function resolveOpts(opts = {}) {
+function resolveOpts(opts = {}, ctx) {
   return {
     cfg: { ...borgCfg(), ...opts.cfg },
-    spells: opts.spells ?? defaultSpellSeam(),
+    spells: opts.spells ?? ctx?.spellSeam?.(ctx) ?? defaultSpellSeam(),
     home: opts.home ?? defaultHomeSeam(),
     frame: opts.frame ?? defaultFrame(),
     svals: opts.svals ?? flatSvals(),
@@ -4004,7 +4004,7 @@ var OTHER_CURSES = /* @__PURE__ */ new Set([
   "air swing"
 ]);
 function borgArmourSwap(ctx, opts = {}, inventory = ctx.view.inventory(), selectedWeapon = null) {
-  const R2 = resolveOpts(opts), t = ctx.world.self.trait;
+  const R2 = resolveOpts(opts, ctx), t = ctx.world.self.trait;
   const trait4 = (bi) => t[bi] ?? 0;
   if (!R2.cfg.usesSwaps || trait4(106 /* MAXDEPTH */) < 50 || trait4(106 /* MAXDEPTH */) >= 90) return NONE();
   const allowed = [
@@ -4651,7 +4651,7 @@ function borgWeaponSwap(ctx, opts = {}, inventory = ctx.view.inventory()) {
     TV.GLOVES,
     TV.BOOTS
   ];
-  const R2 = resolveOpts(opts), t = ctx.world.self.trait;
+  const R2 = resolveOpts(opts, ctx), t = ctx.world.self.trait;
   const trait4 = (bi) => t[bi] ?? 0;
   const quiver = new Set(ctx.view.quiver?.().map((item) => item.handle) ?? []);
   let best = NONE2();
@@ -7633,7 +7633,7 @@ var TV_SHOT = 2;
 var TV_ARROW = 3;
 var TV_BOLT = 4;
 function borgNotice(ctx, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const view = ctx.view;
   const p = view.player();
   const t = new Array(BI_MAX).fill(0);
@@ -8981,7 +8981,7 @@ function borgPowerHomeFrom(ctx, c) {
 
 // src/trait/prepared.ts
 function borgPrepared(ctx, depth, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
   if (depth === 1) return null;
@@ -9218,7 +9218,7 @@ function borgPreparedAux(t, d, R2, depth) {
   return null;
 }
 function borgRestock(ctx, depth, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
   const cls = t[25 /* CLASS */];
@@ -9272,7 +9272,7 @@ function wgt(item) {
   return present(item) ? item.weight : 0;
 }
 function borgPower(ctx, opts = {}) {
-  const R2 = resolveOpts(opts);
+  const R2 = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
   const equip = ctx.view.equipment();
@@ -17898,6 +17898,34 @@ function ingestFloor(world, view, oldX, oldY, valuation) {
   }
 }
 
+// src/trait/spell-seam.ts
+function spellNamed(name) {
+  const spell = Spell[name];
+  return typeof spell === "number" ? spell : null;
+}
+function contextSpellSeam(ctx, resolveActivation) {
+  const has2 = (flag) => playerHas(ctx, flag);
+  return {
+    spellLegal: (name) => {
+      const spell = spellNamed(name);
+      return spell !== null && borgSpellLegal(ctx, spell);
+    },
+    spellLegalFail: (name, fail) => {
+      const spell = spellNamed(name);
+      return spell !== null && borgSpellLegalFail(ctx, spell, fail, has2);
+    },
+    /* Every borg_notice call passes check_charge = false (borg-trait.c). */
+    equipsItem: (act) => resolveActivation?.(ctx, act, false) ?? false,
+    equipsRing: (sval) => borgEquipsRing(ctx, sval),
+    /* spell_chance(0): the class's first spell, scored as the Borg scores a cast. */
+    spellChance: () => {
+      const first = ratingsForClass(ctx.world.self.trait[25 /* CLASS */] ?? -1)?.[0];
+      return first ? borgSpellFailRate(ctx, first.spell, has2) : 100;
+    },
+    playerHas: has2
+  };
+}
+
 // src/controller.ts
 var CONTROLLER_WORLDS = /* @__PURE__ */ new WeakMap();
 function recallDepthAnswer(controller) {
@@ -17929,7 +17957,7 @@ function createBorg(opts = {}) {
     noAlter: false
   };
   const controller = hostController((view, act) => {
-    const ctx = { world, view, act, rng, bookKind: session.resolvers.bookKind, spellEffect: session.resolvers.spellEffect };
+    const ctx = { world, view, act, rng, bookKind: session.resolvers.bookKind, spellEffect: session.resolvers.spellEffect, spellSeam: (c) => contextSpellSeam(c, session.resolvers.resolveActivation) };
     const recordStep = !retry;
     retry = false;
     before = {

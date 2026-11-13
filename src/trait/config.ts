@@ -19,6 +19,7 @@ import type { ArmourSwapKnowledge } from "./armour-swap.js";
 import type { WeaponSwapKnowledge } from "./weapon-swap.js";
 import { flatSvals } from "../item/svals.js";
 import type { ItemView } from "@rpgm-tools/neo-angband-core";
+import type { BorgContext } from "../context.js";
 
 /** borg_cfg[] settings the ported decision code reads (borg.txt defaults). */
 export interface BorgCfg {
@@ -270,11 +271,15 @@ export interface ResolvedOpts {
   uncursable: (item: ItemView) => boolean;
 }
 
-/** Fill in defaults for any unsupplied seam. */
-export function resolveOpts(opts: BorgTraitOpts = {}): ResolvedOpts {
+/**
+ * Fill in defaults for any unsupplied seam. The spell seam comes from the
+ * caller, else from the context being noticed (the host's real predicates,
+ * as the C calls borg_spell_legal and friends directly), else the inert one.
+ */
+export function resolveOpts(opts: BorgTraitOpts = {}, ctx?: BorgContext): ResolvedOpts {
   return {
     cfg: { ...borgCfg(), ...opts.cfg },
-    spells: opts.spells ?? defaultSpellSeam(),
+    spells: opts.spells ?? ctx?.spellSeam?.(ctx) ?? defaultSpellSeam(),
     home: opts.home ?? defaultHomeSeam(),
     frame: opts.frame ?? defaultFrame(),
     svals: opts.svals ?? flatSvals(),

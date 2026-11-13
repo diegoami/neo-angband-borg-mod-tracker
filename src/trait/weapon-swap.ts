@@ -47,7 +47,7 @@ export function borgWeaponSwap(
   const wearable: readonly number[] = [...weapons, TV.BOW, TV.RING, TV.AMULET,
     TV.LIGHT, TV.SOFT_ARMOR, TV.HARD_ARMOR, TV.DRAG_ARMOR, TV.CLOAK,
     TV.SHIELD, TV.HELM, TV.CROWN, TV.GLOVES, TV.BOOTS];
-  const R = resolveOpts(opts), t = ctx.world.self.trait;
+  const R = resolveOpts(opts, ctx), t = ctx.world.self.trait;
   const trait = (bi: BI): number => t[bi] ?? 0;
   const quiver = new Set(ctx.view.quiver?.().map(item => item.handle) ?? []);
   let best = NONE();
