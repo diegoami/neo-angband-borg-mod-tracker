@@ -23,6 +23,7 @@ import type { BorgContext } from "../context.js";
 import { BI } from "./trait-index.js";
 import { borgNotice } from "./trait.js";
 import { frameBook } from "./frame.js";
+import { borgSimulatePower } from "./simulate.js";
 import { TV } from "../item/svals.js";
 
 const DIR = dirname(createRequire(import.meta.url).resolve("@rpgm-tools/neo-angband-content/pack/class.json"));
@@ -84,5 +85,29 @@ describe("derived traits that the worn gear does not decide", () => {
     /* Human Warrior melee: c_skills 70 + x_skills 45 * 30 / 10. */
     const t = noticed(makeScenarioView({ player: { race: "Human", cls: "Warrior", level: 30, maxLevel: 30 } }));
     expect(t[BI.THN]).toBe(70 + 135);
+  });
+});
+
+describe("a loadout scored in-process (#61)", () => {
+  const speedBoots = { handle: 5, kindKey: "", aware: true, nameColor: "", label: "boots", tval: TV.BOOTS, sval: 1, pval: 3, number: 1, weight: 20, ac: 2, toA: 0, toH: 0, toD: 0, dd: 0, ds: 0, ego: true, artifact: false, flags: [], modifiers: [{ code: "SPEED", value: 3 }], brands: [], slays: [], resists: [], curses: [], timeout: 0 } as unknown as ItemView;
+  const carrying = (withFrame: boolean): BorgContext => {
+    const base = makeScenarioView({ player: { race: "Human", cls: "Warrior" } });
+    /* No simulateLoadout on this view: the engine is not asked. */
+    const view = { ...base, inventory: () => [speedBoots] };
+    const ctx: BorgContext = { world: new BorgWorld(), view, act: makeFakeActions(), rng: makeBorgRng(), ...(withFrame ? { frame: FRAME } : {}) };
+    borgNotice(ctx);
+    return ctx;
+  };
+
+  it("scores wearing carried speed boots without the engine, and higher than not", () => {
+    const ctx = carrying(true);
+    const worn = borgSimulatePower(ctx, { wield: [{ from: "gear", handle: 5 }] });
+    const now = borgSimulatePower(ctx, {});
+    expect(worn).not.toBeNull();
+    expect(worn!).toBeGreaterThan(now!);
+  });
+
+  it("control: without the race/class records it still needs the engine", () => {
+    expect(borgSimulatePower(carrying(false), { wield: [{ from: "gear", handle: 5 }] })).toBeNull();
   });
 });

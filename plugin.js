@@ -5357,6 +5357,7 @@ function wornInSlot(ctx, slot) {
   return null;
 }
 var BEST_ORDER = [1, 0, 6, 7, 8, 9, 10, 11, 3, 2, 5, 4];
+var BEST_EXHAUSTIVE_LOADOUTS = 2e3;
 var BEST_SLOTS = [
   "bow",
   "weapon",
@@ -5387,36 +5388,76 @@ function borgBestStuff(ctx, shopNum, d, stores) {
     let best = [...trial];
     let power = ctx.world.self.power;
     let incomplete = false;
-    const search = (n) => {
+    const score = () => {
+      const choices = trial.flatMap((choice, k) => choice ? [{ item: choice.ref, slot: BEST_ORDER[k] }] : []);
+      return d?.bestEval ? d.bestEval(choices) : ctx.world.self.power;
+    };
+    const fits = (choice, n) => {
+      const item = choice.item;
+      if (!item.number || !isAware(item, d) || !itemValue(item, d)) return false;
+      if (isCursed(item) && !d?.uncursable?.(item)) return false;
+      if (d?.randarts && item.artifact && !isIdent(item, d)) return false;
+      if (wieldSlot(item) !== BEST_SLOTS[n]) return false;
+      if (n === 9 && trial[8] === choice) return false;
+      if (n === 8 && trial[9] === choice) return false;
+      const worn = equipment2[BEST_ORDER[n]];
+      if (worn && isOneRing2(worn, stores)) return false;
+      return true;
+    };
+    const exhaustive = (n) => {
       if (n === BEST_ORDER.length) {
-        const choices = trial.flatMap((choice, k) => choice ? [{ item: choice.ref, slot: BEST_ORDER[k] }] : []);
-        const score = d?.bestEval ? d.bestEval(choices) : ctx.world.self.power;
-        if (score === null) {
+        const s = score();
+        if (s === null) {
           incomplete = true;
           return;
         }
-        if (score > power) {
-          power = score;
+        if (s > power) {
+          power = s;
           best = [...trial];
         }
         return;
       }
-      search(n + 1);
+      exhaustive(n + 1);
       for (const choice of candidates) {
-        const item = choice.item;
-        if (!item.number || !isAware(item, d) || !itemValue(item, d)) continue;
-        if (isCursed(item) && !d?.uncursable?.(item)) continue;
-        if (d?.randarts && item.artifact && !isIdent(item, d)) continue;
-        if (wieldSlot(item) !== BEST_SLOTS[n]) continue;
-        if (n === 9 && trial[8] === choice) continue;
-        const worn = equipment2[BEST_ORDER[n]];
-        if (worn && isOneRing2(worn, stores)) continue;
+        if (!fits(choice, n)) continue;
         trial[n] = choice;
-        search(n + 1);
+        exhaustive(n + 1);
         trial[n] = null;
       }
     };
-    search(0);
+    const ascent = () => {
+      for (let pass = 0; pass < BEST_ORDER.length; pass++) {
+        let improved2 = false;
+        for (let n = 0; n < BEST_ORDER.length; n++) {
+          const held = trial[n] ?? null;
+          for (const choice of [null, ...candidates]) {
+            if (choice === held) continue;
+            if (choice !== null && !fits(choice, n)) continue;
+            trial[n] = choice;
+            const s = score();
+            trial[n] = held;
+            if (s === null) {
+              incomplete = true;
+              continue;
+            }
+            if (s > power) {
+              power = s;
+              best = [...trial];
+              best[n] = choice;
+              improved2 = true;
+            }
+          }
+          trial[n] = best[n] ?? null;
+        }
+        if (!improved2 || incomplete) break;
+      }
+    };
+    let loadouts = 1;
+    for (let n = 0; n < BEST_ORDER.length && loadouts <= BEST_EXHAUSTIVE_LOADOUTS; n++) {
+      loadouts *= 1 + candidates.filter((choice) => fits(choice, n)).length;
+    }
+    if (loadouts <= BEST_EXHAUSTIVE_LOADOUTS) exhaustive(0);
+    else ascent();
     if (incomplete) return null;
     goal.bestItems = best.map((choice) => choice ? {
       tval: choice.item.tval,
@@ -10096,6 +10137,92 @@ function powerInventory(t, d, R2, equip, cls) {
   return value;
 }
 
+// src/trait/local-loadout.ts
+var SLOT_INDEX = {
+  weapon: 0,
+  bow: 1,
+  amulet: 4,
+  light: 5,
+  body: 6,
+  cloak: 7,
+  shield: 8,
+  helm: 9,
+  gloves: 10,
+  boots: 11
+};
+var RING_SLOTS = [2, 3];
+var wareHandle = -1;
+function applyLoadoutChange(ctx, change) {
+  const equipment2 = [...ctx.view.equipment()];
+  const inventory = [...ctx.view.inventory()];
+  const take = (ref, number) => {
+    if (ref.from === "store") {
+      const ware = ctx.view.stores()[ref.store]?.stock[ref.index];
+      if (!ware) return null;
+      return { ...ware, handle: wareHandle--, number };
+    }
+    const slot = equipment2.findIndex((item) => item?.handle === ref.handle);
+    if (slot >= 0) {
+      const worn = equipment2[slot];
+      equipment2[slot] = null;
+      return worn;
+    }
+    const at = inventory.findIndex((item) => item.handle === ref.handle);
+    if (at < 0) return null;
+    const stack = inventory[at];
+    if (stack.number <= number) {
+      inventory.splice(at, 1);
+      return stack;
+    }
+    inventory[at] = { ...stack, number: stack.number - number };
+    return { ...stack, number };
+  };
+  for (const { handle, number } of change.release ?? []) {
+    const slot = equipment2.findIndex((item) => item?.handle === handle);
+    if (slot >= 0) {
+      equipment2[slot] = null;
+      continue;
+    }
+    const at = inventory.findIndex((item) => item.handle === handle);
+    if (at < 0) return null;
+    const stack = inventory[at];
+    const n = number ?? stack.number;
+    if (n >= stack.number) inventory.splice(at, 1);
+    else inventory[at] = { ...stack, number: stack.number - n };
+  }
+  for (const slot of change.remove ?? []) {
+    const worn = equipment2[slot];
+    if (worn) inventory.push(worn);
+    equipment2[slot] = null;
+  }
+  const wearAt = (item, slot) => {
+    const displaced = equipment2[slot];
+    if (displaced) inventory.push(displaced);
+    equipment2[slot] = item;
+  };
+  const placed = [];
+  for (const { item: ref, slot } of change.wieldAt ?? []) {
+    const item = take(ref, 1);
+    if (!item) return null;
+    placed.push({ item: { ...item, number: 1 }, slot });
+  }
+  for (const { item, slot } of placed) wearAt(item, slot);
+  for (const ref of change.wield ?? []) {
+    const item = take(ref, 1);
+    if (!item) return null;
+    const kind = wieldSlot(item);
+    if (kind === null) return null;
+    const slot = kind === "ring" ? RING_SLOTS.find((s) => !equipment2[s]) ?? RING_SLOTS[0] : SLOT_INDEX[kind];
+    wearAt({ ...item, number: 1 }, slot);
+  }
+  for (const { item: ref, number } of change.carry ?? []) {
+    const item = take(ref, number ?? 1);
+    if (!item) return null;
+    inventory.push(item);
+  }
+  return { equipment: equipment2, inventory };
+}
+
 // src/trait/simulate.ts
 function shadowWorld(world) {
   const sim = Object.create(world);
@@ -10135,8 +10262,7 @@ function borgNoticeWithout(ctx, handle) {
   return reduced;
 }
 function borgSimulatePower(ctx, change, opts = {}) {
-  const view = ctx.view;
-  const answer = view.simulateLoadout?.(change);
+  const answer = localAnswer(ctx, change, opts) ?? ctx.view.simulateLoadout?.(change);
   if (!answer) return null;
   const simCtx = {
     ...ctx,
@@ -10146,6 +10272,13 @@ function borgSimulatePower(ctx, change, opts = {}) {
   inheritWeaponSwap(simCtx.world, ctx.world);
   borgNotice(simCtx, { ...opts, noticeSwap: false });
   return borgPower(simCtx, opts);
+}
+function localAnswer(ctx, change, opts) {
+  const frame = resolveOpts(opts, ctx).frame;
+  if (frame.skills === void 0 || frame.skillsPerTen === void 0) return null;
+  const loadout = applyLoadoutChange(ctx, change);
+  if (!loadout) return null;
+  return { after: { player: ctx.view.player(), equipment: loadout.equipment, inventory: loadout.inventory } };
 }
 function borgSimulateDangerAnswer(ctx, change) {
   const answer = ctx.view.simulateLoadout?.(change);
