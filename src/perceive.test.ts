@@ -26,6 +26,8 @@ import {
 } from "./flow/index.js";
 import { makeScenarioView, makeFakeActions } from "./harness.js";
 import { makeBorgRng } from "./rng.js";
+import { borgTrackStairs } from "./flow/flow-stairs.js";
+import { getThinkSession } from "./think-session.js";
 import { borgView } from "./core-api.js";
 import type { BorgContext } from "./context.js";
 import { getFearCaches } from "./danger/state.js";
@@ -133,6 +135,32 @@ describe("tracking deletion cleanup", () => {
     expect(world.map.at(8, 5).kill).toBe(0);
     expect(world.map.at(10, 5).kill).toBeGreaterThan(0);
     expect(world.self.goal.type).toBe(GOAL_KILL);
+  });
+
+  it("keeps the grid pointer of a remembered monster that is out of view until it expires", () => {
+    const { world, memo } = tracked();
+    const slot = world.map.at(8, 5).kill;
+    expect(slot).toBeGreaterThan(0);
+    world.clock = 100;
+    perceive(world, makeScenarioView({ player: { grid: { x: 5, y: 5 }, depth: 3 } }), memo);
+    expect([...world.kills.entries()]).toHaveLength(1);
+    expect(world.map.at(8, 5).kill).toBe(slot);
+    world.clock = BORG_EXPIRE_TURNS;
+    perceive(world, makeScenarioView({ player: { grid: { x: 5, y: 5 }, depth: 3 } }), memo);
+    expect([...world.kills.entries()]).toHaveLength(0);
+    expect(world.map.at(8, 5).kill).toBe(0);
+  });
+
+  it("moves the grid pointer with a visible monster", () => {
+    const { world, memo } = tracked();
+    const slot = world.map.at(8, 5).kill;
+    world.clock = 50;
+    perceive(world, makeScenarioView({
+      player: { grid: { x: 5, y: 5 }, depth: 3 },
+      monsters: [{ id: 9, grid: { x: 9, y: 5 }, raceFlags: ["MULTIPLY"] }],
+    }), memo);
+    expect(world.map.at(8, 5).kill).toBe(0);
+    expect(world.map.at(9, 5).kill).toBe(slot);
   });
 
   it.each(["expiry", "pickup"])("clears an object grid and take goal on %s", (path) => {
@@ -306,6 +334,83 @@ describe("message-stream reaction", () => {
     const ids = [...world.kills.entries()].map(([, k]) => k.mIdx);
     expect(ids).toContain(9);
     expect(ids).not.toContain(7);
+  });
+});
+
+describe("blocked-step and mis-alter messages (borg-messages.c:841-915)", () => {
+  const noOne = new Set<number>();
+
+  it("asks for an alter after a wall or a closed door, and drops the goal", () => {
+    for (const msg of ["There is a wall in the way!", "There is a closed door blocking your way."]) {
+      const world = new BorgWorld();
+      world.self.goal.type = GOAL_KILL;
+      borgReactMessages(world, [msg], noOne);
+      expect(world.self.needAlter).toBe(true);
+      expect(world.self.goal.type).toBe(0);
+    }
+  });
+
+  it("ignores the blocking messages when confused, and the door one when hallucinating", () => {
+    const confused = new BorgWorld();
+    confused.self.trait[BI.ISCONFUSED] = 1;
+    borgReactMessages(confused, ["There is a wall in the way!", "There is a closed door blocking your way."], noOne);
+    expect(confused.self.needAlter).toBe(false);
+
+    const imagined = new BorgWorld();
+    imagined.self.trait[BI.ISIMAGE] = 1;
+    borgReactMessages(imagined, ["There is a closed door blocking your way."], noOne);
+    expect(imagined.self.needAlter).toBe(false);
+    borgReactMessages(imagined, ["There is a wall in the way!"], noOne);
+    expect(imagined.self.needAlter).toBe(true);
+  });
+
+  it("deletes monster records within three grids on a spin, and keeps far ones", () => {
+    const world = new BorgWorld();
+    world.self.c = { x: 10, y: 10 };
+    const near = world.kills.alloc();
+    world.kills.at(near).rIdx = 1;
+    world.kills.at(near).pos = { x: 13, y: 10 };
+    const far = world.kills.alloc();
+    world.kills.at(far).rIdx = 1;
+    world.kills.at(far).pos = { x: 14, y: 10 };
+    const deleted = borgReactMessages(world, ["You spin around."], noOne);
+    expect(deleted).toBe(1);
+    expect(world.self.noAlter).toBe(true);
+    expect([...world.kills.entries()].map(([, k]) => k.pos.x)).toEqual([14]);
+
+    const dazed = new BorgWorld();
+    dazed.self.trait[BI.ISCONFUSED] = 1;
+    borgReactMessages(dazed, ["You spin around."], noOne);
+    expect(dazed.self.noAlter).toBe(false);
+  });
+
+  it("breaks the goal grid when there is nothing to alter", () => {
+    const world = new BorgWorld();
+    world.self.goal.g = { x: 7, y: 8 };
+    world.map.at(7, 8).feat = FEAT.FLOOR;
+    borgReactMessages(world, ["You see nothing there to disarm."], noOne);
+    expect(world.map.at(7, 8).feat).toBe(FEAT.BROKEN);
+    expect(world.self.noAlter).toBe(true);
+  });
+
+  it("restores the flags when a decision is rewound", () => {
+    const { world, controller, rewind } = createBorg();
+    const view = makeScenarioView({
+      player: { grid: { x: 5, y: 5 }, depth: 3 },
+      messages: ["There is a wall in the way!"],
+    });
+    const cmd = controller(view, makeFakeActions());
+    /* The flag is set by perception and the same decision's step may use it up;
+     * either way a rewound decision must leave it as it found it. */
+    expect(cmd).not.toBeNull();
+    rewind();
+    expect(world.self.needAlter).toBe(false);
+
+    world.self.noAlter = true;
+    controller(makeScenarioView({ player: { grid: { x: 5, y: 5 }, depth: 3 } }), makeFakeActions());
+    world.self.noAlter = false;
+    rewind();
+    expect(world.self.noAlter).toBe(true);
   });
 });
 
@@ -558,5 +663,65 @@ describe("a monster that is not where the Borg left it", () => {
     }
     const world = twoTicks({ monsters: [], cells: dark });
     expect([...world.kills.entries()]).toHaveLength(1);
+  });
+});
+
+describe("stair tracks during perception", () => {
+  it("lists each remembered staircase once, in scan order, and stops at the size", () => {
+    const world = new BorgWorld();
+    const flow = createFlowState();
+    world.map.at(9, 4).feat = FEAT.LESS;
+    world.map.at(3, 6).feat = FEAT.MORE;
+    world.map.at(5, 2).feat = FEAT.LESS;
+    borgTrackStairs(world, flow);
+    borgTrackStairs(world, flow);
+    expect([flow.less.num, flow.more.num]).toEqual([2, 1]);
+    expect([flow.less.y[0], flow.less.x[0], flow.less.y[1], flow.less.x[1]]).toEqual([2, 5, 4, 9]);
+    for (let x = 10; x < 40; x++) world.map.at(x, 20).feat = FEAT.MORE;
+    borgTrackStairs(world, flow);
+    expect(flow.more.num).toBe(flow.more.size);
+  });
+
+  it("fills the tracks through the controller", () => {
+    const { world, controller } = createBorg();
+    const act = makeFakeActions();
+    const view = (stair: boolean) => makeScenarioView({
+      player: { grid: { x: 5, y: 5 }, depth: 3 },
+      monsters: [{ grid: { x: 6, y: 5 } }],
+      cells: stair ? { "12,7": { feat: FEAT.LESS }, "14,9": { feat: FEAT.MORE } } : {},
+    });
+    controller(view(false), act);
+    const flow = getThinkSession(world).flow.state;
+    expect([flow.less.num, flow.more.num]).toEqual([0, 0]);
+    controller(view(true), act);
+    expect([flow.less.num, flow.more.num]).toEqual([1, 1]);
+    expect([flow.less.x[0], flow.less.y[0]]).toEqual([12, 7]);
+  });
+});
+
+describe("store decisions", () => {
+  it("leave the clocks, the kill table, and the map untouched, as borg_think does", () => {
+    let inStore = false;
+    const { world, controller, rewind } = createBorg({ resolvers: { inShop: () => (inStore ? 0 : null) } });
+    const act = makeFakeActions();
+    const level = makeScenarioView({
+      player: { grid: { x: 5, y: 5 }, depth: 3 },
+      monsters: [{ id: 9, grid: { x: 8, y: 5 }, raceFlags: ["MULTIPLY"] }],
+    });
+    controller(level, act);
+    const clock = world.clock;
+    const panel = world.self.timeThisPanel;
+    const slot = world.map.at(8, 5).kill;
+    expect(slot).toBeGreaterThan(0);
+    inStore = true;
+    /* The store screen shows no monsters; perceiving it would age and expire the records. */
+    const store = makeScenarioView({ player: { grid: { x: 5, y: 5 }, depth: 3 } });
+    controller(store, act);
+    rewind();
+    controller(store, act);
+    expect(world.clock).toBe(clock);
+    expect(world.self.timeThisPanel).toBe(panel);
+    expect([...world.kills.entries()]).toHaveLength(1);
+    expect(world.map.at(8, 5).kill).toBe(slot);
   });
 });

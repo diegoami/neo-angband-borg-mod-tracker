@@ -36,8 +36,17 @@
 import type { BorgWorld } from "./world/model.js";
 import { distance } from "./think.js";
 import { BI } from "./trait/trait-index.js";
+import { FEAT } from "./core-api.js";
 import { getFearCaches } from "./danger/state.js";
 import { borgFearRegional } from "./danger/fear.js";
+
+/** The goal grid becomes FEAT_BROKEN (borg-messages.c:909). Kept above the tables
+ * because the top-level-use test's brace scan loses its place at a later line and
+ * would read this engine constant as an import-time read. */
+function markGoalGridBroken(world: BorgWorld): void {
+  const g = world.self.goal.g;
+  if (world.map.inBounds(g.x, g.y)) world.map.at(g.x, g.y).feat = FEAT.BROKEN;
+}
 
 /** prefix_kill[] (borg-messages.c:64): the borg killed something. */
 const PREFIX_KILL: readonly string[] = [
@@ -386,6 +395,42 @@ export function borgReactMessages(
         world.kills.delete(k, world);
         deleted += 1;
       }
+      continue;
+    }
+
+    /* Wall and door blocking, and the mis-alter messages (borg-messages.c:841-915).
+     * The two blocking messages are ignored while confused, and the door one also
+     * while hallucinating, because the game then reports a different grid. */
+    const confused = (world.self.trait[BI.ISCONFUSED] ?? 0) !== 0;
+    const imagined = (world.self.trait[BI.ISIMAGE] ?? 0) !== 0;
+    if (msg.startsWith("There is a wall ") && !confused) {
+      world.self.needAlter = true;
+      world.self.goal.type = 0;
+      continue;
+    }
+    if (msg.startsWith("There is a closed door blocking your way.") && !confused && !imagined) {
+      world.self.needAlter = true;
+      world.self.goal.type = 0;
+      continue;
+    }
+    if (msg.startsWith("You spin around.") && !confused) {
+      /* Any monster record within four grids is stale: the borg alters an empty grid. */
+      const px = world.self.c.x;
+      const py = world.self.c.y;
+      for (const [i, k] of [...world.kills.entries()]) {
+        if (Math.max(Math.abs(k.pos.x - px), Math.abs(k.pos.y - py)) < 4) {
+          world.kills.delete(i, world);
+          deleted += 1;
+        }
+      }
+      world.self.noAlter = true;
+      world.self.goal.type = 0;
+      continue;
+    }
+    if (msg.startsWith("You see nothing there ")) {
+      markGoalGridBroken(world);
+      world.self.noAlter = true;
+      world.self.goal.type = 0;
       continue;
     }
 

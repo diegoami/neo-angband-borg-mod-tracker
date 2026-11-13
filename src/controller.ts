@@ -30,6 +30,7 @@ import { buildHitByTable, buildSpellTable } from "./perceive-messages.js";
 import { borgUpdateMonsterFear } from "./danger/index.js";
 import { borgFollowMissingKills } from "./flow/index.js";
 import { borgTrackStep } from "./flow/flow.js";
+import { borgTrackStairs } from "./flow/flow-stairs.js";
 import { think } from "./think.js";
 import { borgNotice, borgPower, borgCfg, setBorgCfg, BI, type BorgCfg } from "./trait/index.js";
 import { getFightState } from "./fight/index.js";
@@ -129,7 +130,8 @@ export function createBorg(opts: BorgOptions = {}): Borg {
   let retry = false;
   let before = { lastGrid: session.lastGrid, arrival: session.arrivalPickup,
     rechargeRest: session.rechargeRest ?? false, ringTakeoff: session.ringTakeoff ?? false,
-    panel: 0, resetLevel: world.resetLevel, junked: new Set(session.junked) };
+    panel: 0, store: false, resetLevel: world.resetLevel, junked: new Set(session.junked),
+    needAlter: false, noAlter: false };
 
   /* The host's view and actions arrive wrapped by the adapter (core-api.ts). */
   const controller: AgentController = hostController((view, act) => {
@@ -138,10 +140,23 @@ export function createBorg(opts: BorgOptions = {}): Borg {
     retry = false;
     before = { lastGrid: session.lastGrid, arrival: session.arrivalPickup,
       rechargeRest: session.rechargeRest ?? false, ringTakeoff: session.ringTakeoff ?? false,
-      panel: world.self.timeThisPanel, resetLevel: world.resetLevel, junked: new Set(session.junked) };
+      panel: world.self.timeThisPanel, store: false, resetLevel: world.resetLevel, junked: new Set(session.junked),
+      needAlter: world.self.needAlter, noAlter: world.self.noAlter };
 
     /* Unknown recall effects keep the depth (borg-messages-react.c:229-242). */
     world.resetRecallDepth = false;
+
+    /* A store decision returns before borg_update (borg-think.c:324-369): the C notices
+     * the character and scores the world, then runs the store ladder. The clocks, the
+     * map, and the monster and object records stay as they were, because the screen the
+     * Borg is looking at is the store, not the level. */
+    const shopNum = session.resolvers.inShop?.(ctx) ?? null;
+    if (shopNum !== null && shopNum >= 0) {
+      before.store = true;
+      borgNotice(ctx);
+      world.self.power = borgPower(ctx);
+      return think(ctx);
+    }
 
     /* 1. Advance the clocks exactly once (borg-think.c:447). */
     world.clock += 1;
@@ -215,12 +230,14 @@ export function createBorg(opts: BorgOptions = {}): Borg {
       junked: session.junked,
     }, (i) => session.resolvers.resolveMonsterFacts?.(ctx, i).dChar);
 
+    /* borg-update.c:491-525 tracks newly known stairs on every decision. */
+    borgTrackStairs(world, session.flow.state);
+
     /* borg-update.c:2466-2479 records after the map update. Loadout retries
      * share the decision's entry, matching one borg_update per dungeon decision
      * (borg-think.c:455-456). Store decisions return before borg_update
      * (borg-think.c:324-369). */
-    const shopNum = session.resolvers.inShop?.(ctx) ?? null;
-    if (recordStep && (shopNum === null || shopNum < 0)) {
+    if (recordStep) {
       borgTrackStep(session.flow.state.step, world.self.c.y, world.self.c.x);
     }
 
@@ -267,9 +284,12 @@ export function createBorg(opts: BorgOptions = {}): Borg {
   const rewind = (): void => {
     retry = true;
     /* A retry keeps the level transition and repeats the decision at the same
-     * level clock. The panel snapshot also covers borg_dump_quiver's increment. */
-    world.clock -= 1;
+     * level clock. The panel snapshot also covers borg_dump_quiver's increment.
+     * A store decision never advanced the clock, so there is nothing to give back. */
+    if (!before.store) world.clock -= 1;
     world.self.timeThisPanel = before.panel;
+    world.self.needAlter = before.needAlter;
+    world.self.noAlter = before.noAlter;
     session.lastGrid = before.lastGrid;
     session.arrivalPickup = before.arrival;
     /* borg-junk.c:1224-1241 and borg-item-wear.c:1516-1528 queue side

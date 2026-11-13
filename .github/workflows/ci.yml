@@ -28,7 +28,7 @@ jobs:
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 26
           cache: pnpm
       # Default remains the unchanged, unpatched published beta.3 tuple.
       - run: pnpm install --frozen-lockfile
