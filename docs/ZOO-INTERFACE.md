@@ -40,11 +40,13 @@ node tools/zoo/build.mjs --engine-dir D --borg-dir D --out FRESH [--engine-pin S
   allowed mode changes are the two executable-bit changes of the engine SDK bin
   scripts that pnpm makes. Untracked files only mark `dirty` in `build.json`.
 
+`bundle.mjs` embeds checkout-relative `//#region` comments, so its hash depends on where the engine and Borg checkouts sit; code outside those comments is identical. Build at a fixed path when comparing bundle hashes.
+
 Outputs in `FRESH/`: `build.json` (schema `neo-original-build@1`: package
 versions, engine and Borg repository/commit/dirty flags, the Borg manifest, lock,
 bundle, pack and content-file hashes, hashes of the four tool files),
 `bundle.mjs` (portable, needs no checkout or dependencies at run time), `pack/`
-(engine content) and the intermediate `entry.ts` and `pack.ts`.
+(engine content), the intermediate `entry.ts` and `pack.ts`, and the engine web build's static assets (`docs/`, `fonts/`, `icons/`, `sounds/`, `tiles/`), which the run does not read.
 
 ## Run
 
