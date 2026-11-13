@@ -1103,6 +1103,220 @@ var BORG_ADJ_STR_TH = [
   15,
   15
 ];
+var ADJ_STR_BLOW = [
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  20,
+  30,
+  40,
+  50,
+  60,
+  70,
+  80,
+  90,
+  100,
+  110,
+  120,
+  130,
+  140,
+  150,
+  160,
+  170,
+  180,
+  190,
+  200,
+  210,
+  220,
+  230,
+  240
+];
+var BORG_ADJ_DEX_BLOW = [
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  3,
+  3,
+  4,
+  4,
+  5,
+  5,
+  6,
+  6,
+  7,
+  7,
+  8,
+  8,
+  8,
+  9,
+  9,
+  9,
+  10,
+  10,
+  11,
+  11,
+  11
+];
+var BORG_BLOWS_TABLE = [
+  [100, 100, 95, 85, 75, 60, 50, 42, 35, 30, 25, 23],
+  [100, 95, 85, 75, 60, 50, 42, 35, 30, 25, 23, 21],
+  [95, 85, 75, 60, 50, 42, 35, 30, 26, 23, 21, 20],
+  [85, 75, 60, 50, 42, 36, 32, 28, 25, 22, 20, 19],
+  [75, 60, 50, 42, 36, 33, 28, 25, 23, 21, 19, 18],
+  [60, 50, 42, 36, 33, 30, 27, 24, 22, 21, 19, 17],
+  [50, 42, 36, 33, 30, 27, 25, 23, 21, 20, 18, 17],
+  [42, 36, 33, 30, 28, 26, 24, 22, 20, 19, 18, 17],
+  [36, 33, 30, 28, 26, 24, 22, 21, 20, 19, 17, 16],
+  [35, 32, 29, 26, 24, 22, 21, 20, 19, 18, 17, 16],
+  [34, 30, 27, 25, 23, 22, 21, 20, 19, 18, 17, 16],
+  [33, 29, 26, 24, 22, 21, 20, 19, 18, 17, 16, 15]
+];
+var BORG_ADJ_DEX_DIS = [
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  3,
+  3,
+  3,
+  4,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  19,
+  19
+];
+var BORG_ADJ_INT_DIS = [
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  3,
+  3,
+  3,
+  4,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  19,
+  19
+];
+var BORG_ADJ_INT_DEV = [
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  3,
+  3,
+  3,
+  3,
+  3,
+  4,
+  4,
+  5,
+  5,
+  6,
+  6,
+  7,
+  7,
+  8,
+  8,
+  9,
+  9,
+  10,
+  10,
+  11,
+  11,
+  12,
+  13
+];
 var BORG_ADJ_STR_DIG = [
   0,
   0,
@@ -1142,6 +1356,46 @@ var BORG_ADJ_STR_DIG = [
   100,
   100,
   100
+];
+var BORG_ADJ_WIS_SAV = [
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  3,
+  3,
+  3,
+  3,
+  3,
+  4,
+  4,
+  5,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19
 ];
 var BORG_ADJ_STR_WGT = [
   5,
@@ -7664,7 +7918,8 @@ function borgNotice(ctx, opts = {}) {
     quiver,
     temp: ctx.world.self.temp,
     cls,
-    spellStat
+    spellStat,
+    derive: R2.frame.skills !== void 0 && R2.frame.skillsPerTen !== void 0
   };
   borgNoticePlayer(c);
   borgNoticeEquipment(c);
@@ -7746,15 +8001,29 @@ function borgNoticePlayer(c) {
     t[10 /* CSTR */ + i] = p.stats[i] ?? 10;
     t[127 /* ISFIXSTR */ + i] = drained?.[i] ? 1 : 0;
   }
-  t[44 /* SPEED */] = p.speed;
-  t[52 /* INFRA */] = p.seeInfra;
+  if (!c.derive) t[44 /* SPEED */] = p.speed;
+  t[52 /* INFRA */] = c.derive ? c.R.frame.infra ?? 0 : p.seeInfra;
+}
+function borgCalcBlows(c, item) {
+  const t = c.t;
+  const f = c.R.frame;
+  const weight = item.weight * item.number;
+  const minWeight = f.minWeight ?? 0;
+  const div2 = Math.max(weight < minWeight ? minWeight : weight, 1);
+  let strIndex = Math.trunc(ADJ_STR_BLOW[t[15 /* STR_INDEX */]] * (f.attMultiply ?? 0) / div2);
+  if (strIndex > 11) strIndex = 11;
+  const dexIndex = Math.min(BORG_ADJ_DEX_BLOW[t[18 /* DEX_INDEX */]], 11);
+  const blowEnergy = BORG_BLOWS_TABLE[strIndex][dexIndex];
+  const blows = Math.min(Math.trunc(1e4 / blowEnergy), 100 * (f.maxAttacks ?? 1));
+  return Math.trunc(Math.max(blows + 100 * (mod(item, "BLOWS") + t[147 /* EXTRA_BLOWS */]), 100) / 100);
 }
 function borgNoticeEquipment(c) {
   const { t, p, equip } = c;
   let extraShots = 0;
   let extraMight = 0;
   let myNumFire = 1;
-  const pf = p.objectFlags;
+  const pf = c.derive ? c.R.frame.playerFlags ?? [] : p.objectFlags;
+  if (c.derive && c.R.frame.raceResistDisen) t[84 /* RDIS */] = 1;
   if (pf.includes("SLOW_DIGEST")) t[48 /* SDIG */] = 1;
   if (pf.includes("FEATHER")) t[49 /* FEATH */] = 1;
   if (pf.includes("REGEN")) t[50 /* REG */] = 1;
@@ -7774,6 +8043,21 @@ function borgNoticeEquipment(c) {
   if (pf.includes("SUST_WIS")) t[22 /* SWIS */] = 1;
   if (pf.includes("SUST_DEX")) t[23 /* SDEX */] = 1;
   if (pf.includes("SUST_CON")) t[24 /* SCON */] = 1;
+  if (c.derive) {
+    const base = c.R.frame.skills;
+    t[54 /* DISP */] = base[0] ?? 0;
+    t[55 /* DISM */] = base[1] ?? 0;
+    t[56 /* DEV */] = base[2] ?? 0;
+    t[57 /* SAV */] = base[3] ?? 0;
+    t[59 /* SRCH */] = base[4] ?? 0;
+    t[58 /* STL */] = base[5] ?? 0;
+    t[60 /* THN */] = base[6] ?? 0;
+    t[61 /* THB */] = base[7] ?? 0;
+    t[62 /* THT */] = base[8] ?? 0;
+    t[63 /* DIG */] = base[9] ?? 0;
+    if (p.status.fast || p.status.sprint) t[44 /* SPEED */] = t[44 /* SPEED */] + 10;
+    else if (p.status.terror) t[44 /* SPEED */] = t[44 /* SPEED */] + 5;
+  }
   for (let i = 0; i < equip.length; i++) {
     const item = equip[i];
     if (!present(item)) continue;
@@ -7889,6 +8173,11 @@ function borgNoticeEquipment(c) {
     t[58 /* STL */] = t[58 /* STL */] - 10;
     t[174 /* CRSAGRV */] = 1;
   }
+  if (c.derive) {
+    if (t[180 /* CRSSLOW */]) t[44 /* SPEED */] = t[44 /* SPEED */] - 5;
+    if (t[181 /* CRSANNOY */]) t[44 /* SPEED */] = t[44 /* SPEED */] - 10;
+    if (t[111 /* ISGORGED */]) t[44 /* SPEED */] = t[44 /* SPEED */] - 10;
+  }
   const statAdj = c.R.frame.statAdj;
   for (let i = 0; i < STAT_MAX; i++) {
     let add = t[5 /* ASTR */ + i];
@@ -7958,7 +8247,7 @@ function borgNoticeEquipment(c) {
     }
     t[144 /* SLING */] = bow.sval === c.R.svals.sling ? 1 : 0;
   }
-  if (present(bow) && p.shots > 0) t[148 /* SHOTS */] = Math.trunc(p.shots / 10) || 1;
+  if (!c.derive && present(bow) && p.shots > 0) t[148 /* SHOTS */] = Math.trunc(p.shots / 10) || 1;
   else t[148 /* SHOTS */] = myNumFire;
   const wep = equip[SLOT_WIELD];
   if (present(wep) && wep.curses.length === 0) {
@@ -7972,12 +8261,26 @@ function borgNoticeEquipment(c) {
       t[134 /* TOHIT */] = t[134 /* TOHIT */] + 2 * (hold - Math.trunc(wep.weight / 10));
     }
     if (hold >= wep.weight / 10) {
-      t[146 /* BLOWS */] = p.blows > 0 ? Math.trunc(p.blows / 100) || 1 : 1;
+      t[146 /* BLOWS */] = c.derive ? borgCalcBlows(c, wep) : p.blows > 0 ? Math.trunc(p.blows / 100) || 1 : 1;
       t[63 /* DIG */] = t[63 /* DIG */] + Math.trunc(wep.weight / 10);
     }
   }
   const sk = p.skills;
-  if (sk.length >= 10) {
+  if (c.derive) {
+    const per = c.R.frame.skillsPerTen;
+    const ml = t[36 /* MAXCLEVEL */];
+    const lv = (i) => Math.trunc((per[i] ?? 0) * ml / 10);
+    t[58 /* STL */] = t[58 /* STL */] + 1;
+    t[54 /* DISP */] = t[54 /* DISP */] + BORG_ADJ_DEX_DIS[t[18 /* DEX_INDEX */]] + lv(0);
+    t[55 /* DISM */] = t[55 /* DISM */] + BORG_ADJ_INT_DIS[t[16 /* INT_INDEX */]] + lv(1);
+    t[56 /* DEV */] = t[56 /* DEV */] + BORG_ADJ_INT_DEV[t[16 /* INT_INDEX */]] + lv(2);
+    t[57 /* SAV */] = t[57 /* SAV */] + BORG_ADJ_WIS_SAV[t[17 /* WIS_INDEX */]] + lv(3);
+    t[59 /* SRCH */] = t[59 /* SRCH */] + lv(4);
+    t[58 /* STL */] = t[58 /* STL */] + lv(5);
+    t[60 /* THN */] = t[60 /* THN */] + lv(6);
+    t[61 /* THB */] = t[61 /* THB */] + lv(7);
+    t[62 /* THT */] = t[62 /* THT */] + lv(8);
+  } else if (sk.length >= 10) {
     t[54 /* DISP */] = sk[0];
     t[55 /* DISM */] = sk[1];
     t[56 /* DEV */] = sk[2];
@@ -8387,6 +8690,12 @@ function applySpellGrants(c) {
 function finishNotice(c) {
   const { t, R: R2 } = c;
   t[261 /* CARRY */] = BORG_ADJ_STR_WGT[t[15 /* STR_INDEX */]] * 100;
+  if (c.derive) {
+    if (t[260 /* WEIGHT */] > t[261 /* CARRY */] / 2) {
+      t[44 /* SPEED */] = t[44 /* SPEED */] - Math.trunc((t[260 /* WEIGHT */] - Math.trunc(t[261 /* CARRY */] / 2)) / Math.trunc(t[261 /* CARRY */] / 10));
+    }
+    if (t[44 /* SPEED */] > 199) t[44 /* SPEED */] = 199;
+  }
   t[264 /* PREP_BIG_FIGHT */] = 0;
   if (t[106 /* MAXDEPTH */] >= 99) {
     let totalBigHeal = 0;
@@ -18295,10 +18604,54 @@ function statsOf(record) {
   const obj = stats !== null && typeof stats === "object" && !Array.isArray(stats) ? stats : {};
   return STAT_KEYS.map((key) => typeof obj[key] === "number" ? obj[key] : 0);
 }
+var SKILL_KEYS = [
+  "skill-disarm-phys",
+  "skill-disarm-magic",
+  "skill-device",
+  "skill-save",
+  "skill-search",
+  "skill-stealth",
+  "skill-melee",
+  "skill-shoot",
+  "skill-throw",
+  "skill-dig"
+];
+function skillPart(record, key, part) {
+  const v = record?.[key];
+  if (typeof v === "number") return part === "base" ? v : 0;
+  if (v !== null && typeof v === "object" && !Array.isArray(v)) {
+    const n = v[part];
+    return typeof n === "number" ? n : 0;
+  }
+  return 0;
+}
+function flagsOf(record) {
+  const v = record?.["obj-flags"];
+  if (!Array.isArray(v)) return [];
+  return v.flatMap((entry) => typeof entry === "string" ? entry.split("|").map((f) => f.trim()).filter(Boolean) : []);
+}
+function numberOf(record, key) {
+  const v = record?.[key];
+  return typeof v === "number" ? v : void 0;
+}
 function frameFromRecords(race, cls) {
   const r = statsOf(race);
   const c = statsOf(cls);
-  const frame = { statAdj: r.map((v, i) => v + (c[i] ?? 0)) };
+  const values = Array.isArray(race?.["values"]) ? race["values"] : [];
+  const maxAttacks = numberOf(cls, "max-attacks");
+  const minWeight = numberOf(cls, "min-weight");
+  const attMultiply = numberOf(cls, "strength-multiplier");
+  const frame = {
+    statAdj: r.map((v, i) => v + (c[i] ?? 0)),
+    skills: SKILL_KEYS.map((key) => skillPart(race, key, "base") + skillPart(cls, key, "base")),
+    skillsPerTen: SKILL_KEYS.map((key) => skillPart(cls, key, "incr")),
+    infra: numberOf(race, "infravision") ?? 0,
+    playerFlags: [.../* @__PURE__ */ new Set([...flagsOf(race), ...flagsOf(cls)])],
+    raceResistDisen: values.some((v) => typeof v === "string" && /^RES_DISEN\[[1-9]/.test(v)),
+    ...maxAttacks !== void 0 ? { maxAttacks } : {},
+    ...minWeight !== void 0 ? { minWeight } : {},
+    ...attMultiply !== void 0 ? { attMultiply } : {}
+  };
   const magic = cls?.["magic"];
   if (magic !== null && typeof magic === "object" && !Array.isArray(magic)) {
     const m = magic;
