@@ -117,7 +117,7 @@ interface Ctx {
  * Writes ctx.world.self.trait in place.
  */
 export function borgNotice(ctx: BorgContext, opts: BorgTraitOpts = {}): void {
-  const R = resolveOpts(opts);
+  const R = resolveOpts(opts, ctx);
   const view = ctx.view;
   const p = view.player();
 

@@ -13,6 +13,7 @@ import type { GameConstants, ItemView } from "@rpgm-tools/neo-angband-core";
 import type { ItemAnalysis } from "../item/deps.js";
 import { RSF } from "../core-api.js";
 import type { BorgContext } from "../context.js";
+import { frameBook } from "../trait/frame.js";
 
 type Content = Pick<ModApi2, "content">;
 
@@ -200,6 +201,17 @@ export async function magicRecords(
     bookKind: (tval, name) => kinds.get(`${String(tval)}:${name}`) ?? null,
     spellEffect: (cls, sidx) => spells.get(`${cls}:${String(sidx)}`) ?? null,
   };
+}
+
+/**
+ * The race/class frame (player->race, player->class) from the composed p_race
+ * and class records, by name. Null when the game gives no records, so the Borg
+ * keeps the neutral frame rather than a half-read one.
+ */
+export async function frameRecords(api: Content): Promise<NonNullable<BorgContext["frame"]> | null> {
+  const [races, classes] = await Promise.all([valueOf(api.content.records("p_race")), valueOf(api.content.records("class"))]);
+  if (!races || !classes) return null;
+  return frameBook(races, classes);
 }
 
 /** The constants the game reads from its constants records; every other one keeps its built-in value. */

@@ -87,6 +87,8 @@ export interface BorgResolvers {
   loadoutDanger?: (ctx: BorgContext, change: BorgLoadoutChange) => number | null;
   bookKind?: BorgContext["bookKind"];
   spellEffect?: BorgContext["spellEffect"];
+  /** The race/class frame by name (player->race / player->class records). */
+  frame?: BorgContext["frame"];
   /**
    * Resolve a tracked kill index to its full MonsterFacts (r_info blow[]/freq/
    * spell_power/...). Default: MonsterView-derived facts with zero blows/freq

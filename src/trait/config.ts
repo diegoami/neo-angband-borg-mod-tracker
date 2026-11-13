@@ -19,6 +19,7 @@ import type { ArmourSwapKnowledge } from "./armour-swap.js";
 import type { WeaponSwapKnowledge } from "./weapon-swap.js";
 import { flatSvals } from "../item/svals.js";
 import type { ItemView } from "@rpgm-tools/neo-angband-core";
+import type { BorgContext } from "../context.js";
 
 /** borg_cfg[] settings the ported decision code reads (borg.txt defaults). */
 export interface BorgCfg {
@@ -223,6 +224,13 @@ export function defaultFrame(): BorgFrame {
   return {};
 }
 
+/** The character's frame from its race/class records, when the host supplies them. */
+function contextFrame(ctx: BorgContext | undefined): BorgFrame | null {
+  if (!ctx?.frame) return null;
+  const p = ctx.view.player();
+  return ctx.frame(p.race, p.cls);
+}
+
 /**
  * Per-role sval identity, resolved by the engine at init (borg-item-val.c). The
  * inventory notice matches carried items by (tval, sval) against this to build
@@ -270,13 +278,17 @@ export interface ResolvedOpts {
   uncursable: (item: ItemView) => boolean;
 }
 
-/** Fill in defaults for any unsupplied seam. */
-export function resolveOpts(opts: BorgTraitOpts = {}): ResolvedOpts {
+/**
+ * Fill in defaults for any unsupplied seam. The frame comes from the caller,
+ * else from the character's race/class records through `ctx.frame` (as the C
+ * reads player->race and player->class), else the neutral frame.
+ */
+export function resolveOpts(opts: BorgTraitOpts = {}, ctx?: BorgContext): ResolvedOpts {
   return {
     cfg: { ...borgCfg(), ...opts.cfg },
     spells: opts.spells ?? defaultSpellSeam(),
     home: opts.home ?? defaultHomeSeam(),
-    frame: opts.frame ?? defaultFrame(),
+    frame: opts.frame ?? contextFrame(ctx) ?? defaultFrame(),
     svals: opts.svals ?? flatSvals(),
     uncursable: opts.uncursable ?? ((item) => item.curses.length > 0),
   };
