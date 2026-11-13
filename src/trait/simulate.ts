@@ -75,7 +75,8 @@ import { BI } from "./trait-index.js";
 import { borgNotice } from "./trait.js";
 import { inheritWeaponSwap } from "./state.js";
 import { borgPower } from "./power.js";
-import type { BorgTraitOpts } from "./config.js";
+import { resolveOpts, type BorgTraitOpts } from "./config.js";
+import { applyLoadoutChange } from "./local-loadout.js";
 import { borgDanger } from "../danger/danger.js";
 import { getDangerState } from "../danger/state.js";
 
@@ -194,8 +195,10 @@ export function borgSimulatePower(
   change: BorgLoadoutChange,
   opts: BorgTraitOpts = {},
 ): number | null {
-  const view = ctx.view as LoadoutCapableView;
-  const answer = view.simulateLoadout?.(change);
+  /* With the race/class frame, notice derives everything a loadout changes from
+   * the items, so the loadout is built and scored in-process, as the C does
+   * (borg-item-wear.c:1221-1224). Otherwise ask the engine. */
+  const answer = localAnswer(ctx, change, opts) ?? (ctx.view as LoadoutCapableView).simulateLoadout?.(change);
   if (!answer) return null;
 
   const simCtx: BorgContext = {
@@ -211,6 +214,15 @@ export function borgSimulatePower(
   /* borg_notice(false) at borg-item-wear.c:339, 602: the backup is not rescored. */
   borgNotice(simCtx, { ...opts, noticeSwap: false });
   return borgPower(simCtx, opts);
+}
+
+/** The loadout built from the Borg's own item views, when notice can derive it. */
+function localAnswer(ctx: BorgContext, change: BorgLoadoutChange, opts: BorgTraitOpts): BorgLoadoutAnswer | null {
+  const frame = resolveOpts(opts, ctx).frame;
+  if (frame.skills === undefined || frame.skillsPerTen === undefined) return null;
+  const loadout = applyLoadoutChange(ctx, change);
+  if (!loadout) return null;
+  return { after: { player: ctx.view.player(), equipment: loadout.equipment, inventory: loadout.inventory } };
 }
 
 /** borg-item-wear.c:874,955 rejects a ring swap that raises local danger. */

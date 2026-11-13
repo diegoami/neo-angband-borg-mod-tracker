@@ -50,7 +50,7 @@ function wgt(item: ItemView | null | undefined): number {
  * borg_power - overall fitness. Writes ctx.world.self.power and returns it.
  */
 export function borgPower(ctx: BorgContext, opts: BorgTraitOpts = {}): number {
-  const R = resolveOpts(opts);
+  const R = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
   const equip = ctx.view.equipment();

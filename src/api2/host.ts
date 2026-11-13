@@ -15,7 +15,7 @@ import { bindCore, coreIsBound } from "../core-api.js";
 import type { CoreObjectLookup, CoreResolverInput } from "../resolvers.js";
 import { ActivationBook, LoadoutBook, RaceBook } from "./caches.js";
 import { watchMessages, type MessageFeed } from "./feed.js";
-import { blowActions, gameConstants, gradeFloors, kindCosts, magicRecords, monsterSymbols, spellMessages, trapKinds } from "./records.js";
+import { blowActions, frameRecords, gameConstants, gradeFloors, kindCosts, magicRecords, monsterSymbols, spellMessages, trapKinds } from "./records.js";
 import { borgTruth, type BorgTruth } from "./truth.js";
 import { readWorld, simulationView, type Statics, type World, type WorldFacts } from "./world.js";
 
@@ -55,6 +55,7 @@ export function createBridge(mod: ModApi2): Bridge {
   let blows: string[] = [];
   let spells: Awaited<ReturnType<typeof spellMessages>> = [];
   let magic: Awaited<ReturnType<typeof magicRecords>> | null = null;
+  let frame: Awaited<ReturnType<typeof frameRecords>> = null;
   let symbols: ReadonlyMap<number, string> = new Map();
 
   /** The slice of the object registry the activation seam reads, answered from the caches. */
@@ -81,6 +82,7 @@ export function createBridge(mod: ModApi2): Bridge {
       blows = actions;
       spells = messages;
       magic = await magicRecords(mod, engine.core.EFFECT_ENTRIES);
+      frame = await frameRecords(mod);
       symbols = await monsterSymbols(mod);
       feed = await watchMessages(mod);
     },
@@ -108,11 +110,16 @@ export function createBridge(mod: ModApi2): Bridge {
         raceSymbol: (ridx) => symbols.get(ridx),
         objects,
         birthRandarts: () => facts.birthRandarts ?? null,
-        shopnum: () => facts.shopnum,
+        /* borg_think takes the store branch only while the store screen is
+         * up (borg-think.c:322-327 reads "Stor"/"Home" off the screen, then
+         * square_shopnum). Standing on an entrance after the screen has
+         * closed is play, not shopping. */
+        shopnum: () => (input?.phase === "store" ? facts.shopnum : null),
         kindCost: (tval, sval) => facts.kinds.get(`${String(tval)}:${String(sval)}`) ?? null,
         blowMethods: blows.map((message) => ({ messages: [message] })),
         monsterSpells: spells,
         ...magic,
+        ...(frame ? { frame } : {}),
       };
     },
 
