@@ -41,7 +41,7 @@ export function borgPrepared(
   depth: number,
   opts: BorgTraitOpts = {},
 ): string | null {
-  const R = resolveOpts(opts);
+  const R = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
 
@@ -381,7 +381,7 @@ export function borgRestock(
   depth: number,
   opts: BorgTraitOpts = {},
 ): string | null {
-  const R = resolveOpts(opts);
+  const R = resolveOpts(opts, ctx);
   const t = ctx.world.self.trait;
   const d = getDerived(ctx.world);
   const cls = t[BI.CLASS]!;
