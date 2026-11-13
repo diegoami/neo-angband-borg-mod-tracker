@@ -71,7 +71,7 @@ test("CLI writes complete boolean outputs on an actual git diff", () => fixture(
 }));
 test("one automatic workflow preserves PR/master/manual triggers and concurrency", () => {
   validateTriggers(ci,"ci"); validateTriggers(source,"source");
-  assert.deepEqual(readdirSync(join(root,".github/workflows")).sort(),["ci.yml","github-release.yml","nexus-publish.yml","notespot-source.yml","redirect-issue.yml"]);
+  assert.deepEqual(readdirSync(join(root,".github/workflows")).sort(),["ci.yml","dependabot-automerge.yml","github-release.yml","nexus-publish.yml","notespot-source.yml","push-scan.yml","redirect-issue.yml"]);
   assert.equal(existsSync(join(root,".github/workflows/privacy.yml")),false);
   assert.equal(existsSync(join(root,".github/workflows/fork-session-docs.yml")),false);
   assert.match(ci,/uses: neostryder\/neo-angband\/\.github\/actions\/private-scan@master/);
@@ -97,6 +97,6 @@ test("stable final gate accepts only complete matching profiles", () => {
   const unexpected=needs("docs"); unexpected["exact-source"].result="success"; assert.throws(()=>assertGate(unexpected));
 });
 test("ordinary and exact-source shared logs reject missing cases, failures and any skips", () => {
-  assertFullSuite("Tests 1061 passed (1061)\n");
-  for (const text of ["Tests 830 passed | 36 skipped (866)","Tests 862 passed | 4 failed (866)","Tests 866 passed (866)","Tests 896 passed (896)","Tests 924 passed (924)","Tests 932 passed (932)","Tests 951 passed (951)","Tests 954 passed (954)","Tests 994 passed (994)","Tests 1000 passed (1000)","Tests 1056 passed (1056)","Tests 1061 passed (1061)\n1 skipped","Tests 1061 passed | 1 failed (1062)", "Tests 5 passed (5)", ""]) assert.throws(()=>assertFullSuite(text));
+  assertFullSuite("Tests 1079 passed (1079)\n");
+  for (const text of ["Tests 830 passed | 36 skipped (866)","Tests 862 passed | 4 failed (866)","Tests 866 passed (866)","Tests 896 passed (896)","Tests 924 passed (924)","Tests 932 passed (932)","Tests 951 passed (951)","Tests 954 passed (954)","Tests 994 passed (994)","Tests 1000 passed (1000)","Tests 1056 passed (1056)","Tests 1074 passed (1074)","Tests 1079 passed (1079)\n1 skipped","Tests 1079 passed | 1 failed (1080)", "Tests 5 passed (5)", ""]) assert.throws(()=>assertFullSuite(text));
 });

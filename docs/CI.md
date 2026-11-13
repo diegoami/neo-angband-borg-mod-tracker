@@ -22,7 +22,7 @@ There is no top-level path filter that can strand required checks.
 | Changed inputs | Required checks |
 | --- | --- |
 | Explicit audited prose names; inert receipt `.md`, `.log`, `.exit`, `.txt` files immediately below a run directory | Session, routing controls, privacy, actual `docs-sync.test.ts` and `version-sync.test.ts` contracts |
-| Source, tests, dependencies/lockfiles, patches, scripts, CI/workflows, JSON/data or executable fixtures anywhere, unknown paths, empty/unavailable/invalid diff | Full ordinary typecheck, four installed-package memory controls, all 1061 port tests with zero skips, grants/plugin currency, session/privacy/routing controls, exact-source compatibility |
+| Source, tests, dependencies/lockfiles, patches, scripts, CI/workflows, JSON/data or executable fixtures anywhere, unknown paths, empty/unavailable/invalid diff | Full ordinary typecheck, four installed-package memory controls, all 1079 port tests with zero skips, grants/plugin currency, session/privacy/routing controls, exact-source compatibility |
 
 The allowlist is intentionally narrow, not `docs/**`. `docs/README.md` is
 read as settings data by the docs contract; `CHANGELOG.md` is read by the
@@ -52,7 +52,7 @@ trigger/concurrency negative controls, final-gate failure/cancellation paths,
 and missing/skipped full-suite rejection. They are explicit Node controls
 outside Vitest discovery; routing controls do not add or remove gameplay cases.
 
-The current 1061 cases retain the earlier 1000 baseline (including armour curse classification)
+The current 1079 cases retain the earlier 1000 baseline (including armour curse classification)
 and add fifty-six tactical backup, public-command, SR and declared-option controls. The shared ordinary/source
 full-suite guard rejects skipped or incomplete output. Historical run records
 retain their original counts and dependency profiles; beta.3 upgrade task39
