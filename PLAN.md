@@ -12,7 +12,8 @@
    its known-negative-flag curse predicate. Source50 restores tactical equip/SR
    availability with the original C quirks and explicit public-API limits.
    Upstream74/78 light and armour corrections are accepted and incorporated through
-   a10655c3; source50/PR79 tactical/SR remains unaccepted. Source closure follows
+   a10655c3; upstream PR79 tactical/SR is accepted (6ddc488) and incorporated with
+   Borg beta.5 through 7501a78c. Source closure follows
    the reconciliation checks recorded on checkpoint26, independently of consumers. Timing35 needs a repeated normal failure
    and a specifically authorised slow-case diagnosis, not reflex full reruns or
    a timeout increase. Current scoped assignments come from the checkpoint.
