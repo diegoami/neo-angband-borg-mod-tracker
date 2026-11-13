@@ -36,7 +36,7 @@ import {
   BORG_VIEW,
 } from "./world/grid.js";
 import { BI } from "./trait/trait-index.js";
-import { borgCaveFloorBold } from "./flow/flow-consts.js";
+import { borgCaveFloorBold, featIsShop } from "./flow/flow-consts.js";
 import type { BorgWorld } from "./world/model.js";
 import { makeLevelFacts } from "./world/model.js";
 import {
@@ -187,6 +187,20 @@ function ingestMap(world: BorgWorld, view: BorgView): void {
         if (c.inView) g.info &= ~BORG_IGNORE_MAP;
       }
       g.trap = c.trap;
+
+      /* default store to HOME (borg-update.c, "default store to HOME"):
+       * BORG_HOME, the home's index, is its offset from STORE_GENERAL. */
+      g.store = FEAT.HOME - FEAT.STORE_GENERAL;
+      /* Shop Doors: ag->store = square_shopnum, and track_shop_x/y[i] = x/y.
+       * square_shopnum is f_info[feat].shopnum - 1, and the engine numbers
+       * the shops 1..8 in FEAT order (STORE_GENERAL..HOME), so the index is
+       * the feat's offset from STORE_GENERAL. */
+      if (featIsShop(g.feat)) {
+        const i = g.feat - FEAT.STORE_GENERAL;
+        g.store = i;
+        world.shopX[i] = x;
+        world.shopY[i] = y;
+      }
 
       /* Interior permanent walls mark vault levels (borg-update.c:418-420). */
       if (g.feat === FEAT.PERM && world.facts.depth && x && y && x !== bounds.width - 1 && y !== bounds.height - 1) {

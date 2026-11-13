@@ -47,6 +47,7 @@ import {
 import type { GamePack, GameState } from "@rpgm-tools/neo-angband-core";
 import { createBorg } from "./controller.js";
 import { makeCoreResolvers } from "./resolvers.js";
+import { storeScreen } from "../test/fixtures/store-screen.js";
 import { makeScenarioView, makeFakeActions } from "./harness.js";
 import { knownWorld } from "./harness-api2.js";
 import { playerView } from "./api2/world.js";
@@ -141,6 +142,8 @@ function makeGame(pack: GamePack, seed: number) {
     playerRaces: game.players.races,
     playerClasses: game.players.classes,
   });
+  /* The host's store screen, on the same terms play.test.ts uses it. */
+  const screen = storeScreen(state);
   const borg = createBorg({
     /* Vary the Borg's own stream with the seed, on the same terms
      * play.test.ts does, so ten "different" seeds are not driving one
@@ -150,10 +153,11 @@ function makeGame(pack: GamePack, seed: number) {
       races: game.booted.registries.monsters.races,
       objects: game.booted.registries.objects,
       state: state as never,
+      shopnum: () => screen.shopnum(),
       blowMethods: game.booted.registries.monsters.blowMethods.values(),
     }),
   });
-  return { game, state, resolver, borg };
+  return { game, state, resolver, borg, screen };
 }
 
 interface Decision {
@@ -170,7 +174,7 @@ function drive(
   built: ReturnType<typeof makeGame>,
   decisions: number,
 ): Decision[] {
-  const { game, state, resolver, borg } = built;
+  const { game, state, resolver, borg, screen } = built;
   const log: Decision[] = [];
   let armed = false;
   installController(
@@ -180,6 +184,7 @@ function drive(
       armed = false;
       const turnBefore = state.turn;
       const cmd = borg.controller(view, act);
+      screen.issued(cmd);
       log.push({
         turnBefore,
         turnAfter: -1,
@@ -331,16 +336,20 @@ suite("the Borg's ladder reaches rest and the store", () => {
   }, 60_000);
 
   /**
-   * Issue #4. Reachability - walking to a shop through town's own explore/
-   * leave-level ordering - is a separate concern from what this issue asks:
-   * does the store LADDER, once physically inside a shop, actually issue
-   * shop-buy/shop-sell and does something real change as a result. A fresh
-   * level-1 character heads straight to the dungeon stairs on decision 0 in
-   * every seed tried (the town map is already fully known at birth, so the
-   * explore rungs find nothing and "leave the level" fires before the late
-   * "deal with shops" rung is ever reached - PLANNED.md's own town/L1
-   * shuttle, a separate and already-documented shape). Teleporting onto a
-   * shop door isolates the question this issue actually asks.
+   * Issue #4. Does the store LADDER, once physically inside a shop, actually
+   * issue shop-buy/shop-sell, and does something real change as a result?
+   * The character is placed on a shop door and the host's store screen is
+   * opened for it (test/fixtures/store-screen.ts), one fresh game per store.
+   *
+   * Before the shop doors were recorded (borg-update.c track_shop_x/y) and
+   * the shop goals started cleared (borg-update.c:2128), the Borg could not
+   * walk to any shop, and goal.shop/ware started at 0, which borg_choose_shop
+   * reads as a goal already in flight, so its own buy/sell steps were skipped
+   * and the store ladder acted on that phantom goal. With thirty decisions
+   * that yielded purchases; with the goals cleared it yields none, because
+   * borg_choose_shop now runs its real steps and the ware it wants is
+   * often in another shop, so it leaves, walks there, sells or buys, and
+   * moves on. Eighty decisions cover such a trip; thirty covered one store.
    *
    * The door has to be a REAL one: state.stores[].feat, matched against the
    * grid the town generator actually placed it on. A synthetic terrain write
@@ -376,8 +385,10 @@ suite("the Borg's ladder reaches rest and the store", () => {
         if (!grid) continue;
         built.state.actor.grid = grid;
         built.state.actor.player.au = 5000;
+        /* Placed on the door: the host opens the store screen. */
+        built.screen.enter();
 
-        const log = drive(built, 30);
+        const log = drive(built, 80);
         for (let i = 0; i < log.length; i++) {
           const d = log[i]!;
           if (d.cmd !== "shop-buy" && d.cmd !== "shop-sell") continue;

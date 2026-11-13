@@ -110,7 +110,11 @@ export function createBridge(mod: ModApi2): Bridge {
         raceSymbol: (ridx) => symbols.get(ridx),
         objects,
         birthRandarts: () => facts.birthRandarts ?? null,
-        shopnum: () => facts.shopnum,
+        /* borg_think takes the store branch only while the store screen is
+         * up (borg-think.c:322-327 reads "Stor"/"Home" off the screen, then
+         * square_shopnum). Standing on an entrance after the screen has
+         * closed is play, not shopping. */
+        shopnum: () => (input?.phase === "store" ? facts.shopnum : null),
         kindCost: (tval, sval) => facts.kinds.get(`${String(tval)}:${String(sval)}`) ?? null,
         blowMethods: blows.map((message) => ({ messages: [message] })),
         monsterSpells: spells,

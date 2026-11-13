@@ -572,6 +572,9 @@ describe("the production shop ladder", () => {
 
   it.each([TV.SWORD, TV.DIGGING])("keeps ordinary weapons and artifact diggers out of the shop wear fallback (%i)", (tval) => {
     const { ctx } = shopScenario(0, [item({ handle: 20, tval: TV.SWORD, value: 100 })], [item({ tval, artifact: tval === TV.DIGGING })], [], (change) => change.wield?.length ? 1100 : 1000);
+    /* A sale already in flight: sell pack item 0 at shop 0. Fresh goals are
+     * cleared to -1 (borg-update.c:2128), so the pending sale is stated here. */
+    Object.assign(ctx.world.self.goal, { shop: 0, ware: 0, item: 0 });
     expect(think(ctx)).toMatchObject({ code: "shop-sell" });
     const fallback = shopScenario(0, [item({ handle: 20, tval: TV.SWORD, value: 100 })], [item({ tval: TV.DIGGING })], [], (change) => change.wield?.length ? 1100 : 1000);
     expect(think(fallback.ctx)).toMatchObject({ code: "wield", args: { handle: 20 } });

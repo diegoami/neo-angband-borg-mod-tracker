@@ -461,13 +461,15 @@ export function borgFlowShopEntry(ctx: BorgContext, flow: FlowState, i: number):
 
   if (trait(w, BI.CDEPTH)) return null;
 
-  const x = flow.shopX[i]!;
-  const y = flow.shopY[i]!;
+  const x = w.shopX[i] ?? 0;
+  const y = w.shopY[i] ?? 0;
   if (!x || !y) return null;
 
-  /* Re-enter a shop if already standing on it */
+  /* Re-enter a shop if already standing on it: borg_keypress('5'), stay in
+   * place, which enters the store (player_handle_post_move). The engine's
+   * walk refuses direction 5, so this is the hold command, not a move. */
   if (x === w.self.c.x && y === w.self.c.y) {
-    return ctx.act.move(5);
+    return ctx.act.hold();
   }
 
   borgFlowClear(flow);

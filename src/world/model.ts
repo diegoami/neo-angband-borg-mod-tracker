@@ -66,9 +66,11 @@ export function makeGoals(): Goals {
     waiting: false,
     recalling: 0,
     descending: 0,
-    shop: 0,
-    ware: 0,
-    item: 0,
+    /* No shop goal: borg-update.c:2128 clears all three to -1 on every level
+     * change, and borg_choose_shop treats anything else as a goal in flight. */
+    shop: -1,
+    ware: -1,
+    item: -1,
     doBest: false,
   };
 }
@@ -265,6 +267,15 @@ export class BorgWorld {
   readonly detect = new BorgDetectGrid();
   readonly self = makeBorgSelf();
   facts = makeLevelFacts();
+
+  /**
+   * track_shop_x / track_shop_y (borg-flow-misc.c:50, allocated once at
+   * borg-flow-misc.c:1391): the door of shop i, written by borg_update_map
+   * (borg-update.c, "Shop Doors") and read by borg_flow_shop_entry. Zero means
+   * not seen yet. Never wiped: the C keeps them across levels.
+   */
+  readonly shopX: number[] = new Array<number>(9).fill(0);
+  readonly shopY: number[] = new Array<number>(9).fill(0);
 
   /**
    * borg_t: the Borg's own clock, incremented per decision. The anti-loop
