@@ -99,3 +99,15 @@ See the [reconciliation receipt](docs/runs/2026-11-08-borg-beta4/README.md) and
 checkpoint26 for actual current gates and source-resolution state. Both required
 profiles and actual-master1056-case profiles pass. PR79 is now ready for review
 after dependency78 acceptance and its own1056-case clean gate; it remains OPEN.
+
+## Borg beta.5 reconciliation, 2026-11-13
+
+Upstream `neostryder/neo-angband-mod-borg` released Borg 1.4.0-beta.5 and accepted
+PR79 (tactical backup wear and selected-backup SR availability) as
+[`6ddc488`](https://github.com/neostryder/neo-angband-mod-borg/commit/6ddc488).
+The incorporated upstream source is
+[`7501a78c`](https://github.com/neostryder/neo-angband-mod-borg/commit/7501a78c2502854c94cb79c90aca8387ecc8d724),
+merged normally by PR59 (`c287571`); the engine tuple stays Core/SDK/content
+1.23.0-beta.3. The required CI profiles pass with 1074 cases and no skips. The
+beta.4 section above is historical and unchanged. Open port findings after this
+import are tracked in issues 56, 60 and 61.
