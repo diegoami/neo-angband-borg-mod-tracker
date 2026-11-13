@@ -12484,7 +12484,7 @@ function auxObject(ctx, fs) {
   let bD = -1;
   for (const item of ctx.view.inventory()) {
     if (item.number <= 0) continue;
-    if (item.tval === TV.MAGIC_BOOK || item.tval === TV.PRAYER_BOOK) continue;
+    if (canBrowse(item)) continue;
     const d = idiv(item.dd * (item.ds + 1), 2);
     if ((item.value ?? 0) > 100 && d < 5) continue;
     if (d <= 0) continue;
