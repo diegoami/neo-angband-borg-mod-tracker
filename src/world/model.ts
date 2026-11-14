@@ -287,6 +287,12 @@ export class BorgWorld {
   liveUniques = 0;
   /** Recall queues its depth answer (borg-escape.c:63-115). */
   resetRecallDepth = false;
+  /**
+   * The item the Borg chose for an item-choice prompt its command will raise:
+   * borg_recharging presses the chosen wand's or staff's letter after the read,
+   * cast or activation (borg-item-use.c:1182). Null when there is none.
+   */
+  itemChoice: number | null = null;
 
   /**
    * Reset everything for a new level (borg_init_cave + the new-level branch of

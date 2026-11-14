@@ -23,7 +23,7 @@ import type { Api2InputState, Api2Prompt, Api2PromptAnswer, ModApi2 } from "@rpg
 import type { Bridge } from "./host.js";
 import type { World } from "./world.js";
 import { createActFacade, intentOf } from "./act.js";
-import { recallDepthAnswer } from "../controller.js";
+import { itemChoiceAnswer, recallDepthAnswer } from "../controller.js";
 
 /** Consecutive refusals after which the keyboard goes back. */
 export const REFUSALS_BEFORE_RELEASE = 25;
@@ -51,7 +51,7 @@ export interface Tick {
 }
 
 /** What to say to a prompt the game raised at the Borg's turn. The Borg asks nothing of the player. */
-export function promptAnswer(prompt: Api2Prompt, resetRecallDepth = false): Api2PromptAnswer {
+export function promptAnswer(prompt: Api2Prompt, resetRecallDepth = false, itemChoice: number | null = null): Api2PromptAnswer {
   switch (prompt.kind) {
     case "ack":
       return { action: "acknowledge" };
@@ -63,6 +63,12 @@ export function promptAnswer(prompt: Api2Prompt, resetRecallDepth = false): Api2
       return prompt.defaultValue;
     case "text":
       return prompt.defaultValue;
+    case "item":
+      /* The item the command chose (borg_recharging's letter, borg-item-use.c:1182),
+       * when the game offers it; anything else is cancelled as before. */
+      return itemChoice !== null && prompt.choices.some((choice) => choice.handle === itemChoice)
+        ? itemChoice
+        : { action: "cancel" };
     default:
       return { action: "cancel" };
   }
@@ -109,7 +115,7 @@ export function createTick(bridge: Bridge, borg: Decider): Tick {
   return async (mod, input) => {
     bridge.setInput(input);
     if (input.prompt !== null) {
-      await mod.act.answer(input.prompt.promptId, promptAnswer(input.prompt, recallDepthAnswer(borg.controller)));
+      await mod.act.answer(input.prompt.promptId, promptAnswer(input.prompt, recallDepthAnswer(borg.controller), itemChoiceAnswer(borg.controller)));
       return;
     }
     if (input.phase !== "play" && input.phase !== "store") return;
