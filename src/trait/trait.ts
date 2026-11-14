@@ -117,12 +117,17 @@ interface Ctx {
  * Writes ctx.world.self.trait in place.
  */
 export function borgNotice(ctx: BorgContext, opts: BorgTraitOpts = {}): void {
-  const R = resolveOpts(opts);
+  const R = resolveOpts(opts, ctx);
   const view = ctx.view;
   const p = view.player();
 
-  /* Fresh trait buffer sized to BI_MAX (memset borg.trait, trait.c:2829). */
+  /* Fresh trait buffer sized to BI_MAX (memset borg.trait, trait.c:2829). The C
+   * clears and refills borg.trait in place, so everything notice consults on
+   * the way - borg_spell_legal_fail reading BI_MAXSP, BI_CLEVEL, BI_FAIL1/2,
+   * fear and amnesia - sees this notice's values, not the last one's. Publish
+   * the buffer now for the same reason; it is published again at the end. */
   const t = new Array<number>(BI_MAX).fill(0);
+  ctx.world.self.trait = t;
   const previous = getDerived(ctx.world);
   const d = resetDerived(ctx.world);
 
