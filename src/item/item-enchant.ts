@@ -3,8 +3,8 @@
  *
  * borg_enchanting is the entry point: decurse first, then (only in town) brand
  * ammo, enchant to-hit, to-dam and to-ac. Each enchant helper picks the LEAST
- * enchanted eligible item and returns the read-scroll / cast command; the engine
- * menu then selects the item (the C pressed the item letter afterward).
+ * enchanted eligible item and returns the read-scroll / cast command carrying
+ * that item (withItemTarget), as the C pressed the item letter afterward.
  *
  * FIDELITY: the swap-weapon and quiver-ammo branches (weapon_swap /
  * QUIVER_START..QUIVER_END) need the swap subsystem and quiver view that the
@@ -17,7 +17,7 @@ import type { BorgContext, ItemView, AgentCommand } from "./types.js";
 import { BI } from "../trait/trait-index.js";
 import { TV, SVAL } from "./svals.js";
 import type { ItemDeps } from "./deps.js";
-import { trait, isIdent } from "./deps.js";
+import { trait, isIdent, withItemTarget } from "./deps.js";
 import { Spell, borgSpellOkayFail, borgSpellFail } from "./magic.js";
 import { borgReadScroll } from "./item-use.js";
 import { borgDecurseAny } from "./item-decurse.js";
@@ -53,11 +53,11 @@ function borgEnchantToA(
   }
   if (!best) return null;
 
-  return (
+  return withItemTarget(ctx,
     borgReadScroll(ctx, SVAL.scroll.star_enchant_armor!, d) ||
     borgReadScroll(ctx, SVAL.scroll.enchant_armor!, d) ||
-    borgSpellFail(ctx, Spell.ENCHANT_ARMOUR, 65, playerHas)
-  );
+    borgSpellFail(ctx, Spell.ENCHANT_ARMOUR, 65, playerHas),
+    best.handle);
 }
 
 /** Enchant the equipped weapon/bow to-hit (borg_enchant_to_h, enchant.c:179). */
@@ -70,11 +70,11 @@ function borgEnchantToH(
   if (!trait(ctx, BI.AENCH_TOH) && !trait(ctx, BI.AENCH_SWEP)) return null;
   const item = pickLeastEnchantedWeapon(ctx, d, playerHas, (it) => it.toH);
   if (!item) return null;
-  return (
+  return withItemTarget(ctx,
     borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon!, d) ||
     borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_hit!, d) ||
-    borgSpellFail(ctx, Spell.ENCHANT_WEAPON, 65, playerHas)
-  );
+    borgSpellFail(ctx, Spell.ENCHANT_WEAPON, 65, playerHas),
+    item.handle);
 }
 
 /** Enchant the equipped weapon/bow to-dam (borg_enchant_to_d, enchant.c:343). */
@@ -87,11 +87,11 @@ function borgEnchantToD(
   if (!trait(ctx, BI.AENCH_TOD) && !trait(ctx, BI.AENCH_SWEP)) return null;
   const item = pickLeastEnchantedWeapon(ctx, d, playerHas, (it) => it.toD);
   if (!item) return null;
-  return (
+  return withItemTarget(ctx,
     borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon!, d) ||
     borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_dam!, d) ||
-    borgSpellFail(ctx, Spell.ENCHANT_WEAPON, 65, playerHas)
-  );
+    borgSpellFail(ctx, Spell.ENCHANT_WEAPON, 65, playerHas),
+    item.handle);
 }
 
 /** Shared weapon/bow least-enchanted selection (enchant.c:192-245). */

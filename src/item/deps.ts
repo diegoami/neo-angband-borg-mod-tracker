@@ -8,7 +8,7 @@
  * defaulting to 0 (no danger), per the P8.5 architecture note - never imported.
  */
 
-import type { BorgContext, ItemView } from "./types.js";
+import type { BorgContext, ItemView, AgentCommand } from "./types.js";
 import { BI } from "../trait/trait-index.js";
 import { TV, SVAL } from "./svals.js";
 
@@ -294,4 +294,17 @@ export function deviceFail(ctx: BorgContext, lev: number): number {
    * function guards uniformly to avoid NaN (faithful: sign of numerator decides). */
   if (denominator === 0) denominator = numerator > 0 ? 1 : -1;
   return Math.trunc((100 * numerator) / denominator);
+}
+
+/**
+ * cmd_set_arg_item "tgtitem" (cmd-core.c): an item-choosing command - recharge,
+ * enchant, identify - carries the item the Borg chose, as the C presses that
+ * item's letter straight after the verb (borg-item-use.c:1182,
+ * borg-item-enchant.c, borg-item-id.c). The game reads the preset and asks no
+ * question; the choice is also kept for a host that asks anyway (#85).
+ */
+export function withItemTarget(ctx: BorgContext, cmd: AgentCommand | null, handle: number): AgentCommand | null {
+  if (!cmd) return null;
+  ctx.world.itemChoice = handle;
+  return { ...cmd, args: { ...(cmd.args ?? {}), tgtitem: { handle } } };
 }
