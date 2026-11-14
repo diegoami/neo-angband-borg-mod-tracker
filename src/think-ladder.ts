@@ -877,6 +877,15 @@ export function borgThinkDungeon(
     if (cmd) return cmd;
   }
 
+  /* FORK diegoami/neo-angband-borg-mod-tracker#83: the home plan's takeoff or
+   * wear that the store screen could not take. In the C these run inside the
+   * store loop with no other rung between a takeoff and its wear, so here they
+   * come before the rungs that would refill an emptied slot first. */
+  {
+    const best = T(ctx, BI.CDEPTH) === 0 ? borgWearBestOutside(ctx, buildStoreDeps(session)) : null;
+    if (best) return best;
+  }
+
   /* Wear a weapon if using a digger or nothing (:1582). */
   if (borgWieldIsDigger(ctx) || !borgHasWeapon(ctx)) {
     const cmd = borgWearStuff(ctx, itemDeps);
@@ -895,11 +904,8 @@ export function borgThinkDungeon(
     if (cmd) return cmd;
   }
 
-  /* Wear/swap gear (:1601-1607). First the home plan's takeoff or wear that
-   * the store screen could not take (FORK #83, see borgWearBestOutside). */
+  /* Wear/swap gear (:1601-1607). */
   {
-    const best = T(ctx, BI.CDEPTH) === 0 ? borgWearBestOutside(ctx, buildStoreDeps(session)) : null;
-    if (best) return best;
     const cmd = borgWearStuff(ctx, itemDeps) ?? borgSwapRings(ctx, itemDeps) ?? borgWearRings(ctx, itemDeps);
     if (cmd) return cmd;
   }
