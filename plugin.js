@@ -582,6 +582,12 @@ var BorgWorld = class {
   /** Recall queues its depth answer (borg-escape.c:63-115). */
   resetRecallDepth = false;
   /**
+   * The item the Borg chose for an item-choice prompt its command will raise:
+   * borg_recharging presses the chosen wand's or staff's letter after the read,
+   * cast or activation (borg-item-use.c:1182). Null when there is none.
+   */
+  itemChoice = null;
+  /**
    * Reset everything for a new level (borg_init_cave + the new-level branch of
    * borg_update, borg-update.c:2050-2180). `depth` is the depth just ARRIVED at,
    * because three of the resets ask about it.
@@ -4172,6 +4178,11 @@ function deviceFail(ctx, lev) {
   let denominator = lev - skill - (100 - 10);
   if (denominator === 0) denominator = numerator > 0 ? 1 : -1;
   return Math.trunc(100 * numerator / denominator);
+}
+function withItemTarget(ctx, cmd, handle) {
+  if (!cmd) return null;
+  ctx.world.itemChoice = handle;
+  return { ...cmd, args: { ...cmd.args ?? {}, tgtitem: { handle } } };
 }
 
 // src/trait/config.ts
@@ -7924,7 +7935,7 @@ function borgRecharging(ctx, d, playerHas2) {
     }
     if (!charge) continue;
     const cmd = borgReadScroll(ctx, SVAL.scroll.recharging, d) || borgSpellFail(ctx, 7 /* RECHARGING */, 96, playerHas2) || borgActivateItem(ctx, "act_recharge", d);
-    if (cmd) return cmd;
+    if (cmd) return withItemTarget(ctx, cmd, item.handle);
     break;
   }
   return null;
@@ -7989,7 +8000,11 @@ function borgTestStuff(ctx, d) {
     bestV = v;
   }
   if (best) {
-    return borgSpell(ctx, 8 /* IDENTIFY_RUNE */) || borgReadScroll(ctx, SVAL.scroll.identify, d);
+    return withItemTarget(
+      ctx,
+      borgSpell(ctx, 8 /* IDENTIFY_RUNE */) || borgReadScroll(ctx, SVAL.scroll.identify, d),
+      best.handle
+    );
   }
   return null;
 }
@@ -11327,21 +11342,33 @@ function borgEnchantToA(ctx, d, playerHas2) {
     bestA = a;
   }
   if (!best) return null;
-  return borgReadScroll(ctx, SVAL.scroll.star_enchant_armor, d) || borgReadScroll(ctx, SVAL.scroll.enchant_armor, d) || borgSpellFail(ctx, 76 /* ENCHANT_ARMOUR */, 65, playerHas2);
+  return withItemTarget(
+    ctx,
+    borgReadScroll(ctx, SVAL.scroll.star_enchant_armor, d) || borgReadScroll(ctx, SVAL.scroll.enchant_armor, d) || borgSpellFail(ctx, 76 /* ENCHANT_ARMOUR */, 65, playerHas2),
+    best.handle
+  );
 }
 function borgEnchantToH(ctx, d, playerHas2) {
   if (!trait3(ctx, 241 /* NEED_ENCHANT_TO_H */)) return null;
   if (!trait3(ctx, 234 /* AENCH_TOH */) && !trait3(ctx, 236 /* AENCH_SWEP */)) return null;
   const item = pickLeastEnchantedWeapon(ctx, d, playerHas2, (it) => it.toH);
   if (!item) return null;
-  return borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_hit, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2);
+  return withItemTarget(
+    ctx,
+    borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_hit, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2),
+    item.handle
+  );
 }
 function borgEnchantToD(ctx, d, playerHas2) {
   if (!trait3(ctx, 242 /* NEED_ENCHANT_TO_D */)) return null;
   if (!trait3(ctx, 235 /* AENCH_TOD */) && !trait3(ctx, 236 /* AENCH_SWEP */)) return null;
   const item = pickLeastEnchantedWeapon(ctx, d, playerHas2, (it) => it.toD);
   if (!item) return null;
-  return borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_dam, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2);
+  return withItemTarget(
+    ctx,
+    borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_dam, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2),
+    item.handle
+  );
 }
 function pickLeastEnchantedWeapon(ctx, d, playerHas2, bonus) {
   const canSpell = borgSpellOkayFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2) || trait3(ctx, 236 /* AENCH_SWEP */) >= 1;
@@ -18498,6 +18525,9 @@ var CONTROLLER_WORLDS = /* @__PURE__ */ new WeakMap();
 function recallDepthAnswer(controller) {
   return CONTROLLER_WORLDS.get(controller)?.resetRecallDepth ?? false;
 }
+function itemChoiceAnswer(controller) {
+  return CONTROLLER_WORLDS.get(controller)?.itemChoice ?? null;
+}
 function createBorg(opts = {}) {
   const world = new BorgWorld();
   const rng = makeBorgRng(opts.rngSeed);
@@ -18540,6 +18570,7 @@ function createBorg(opts = {}) {
       noAlter: world.self.noAlter
     };
     world.resetRecallDepth = false;
+    world.itemChoice = null;
     const shopNum = session.resolvers.inShop?.(ctx) ?? null;
     if (shopNum !== null && shopNum >= 0) {
       before.store = true;
@@ -19594,7 +19625,7 @@ var STALLS_BEFORE_FORGET = 6;
 var STALLS_BEFORE_RELEASE = 40;
 var DIR_DX = [0, -1, 0, 1, -1, 0, 1, -1, 0, 1];
 var DIR_DY = [0, 1, 1, 1, 0, 0, 0, -1, -1, -1];
-function promptAnswer(prompt, resetRecallDepth = false) {
+function promptAnswer(prompt, resetRecallDepth = false, itemChoice = null) {
   switch (prompt.kind) {
     case "ack":
       return { action: "acknowledge" };
@@ -19605,6 +19636,8 @@ function promptAnswer(prompt, resetRecallDepth = false) {
       return prompt.defaultValue;
     case "text":
       return prompt.defaultValue;
+    case "item":
+      return itemChoice !== null && prompt.choices.some((choice) => choice.handle === itemChoice) ? itemChoice : { action: "cancel" };
     default:
       return { action: "cancel" };
   }
@@ -19631,7 +19664,7 @@ function createTick(bridge2, borg) {
   return async (mod2, input) => {
     bridge2.setInput(input);
     if (input.prompt !== null) {
-      await mod2.act.answer(input.prompt.promptId, promptAnswer(input.prompt, recallDepthAnswer(borg.controller)));
+      await mod2.act.answer(input.prompt.promptId, promptAnswer(input.prompt, recallDepthAnswer(borg.controller), itemChoiceAnswer(borg.controller)));
       return;
     }
     if (input.phase !== "play" && input.phase !== "store") return;
