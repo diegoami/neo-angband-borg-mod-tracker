@@ -5397,6 +5397,7 @@ function wornInSlot(ctx, slot) {
   return null;
 }
 var BEST_ORDER = [1, 0, 6, 7, 8, 9, 10, 11, 3, 2, 5, 4];
+var BEST_EXHAUSTIVE_LOADOUTS = 2e3;
 var BEST_SLOTS = [
   "bow",
   "weapon",
@@ -5427,36 +5428,76 @@ function borgBestStuff(ctx, shopNum, d, stores) {
     let best = [...trial];
     let power = ctx.world.self.power;
     let incomplete = false;
-    const search = (n) => {
+    const score = () => {
+      const choices = trial.flatMap((choice, k) => choice ? [{ item: choice.ref, slot: BEST_ORDER[k] }] : []);
+      return d?.bestEval ? d.bestEval(choices) : ctx.world.self.power;
+    };
+    const fits = (choice, n) => {
+      const item = choice.item;
+      if (!item.number || !isAware(item, d) || !itemValue(item, d)) return false;
+      if (isCursed(item) && !d?.uncursable?.(item)) return false;
+      if (d?.randarts && item.artifact && !isIdent(item, d)) return false;
+      if (wieldSlot(item) !== BEST_SLOTS[n]) return false;
+      if (n === 9 && trial[8] === choice) return false;
+      if (n === 8 && trial[9] === choice) return false;
+      const worn = equipment2[BEST_ORDER[n]];
+      if (worn && isOneRing2(worn, stores)) return false;
+      return true;
+    };
+    const exhaustive = (n) => {
       if (n === BEST_ORDER.length) {
-        const choices = trial.flatMap((choice, k) => choice ? [{ item: choice.ref, slot: BEST_ORDER[k] }] : []);
-        const score = d?.bestEval ? d.bestEval(choices) : ctx.world.self.power;
-        if (score === null) {
+        const s = score();
+        if (s === null) {
           incomplete = true;
           return;
         }
-        if (score > power) {
-          power = score;
+        if (s > power) {
+          power = s;
           best = [...trial];
         }
         return;
       }
-      search(n + 1);
+      exhaustive(n + 1);
       for (const choice of candidates) {
-        const item = choice.item;
-        if (!item.number || !isAware(item, d) || !itemValue(item, d)) continue;
-        if (isCursed(item) && !d?.uncursable?.(item)) continue;
-        if (d?.randarts && item.artifact && !isIdent(item, d)) continue;
-        if (wieldSlot(item) !== BEST_SLOTS[n]) continue;
-        if (n === 9 && trial[8] === choice) continue;
-        const worn = equipment2[BEST_ORDER[n]];
-        if (worn && isOneRing2(worn, stores)) continue;
+        if (!fits(choice, n)) continue;
         trial[n] = choice;
-        search(n + 1);
+        exhaustive(n + 1);
         trial[n] = null;
       }
     };
-    search(0);
+    const ascent = () => {
+      for (let pass = 0; pass < BEST_ORDER.length; pass++) {
+        let improved2 = false;
+        for (let n = 0; n < BEST_ORDER.length; n++) {
+          const held = trial[n] ?? null;
+          for (const choice of [null, ...candidates]) {
+            if (choice === held) continue;
+            if (choice !== null && !fits(choice, n)) continue;
+            trial[n] = choice;
+            const s = score();
+            trial[n] = held;
+            if (s === null) {
+              incomplete = true;
+              continue;
+            }
+            if (s > power) {
+              power = s;
+              best = [...trial];
+              best[n] = choice;
+              improved2 = true;
+            }
+          }
+          trial[n] = best[n] ?? null;
+        }
+        if (!improved2 || incomplete) break;
+      }
+    };
+    let loadouts = 1;
+    for (let n = 0; n < BEST_ORDER.length && loadouts <= BEST_EXHAUSTIVE_LOADOUTS; n++) {
+      loadouts *= 1 + candidates.filter((choice) => fits(choice, n)).length;
+    }
+    if (loadouts <= BEST_EXHAUSTIVE_LOADOUTS) exhaustive(0);
+    else ascent();
     if (incomplete) return null;
     goal.bestItems = best.map((choice) => choice ? {
       tval: choice.item.tval,
@@ -5466,8 +5507,29 @@ function borgBestStuff(ctx, shopNum, d, stores) {
     } : null);
     goal.doBest = false;
   }
+  const step = bestStep(ctx, stores);
+  if (step === "done") return null;
+  if (step === null) return null;
+  if (!step.inStore) return ctx.act.shopExit();
+  step.commit();
+  return step.cmd;
+}
+function borgWearBestOutside(ctx, stores) {
+  if (!ctx.world.self.goal.bestItems) return null;
+  const step = bestStep(ctx, stores);
+  if (step === "done" || step === null) return null;
+  if (step.inStore) {
+    ctx.world.self.goal.doBest = true;
+    return null;
+  }
+  step.commit();
+  return step.cmd;
+}
+function bestStep(ctx, stores) {
+  const goal = ctx.world.self.goal;
   const plan = goal.bestItems;
   if (!plan) return null;
+  const none = () => void 0;
   for (let n = 0; n < plan.length; n++) {
     const choice = plan[n];
     if (!choice) continue;
@@ -5476,26 +5538,28 @@ function borgBestStuff(ctx, shopNum, d, stores) {
     if (choice.home) {
       if (worn?.number) {
         if (borgHomeFull(ctx, stores)) continue;
-        return ctx.act.shopSell(worn.handle, worn.number);
+        return { cmd: ctx.act.shopSell(worn.handle, worn.number), inStore: true, commit: none };
       }
       if (borgInventoryFull(ctx, stores)) continue;
       const item2 = homeWares(ctx).find(matches);
       if (!item2) return null;
-      choice.home = false;
-      return ctx.act.shopBuy(item2.index, 1);
+      return { cmd: ctx.act.shopBuy(item2.index, 1), inStore: true, commit: () => {
+        choice.home = false;
+      } };
     }
     if (worn?.number) {
       if (borgInventoryFull(ctx, stores)) continue;
-      return ctx.act.takeoff(worn.handle);
+      return { cmd: ctx.act.takeoff(worn.handle), inStore: false, commit: none };
     }
     const item = [...packItems(ctx), ...ctx.view.equipment().filter((entry) => entry !== null)].find(matches);
     if (!item) return null;
-    plan[n] = null;
-    return ctx.act.wear(item.handle);
+    return { cmd: ctx.act.wear(item.handle), inStore: false, commit: () => {
+      plan[n] = null;
+    } };
   }
   goal.doBest = plan.some((choice) => choice !== null);
   delete goal.bestItems;
-  return null;
+  return "done";
 }
 var RIGHT_RING = 2;
 var LEFT_RING = 3;
@@ -10140,6 +10204,100 @@ function powerInventory(t, d, R2, equip, cls) {
   return value;
 }
 
+// src/trait/local-loadout.ts
+var SLOT_INDEX = {
+  weapon: 0,
+  bow: 1,
+  amulet: 4,
+  light: 5,
+  body: 6,
+  cloak: 7,
+  shield: 8,
+  helm: 9,
+  gloves: 10,
+  boots: 11
+};
+var RING_SLOTS = [2, 3];
+var wareHandle = -1;
+function applyLoadoutChange(ctx, change) {
+  const equipment2 = [...ctx.view.equipment()];
+  const inventory = [...ctx.view.inventory()];
+  const take = (ref, number) => {
+    if (ref.from === "store") {
+      const ware = ctx.view.stores()[ref.store]?.stock[ref.index];
+      if (!ware) return null;
+      return { ...ware, handle: wareHandle--, number };
+    }
+    const slot = equipment2.findIndex((item) => item?.handle === ref.handle);
+    if (slot >= 0) {
+      const worn = equipment2[slot];
+      equipment2[slot] = null;
+      return worn;
+    }
+    const at = inventory.findIndex((item) => item.handle === ref.handle);
+    if (at < 0) return null;
+    const stack = inventory[at];
+    if (stack.number <= number) {
+      inventory.splice(at, 1);
+      return stack;
+    }
+    inventory[at] = { ...stack, number: stack.number - number };
+    return { ...stack, number };
+  };
+  for (const { handle, number } of change.release ?? []) {
+    const slot = equipment2.findIndex((item) => item?.handle === handle);
+    if (slot >= 0) {
+      equipment2[slot] = null;
+      continue;
+    }
+    const at = inventory.findIndex((item) => item.handle === handle);
+    if (at < 0) return null;
+    const stack = inventory[at];
+    const n = number ?? stack.number;
+    if (n >= stack.number) inventory.splice(at, 1);
+    else inventory[at] = { ...stack, number: stack.number - n };
+  }
+  for (const slot of change.remove ?? []) {
+    const worn = equipment2[slot];
+    if (worn) inventory.push(worn);
+    equipment2[slot] = null;
+  }
+  const wearAt = (item, slot) => {
+    const displaced = equipment2[slot];
+    if (displaced) inventory.push(displaced);
+    equipment2[slot] = item;
+  };
+  if (change.copyInto) {
+    for (const { item: ref, slot } of change.wieldAt ?? []) {
+      const source = ref.from === "store" ? ctx.view.stores()[ref.store]?.stock[ref.index] : [...ctx.view.equipment(), ...ctx.view.inventory()].find((item) => item?.handle === ref.handle) ?? void 0;
+      if (!source) return null;
+      equipment2[slot] = { ...source, number: 1 };
+    }
+    return { equipment: equipment2, inventory };
+  }
+  const placed = [];
+  for (const { item: ref, slot } of change.wieldAt ?? []) {
+    const item = take(ref, 1);
+    if (!item) return null;
+    placed.push({ item: { ...item, number: 1 }, slot });
+  }
+  for (const { item, slot } of placed) wearAt(item, slot);
+  for (const ref of change.wield ?? []) {
+    const item = take(ref, 1);
+    if (!item) return null;
+    const kind = wieldSlot(item);
+    if (kind === null) return null;
+    const slot = kind === "ring" ? RING_SLOTS.find((s) => !equipment2[s]) ?? RING_SLOTS[0] : SLOT_INDEX[kind];
+    wearAt({ ...item, number: 1 }, slot);
+  }
+  for (const { item: ref, number } of change.carry ?? []) {
+    const item = take(ref, number ?? 1);
+    if (!item) return null;
+    inventory.push(item);
+  }
+  return { equipment: equipment2, inventory };
+}
+
 // src/trait/simulate.ts
 function shadowWorld(world) {
   const sim = Object.create(world);
@@ -10179,17 +10337,32 @@ function borgNoticeWithout(ctx, handle) {
   return reduced;
 }
 function borgSimulatePower(ctx, change, opts = {}) {
-  const view = ctx.view;
-  const answer = view.simulateLoadout?.(change);
+  const local = localAnswer(ctx, change, opts);
+  const { copyInto, ...engineChange } = change;
+  const answer = local?.answer ?? ctx.view.simulateLoadout?.(engineChange);
   if (!answer) return null;
+  const simOpts = local ? { ...opts, frame: local.frame } : opts;
   const simCtx = {
     ...ctx,
     world: shadowWorld(ctx.world),
     view: shadowView(ctx.view, answer)
   };
   inheritWeaponSwap(simCtx.world, ctx.world);
-  borgNotice(simCtx, { ...opts, noticeSwap: false });
-  return borgPower(simCtx, opts);
+  borgNotice(simCtx, { ...simOpts, noticeSwap: copyInto === true });
+  return borgPower(simCtx, simOpts);
+}
+function localAnswer(ctx, change, opts) {
+  const frame = resolveOpts(opts, ctx).frame;
+  if (frame.skills === void 0 || frame.skillsPerTen === void 0) return null;
+  const loadout = applyLoadoutChange(ctx, change);
+  if (!loadout) return null;
+  const player = ctx.view.player();
+  const conIndex = ctx.world.self.trait[19 /* CON_INDEX */] ?? 0;
+  const playerHp = frame.playerHp ?? player.maxHp - Math.trunc((BORG_ADJ_CON_MHP[conIndex] ?? 0) * player.level / 100);
+  return {
+    answer: { after: { player, equipment: loadout.equipment, inventory: loadout.inventory } },
+    frame: { ...frame, playerHp }
+  };
 }
 function borgSimulateDangerAnswer(ctx, change) {
   const answer = ctx.view.simulateLoadout?.(change);
@@ -11096,7 +11269,7 @@ function borgThinkStore(ctx, shopNum, d, wearDeps) {
   const weapon = ctx.view.equipment()[0];
   if (weapon?.tval === TV.DIGGING && !weapon.artifact) {
     const wear = borgWearStuff(ctx, wearDeps);
-    if (wear) return wear;
+    if (wear) return ctx.act.shopExit();
   }
   if (borgChooseShop(ctx, d)) {
     const sell = borgThinkShopSell(ctx, shopNum, d);
@@ -16142,6 +16315,14 @@ function simulationBaseline(session, ctx, resolve) {
   BASELINES.set(session, { ctx, base });
   return base;
 }
+var BEST_BASELINES = /* @__PURE__ */ new WeakMap();
+function bestBaseline(session, ctx, resolve) {
+  const cached = BEST_BASELINES.get(session);
+  if (cached && cached.ctx === ctx) return cached.base;
+  const base = resolve(ctx, { copyInto: true }) ?? null;
+  BEST_BASELINES.set(session, { ctx, base });
+  return base;
+}
 function analyzedItemValue(session, item) {
   if (isCursed(item)) return perItemValue(item);
   if (!item.aware) return guessedValue(item);
@@ -16206,9 +16387,11 @@ function buildItemDeps(session) {
         const base = simulationBaseline(session, c, res.loadoutPower);
         return base === null ? null : w.self.power + score - base;
       },
+      /* borg_best_stuff_aux scores copy-in trials noticed with notice_swap
+       * true; the baseline is the same trial with nothing copied in. */
       bestEval: (wieldAt) => {
-        const score = res.loadoutPower(c, { wieldAt });
-        const base = simulationBaseline(session, c, res.loadoutPower);
+        const score = res.loadoutPower(c, { wieldAt, copyInto: true });
+        const base = bestBaseline(session, c, res.loadoutPower);
         return score === null || base === null ? null : w.self.power + score - base;
       },
       /* borg-junk.c:1319-1357 keeps the item in the pack during removal. */
@@ -16977,6 +17160,10 @@ function borgThinkDungeon(ctx, session) {
   {
     const cmd = borgPlayMagic(ctx, false);
     if (cmd) return cmd;
+  }
+  {
+    const best = T(ctx, 105 /* CDEPTH */) === 0 ? borgWearBestOutside(ctx, buildStoreDeps(session)) : null;
+    if (best) return best;
   }
   if (borgWieldIsDigger(ctx) || !borgHasWeapon(ctx)) {
     const cmd = borgWearStuff(ctx, itemDeps);
@@ -18540,7 +18727,7 @@ var ActivationBook = class {
   kind(tval, sval) {
     return this.names.get(`k:${String(tval)}:${String(sval)}`) ?? null;
   }
-  /** Read the activations of every worn item that has one, for any source not read yet. */
+  /** Read the activations of every given item that has one (worn, carried or at home), for any source not read yet. */
   async ensure(api, equipment2) {
     const asks = /* @__PURE__ */ new Map();
     for (const item of equipment2) {
@@ -19131,7 +19318,8 @@ async function readWorld(api, reads) {
   const floorHere = (known.floorHere ?? []).map(adapt);
   const monsters = await monsterViews(known, reads);
   if (reads.truth !== null) await reads.races.ensure(reads.truth, monsters.map((monster) => monster.raceIndex));
-  await reads.activations.ensure(api, equipment2);
+  const homeStock = (known.stores ?? []).filter((store2) => store2.isHome).flatMap((store2) => store2.stock.map(adapt));
+  await reads.activations.ensure(api, [...equipment2, ...inventory, ...homeStock]);
   reads.loadouts.begin(gearSignature(known.inventory ?? [], known.equipment ?? [], known.stores ?? [], known.player));
   const width = known.level?.width ?? 0;
   const height = known.level?.height ?? 0;

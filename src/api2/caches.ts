@@ -80,7 +80,7 @@ export class ActivationBook {
     return this.names.get(`k:${String(tval)}:${String(sval)}`) ?? null;
   }
 
-  /** Read the activations of every worn item that has one, for any source not read yet. */
+  /** Read the activations of every given item that has one (worn, carried or at home), for any source not read yet. */
   async ensure(api: Pick<ModApi2, "content">, equipment: readonly (ItemView | null)[]): Promise<void> {
     const asks = new Map<string, Parameters<ModApi2["content"]["activation"]>[0]>();
     for (const item of equipment) {
