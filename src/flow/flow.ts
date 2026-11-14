@@ -223,8 +223,6 @@ export interface FlowState {
   readonly closed: BorgTrack;
   readonly glyph: BorgTrack;
   readonly vein: BorgTrack;
-  readonly shopX: number[];
-  readonly shopY: number[];
 
   /* Flags / thresholds (borg-flow.c globals). */
   avoidance: number;
@@ -274,8 +272,6 @@ export function createFlowState(hooks: FlowHooks = defaultFlowHooks()): FlowStat
     closed: new BorgTrack(100),
     glyph: new BorgTrack(200),
     vein: new BorgTrack(100),
-    shopX: new Array<number>(9).fill(0),
-    shopY: new Array<number>(9).fill(0),
     avoidance: 0,
     borgDesperate: false,
     borgDigging: false,

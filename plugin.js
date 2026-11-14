@@ -469,9 +469,11 @@ function makeGoals() {
     waiting: false,
     recalling: 0,
     descending: 0,
-    shop: 0,
-    ware: 0,
-    item: 0,
+    /* No shop goal: borg-update.c:2128 clears all three to -1 on every level
+     * change, and borg_choose_shop treats anything else as a goal in flight. */
+    shop: -1,
+    ware: -1,
+    item: -1,
     doBest: false
   };
 }
@@ -554,6 +556,14 @@ var BorgWorld = class {
   detect = new BorgDetectGrid();
   self = makeBorgSelf();
   facts = makeLevelFacts();
+  /**
+   * track_shop_x / track_shop_y (borg-flow-misc.c:50, allocated once at
+   * borg-flow-misc.c:1391): the door of shop i, written by borg_update_map
+   * (borg-update.c, "Shop Doors") and read by borg_flow_shop_entry. Zero means
+   * not seen yet. Never wiped: the C keeps them across levels.
+   */
+  shopX = new Array(9).fill(0);
+  shopY = new Array(9).fill(0);
   /**
    * borg_t: the Borg's own clock, incremented per decision. The anti-loop
    * heuristics (boredom, twitch, monster expiry) are gated on this, so it must
@@ -5762,8 +5772,6 @@ function createFlowState(hooks = defaultFlowHooks()) {
     closed: new BorgTrack(100),
     glyph: new BorgTrack(200),
     vein: new BorgTrack(100),
-    shopX: new Array(9).fill(0),
-    shopY: new Array(9).fill(0),
     avoidance: 0,
     borgDesperate: false,
     borgDigging: false,
@@ -6489,11 +6497,11 @@ function borgFlowVein(ctx, flow, viewable, nearness) {
 function borgFlowShopEntry(ctx, flow, i) {
   const w = ctx.world;
   if (trait(w, 105 /* CDEPTH */)) return null;
-  const x = flow.shopX[i];
-  const y = flow.shopY[i];
+  const x = w.shopX[i] ?? 0;
+  const y = w.shopY[i] ?? 0;
   if (!x || !y) return null;
   if (x === w.self.c.x && y === w.self.c.y) {
-    return ctx.act.move(5);
+    return ctx.act.hold();
   }
   borgFlowClear(flow);
   borgFlowEnqueueGrid(ctx, flow, y, x);
@@ -18197,6 +18205,13 @@ function ingestMap(world, view) {
         if (c.inView) g.info &= ~BORG_IGNORE_MAP;
       }
       g.trap = c.trap;
+      g.store = FEAT.HOME - FEAT.STORE_GENERAL;
+      if (featIsShop(g.feat)) {
+        const i = g.feat - FEAT.STORE_GENERAL;
+        g.store = i;
+        world.shopX[i] = x;
+        world.shopY[i] = y;
+      }
       if (g.feat === FEAT.PERM && world.facts.depth && x && y && x !== bounds.width - 1 && y !== bounds.height - 1) {
         world.facts.vaultOnLevel = true;
       }
@@ -19451,7 +19466,11 @@ function createBridge(mod2) {
         raceSymbol: (ridx) => symbols.get(ridx),
         objects,
         birthRandarts: () => facts.birthRandarts ?? null,
-        shopnum: () => facts.shopnum,
+        /* borg_think takes the store branch only while the store screen is
+         * up (borg-think.c:322-327 reads "Stor"/"Home" off the screen, then
+         * square_shopnum). Standing on an entrance after the screen has
+         * closed is play, not shopping. */
+        shopnum: () => input?.phase === "store" ? facts.shopnum : null,
         kindCost: (tval, sval) => facts.kinds.get(`${String(tval)}:${String(sval)}`) ?? null,
         blowMethods: blows.map((message) => ({ messages: [message] })),
         monsterSpells: spells,
