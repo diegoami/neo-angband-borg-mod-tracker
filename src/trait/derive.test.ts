@@ -86,3 +86,22 @@ describe("derived traits that the worn gear does not decide", () => {
     expect(t[BI.THN]).toBe(70 + 135);
   });
 });
+
+describe("hitpoints as the C values them (borg-trait.c:1836)", () => {
+  /* Level-30 Human Warrior, natural CON 10 (12 with the Warrior's +2), rolled
+   * player_hp[29] = 299, with or without a +5 CON ring: CON 17 or 12. */
+  const conRing = { handle: 6, kindKey: "", aware: true, nameColor: "", label: "ring", tval: TV.RING, sval: 1, pval: 5, number: 1, weight: 1, ac: 0, toA: 0, toH: 0, toD: 0, dd: 0, ds: 0, ego: false, artifact: false, flags: [], modifiers: [{ code: "CON", value: 5 }], brands: [], slays: [], resists: [], curses: [], timeout: 0 } as unknown as ItemView;
+  const hp = (ring: boolean): number => {
+    const base = makeScenarioView({ player: { race: "Human", cls: "Warrior", level: 30, maxLevel: 30, maxHp: 329, stats: [10, 10, 10, 10, 10] } });
+    const equipment: Array<ItemView | null> = Array(12).fill(null);
+    if (ring) equipment[2] = conRing;
+    const ctx: BorgContext = { world: new BorgWorld(), view: { ...base, equipment: () => equipment }, act: makeFakeActions(), rng: makeBorgRng(), frame: FRAME };
+    borgNotice(ctx, { frame: { ...FRAME("Human", "Warrior")!, playerHp: 299 } });
+    return ctx.world.self.trait[BI.HP_ADJ]!;
+  };
+
+  it("follows the CON the loadout gives: 299 + adj_con_mhp * 30 / 100", () => {
+    expect(hp(true)).toBe(299 + 30);
+    expect(hp(false)).toBe(299 + 1);
+  });
+});

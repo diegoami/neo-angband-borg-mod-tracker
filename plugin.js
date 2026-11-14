@@ -1437,6 +1437,46 @@ var BORG_ADJ_STR_WGT = [
   30,
   30
 ];
+var BORG_ADJ_CON_MHP = [
+  -250,
+  -150,
+  -100,
+  -75,
+  -50,
+  -25,
+  -10,
+  -5,
+  0,
+  5,
+  10,
+  25,
+  50,
+  75,
+  100,
+  150,
+  175,
+  200,
+  225,
+  250,
+  275,
+  300,
+  350,
+  400,
+  450,
+  500,
+  550,
+  600,
+  650,
+  700,
+  750,
+  800,
+  900,
+  1e3,
+  1100,
+  1250,
+  1250,
+  1250
+];
 var BORG_ADJ_MAG_FAIL = [
   99,
   99,
@@ -8188,6 +8228,10 @@ function borgNoticeEquipment(c) {
   }
   const strIdx = t[15 /* STR_INDEX */];
   const dexIdx = t[18 /* DEX_INDEX */];
+  const rolledHp = c.R.frame.playerHp;
+  if (rolledHp !== void 0) {
+    t[29 /* HP_ADJ */] = rolledHp + Math.trunc(BORG_ADJ_CON_MHP[t[19 /* CON_INDEX */]] * t[35 /* CLEVEL */] / 100);
+  }
   if (c.spellStat >= 0) {
     const si = t[15 /* STR_INDEX */ + c.spellStat];
     const spellFirst = c.R.frame.spellFirst ?? 1;
