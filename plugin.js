@@ -3875,6 +3875,11 @@ function deviceFail(ctx, lev) {
   if (denominator === 0) denominator = numerator > 0 ? 1 : -1;
   return Math.trunc(100 * numerator / denominator);
 }
+function withItemTarget(ctx, cmd, handle) {
+  if (!cmd) return null;
+  ctx.world.itemChoice = handle;
+  return { ...cmd, args: { ...cmd.args ?? {}, tgtitem: { handle } } };
+}
 
 // src/trait/config.ts
 function defaultCfg() {
@@ -7559,10 +7564,7 @@ function borgRecharging(ctx, d, playerHas2) {
     }
     if (!charge) continue;
     const cmd = borgReadScroll(ctx, SVAL.scroll.recharging, d) || borgSpellFail(ctx, 7 /* RECHARGING */, 96, playerHas2) || borgActivateItem(ctx, "act_recharge", d);
-    if (cmd) {
-      ctx.world.itemChoice = item.handle;
-      return cmd;
-    }
+    if (cmd) return withItemTarget(ctx, cmd, item.handle);
     break;
   }
   return null;
@@ -7627,7 +7629,11 @@ function borgTestStuff(ctx, d) {
     bestV = v;
   }
   if (best) {
-    return borgSpell(ctx, 8 /* IDENTIFY_RUNE */) || borgReadScroll(ctx, SVAL.scroll.identify, d);
+    return withItemTarget(
+      ctx,
+      borgSpell(ctx, 8 /* IDENTIFY_RUNE */) || borgReadScroll(ctx, SVAL.scroll.identify, d),
+      best.handle
+    );
   }
   return null;
 }
@@ -10796,21 +10802,33 @@ function borgEnchantToA(ctx, d, playerHas2) {
     bestA = a;
   }
   if (!best) return null;
-  return borgReadScroll(ctx, SVAL.scroll.star_enchant_armor, d) || borgReadScroll(ctx, SVAL.scroll.enchant_armor, d) || borgSpellFail(ctx, 76 /* ENCHANT_ARMOUR */, 65, playerHas2);
+  return withItemTarget(
+    ctx,
+    borgReadScroll(ctx, SVAL.scroll.star_enchant_armor, d) || borgReadScroll(ctx, SVAL.scroll.enchant_armor, d) || borgSpellFail(ctx, 76 /* ENCHANT_ARMOUR */, 65, playerHas2),
+    best.handle
+  );
 }
 function borgEnchantToH(ctx, d, playerHas2) {
   if (!trait3(ctx, 241 /* NEED_ENCHANT_TO_H */)) return null;
   if (!trait3(ctx, 234 /* AENCH_TOH */) && !trait3(ctx, 236 /* AENCH_SWEP */)) return null;
   const item = pickLeastEnchantedWeapon(ctx, d, playerHas2, (it) => it.toH);
   if (!item) return null;
-  return borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_hit, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2);
+  return withItemTarget(
+    ctx,
+    borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_hit, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2),
+    item.handle
+  );
 }
 function borgEnchantToD(ctx, d, playerHas2) {
   if (!trait3(ctx, 242 /* NEED_ENCHANT_TO_D */)) return null;
   if (!trait3(ctx, 235 /* AENCH_TOD */) && !trait3(ctx, 236 /* AENCH_SWEP */)) return null;
   const item = pickLeastEnchantedWeapon(ctx, d, playerHas2, (it) => it.toD);
   if (!item) return null;
-  return borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_dam, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2);
+  return withItemTarget(
+    ctx,
+    borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_dam, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2),
+    item.handle
+  );
 }
 function pickLeastEnchantedWeapon(ctx, d, playerHas2, bonus) {
   const canSpell = borgSpellOkayFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2) || trait3(ctx, 236 /* AENCH_SWEP */) >= 1;

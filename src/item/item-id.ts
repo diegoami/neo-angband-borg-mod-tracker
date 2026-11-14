@@ -20,6 +20,7 @@ import {
   isAware,
   itemValue,
   needsIdent,
+  withItemTarget,
 } from "./deps.js";
 import { Spell, borgSpell, borgSpellLegal } from "./magic.js";
 import { borgReadScroll } from "./item-use.js";
@@ -112,8 +113,10 @@ export function borgTestStuff(
   }
 
   if (best) {
-    return borgSpell(ctx, Spell.IDENTIFY_RUNE) ||
-      borgReadScroll(ctx, SVAL.scroll.identify!, d);
+    return withItemTarget(ctx,
+      borgSpell(ctx, Spell.IDENTIFY_RUNE) ||
+      borgReadScroll(ctx, SVAL.scroll.identify!, d),
+      best.handle);
   }
   return null;
 }
