@@ -83,6 +83,20 @@ export function applyLoadoutChange(ctx: BorgContext, change: BorgLoadoutChange):
     if (displaced) inventory.push(displaced);
     equipment[slot] = item;
   };
+  if (change.copyInto) {
+    /* borg_best_stuff_aux (borg-item-wear.c:1304): memcpy the candidate into
+     * the slot. The original stays in the pack or home, and what the slot held
+     * is not carried - the C restores it after scoring. */
+    for (const { item: ref, slot } of change.wieldAt ?? []) {
+      const source = ref.from === "store"
+        ? (ctx.view.stores()[ref.store]?.stock[ref.index] as ItemView | undefined)
+        : [...ctx.view.equipment(), ...ctx.view.inventory()].find((item) => item?.handle === ref.handle) ?? undefined;
+      if (!source) return null;
+      equipment[slot] = { ...source, number: 1 };
+    }
+    return { equipment, inventory };
+  }
+
   /* Take every item first, so a swap between slots sees the original wearer. */
   const placed: Array<{ item: ItemView; slot: number }> = [];
   for (const { item: ref, slot } of change.wieldAt ?? []) {
