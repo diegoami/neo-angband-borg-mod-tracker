@@ -96,6 +96,11 @@ export function recallDepthAnswer(controller: AgentController): boolean {
   return CONTROLLER_WORLDS.get(controller)?.resetRecallDepth ?? false;
 }
 
+/** The item the controller's last command chose for its item prompt, if any. */
+export function itemChoiceAnswer(controller: AgentController): number | null {
+  return CONTROLLER_WORLDS.get(controller)?.itemChoice ?? null;
+}
+
 /**
  * Build a Borg. The returned controller is stateful (owns the world model,
  * perception memo, and wiring session), so build one Borg per game session.
@@ -145,6 +150,7 @@ export function createBorg(opts: BorgOptions = {}): Borg {
 
     /* Unknown recall effects keep the depth (borg-messages-react.c:229-242). */
     world.resetRecallDepth = false;
+    world.itemChoice = null;
 
     /* A store decision returns before borg_update (borg-think.c:324-369): the C notices
      * the character and scores the world, then runs the store ladder. The clocks, the

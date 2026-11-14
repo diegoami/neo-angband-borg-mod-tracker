@@ -609,8 +609,8 @@ export function borgUseThings(
  * borg_recharging: recharge a wand/staff that needs it (use.c:1182). Selects the
  * first eligible item (per the C's charge rules) and, if a recharge means
  * exists, emits it. The C then presses the item letter; here the recharge verb
- * (scroll read / spell / activation) IS the command and the target-item choice
- * is deferred to the engine menu (a documented simplification).
+ * (scroll read / spell / activation) is the command, and the chosen item is
+ * recorded so the game's "recharge which item?" prompt is answered with it.
  */
 export function borgRecharging(
   ctx: BorgContext,
@@ -648,7 +648,10 @@ export function borgRecharging(
       borgSpellFail(ctx, Spell.RECHARGING, 96, playerHas) ||
       borgActivateItem(ctx, "act_recharge", d);
     /* If recharging is possible, target this item; else stop (C breaks). */
-    if (cmd) return cmd;
+    if (cmd) {
+      ctx.world.itemChoice = item.handle;
+      return cmd;
+    }
     break;
   }
   return null;
