@@ -5507,8 +5507,29 @@ function borgBestStuff(ctx, shopNum, d, stores) {
     } : null);
     goal.doBest = false;
   }
+  const step = bestStep(ctx, stores);
+  if (step === "done") return null;
+  if (step === null) return null;
+  if (!step.inStore) return ctx.act.shopExit();
+  step.commit();
+  return step.cmd;
+}
+function borgWearBestOutside(ctx, stores) {
+  if (!ctx.world.self.goal.bestItems) return null;
+  const step = bestStep(ctx, stores);
+  if (step === "done" || step === null) return null;
+  if (step.inStore) {
+    ctx.world.self.goal.doBest = true;
+    return null;
+  }
+  step.commit();
+  return step.cmd;
+}
+function bestStep(ctx, stores) {
+  const goal = ctx.world.self.goal;
   const plan = goal.bestItems;
   if (!plan) return null;
+  const none = () => void 0;
   for (let n = 0; n < plan.length; n++) {
     const choice = plan[n];
     if (!choice) continue;
@@ -5517,26 +5538,28 @@ function borgBestStuff(ctx, shopNum, d, stores) {
     if (choice.home) {
       if (worn?.number) {
         if (borgHomeFull(ctx, stores)) continue;
-        return ctx.act.shopSell(worn.handle, worn.number);
+        return { cmd: ctx.act.shopSell(worn.handle, worn.number), inStore: true, commit: none };
       }
       if (borgInventoryFull(ctx, stores)) continue;
       const item2 = homeWares(ctx).find(matches);
       if (!item2) return null;
-      choice.home = false;
-      return ctx.act.shopBuy(item2.index, 1);
+      return { cmd: ctx.act.shopBuy(item2.index, 1), inStore: true, commit: () => {
+        choice.home = false;
+      } };
     }
     if (worn?.number) {
       if (borgInventoryFull(ctx, stores)) continue;
-      return ctx.act.takeoff(worn.handle);
+      return { cmd: ctx.act.takeoff(worn.handle), inStore: false, commit: none };
     }
     const item = [...packItems(ctx), ...ctx.view.equipment().filter((entry) => entry !== null)].find(matches);
     if (!item) return null;
-    plan[n] = null;
-    return ctx.act.wear(item.handle);
+    return { cmd: ctx.act.wear(item.handle), inStore: false, commit: () => {
+      plan[n] = null;
+    } };
   }
   goal.doBest = plan.some((choice) => choice !== null);
   delete goal.bestItems;
-  return null;
+  return "done";
 }
 var RIGHT_RING = 2;
 var LEFT_RING = 3;
@@ -11246,7 +11269,7 @@ function borgThinkStore(ctx, shopNum, d, wearDeps) {
   const weapon = ctx.view.equipment()[0];
   if (weapon?.tval === TV.DIGGING && !weapon.artifact) {
     const wear = borgWearStuff(ctx, wearDeps);
-    if (wear) return wear;
+    if (wear) return ctx.act.shopExit();
   }
   if (borgChooseShop(ctx, d)) {
     const sell = borgThinkShopSell(ctx, shopNum, d);
@@ -17151,6 +17174,8 @@ function borgThinkDungeon(ctx, session) {
     if (cmd) return cmd;
   }
   {
+    const best = T(ctx, 105 /* CDEPTH */) === 0 ? borgWearBestOutside(ctx, buildStoreDeps(session)) : null;
+    if (best) return best;
     const cmd = borgWearStuff(ctx, itemDeps) ?? borgSwapRings(ctx, itemDeps) ?? borgWearRings(ctx, itemDeps);
     if (cmd) return cmd;
   }
