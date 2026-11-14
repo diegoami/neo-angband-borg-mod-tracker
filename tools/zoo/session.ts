@@ -6,7 +6,8 @@
 // repository's root). This file is bundled by build.mjs, not compiled by tsc
 // (tsconfig.json includes only *.ts and src/**/*.ts).
 //
-// FORK: no code change from the source. The host description strings below
+// FORK: message-host.mjs supplies the browser-equivalent event/message host.
+// Other host behavior remains copied from the source. The host description strings below
 // (e.g. "original-source-developer-api2", "Original Borg refused armed birth")
 // are kept as-is because borg-zoo's parser reads this record format; they
 // describe the host adapter's origin in the tracker toolkit, not this Borg,
@@ -26,6 +27,7 @@ import {
 import definition from "BORG/plugin.ts";
 import { borgCfg, buffTimerSafetyNetEnabled } from "BORG/src/trait/config.ts";
 import { loadPack } from "./pack.ts";
+import { installMessageHost } from "./message-host.mjs";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
@@ -141,13 +143,11 @@ export async function run(o: any) {
 		inputNeeded = true;
 		return null;
 	};
-	const oldMsg = state.msg;
-	state.msg = (text: string) => {
-		oldMsg?.(text);
-		messages.push({ turn: state.turn, text });
-		o.onMessage?.({ turn: state.turn, text });
-		if (messages.length > 200) messages.shift();
-	};
+	installMessageHost(core, state, (row: { turn: number; text: string }) => {
+    messages.push(row);
+    o.onMessage?.(row);
+    if (messages.length > 200) messages.shift();
+  });
 	const phase = () =>
 		state.isDead ? "dead" : store === null ? "play" : "store";
 	const source = {

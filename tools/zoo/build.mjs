@@ -78,6 +78,7 @@ const source = readFileSync(join(tool, "session.ts"), "utf8")
 	.replaceAll('"BORG/', JSON.stringify(borg + "/").slice(0, -1));
 writeFileSync(join(out, "entry.ts"), source);
 cpSync(join(tool, "pack.ts"), join(out, "pack.ts"));
+cpSync(join(tool, "message-host.mjs"), join(out, "message-host.mjs"));
 await build({
 	configFile: false,
 	root: join(engine, "packages/web"),
@@ -194,7 +195,7 @@ writeFileSync(
 					.map((f) => [f, sha(join(out, "pack", f))]),
 			),
 			toolSha256: Object.fromEntries(
-				["session.ts", "pack.ts", "build.mjs", "run.mjs"].map((f) => [
+				["session.ts", "pack.ts", "message-host.mjs", "build.mjs", "run.mjs"].map((f) => [
 					f,
 					sha(join(tool, f)),
 				]),

@@ -85,3 +85,11 @@ tool stopped such a game as a `harness_failure`.
 
 A numeric seed names a different game from C's. These are plumbing outputs; they
 say nothing about how well the Borg plays.
+
+The headless message host creates Core's GameEvents before API2 context creation
+and forwards each printed message (including repetitions and its MSG type) to
+the mod and the retained evidence, as the browser does.
+`pnpm check:zoo-host` checks that delivery with the real Core event bus.
+Historical toolkit pins through 9c17cb0 recorded text without delivering message
+events; those results remain preserved but measure a message-deaf host. A
+corrected run must name the new toolkit pin and state which run it corrects.
