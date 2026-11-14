@@ -31,6 +31,14 @@
    assertions or seeds. Record full-gate limits and plugin currency honestly.
 6. Offer the confirmed port fix upstream through a topic branch in this fork,
    excluding our bootstrap docs and Mandos-only strategy/product changes.
+   `upstream-master` is a full mirror of neostryder/neo-angband-mod-borg
+   master, moved only by fast-forward to upstream (never a merge, commit or
+   force-push of ours). Every upstream-candidate topic starts from it and opens
+   its PR against it, never merged here. The PR body pins the topic commit(s)
+   and carries a copy-paste recipe for opening the same PR upstream
+   (cherry-pick or commit `.patch`, `pnpm verify`, `gh pr create --repo
+   neostryder/neo-angband-mod-borg`). The fork integration is a separate PR
+   to master that merges the same topic plus any fork-only CI contract.
 7. Link the source correction to a distinct Mandos consumer issue. This
    session updates source resolution/proposal evidence; the Mandos session
    pulls/adopts it, rebuilds and verifies downstream before closing its issue
