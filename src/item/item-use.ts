@@ -26,6 +26,7 @@ import {
   clockOf,
   equipsItem,
   activateHandle,
+  withItemTarget,
 } from "./deps.js";
 import {
   Spell,
@@ -609,8 +610,8 @@ export function borgUseThings(
  * borg_recharging: recharge a wand/staff that needs it (use.c:1182). Selects the
  * first eligible item (per the C's charge rules) and, if a recharge means
  * exists, emits it. The C then presses the item letter; here the recharge verb
- * (scroll read / spell / activation) is the command, and the chosen item is
- * recorded so the game's "recharge which item?" prompt is answered with it.
+ * (scroll read / spell / activation) is the command and carries the chosen
+ * item (withItemTarget), so the game does not ask which item to recharge.
  */
 export function borgRecharging(
   ctx: BorgContext,
@@ -648,10 +649,7 @@ export function borgRecharging(
       borgSpellFail(ctx, Spell.RECHARGING, 96, playerHas) ||
       borgActivateItem(ctx, "act_recharge", d);
     /* If recharging is possible, target this item; else stop (C breaks). */
-    if (cmd) {
-      ctx.world.itemChoice = item.handle;
-      return cmd;
-    }
+    if (cmd) return withItemTarget(ctx, cmd, item.handle);
     break;
   }
   return null;
