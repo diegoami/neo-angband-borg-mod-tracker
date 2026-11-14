@@ -1447,6 +1447,46 @@ var BORG_ADJ_STR_WGT = [
   30,
   30
 ];
+var BORG_ADJ_CON_MHP = [
+  -250,
+  -150,
+  -100,
+  -75,
+  -50,
+  -25,
+  -10,
+  -5,
+  0,
+  5,
+  10,
+  25,
+  50,
+  75,
+  100,
+  150,
+  175,
+  200,
+  225,
+  250,
+  275,
+  300,
+  350,
+  400,
+  450,
+  500,
+  550,
+  600,
+  650,
+  700,
+  750,
+  800,
+  900,
+  1e3,
+  1100,
+  1250,
+  1250,
+  1250
+];
 var BORG_ADJ_MAG_FAIL = [
   99,
   99,
@@ -7945,6 +7985,7 @@ function borgNotice(ctx, opts = {}) {
   const view = ctx.view;
   const p = view.player();
   const t = new Array(BI_MAX).fill(0);
+  ctx.world.self.trait = t;
   const previous = getDerived(ctx.world);
   const d = resetDerived(ctx.world);
   t[146 /* BLOWS */] = 1;
@@ -8237,6 +8278,10 @@ function borgNoticeEquipment(c) {
   }
   const strIdx = t[15 /* STR_INDEX */];
   const dexIdx = t[18 /* DEX_INDEX */];
+  const rolledHp = c.R.frame.playerHp;
+  if (rolledHp !== void 0) {
+    t[29 /* HP_ADJ */] = rolledHp + Math.trunc(BORG_ADJ_CON_MHP[t[19 /* CON_INDEX */]] * t[35 /* CLEVEL */] / 100);
+  }
   if (c.spellStat >= 0) {
     const si = t[15 /* STR_INDEX */ + c.spellStat];
     const spellFirst = c.R.frame.spellFirst ?? 1;
@@ -10208,6 +10253,14 @@ function applyLoadoutChange(ctx, change) {
     if (displaced) inventory.push(displaced);
     equipment2[slot] = item;
   };
+  if (change.copyInto) {
+    for (const { item: ref, slot } of change.wieldAt ?? []) {
+      const source = ref.from === "store" ? ctx.view.stores()[ref.store]?.stock[ref.index] : [...ctx.view.equipment(), ...ctx.view.inventory()].find((item) => item?.handle === ref.handle) ?? void 0;
+      if (!source) return null;
+      equipment2[slot] = { ...source, number: 1 };
+    }
+    return { equipment: equipment2, inventory };
+  }
   const placed = [];
   for (const { item: ref, slot } of change.wieldAt ?? []) {
     const item = take(ref, 1);
@@ -10270,23 +10323,32 @@ function borgNoticeWithout(ctx, handle) {
   return reduced;
 }
 function borgSimulatePower(ctx, change, opts = {}) {
-  const answer = localAnswer(ctx, change, opts) ?? ctx.view.simulateLoadout?.(change);
+  const local = localAnswer(ctx, change, opts);
+  const { copyInto, ...engineChange } = change;
+  const answer = local?.answer ?? ctx.view.simulateLoadout?.(engineChange);
   if (!answer) return null;
+  const simOpts = local ? { ...opts, frame: local.frame } : opts;
   const simCtx = {
     ...ctx,
     world: shadowWorld(ctx.world),
     view: shadowView(ctx.view, answer)
   };
   inheritWeaponSwap(simCtx.world, ctx.world);
-  borgNotice(simCtx, { ...opts, noticeSwap: false });
-  return borgPower(simCtx, opts);
+  borgNotice(simCtx, { ...simOpts, noticeSwap: copyInto === true });
+  return borgPower(simCtx, simOpts);
 }
 function localAnswer(ctx, change, opts) {
   const frame = resolveOpts(opts, ctx).frame;
   if (frame.skills === void 0 || frame.skillsPerTen === void 0) return null;
   const loadout = applyLoadoutChange(ctx, change);
   if (!loadout) return null;
-  return { after: { player: ctx.view.player(), equipment: loadout.equipment, inventory: loadout.inventory } };
+  const player = ctx.view.player();
+  const conIndex = ctx.world.self.trait[19 /* CON_INDEX */] ?? 0;
+  const playerHp = frame.playerHp ?? player.maxHp - Math.trunc((BORG_ADJ_CON_MHP[conIndex] ?? 0) * player.level / 100);
+  return {
+    answer: { after: { player, equipment: loadout.equipment, inventory: loadout.inventory } },
+    frame: { ...frame, playerHp }
+  };
 }
 function borgSimulateDangerAnswer(ctx, change) {
   const answer = ctx.view.simulateLoadout?.(change);
@@ -16239,6 +16301,14 @@ function simulationBaseline(session, ctx, resolve) {
   BASELINES.set(session, { ctx, base });
   return base;
 }
+var BEST_BASELINES = /* @__PURE__ */ new WeakMap();
+function bestBaseline(session, ctx, resolve) {
+  const cached = BEST_BASELINES.get(session);
+  if (cached && cached.ctx === ctx) return cached.base;
+  const base = resolve(ctx, { copyInto: true }) ?? null;
+  BEST_BASELINES.set(session, { ctx, base });
+  return base;
+}
 function analyzedItemValue(session, item) {
   if (isCursed(item)) return perItemValue(item);
   if (!item.aware) return guessedValue(item);
@@ -16303,9 +16373,11 @@ function buildItemDeps(session) {
         const base = simulationBaseline(session, c, res.loadoutPower);
         return base === null ? null : w.self.power + score - base;
       },
+      /* borg_best_stuff_aux scores copy-in trials noticed with notice_swap
+       * true; the baseline is the same trial with nothing copied in. */
       bestEval: (wieldAt) => {
-        const score = res.loadoutPower(c, { wieldAt });
-        const base = simulationBaseline(session, c, res.loadoutPower);
+        const score = res.loadoutPower(c, { wieldAt, copyInto: true });
+        const base = bestBaseline(session, c, res.loadoutPower);
         return score === null || base === null ? null : w.self.power + score - base;
       },
       /* borg-junk.c:1319-1357 keeps the item in the pack during removal. */
@@ -18379,8 +18451,14 @@ function contextSpellSeam(ctx, resolveActivation) {
     /* Every borg_notice call passes check_charge = false (borg-trait.c). */
     equipsItem: (act) => resolveActivation?.(ctx, act, false) ?? false,
     equipsRing: (sval) => borgEquipsRing(ctx, sval),
-    /* spell_chance(0): the class's first spell, scored as the Borg scores a cast. */
+    /* spell_chance(0) (borg-power.c:321): the game's own live failure for class
+     * spell 0 - mana shortfall, fear, stun and amnesia included - which the
+     * view carries as SpellView.chance. Without it, the Borg's own estimate. */
     spellChance: () => {
+      for (const book of ctx.view.spellbooks()) {
+        const first2 = book.spells.find((s) => s.sidx === 0);
+        if (first2 && typeof first2.chance === "number") return first2.chance;
+      }
       const first = ratingsForClass(ctx.world.self.trait[25 /* CLASS */] ?? -1)?.[0];
       return first ? borgSpellFailRate(ctx, first.spell, has2) : 100;
     },
@@ -18672,7 +18750,7 @@ var ActivationBook = class {
   kind(tval, sval) {
     return this.names.get(`k:${String(tval)}:${String(sval)}`) ?? null;
   }
-  /** Read the activations of every worn item that has one, for any source not read yet. */
+  /** Read the activations of every given item that has one (worn, carried or at home), for any source not read yet. */
   async ensure(api, equipment2) {
     const asks = /* @__PURE__ */ new Map();
     for (const item of equipment2) {
@@ -19263,7 +19341,8 @@ async function readWorld(api, reads) {
   const floorHere = (known.floorHere ?? []).map(adapt);
   const monsters = await monsterViews(known, reads);
   if (reads.truth !== null) await reads.races.ensure(reads.truth, monsters.map((monster) => monster.raceIndex));
-  await reads.activations.ensure(api, equipment2);
+  const homeStock = (known.stores ?? []).filter((store2) => store2.isHome).flatMap((store2) => store2.stock.map(adapt));
+  await reads.activations.ensure(api, [...equipment2, ...inventory, ...homeStock]);
   reads.loadouts.begin(gearSignature(known.inventory ?? [], known.equipment ?? [], known.stores ?? [], known.player));
   const width = known.level?.width ?? 0;
   const height = known.level?.height ?? 0;

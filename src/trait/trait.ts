@@ -44,6 +44,7 @@ import {
 import {
   ADJ_STR_HOLD,
   ADJ_STR_BLOW,
+  BORG_ADJ_CON_MHP,
   BORG_ADJ_DEX_BLOW,
   BORG_BLOWS_TABLE,
   BORG_ADJ_DEX_DIS,
@@ -135,8 +136,13 @@ export function borgNotice(ctx: BorgContext, opts: BorgTraitOpts = {}): void {
   const view = ctx.view;
   const p = view.player();
 
-  /* Fresh trait buffer sized to BI_MAX (memset borg.trait, trait.c:2829). */
+  /* Fresh trait buffer sized to BI_MAX (memset borg.trait, trait.c:2829). The C
+   * clears and refills borg.trait in place, so everything notice consults on
+   * the way - borg_spell_legal_fail reading BI_MAXSP, BI_CLEVEL, BI_FAIL1/2,
+   * fear and amnesia - sees this notice's values, not the last one's. Publish
+   * the buffer now for the same reason; it is published again at the end. */
   const t = new Array<number>(BI_MAX).fill(0);
+  ctx.world.self.trait = t;
   const previous = getDerived(ctx.world);
   const d = resetDerived(ctx.world);
 
@@ -587,6 +593,15 @@ function borgNoticeEquipment(c: Ctx): void {
 
   const strIdx = t[BI.STR_INDEX]!;
   const dexIdx = t[BI.DEX_INDEX]!;
+
+  /* 'Hitpoints' as the C values them (borg-trait.c:1836): the rolled
+   * player_hp[lev-1] plus the CON bonus at this notice's CON index, so a
+   * loadout with different CON is worth different HP. Only with the rolled
+   * figure in the frame; otherwise the game's max HP for the gear worn. */
+  const rolledHp = c.R.frame.playerHp;
+  if (rolledHp !== undefined) {
+    t[BI.HP_ADJ] = rolledHp + Math.trunc((BORG_ADJ_CON_MHP[t[BI.CON_INDEX]!]! * t[BI.CLEVEL]!) / 100);
+  }
 
   /* Spell-point / fail adjustment for casters (trait.c:1841). */
   if (c.spellStat >= 0) {
