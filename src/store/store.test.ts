@@ -731,5 +731,29 @@ describe("the home plan inside Neo's store screen (#83)", () => {
     equipment[0] = null;
     expect(borgWearBestOutside(ctx, buildStoreDeps(session))).toMatchObject({ code: "wield", args: { handle: 11 } });
   });
+
+  it("finishes the plan's wear before the ladder refills the emptied slot", () => {
+    /* Zoo seed 1381972077: after the plan's takeoff, "wear a weapon if wearing
+     * none" (borg-think-dungeon.c:1582) re-wielded first, and the plan took it
+     * off again, over and over. In the C the store loop runs the takeoff and
+     * the wear with no rung between them. */
+    const planned = item({ handle: 30, tval: TV.SWORD, sval: 3, value: 100 });
+    const preferred = item({ handle: 31, tval: TV.SWORD, sval: 4, value: 100 });
+    /* A lit torch and food, so the "back in bad shape" rung stays out of it. */
+    const torch = item({ handle: 32, tval: TV.LIGHT, sval: 1, value: 1, timeout: 2000, modifiers: [{ code: "LIGHT", value: 2 }] } as never);
+    const food = item({ handle: 33, tval: TV.FOOD, sval: SVAL.food.ration, number: 5, value: 3 });
+    const equipment: Array<ItemView | null> = Array(12).fill(null);
+    equipment[5] = torch;
+    const { ctx } = makeCtx({ inventory: [planned, preferred, food], equipment, power: 1000 });
+    ctx.world.wipeLevel(0);
+    const session = buildThinkSession({ loadoutPower: (_c, change) =>
+      (change.wield ?? []).some((ref) => ref.from === "gear" && ref.handle === 31) ? 2000 : 1000 });
+    installThinkSession(ctx.world, session);
+    borgNotice(ctx);
+    perceive(ctx.world, ctx.view, makePerceiveMemo());
+    ctx.world.self.goal.doBest = false;
+    ctx.world.self.goal.bestItems = [null, { tval: TV.SWORD, sval: 3, pval: 0, home: false }, null, null, null, null, null, null, null, null, null, null];
+    expect(think(ctx)).toMatchObject({ code: "wield", args: { handle: 30 } });
+  });
 });
 
