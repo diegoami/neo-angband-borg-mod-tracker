@@ -71,10 +71,17 @@ canonical JSON plus LF.
 
 `run.json` `outcome` is one of `death`, `turn_cap`, `stalled`, `borg_stopped`,
 `decision_cap` or `harness_failure`. Death, stall, the caps and ordinary stops
-exit 0. `harness_failure` exits 1: a bundle or content hash mismatch, an engine
-stop without a controller release, or a Core item-choice request (the tool never
-chooses an item). A process timeout is classified by the zoo, not here, and the
-streamed files keep the evidence. A timeout or stall is never a death.
+exit 0. `harness_failure` exits 1: a bundle or content hash mismatch, or an
+engine stop without a controller release. A process timeout is classified by the
+zoo, not here, and the streamed files keep the evidence. A timeout or stall is
+never a death.
+
+A Core item-choice request (`state.itemRequest`, which a host turns into an API2
+`item` prompt) is recorded in `commands.jsonl` as `{"type":"prompt","kind":"item",
+"answer":"cancel"}` and cancelled. The Borg names the item on the command itself
+(`args.tgtitem`), so a request comes only from a command that named none, and the
+Borg's answer to that prompt is cancel. Before neo-angband-borg-mod-tracker#85 the
+tool stopped such a game as a `harness_failure`.
 
 A numeric seed names a different game from C's. These are plumbing outputs; they
 say nothing about how well the Borg plays.

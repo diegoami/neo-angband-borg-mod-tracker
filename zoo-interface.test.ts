@@ -63,6 +63,13 @@ describe("docs/ZOO-INTERFACE.md and tools/zoo", () => {
     }
   });
 
+  it("records and cancels a Core item-choice request instead of failing the run (#85)", () => {
+    expect(session).not.toContain("item-choice UI unsupported by this measurement host");
+    expect(session).toContain('type: "prompt"');
+    expect(session).toContain('answer: "cancel"');
+    expect(doc).toContain('{"type":"prompt","kind":"item",');
+  });
+
   it("names the engine commit in session.json", () => {
     const engine = (JSON.parse(read("./session.json")) as { baselines: { engine: string } }).baselines.engine;
     expect(doc).toContain(engine);

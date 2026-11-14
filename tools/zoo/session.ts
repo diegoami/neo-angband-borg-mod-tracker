@@ -352,10 +352,22 @@ export async function run(o: any) {
 			if (store !== null && state.stores?.[store])
 				core.observeKnownStore(state, state.stores[store]!, deps);
 			observe();
-			if (state.itemRequest)
-				throw new Error(
-					"Original Core requested item-choice UI unsupported by this measurement host",
-				);
+			/* FORK diegoami/neo-angband-borg-mod-tracker#85: an item-choice request
+			 * (state.itemRequest) is what a host turns into an API2 "item" prompt.
+			 * The Borg names its item on the command (args.tgtitem), so a request
+			 * reaches here only for a command that named none, and the Borg's
+			 * answer to that prompt is cancel (src/api2/controller.ts promptAnswer).
+			 * Record it and cancel, as a host relaying that answer would. */
+			if (state.itemRequest) {
+				event({
+					type: "prompt",
+					turn: state.turn,
+					kind: "item",
+					label: state.itemRequest.prompt,
+					answer: "cancel",
+				});
+				state.itemRequest = null;
+			}
 			if (
 				state.isDead ||
 				status === core.LOOP_STATUS.DEAD ||
@@ -434,7 +446,7 @@ export async function run(o: any) {
 			host: "original createApi2Host/createIntentGate/buildInputSnapshot",
 			store: "Core transaction commands; adapter modal lifecycle",
 			unsupported:
-				"item-choice UI, frontend rendering and browser modal flows",
+				"frontend rendering and browser modal flows; an item-choice request is recorded and cancelled",
 			grants: [...o.manifest.capabilities, "engine:access"],
 			truth: "original perceived monster/race truth only; no actual map/store stock",
 		},
