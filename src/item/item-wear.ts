@@ -281,9 +281,44 @@ export function borgBestStuff(
     goal.doBest = false;
   }
 
-  /* borg_one_step_wearing_best (borg-item-wear.c:1077-1200) emits one action. */
+  /* borg_one_step_wearing_best (borg-item-wear.c:1077-1200) emits one action.
+   * FORK diegoami/neo-angband-borg-mod-tracker#83: the C wears and takes off
+   * gear with the home screen open; Neo's store phase accepts only buy, sell
+   * and exit. A takeoff or wear step therefore leaves the store, plan kept,
+   * and borgWearBestOutside carries it out in town. */
+  const step = bestStep(ctx, stores);
+  if (step === "done") return null;
+  if (step === null) return null;
+  if (!step.inStore) return ctx.act.shopExit();
+  step.commit();
+  return step.cmd;
+}
+
+/**
+ * The plan's next step outside the store (#83): a takeoff or wear the home
+ * screen could not take. A step that needs the home waits for the next home
+ * visit, which doBest asks for.
+ */
+export function borgWearBestOutside(ctx: BorgContext, stores?: StoreDeps): AgentCommand | null {
+  if (!ctx.world.self.goal.bestItems) return null;
+  const step = bestStep(ctx, stores);
+  if (step === "done" || step === null) return null;
+  if (step.inStore) {
+    ctx.world.self.goal.doBest = true;
+    return null;
+  }
+  step.commit();
+  return step.cmd;
+}
+
+type BestStep = { cmd: AgentCommand; inStore: boolean; commit: () => void };
+
+/** The plan's next action, without consuming it; "done" once nothing is left. */
+function bestStep(ctx: BorgContext, stores?: StoreDeps): BestStep | "done" | null {
+  const goal = ctx.world.self.goal;
   const plan = goal.bestItems;
   if (!plan) return null;
+  const none = (): void => undefined;
   for (let n = 0; n < plan.length; n++) {
     const choice = plan[n];
     if (!choice) continue;
@@ -293,27 +328,25 @@ export function borgBestStuff(
     if (choice.home) {
       if (worn?.number) {
         if (borgHomeFull(ctx, stores)) continue;
-        return ctx.act.shopSell(worn.handle, worn.number);
+        return { cmd: ctx.act.shopSell(worn.handle, worn.number), inStore: true, commit: none };
       }
       if (borgInventoryFull(ctx, stores)) continue;
       const item = homeWares(ctx).find(matches);
       if (!item) return null;
-      choice.home = false;
-      return ctx.act.shopBuy(item.index, 1);
+      return { cmd: ctx.act.shopBuy(item.index, 1), inStore: true, commit: () => { choice.home = false; } };
     }
     if (worn?.number) {
       if (borgInventoryFull(ctx, stores)) continue;
-      return ctx.act.takeoff(worn.handle);
+      return { cmd: ctx.act.takeoff(worn.handle), inStore: false, commit: none };
     }
     const item = [...packItems(ctx), ...ctx.view.equipment().filter((entry): entry is ItemView => entry !== null)].find(matches);
     if (!item) return null;
-    plan[n] = null;
-    return ctx.act.wear(item.handle);
+    return { cmd: ctx.act.wear(item.handle), inStore: false, commit: () => { plan[n] = null; } };
   }
   /* borg-item-wear.c:1105-1112 retries plans blocked by full storage. */
   goal.doBest = plan.some((choice) => choice !== null);
   delete goal.bestItems;
-  return null;
+  return "done";
 }
 
 /* borg-item.h:134-135 orders the tight ring before the loose ring. */

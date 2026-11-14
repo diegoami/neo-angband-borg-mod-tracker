@@ -77,6 +77,7 @@ import {
   borgMaintainLight,
   borgUseThings,
   borgWearStuff,
+  borgWearBestOutside,
   borgSwapRings,
   borgWearRings,
   borgRemoveStuff,
@@ -894,8 +895,11 @@ export function borgThinkDungeon(
     if (cmd) return cmd;
   }
 
-  /* Wear/swap gear (:1601-1607). */
+  /* Wear/swap gear (:1601-1607). First the home plan's takeoff or wear that
+   * the store screen could not take (FORK #83, see borgWearBestOutside). */
   {
+    const best = T(ctx, BI.CDEPTH) === 0 ? borgWearBestOutside(ctx, buildStoreDeps(session)) : null;
+    if (best) return best;
     const cmd = borgWearStuff(ctx, itemDeps) ?? borgSwapRings(ctx, itemDeps) ?? borgWearRings(ctx, itemDeps);
     if (cmd) return cmd;
   }
