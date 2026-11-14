@@ -28,6 +28,7 @@ import definition from "BORG/plugin.ts";
 import { borgCfg, buffTimerSafetyNetEnabled } from "BORG/src/trait/config.ts";
 import { loadPack } from "./pack.ts";
 import { installMessageHost } from "./message-host.mjs";
+import { alignedBirth, C_POINT_BUY_PROFILE } from "./alignment/profile.mjs";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
@@ -44,8 +45,18 @@ const canonical = (v: any): string =>
 					.join(",") +
 				"}";
 export async function run(o: any) {
-	const pack = loadPack(o.packDir),
-		game = core.startGame(pack, {
+	const pack = loadPack(o.packDir);
+	const birthInputs = alignedBirth(core, pack, o.birthProfile, o.race, o.class);
+	const alignmentRng = o.birthProfile ? new core.Rng(o.seed) : null;
+	const rngObservations: any[] = [];
+	if (alignmentRng) {
+		(globalThis as any).__observeBirthRng = (stage: string, rng: any) =>
+			rngObservations.push({ stage, ...rng.getState() });
+		(globalThis as any).__observeBirthRng("seeded", alignmentRng);
+	}
+	const game = core.startGame(pack, {
+			...birthInputs,
+			...(alignmentRng ? { rng: alignmentRng } : {}),
 			seed: o.seed,
 			depth: 0,
 			...(o.race ? { raceName: o.race } : {}),
@@ -258,19 +269,34 @@ export async function run(o: any) {
 			sval: obj.sval,
 			number: obj.number,
 			weight: obj.weight,
+			timeout: obj.timeout, dd: obj.dd, ds: obj.ds,
+			toH: obj.toH, toD: obj.toD, toA: obj.toA,
 		}));
 
 	const birth = {
 		race: p.race.name,
 		class: p.cls.name,
-		method: "ordinary startGame roller; assigned race/class only",
+		method: o.birthProfile ? C_POINT_BUY_PROFILE.birth_method : "ordinary startGame roller; assigned race/class only",
+		profile: o.birthProfile ?? null,
 		stats: [...p.statBirth],
 		options: state.options?.snapshot().birth ?? {},
 		inventory: gear(),
 		gold: p.au,
 		hp: p.chp,
 		maxHp: p.mhp,
+		sp: p.csp, maxSp: p.msp, grid: { ...state.actor.grid },
 	};
+	if (alignmentRng) {
+		const terrain = [];
+		for (let y = 0; y < state.chunk.height; y++)
+			for (let x = 0; x < state.chunk.width; x++)
+				terrain.push(state.chunk.feat({ x, y }));
+		o.onState({ kind: "alignment", profile: C_POINT_BUY_PROFILE.id, birth,
+			options: state.options.snapshot(), rngObservations,
+			worldRng: alignmentRng.getState(),
+			terrain: { height: state.chunk.height, width: state.chunk.width, terrain } });
+		delete (globalThis as any).__observeBirthRng;
+	}
 	let lastPeriodic = 0,
 		lastDepth = 0;
 	const snapshot = (kind: string) => {
@@ -303,6 +329,11 @@ export async function run(o: any) {
 			lastDepth = s.depth;
 		}
 	};
+	// FORK measurement profile only: match C borg-init.c:418/427's effective
+	// pickup options on activation. Historical/default runs remain unchanged.
+	if (o.birthProfile)
+		for (const [name, value] of Object.entries(C_POINT_BUY_PROFILE.activeOptions))
+			state.options.set(name, value);
 	let error: any = null,
 		started = false;
 	try {
@@ -322,6 +353,7 @@ export async function run(o: any) {
 		);
 		if (failure) throw new Error(failure);
 		o.onState(snapshot("birth"));
+		if (o.birthProfile) o.onState({ kind: "alignment-active", options: state.options.snapshot() });
 		while (
 			loopCalls < o.decisions &&
 			state.turn < o.turns &&

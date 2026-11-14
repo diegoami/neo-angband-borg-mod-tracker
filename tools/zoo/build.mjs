@@ -79,8 +79,26 @@ const source = readFileSync(join(tool, "session.ts"), "utf8")
 writeFileSync(join(out, "entry.ts"), source);
 cpSync(join(tool, "pack.ts"), join(out, "pack.ts"));
 cpSync(join(tool, "message-host.mjs"), join(out, "message-host.mjs"));
+mkdirSync(join(out, "alignment"));
+cpSync(join(tool, "alignment/profile.mjs"), join(out, "alignment/profile.mjs"));
 await build({
 	configFile: false,
+	// Optional read-only probes in the compiled Core copy; source stays pristine.
+	plugins: args["alignment-probes"] === "true" ? [{
+		name: "read-only-birth-observations",
+		transform(code, id) {
+			if (id !== engine + "/packages/core/dist/player/birth.js") return;
+			for (const [needle, tag] of [
+				["rollHp(player, rng);", "hp"],
+				["const ahw = rollAhw(race, rng);", "ahw"],
+				["const rolledHistory = generateHistory(options.historyChart, rng);", "history"],
+			]) {
+				if (!code.includes(needle)) throw new Error("Missing alignment probe site: " + needle);
+				code = code.replace(needle, `globalThis.__observeBirthRng?.('${tag}-before',rng); ${needle} globalThis.__observeBirthRng?.('${tag}-after',rng);`);
+			}
+			return code;
+		},
+	}] : [],
 	root: join(engine, "packages/web"),
 	logLevel: "warn",
 	define: {
@@ -137,6 +155,7 @@ writeFileSync(
 	JSON.stringify(
 		{
 			schema: "neo-original-build@1",
+			alignmentProbes: args["alignment-probes"] === "true",
 			versions: Object.fromEntries(
 				["core", "content", "mod-sdk"].map((n) => [
 					n,
@@ -195,7 +214,7 @@ writeFileSync(
 					.map((f) => [f, sha(join(out, "pack", f))]),
 			),
 			toolSha256: Object.fromEntries(
-				["session.ts", "pack.ts", "message-host.mjs", "build.mjs", "run.mjs"].map((f) => [
+				["session.ts", "pack.ts", "message-host.mjs", "build.mjs", "run.mjs", "alignment/profile.mjs"].map((f) => [
 					f,
 					sha(join(tool, f)),
 				]),

@@ -36,6 +36,7 @@ const states = openSync(join(out, "states.jsonl"), "wx"),
 const messageFile = openSync(join(out, "messages.jsonl"), "wx");
 const input = {
 	seed: Number(a.seed),
+	birthProfile: a["birth-profile"],
 	race: a.race,
 	class: a.class,
 	turns: Number(a.turns ?? 100000),
