@@ -17170,6 +17170,10 @@ function borgThinkDungeon(ctx, session) {
     const cmd = borgPlayMagic(ctx, false);
     if (cmd) return cmd;
   }
+  {
+    const best = T(ctx, 105 /* CDEPTH */) === 0 ? borgWearBestOutside(ctx, buildStoreDeps(session)) : null;
+    if (best) return best;
+  }
   if (borgWieldIsDigger(ctx) || !borgHasWeapon(ctx)) {
     const cmd = borgWearStuff(ctx, itemDeps);
     if (cmd) return cmd;
@@ -17183,8 +17187,6 @@ function borgThinkDungeon(ctx, session) {
     if (cmd) return cmd;
   }
   {
-    const best = T(ctx, 105 /* CDEPTH */) === 0 ? borgWearBestOutside(ctx, buildStoreDeps(session)) : null;
-    if (best) return best;
     const cmd = borgWearStuff(ctx, itemDeps) ?? borgSwapRings(ctx, itemDeps) ?? borgWearRings(ctx, itemDeps);
     if (cmd) return cmd;
   }
