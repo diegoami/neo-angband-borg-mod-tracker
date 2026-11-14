@@ -236,7 +236,7 @@ export function borgBestStuff(
      * search slot by slot (coordinate ascent): in the C slot order, try each
      * candidate for one slot with the other slots held, keep a strictly better
      * score (the C keeps the current item on a tie by visiting it first), and
-     * repeat until a full pass changes nothing. When the slots' contributions are
+     * repeat until a full pass changes nothing, for at most twelve passes. When the slots' contributions are
      * independent that reaches the C's optimum; where they interact (a change
      * that only pays together with another) it can stop where the C would not.
      */

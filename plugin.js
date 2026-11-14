@@ -10244,6 +10244,14 @@ function applyLoadoutChange(ctx, change) {
     if (displaced) inventory.push(displaced);
     equipment2[slot] = item;
   };
+  if (change.copyInto) {
+    for (const { item: ref, slot } of change.wieldAt ?? []) {
+      const source = ref.from === "store" ? ctx.view.stores()[ref.store]?.stock[ref.index] : [...ctx.view.equipment(), ...ctx.view.inventory()].find((item) => item?.handle === ref.handle) ?? void 0;
+      if (!source) return null;
+      equipment2[slot] = { ...source, number: 1 };
+    }
+    return { equipment: equipment2, inventory };
+  }
   const placed = [];
   for (const { item: ref, slot } of change.wieldAt ?? []) {
     const item = take(ref, 1);
@@ -10306,23 +10314,32 @@ function borgNoticeWithout(ctx, handle) {
   return reduced;
 }
 function borgSimulatePower(ctx, change, opts = {}) {
-  const answer = localAnswer(ctx, change, opts) ?? ctx.view.simulateLoadout?.(change);
+  const local = localAnswer(ctx, change, opts);
+  const { copyInto, ...engineChange } = change;
+  const answer = local?.answer ?? ctx.view.simulateLoadout?.(engineChange);
   if (!answer) return null;
+  const simOpts = local ? { ...opts, frame: local.frame } : opts;
   const simCtx = {
     ...ctx,
     world: shadowWorld(ctx.world),
     view: shadowView(ctx.view, answer)
   };
   inheritWeaponSwap(simCtx.world, ctx.world);
-  borgNotice(simCtx, { ...opts, noticeSwap: false });
-  return borgPower(simCtx, opts);
+  borgNotice(simCtx, { ...simOpts, noticeSwap: copyInto === true });
+  return borgPower(simCtx, simOpts);
 }
 function localAnswer(ctx, change, opts) {
   const frame = resolveOpts(opts, ctx).frame;
   if (frame.skills === void 0 || frame.skillsPerTen === void 0) return null;
   const loadout = applyLoadoutChange(ctx, change);
   if (!loadout) return null;
-  return { after: { player: ctx.view.player(), equipment: loadout.equipment, inventory: loadout.inventory } };
+  const player = ctx.view.player();
+  const conIndex = ctx.world.self.trait[19 /* CON_INDEX */] ?? 0;
+  const playerHp = frame.playerHp ?? player.maxHp - Math.trunc((BORG_ADJ_CON_MHP[conIndex] ?? 0) * player.level / 100);
+  return {
+    answer: { after: { player, equipment: loadout.equipment, inventory: loadout.inventory } },
+    frame: { ...frame, playerHp }
+  };
 }
 function borgSimulateDangerAnswer(ctx, change) {
   const answer = ctx.view.simulateLoadout?.(change);
@@ -16275,6 +16292,14 @@ function simulationBaseline(session, ctx, resolve) {
   BASELINES.set(session, { ctx, base });
   return base;
 }
+var BEST_BASELINES = /* @__PURE__ */ new WeakMap();
+function bestBaseline(session, ctx, resolve) {
+  const cached = BEST_BASELINES.get(session);
+  if (cached && cached.ctx === ctx) return cached.base;
+  const base = resolve(ctx, { copyInto: true }) ?? null;
+  BEST_BASELINES.set(session, { ctx, base });
+  return base;
+}
 function analyzedItemValue(session, item) {
   if (isCursed(item)) return perItemValue(item);
   if (!item.aware) return guessedValue(item);
@@ -16339,9 +16364,11 @@ function buildItemDeps(session) {
         const base = simulationBaseline(session, c, res.loadoutPower);
         return base === null ? null : w.self.power + score - base;
       },
+      /* borg_best_stuff_aux scores copy-in trials noticed with notice_swap
+       * true; the baseline is the same trial with nothing copied in. */
       bestEval: (wieldAt) => {
-        const score = res.loadoutPower(c, { wieldAt });
-        const base = simulationBaseline(session, c, res.loadoutPower);
+        const score = res.loadoutPower(c, { wieldAt, copyInto: true });
+        const base = bestBaseline(session, c, res.loadoutPower);
         return score === null || base === null ? null : w.self.power + score - base;
       },
       /* borg-junk.c:1319-1357 keeps the item in the pack during removal. */
@@ -18673,7 +18700,7 @@ var ActivationBook = class {
   kind(tval, sval) {
     return this.names.get(`k:${String(tval)}:${String(sval)}`) ?? null;
   }
-  /** Read the activations of every worn item that has one, for any source not read yet. */
+  /** Read the activations of every given item that has one (worn, carried or at home), for any source not read yet. */
   async ensure(api, equipment2) {
     const asks = /* @__PURE__ */ new Map();
     for (const item of equipment2) {
@@ -19264,7 +19291,8 @@ async function readWorld(api, reads) {
   const floorHere = (known.floorHere ?? []).map(adapt);
   const monsters = await monsterViews(known, reads);
   if (reads.truth !== null) await reads.races.ensure(reads.truth, monsters.map((monster) => monster.raceIndex));
-  await reads.activations.ensure(api, equipment2);
+  const homeStock = (known.stores ?? []).filter((store2) => store2.isHome).flatMap((store2) => store2.stock.map(adapt));
+  await reads.activations.ensure(api, [...equipment2, ...inventory, ...homeStock]);
   reads.loadouts.begin(gearSignature(known.inventory ?? [], known.equipment ?? [], known.stores ?? [], known.player));
   const width = known.level?.width ?? 0;
   const height = known.level?.height ?? 0;

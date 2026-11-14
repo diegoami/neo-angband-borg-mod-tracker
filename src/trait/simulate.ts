@@ -75,7 +75,8 @@ import { BI } from "./trait-index.js";
 import { borgNotice } from "./trait.js";
 import { inheritWeaponSwap } from "./state.js";
 import { borgPower } from "./power.js";
-import { resolveOpts, type BorgTraitOpts } from "./config.js";
+import { resolveOpts, type BorgFrame, type BorgTraitOpts } from "./config.js";
+import { BORG_ADJ_CON_MHP } from "./tables.js";
 import { applyLoadoutChange } from "./local-loadout.js";
 import { borgDanger } from "../danger/danger.js";
 import { getDangerState } from "../danger/state.js";
@@ -112,6 +113,14 @@ export interface BorgLoadoutChange {
     readonly handle: number;
     readonly number?: number;
   }[];
+  /**
+   * Port-local, not part of the engine's LoadoutChange: score `wieldAt` the way
+   * borg_best_stuff_aux does (borg-item-wear.c:1304), copying each candidate
+   * into its slot while its pack or home original stays where it is and the
+   * displaced item is set aside, and noticing with notice_swap true as its
+   * leaf does (:1221). Stripped before the engine is asked.
+   */
+  readonly copyInto?: boolean;
 }
 
 /** The three views of the resulting loadout the ported self-model reads. */
@@ -198,8 +207,11 @@ export function borgSimulatePower(
   /* With the race/class frame, notice derives everything a loadout changes from
    * the items, so the loadout is built and scored in-process, as the C does
    * (borg-item-wear.c:1221-1224). Otherwise ask the engine. */
-  const answer = localAnswer(ctx, change, opts) ?? (ctx.view as LoadoutCapableView).simulateLoadout?.(change);
+  const local = localAnswer(ctx, change, opts);
+  const { copyInto, ...engineChange } = change;
+  const answer = local?.answer ?? (ctx.view as LoadoutCapableView).simulateLoadout?.(engineChange);
   if (!answer) return null;
+  const simOpts: BorgTraitOpts = local ? { ...opts, frame: local.frame } : opts;
 
   const simCtx: BorgContext = {
     ...ctx,
@@ -211,18 +223,35 @@ export function borgSimulatePower(
   /* The same two calls, in the same order, the controller makes every think
    * (controller.ts): notice fills the trait array from the view, power scores
    * it. Running anything less here would score a half-built self-model. */
-  /* borg_notice(false) at borg-item-wear.c:339, 602: the backup is not rescored. */
-  borgNotice(simCtx, { ...opts, noticeSwap: false });
-  return borgPower(simCtx, opts);
+  /* borg_notice(false) at borg-item-wear.c:339, 602: the backup is not rescored;
+   * borg_best_stuff_aux's leaf notices with true (:1221). */
+  borgNotice(simCtx, { ...simOpts, noticeSwap: copyInto === true });
+  return borgPower(simCtx, simOpts);
 }
 
-/** The loadout built from the Borg's own item views, when notice can derive it. */
-function localAnswer(ctx: BorgContext, change: BorgLoadoutChange, opts: BorgTraitOpts): BorgLoadoutAnswer | null {
+/**
+ * The loadout built from the Borg's own item views, when notice can derive it,
+ * with the frame to notice it under. The frame gains the rolled hitpoints,
+ * player_hp[lev-1]: the game's max HP for the gear actually worn less the CON
+ * bonus at the live CON index (calc_hitpoints, exact above its lev+1 floor),
+ * so the loadout's own CON decides its HP as in the C (borg-trait.c:1836).
+ */
+function localAnswer(
+  ctx: BorgContext,
+  change: BorgLoadoutChange,
+  opts: BorgTraitOpts,
+): { answer: BorgLoadoutAnswer; frame: BorgFrame } | null {
   const frame = resolveOpts(opts, ctx).frame;
   if (frame.skills === undefined || frame.skillsPerTen === undefined) return null;
   const loadout = applyLoadoutChange(ctx, change);
   if (!loadout) return null;
-  return { after: { player: ctx.view.player(), equipment: loadout.equipment, inventory: loadout.inventory } };
+  const player = ctx.view.player();
+  const conIndex = ctx.world.self.trait[BI.CON_INDEX] ?? 0;
+  const playerHp = frame.playerHp ?? player.maxHp - Math.trunc(((BORG_ADJ_CON_MHP[conIndex] ?? 0) * player.level) / 100);
+  return {
+    answer: { after: { player, equipment: loadout.equipment, inventory: loadout.inventory } },
+    frame: { ...frame, playerHp },
+  };
 }
 
 /** borg-item-wear.c:874,955 rejects a ring swap that raises local danger. */

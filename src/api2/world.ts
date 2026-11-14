@@ -238,7 +238,11 @@ export async function readWorld(api: Api2Reads, reads: WorldReads): Promise<Worl
   const floorHere = (known.floorHere ?? []).map(adapt);
   const monsters = await monsterViews(known, reads);
   if (reads.truth !== null) await reads.races.ensure(reads.truth, monsters.map((monster) => monster.raceIndex));
-  await reads.activations.ensure(api, equipment);
+  /* The in-process loadout scoring asks borg_equips_item about pack and home
+   * items it tries on, as the C counts a trial loadout's activations
+   * (borg-trait.c:1399), so their activation identities are read too. */
+  const homeStock = (known.stores ?? []).filter((store) => store.isHome).flatMap((store) => store.stock.map(adapt));
+  await reads.activations.ensure(api, [...equipment, ...inventory, ...homeStock]);
   reads.loadouts.begin(gearSignature(known.inventory ?? [], known.equipment ?? [], known.stores ?? [], known.player));
 
   const width = known.level?.width ?? 0;

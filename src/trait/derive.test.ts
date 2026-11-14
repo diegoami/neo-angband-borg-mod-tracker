@@ -24,6 +24,7 @@ import { BI } from "./trait-index.js";
 import { borgNotice } from "./trait.js";
 import { frameBook } from "./frame.js";
 import { borgSimulatePower } from "./simulate.js";
+import { applyLoadoutChange } from "./local-loadout.js";
 import { TV } from "../item/svals.js";
 
 const DIR = dirname(createRequire(import.meta.url).resolve("@rpgm-tools/neo-angband-content/pack/class.json"));
@@ -128,5 +129,38 @@ describe("hitpoints as the C values them (borg-trait.c:1836)", () => {
   it("follows the CON the loadout gives: 299 + adj_con_mhp * 30 / 100", () => {
     expect(hp(true)).toBe(299 + 30);
     expect(hp(false)).toBe(299 + 1);
+  });
+});
+
+describe("the home search's trial loadouts (#75 review P1, P6)", () => {
+  const gear = (over: Partial<ItemView> & { handle: number; tval: number }): ItemView => ({ kindKey: "", aware: true, nameColor: "", label: "item", sval: 1, pval: 0, number: 1, weight: 10, ac: 0, toA: 0, toH: 0, toD: 0, dd: 0, ds: 0, ego: false, artifact: false, flags: [], modifiers: [], brands: [], slays: [], resists: [], curses: [], timeout: 0, ...over } as unknown as ItemView);
+
+  it("copies the candidate in as borg_best_stuff_aux does: the original stays, the displaced item is not carried", () => {
+    const worn = gear({ handle: 1, tval: TV.HARD_ARMOR, weight: 500 });
+    const spare = gear({ handle: 2, tval: TV.SOFT_ARMOR, weight: 100 });
+    const equipment: Array<ItemView | null> = Array(12).fill(null);
+    equipment[6] = worn;
+    const ctx: BorgContext = { world: new BorgWorld(), view: { ...makeScenarioView({ player: { race: "Human", cls: "Warrior" } }), equipment: () => equipment, inventory: () => [spare] }, act: makeFakeActions(), rng: makeBorgRng(), frame: FRAME };
+    const trial = applyLoadoutChange(ctx, { wieldAt: [{ item: { from: "gear", handle: 2 }, slot: 6 }], copyInto: true })!;
+    expect(trial.equipment[6]?.handle).toBe(2);
+    expect(trial.inventory.map((item) => item.handle)).toEqual([2]);
+    /* Control: an ordinary wield moves the item and carries the displaced one. */
+    const moved = applyLoadoutChange(ctx, { wieldAt: [{ item: { from: "gear", handle: 2 }, slot: 6 }] })!;
+    expect(moved.inventory.map((item) => item.handle)).toEqual([1]);
+  });
+
+  it("values the trial's HP by its CON: a +5 CON ring is not traded for a +1 speed ring", () => {
+    /* Level-30 Human Warrior, natural CON 10, max HP 329 with the CON ring:
+     * rolled player_hp[29] is 329 - 30 = 299, so without the ring HP is 300. */
+    const conRing = gear({ handle: 3, tval: TV.RING, modifiers: [{ code: "CON", value: 5 }] as never });
+    const speedRing = gear({ handle: 4, tval: TV.RING, modifiers: [{ code: "SPEED", value: 1 }] as never });
+    const equipment: Array<ItemView | null> = Array(12).fill(null);
+    equipment[2] = conRing;
+    const view = { ...makeScenarioView({ player: { race: "Human", cls: "Warrior", level: 30, maxLevel: 30, maxHp: 329, hp: 329, stats: [10, 10, 10, 10, 10] } }), equipment: () => equipment, inventory: () => [speedRing] };
+    const ctx: BorgContext = { world: new BorgWorld(), view, act: makeFakeActions(), rng: makeBorgRng(), frame: FRAME };
+    borgNotice(ctx);
+    const now = borgSimulatePower(ctx, { copyInto: true })!;
+    const swapped = borgSimulatePower(ctx, { wieldAt: [{ item: { from: "gear", handle: 4 }, slot: 2 }], copyInto: true })!;
+    expect(swapped).toBeLessThan(now);
   });
 });
