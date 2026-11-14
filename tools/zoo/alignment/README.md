@@ -21,7 +21,7 @@ Build using Node26 and the usual built pinned engine/source checkouts:
 node tools/zoo/build.mjs --engine-dir ENGINE --borg-dir BORG \
   --engine-pin 06a2321ce30a414df20d1b20d486446e7688171c \
   --borg-pin 9c17cb0c582fe129008899491372787e91abdade \
-  --alignment-probes true --out FRESH_BUILD
+  --alignment-probes true --exact-tick-cap true --out FRESH_BUILD
 node tools/zoo/run.mjs --bundle FRESH_BUILD/bundle.mjs \
   --birth-profile c-point-buy-v1 --seed 303 --race Human --class Warrior \
   --turns 2000 --out FRESH_RUN
@@ -48,8 +48,9 @@ python tools/zoo/alignment/native-driver.py run \
   --seed 303 --race Human --cls Warrior --cap 2000 --out FRESH_NATIVE_RUN
 ```
 
-The completed pilot covers Human births in all nine classes, plus a repeat per
-engine, at2000ticks. It checks starting policy/options, not population survival
+The pilot covers Human births in all nine classes, plus a repeat per
+engine, with requested cap2000ticks. The exact-cap follow-up below corrects
+the initially observed Neo overrun. It checks starting policy/options, not population survival
 or every race. Native C's slot sentinel is its body slot count (12 for these
 Human births); the report normalizes that to Neo's -1 for pack items.
 
@@ -81,3 +82,20 @@ solution: call ordering, rejection counts and later actions can differ.
 The tools are not yet a dispatched catalogue specimen. A future cohort needs a
 new frozen suite/specimen with explicit toolkit/profile pins and separate owner
 approval. Do not reuse an old run ID or silently change a frozen birth rule.
+
+## Exact tick observer follow-up
+
+The initial after-loop pilot found Necromancer307 overshot the requested2000
+ticks to2596. Preserve that diagnostic run. `--exact-tick-cap true` now injects
+a measurement-only hook immediately after Core loop's `state.turn++`, matching
+the native observer's boundary. It unwinds this isolated run at the cap without
+changing player state or RNG. The hook is active only with an explicit birth
+profile; default runs retain their old behavior. Build-time checks refuse a
+missing/ambiguous instrumentation site. `turnCap.boundary` and
+`turnCap.guaranteedExact` record which contract ran.
+
+The corrected small pilot reuses the unchanged native exact-stop records and
+runs a new version of the Neo arm. Both versions remain available; do not
+replace the initial after-loop evidence. Before accepting the change, verify
+all10 new Neo runs stop at2000 and preserve their old pre-cap command prefix,
+and verify the no-profile control retains its original command hash.

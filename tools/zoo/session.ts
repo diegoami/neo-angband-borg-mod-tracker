@@ -334,6 +334,13 @@ export async function run(o: any) {
 	if (o.birthProfile)
 		for (const [name, value] of Object.entries(C_POINT_BUY_PROFILE.activeOptions))
 			state.options.set(name, value);
+	// Same observer boundary as native measure_tick: immediately after turn++.
+	// Unwind only this isolated measurement, without changing live game state.
+	const capStop = {};
+	if (o.birthProfile && o.exactTickCap)
+		(globalThis as any).__alignmentTickCap = (current: any) => {
+			if (current === state && state.turn >= o.turns) throw capStop;
+		};
 	let error: any = null,
 		started = false;
 	try {
@@ -363,7 +370,9 @@ export async function run(o: any) {
 			consumed = null;
 			inputNeeded = false;
 			const before = { ...state.actor.grid };
-			const status = core.runGameLoop(state, game.registry);
+			let status;
+			try { status = core.runGameLoop(state, game.registry); }
+			catch (e) { if (e === capStop) break; throw e; }
 			loopCalls++;
 			if (status === core.LOOP_STATUS.LEVEL_CHANGE) {
 				game.changeLevel(state.targetDepth ?? state.chunk.depth + 1);
@@ -419,6 +428,7 @@ export async function run(o: any) {
 	} catch (e) {
 		error = String((e as Error).stack ?? e);
 	} finally {
+		if (o.birthProfile && o.exactTickCap) delete (globalThis as any).__alignmentTickCap;
 		if (started) await definition.stop?.();
 		disposeApi2Host(mod);
 	}
@@ -469,9 +479,10 @@ export async function run(o: any) {
 			actual: state.turn,
 			overshoot: Math.max(0, state.turn - o.turns),
 			unit: "core_game_tick",
+			boundary: o.birthProfile && o.exactTickCap ? "exact-tick" : "after-loop",
 			normalActionTicks: 10,
 			exact: state.turn === o.turns,
-			guaranteedExact: false,
+			guaranteedExact: Boolean(o.birthProfile && o.exactTickCap),
 		},
 		profile: {
 			name: "original-source-developer-api2",

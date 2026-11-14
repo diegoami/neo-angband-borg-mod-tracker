@@ -81,12 +81,20 @@ cpSync(join(tool, "pack.ts"), join(out, "pack.ts"));
 cpSync(join(tool, "message-host.mjs"), join(out, "message-host.mjs"));
 mkdirSync(join(out, "alignment"));
 cpSync(join(tool, "alignment/profile.mjs"), join(out, "alignment/profile.mjs"));
+let exactTickSites = 0;
 await build({
 	configFile: false,
 	// Optional read-only probes in the compiled Core copy; source stays pristine.
-	plugins: args["alignment-probes"] === "true" ? [{
+	plugins: (args["alignment-probes"] === "true" || args["exact-tick-cap"] === "true") ? [{
 		name: "read-only-birth-observations",
 		transform(code, id) {
+			if (id === engine + "/packages/core/dist/game/loop.js" && args["exact-tick-cap"] === "true") {
+				const needle = "state.turn++;";
+				if (code.split(needle).length !== 2) throw new Error("Missing unique world tick boundary");
+				exactTickSites++;
+				return code.replace(needle, needle + " globalThis.__alignmentTickCap?.(state);");
+			}
+			if (args["alignment-probes"] !== "true") return;
 			if (id !== engine + "/packages/core/dist/player/birth.js") return;
 			for (const [needle, tag] of [
 				["rollHp(player, rng);", "hp"],
@@ -138,6 +146,8 @@ await build({
 	},
 });
 
+if (args["exact-tick-cap"] === "true" && exactTickSites !== 1) throw new Error("Exact tick observer was not installed");
+
 cpSync(join(engine, "packages/content/pack"), join(out, "pack"), {
 	recursive: true,
 });
@@ -156,6 +166,7 @@ writeFileSync(
 		{
 			schema: "neo-original-build@1",
 			alignmentProbes: args["alignment-probes"] === "true",
+			exactTickCap: args["exact-tick-cap"] === "true",
 			versions: Object.fromEntries(
 				["core", "content", "mod-sdk"].map((n) => [
 					n,

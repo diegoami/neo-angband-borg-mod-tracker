@@ -55,6 +55,7 @@ try {
 	const m = await import(pathToFileURL(bundle));
 	record = await m.run({
 		...input,
+		exactTickCap: build.exactTickCap === true,
 		packDir: join(dirname(bundle), "pack"),
 		manifest: build.borg.manifest.data,
 		onState: (r) => writeSync(states, JSON.stringify(r) + "\n"),
