@@ -50,7 +50,7 @@ export interface Goals {
   bestItems?: Array<{ tval: number; sval: number; pval: number; home: boolean } | null>;
 }
 
-/** A fresh, zeroed goal set. */
+/** A fresh goal set (borg_update, borg-update.c:2128). */
 export function makeGoals(): Goals {
   return {
     type: 0,

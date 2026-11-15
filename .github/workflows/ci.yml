@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: 26
           cache: pnpm
-      # Default remains the unchanged, unpatched published beta.3 tuple.
+      # Default remains the unpatched published beta.4 tuple with the required API2.1 views.
       - run: pnpm install --frozen-lockfile
       - run: node tools/check-session.mjs
       - if: ${{ hashFiles('tools/c-bugs.mjs') != '' }}

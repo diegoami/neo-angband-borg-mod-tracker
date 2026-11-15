@@ -18,10 +18,10 @@ format, not the Borg. The Borg is whatever `--borg-dir` points at, and
 ## Engine
 
 The Borg is built against the engine in `session.json` `baselines.engine`,
-currently `06a2321ce30a414df20d1b20d486446e7688171c` (`neostryder/neo-angband`).
-Engine package strings are 1.23.0-beta.3; the exact commit takes precedence.
+currently `d27ed50f9e3b650a43cceda5a0c007d03cc321df` (`neostryder/neo-angband`).
+Engine package strings are 1.23.0-beta.4; the exact commit takes precedence.
 Prepare the engine checkout once with
-`pnpm install --frozen-lockfile && pnpm build`. Use Node 22 or newer; this
+`pnpm install --frozen-lockfile && pnpm build`. Use Node 26 or newer; this
 repository's `package.json` asks for Node 26 for its own tests.
 
 ## Build once

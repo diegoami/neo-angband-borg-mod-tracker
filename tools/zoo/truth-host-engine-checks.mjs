@@ -15,9 +15,10 @@ try {
     } }],
     define: { "import.meta.env.DEV": "false", "import.meta.env.PROD": "true", "import.meta.env.MODE": '"production"' },
     resolve: { alias: [
+      { find: "@rpgm-tools/neo-angband-mod-sdk/backup-policy", replacement: join(engine, "packages/mod-sdk/dist/backup-policy.js") },
       { find: "@rpgm-tools/neo-angband-core/log", replacement: join(engine, "packages/core/dist/log.js") },
       { find: "@rpgm-tools/neo-angband-core", replacement: join(engine, "packages/core/dist/index.js") },
-      { find: "@rpgm-tools/neo-angband-mod-sdk", replacement: join(engine, "packages/mod-sdk/dist/index.js") },
+      { find: /^@rpgm-tools\/neo-angband-mod-sdk$/, replacement: join(engine, "packages/mod-sdk/dist/index.js") },
     ] }, ssr: { noExternal: true }, build: { ssr: join(borg, "tools/zoo/truth-host-engine.fixture.ts"),
       outDir: out, target: "node26", minify: false, rollupOptions: { output: { entryFileNames: "checks.mjs", inlineDynamicImports: true } } } });
   execFileSync(process.execPath, [join(out, "checks.mjs"), join(engine, "packages/content/pack"), join(borg, "manifest.json")], { stdio: "inherit" });

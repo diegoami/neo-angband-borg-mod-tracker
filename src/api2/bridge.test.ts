@@ -9,7 +9,7 @@
 
 import { describe, expect, it } from "vitest";
 import * as Core from "@rpgm-tools/neo-angband-core";
-import type { JsonRecord, KnownItem, LoadoutChange } from "@rpgm-tools/neo-angband-mod-sdk";
+import type { JsonRecord, KnownItem, LoadoutChange, LoadoutSimulation } from "@rpgm-tools/neo-angband-mod-sdk";
 import { fakeGame, knownWorld, type FakeGame } from "../harness-api2.js";
 import type { Scenario } from "../harness.js";
 import { createBridge, type Bridge } from "./host.js";
@@ -21,11 +21,16 @@ import { makeCoreResolvers } from "../resolvers.js";
 import { BorgWorld } from "../world/model.js";
 import { perceive, makePerceiveMemo } from "../perceive.js";
 import { makeBorgRng } from "../rng.js";
-import { makeFakeActions } from "../harness.js";
+import { makeFakeActions, makeScenarioView } from "../harness.js";
 import { borgNotice } from "../trait/trait.js";
 import { borgPower } from "../trait/power.js";
 import { BI } from "../trait/trait-index.js";
 import { SVAL } from "../item/svals.js";
+import { borgView } from "../core-api.js";
+import { borgFlowDarkInteresting, createFlowState } from "../flow/index.js";
+import { contextSpellSeam } from "../trait/spell-seam.js";
+import { borgSimulatePower } from "../trait/simulate.js";
+import { defaultSpellSeam } from "../trait/config.js";
 
 const SCENARIO: Scenario = {
   player: { grid: { x: 5, y: 5 }, depth: 3 },
@@ -41,6 +46,48 @@ async function primed(options: Parameters<typeof fakeGame>[0] = {}): Promise<{ g
   await bridge.prime();
   return { game, bridge };
 }
+
+describe("remembered terrain through the API 2 bridge (#415)", () => {
+  it.each([
+    [Core.FEAT.GRANITE, false, Core.FEAT.SECRET],
+    [Core.FEAT.CLOSED, false, Core.FEAT.OPEN],
+    [Core.FEAT.GRANITE, false, Core.FEAT.FLOOR],
+    [Core.FEAT.FLOOR, true, Core.FEAT.GRANITE],
+    [Core.FEAT.OPEN, true, Core.FEAT.CLOSED],
+  ] as const)("the map and exploration use remembered feature %i with passability %s instead of actual feature %i", async (feat, passable, actual) => {
+    const { game, bridge } = await primed({ scenario: { player: { grid: { x: 5, y: 5 } } } });
+    const base = knownWorld(game.view);
+    const known = { ...base, level: { ...base.level!, cells: [{ x: 6, y: 5,
+      remembered: { feat, passable, traps: [], objects: [], items: null },
+      visible: false, lit: null, seen: false, glow: false, vault: false,
+      actual: { feat: actual, traps: [], objects: [], monster: 0 },
+    }] } };
+    game.mod.view.world = async () => ({ ok: true, value: known });
+    const view = borgView((await bridge.readWorld())!.view);
+    const world = new BorgWorld();
+    perceive(world, view, makePerceiveMemo());
+    expect(view.cell(6, 5)).toMatchObject({ feat, passable });
+    expect(world.map.at(6, 5).feat).toBe(feat);
+    const ctx = { world, view, act: makeFakeActions(), rng: makeBorgRng() };
+    expect(borgFlowDarkInteresting(ctx, createFlowState(), 5, 6)).toBe(feat === Core.FEAT.CLOSED);
+    expect(game.truthCalls).toEqual([]);
+    await bridge.dispose();
+  });
+
+  it.each([false, true])("the illumination view requires current visibility %s", async (visible) => {
+    const { game, bridge } = await primed();
+    const base = knownWorld(game.view);
+    const known = { ...base, level: { ...base.level!, cells: [{ x: 6, y: 5,
+      remembered: { feat: Core.FEAT.FLOOR, passable: true, traps: [], objects: [], items: null },
+      visible, lit: visible ? true : null, seen: visible, glow: true, vault: false,
+    }] } };
+    game.mod.view.world = async () => ({ ok: true, value: known });
+    const view = borgView((await bridge.readWorld())!.view);
+    expect(view.cell(6, 5)?.glow).toBe(visible);
+    expect(view.cell(7, 5)).toMatchObject({ feat: Core.FEAT.NONE, passable: false, known: false, glow: false });
+    await bridge.dispose();
+  });
+});
 
 describe("the bridge", () => {
   it("will not prime without an engine, and says so", async () => {
@@ -102,6 +149,21 @@ describe("the bridge", () => {
     const seams = bridge.resolverInput();
     expect(seams.shopnum?.()).toBeNull();
     expect(seams.kindCost?.(75, 1)).toBeNull();
+  });
+
+  it("dispatches store decisions only while the store screen is open", async () => {
+    const { game, bridge } = await primed();
+    const known = knownWorld(game.view);
+    game.mod.view.world = async () => ({ ok: true, value: { ...known, player: { ...known.player!, shopnum: 3 } } });
+    await bridge.readWorld();
+    const seams = bridge.resolverInput();
+    bridge.setInput(game.input({ phase: "play" }));
+    expect(seams.shopnum?.()).toBeNull();
+    bridge.setInput(game.input({ phase: "store" }));
+    expect(seams.shopnum?.()).toBe(3);
+    bridge.setInput(game.input({ phase: "play" }));
+    expect(seams.shopnum?.()).toBeNull();
+    await bridge.dispose();
   });
 
   it("adapts published item costs, books, activations, dice, ego powers and negative flags to C inventory values", async () => {
@@ -212,6 +274,58 @@ describe("food cure wiring through published content", () => {
     known.inventory = [];
     borgNotice({ ...ctx, view: (await bridge.readWorld())!.view });
     expect(ctx.world.self.trait[trait]).toBe(0);
+    await bridge.dispose();
+  });
+});
+
+describe("activation credit for unworn candidates", () => {
+  it.each([
+    ["inventory", true], ["store", true], ["inventory", false], ["store", false],
+  ] as const)("a %s candidate with learned activation %s receives only known activation credit", async (source, learned) => {
+    const { game, bridge } = await primed({ truth: false });
+    const candidate: KnownItem = {
+      handle: 9, kindKey: "kind:0", baseName: "amulet", carried: source === "inventory", aware: true,
+      label: "amulet", nameColor: "white", tval: TV.AMULET, sval: 1, pval: 0, number: 1,
+      weight: 1, ac: 0, toA: 0, toH: 0, toD: 0, dd: 0, ds: 0, ego: false,
+      artifact: false, flags: [], modifiers: [], brands: [], slays: [], resists: [], curses: [],
+      egoName: null, artifactName: null, activation: learned, charging: 1, unknownRunes: false,
+      inscription: null,
+    };
+    const known = { ...knownWorld(game.view), equipment: Array<KnownItem | null>(12).fill(null),
+      inventory: source === "inventory" ? [candidate] : [],
+      stores: source === "store" ? [{ feat: 1, featName: "shop", isHome: false, owner: { name: "owner", purse: 1000 }, stock: [{ ...candidate, index: 0 }] }] : [],
+    };
+    game.mod.view.world = () => Promise.resolve({ ok: true, value: known });
+    const calls: unknown[] = [];
+    game.mod.content.activation = (ref) => {
+      calls.push(ref);
+      return Promise.resolve({ ok: true, value: { index: 1, name: "HASTE", aim: false, level: 1, power: 1, message: "", desc: "", effect: [] } });
+    };
+    const before = { player: known.player!, equipment: known.equipment, inventory: known.inventory, stats: {} as LoadoutSimulation["before"]["stats"], combat: { blows: 1, damage: null } };
+    game.mod.view.simulateLoadout = (change) => {
+      const equipment = [...known.equipment];
+      if (change.wield) equipment[4] = candidate;
+      return Promise.resolve({ ok: true, value: { before, after: { ...before, equipment }, delta: {} as LoadoutSimulation["delta"], placements: [], unresolved: [] } });
+    };
+    const snapshot = (await bridge.readWorld())!;
+    const resolvers = makeCoreResolvers(bridge.resolverInput());
+    const ctx = { world: new BorgWorld(), view: snapshot.view, act: makeFakeActions(), rng: makeBorgRng(), frame: resolvers.frame,
+      spellSeam: (c: Parameters<typeof contextSpellSeam>[0]) => contextSpellSeam(c, resolvers.resolveActivation),
+    };
+    const ref = source === "inventory" ? { from: "gear" as const, handle: candidate.handle } : { from: "store" as const, store: 0, index: 0 };
+    const change = { wield: [ref] };
+    expect(borgSimulatePower(ctx, change)).toBeNull();
+    expect(await bridge.settleLoadouts()).toBe(2);
+    expect(ctx.spellSeam(ctx).equipsItem("act_haste")).toBe(false);
+    const power = borgSimulatePower(ctx, change);
+    const control = borgSimulatePower(ctx, change, { spells: defaultSpellSeam() });
+    if (learned) expect(power).toBeGreaterThan(control!);
+    else expect(power).toBe(control);
+    const worn = snapshot.view.simulateLoadout!(change)!.after.equipment[4]!;
+    const hidden = { ...ctx, view: { ...ctx.view, equipment: () => [{ ...worn, activation: false }] } };
+    expect(ctx.spellSeam(hidden).equipsItem("act_haste")).toBe(false);
+    expect(calls).toEqual(learned ? [{ tval: TV.AMULET, sval: 1 }] : []);
+    expect(game.truthCalls).toEqual([]);
     await bridge.dispose();
   });
 });
@@ -359,6 +473,31 @@ describe("the gear signature", () => {
     expect(gearSignature([item({})], [item({ handle: 2 })], [{ feat: 1, stock: [item({})] }], null)).not.toBe(base);
     expect(gearSignature([item({})], [null], [{ feat: 1, stock: [] }], null)).not.toBe(base);
     expect(gearSignature([item({})], [null], [{ feat: 2, stock: [item({})] }], null)).not.toBe(base);
+  });
+
+  it("retries a refused store simulation after entering the shop with unchanged remembered stock", async () => {
+    const player = knownWorld(makeScenarioView()).player!;
+    let shopnum: number | null = null;
+    const signature = () => gearSignature([], [], [{ feat: 1, stock: [item({})] }], { ...player, shopnum });
+    const change = { carry: [{ item: { from: "store" as const, store: 0, index: 0 }, number: 1 }] };
+    const book = new LoadoutBook();
+    const calls: LoadoutChange[] = [];
+    const api = { view: { simulateLoadout: async (query: LoadoutChange) => {
+      calls.push(query);
+      return shopnum === null && query.carry
+        ? { ok: false as const, reason: "refused", code: "unobserved-item", message: "The store item is not currently seen." }
+        : { ok: true as const, value: {} as LoadoutSimulation };
+    } } } as never;
+    book.begin(signature());
+    expect(book.answer(change)).toBeNull();
+    await book.settle(api, () => ({ allowed: true }) as never);
+    expect(book.answer(change)).toBeNull();
+    shopnum = 0;
+    book.begin(signature());
+    expect(book.answer(change)).toBeNull();
+    await book.settle(api, () => ({ allowed: true }) as never);
+    expect(book.answer(change)).toEqual({ allowed: true });
+    expect(calls.filter((query) => query.carry)).toHaveLength(2);
   });
 });
 

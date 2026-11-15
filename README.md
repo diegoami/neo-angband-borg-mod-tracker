@@ -111,3 +111,21 @@ merged normally by PR59 (`c287571`); the engine tuple stays Core/SDK/content
 1.23.0-beta.3. The required CI profiles pass with 1074 cases and no skips. The
 beta.4 section above is historical and unchanged. Open port findings after this
 import are tracked in issues 56, 60 and 61.
+
+## Upstream reconciliation, 2026-11-15
+
+The owned fork imports official Borg master `aa92295` through a normal merge,
+including accepted source proposals and the maintainer's retreat/activation,
+remembered-map/vault-rest, API2.1 and shopping follow-ups. The declared published
+Core/SDK/content tuple is now **1.23.0-beta.4**, and the manifest requires API2.1.
+The separate exact-source profile is official engine
+`d27ed50f9e3b650a43cceda5a0c007d03cc321df`; it is not the registry artifact.
+Earlier counts and dependency descriptions above are historical receipts.
+Fork item-derived traits, bounded home search, legal store-phase home plans,
+source controls, session documents and measurement tools remain present.
+See the current checkpoint and patch ledger for validation and proposal states.
+
+The configurable standalone experiment guide is available on
+[the harness proposal branch](https://github.com/diegoami/neo-angband-borg-mod-tracker/blob/task/standalone-experiments/tools/zoo/README.md).
+It is proposed separately in fork PR98 / upstream PR109; this upstream source
+import does not implicitly merge either harness proposal.

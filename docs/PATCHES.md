@@ -168,3 +168,29 @@ Source25/engine4 remain closed for their accepted/imported original scopes;
 upstream72/source2 and timing35 remain open. A beta.3 version does not close
 input-flush432 or seed433, and this port did not carry those package units.
 Mandos owns those independently. No consumer or lab update is implied.
+
+## Upstream import, 2026-11-15
+
+This reconciliation imports official Borg master `aa92295` normally into the
+owned fork. Upstream PR96 (book guard), PR97 (race/class frame), PR102 (selected
+item targets), PR105 (danger invalidation/retreat plus predicate corrections),
+and PR106 (spell seam plus known activation credit) are accepted source work.
+PR104 adds remembered-map/vault-rest corrections; PR107 adopts API2.1 views and
+PR108 repairs shop routing/phase/goals, inspection, simulation retry and device
+knowledge handling. This entry records code provenance; the checkpoint and
+integration PR retain exact final validation and source-issue resolutions.
+
+Fork item-derived notice, CON-dependent trial HP, bounded home search, copy-in
+trial semantics and the legal outside-store home plan are preserved. The merge
+retains upstream's store-catalogue tracking and every incoming regression case;
+the old routing fixture now supplies the catalogue as API2 does. Session docs and
+append-only prior evidence remain. Upstream README/PLANNED snapshots are refreshed
+under docs/upstream-reference; owned root session entry points remain.
+
+The published dependency tuple moves from beta.3 to beta.4 for API2.1. The exact
+source profile moves separately to official engine
+`d27ed50f9e3b650a43cceda5a0c007d03cc321df`, with new exact artifact hashes recorded
+in the verifier. The headless builder resolves the SDK backup-policy subpath.
+No engine/C source, consumer checkout, lab, save, experiment suite or historical
+measurement result is changed. Harness proposals fork98/upstream109 remain
+separate; upstream drafts99–101 keep their published heads.

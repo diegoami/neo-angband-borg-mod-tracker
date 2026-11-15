@@ -1,5 +1,3 @@
-Upstream reference snapshot; session instructions are in the root AGENTS/RULES/PLAN.
-
 # neo-angband-mod-borg
 
 Borg (Angband's automatic player) for
@@ -13,7 +11,7 @@ the keyboard. Press Ctrl-Z again (or any other real key) to take it back.
 
 The title screen also has a **New Borg character** row (key B) when you allow the Borg to add title screen rows and manage profiles. It asks where the character should live. The default is a separate profile, so the Borg's options, mods, mod settings and characters stay apart from your own games: start a fresh profile named Borg, copy an existing profile's options, mods and mod settings without its characters, or reuse a profile the Borg made before. You can also start it in the profile you are using. Either way you create the character as usual, and the Borg takes the keyboard when play begins. If the game refuses the separate profile, the row shows the reason and starts the character in your current profile instead.
 
-![Borg exploring a dungeon level under its own control](https://github.com/neostryder/neo-angband-mod-borg/blob/74a017d/docs/img/borg-autoplay.jpg)
+![Borg exploring a dungeon level under its own control](docs/img/borg-autoplay.jpg)
 
 ## What it is
 
@@ -67,7 +65,7 @@ flowchart TD
   TRUTH --> RACES["RaceBook<br/>race records by ridx"]
   RACES --> DANGER["Danger facts<br/>blows, spells and race flags"]
   BRIDGE --> CONTENT["content.activation<br/>artifact name, ego name, tval and sval"]
-  CONTENT --> WORN["ActivationBook<br/>worn activation identity and charge check"]
+  CONTENT --> WORN["ActivationBook<br/>known activation identities for equipment, inventory, and shop stock"]
   BRIDGE --> KNOWN["view.world<br/>KnownPlayer.shopnum"]
   KNOWN --> SHOP["inShop"]
   VIEW["view.simulateLoadout"] --> LOADOUT["LoadoutBook<br/>answers settled in rounds"]
@@ -114,11 +112,11 @@ flowchart TD
 
 *Source of truth: `src/controller.ts`, `src/think.ts`, and `src/think-ladder.ts`. The magic rungs study spells from carried books and test untried spells in town. Ring swaps compare both slots and check danger with the simulated equipment. The destroy-valueless rung remains unported.*
 
-Two item behaviors still differ from the C reference because the published item view lacks the required fields. The discard memory records kinds: a carried item's `gear:` key becomes a position-based `memory:` key on the floor, so no identity links the item across a drop, and the action facade has no inscription command. Chest handling walks onto the item; the view has no boolean corresponding to the chest object's `known` pointer, which `borg_play_step` uses to choose opening or disarming (`borg-flow.c:781-816`). Book prices and activation prices match `borg_object_value_known` (`borg-item-analyze.c:43-259`): books use their kind cost, and an activation adds no separate price bonus.
+The discard memory names the one object the Borg threw away by its `objectId`. When a drop leaves no surviving id, as when a split stack gives the dropped part a new id, the memory falls back to the item kind as "tval:sval". The action facade has no inscription command, so the port remembers the object where the C would inscribe it. Chests follow `borg_play_step` (`borg-flow.c:781-816`). The Borg disarms a chest whose trap the player knows and is stronger than a lock (pval above 1) when its disarm skill minus the trap's pval reaches the chest fail tolerance of 7. It opens a chest with no known trap or one already disarmed, and it forgets a chest that has left the grid. Book prices and activation prices match `borg_object_value_known` (`borg-item-analyze.c:43-259`): books use their kind cost, and an activation adds no separate price bonus.
 
 The port in `src/` and the mod you install are not quite the same thing. The installed mod depends on `plugin.ts`, which builds the Borg from resolvers the game supplies, and for a long time most of those did not exist.
 
-All four resolvers are wired: danger vision, activation identity, the in-shop signal, and the power of a hypothetical loadout. Race records come from the truth domain, activations from the game's content records, the shop under the character from the known world, and loadout scores from the game's own simulation. So `borg_danger` works from real blows, spell frequencies and race flags. The Borg knows whether a worn item has the activation it wants and is charged, knows which shop it stands in, and can score gear it is not wearing; it wears what it finds, buys what it needs and sells what it is done with. A monster or item from another mod is treated like one of core's, because every lookup goes by index (`ridx`, `tval`/`sval`, ego or artifact name) and never asks where the record came from. Without the truth domain, danger falls back to the flags and spells the character has learned.
+All four resolvers are wired: danger vision, activation identity, the in-shop signal, and the power of a hypothetical loadout. Race records come from the truth domain, activations from the game's content records, the shop under the character from the known world, and loadout scores from the game's own simulation. Known activations in inventory and shop stock count when the Borg scores hypothetical equipment, even before the item is worn. Unknown activations receive no credit. So `borg_danger` works from real blows, spell frequencies and race flags. The Borg knows whether a worn item has the activation it wants and is charged, knows which shop it stands in, and can score gear it is not wearing; it wears what it finds, buys what it needs and sells what it is done with. A monster or item from another mod is treated like one of core's, because every lookup goes by index (`ridx`, `tval`/`sval`, ego or artifact name) and never asks where the record came from. Without the truth domain, danger falls back to the flags and spells the character has learned.
 
 When it dies it starts a new character, and the game does that, not this mod. A controller can only return an in-game command, and there is no command for "roll me a new character", so the game's death handler does it whenever a mod holds the keyboard. It is an in-session reincarnation, not a new save: same session, same slot, a rolled race and class each time, as upstream's borg respawns.
 
@@ -140,20 +138,20 @@ The reported habit of "sitting there or moving frantically back and forth across
 
 On 2026-08-22 it was watched again, and this time it played: thirteen minutes in the development build and four in the packaged 0.26.0 artifact, each on its own isolated data directory. There were no mod faults and no console errors. It answered 37 blocking prompts without a human, picked four locked doors a turn at a time, found four secret doors by searching, killed thirteen monsters in the artifact run, and had four characters die and start again on their own. It fled twice under a low-hitpoint warning by taking the stairs, arrived in town at 6 of 11 hit points, and rested back to 10 before diving again.
 
-Shopping works end to end. The Borg can identify the shop it is in, evaluate purchases and sales, and issue `shop-buy`, `shop-sell` and `shop-exit` through the engine's command registry. Placed by hand on a real shop door across ten seeds, it sold something with a real inventory change in all ten, and bought something, with gold actually decreasing, in three of the ten. What nobody has seen yet is the Borg walking itself to a shop during real play. In every seed tried, a fresh level-one character heads straight for the dungeon stairs before the "deal with shops" decision comes up, so its trips back to town are upstream's own cautious level-one behaviour, not the ladder choosing to shop.
+Before a routine descent, the Borg walks to the shop doors on its known map, looks at what each shop stocks, and decides what to buy or sell. It sends `shop-buy`, `shop-sell`, and `shop-exit` through the engine's command registry. One test fixture covers this, in a safe town at seed 441: a fresh character of each of the nine classes starts with 100 gold, walks to a shop, and buys before going down. Shopping in desktop play is untested, and so is the reporter's comparison across 1,800 lives.
 
 Install it to watch it try, not to watch it win. Most of the other test files cover dispatch, ladder ordering and resolver wiring and never play a turn, so they say nothing about how well it plays; `play.test.ts` covers that, and `rest.test.ts` covers the path the in-town death went through.
 
 It is a mod, not part of the engine, for two reasons:
 
 - It is not core because an automatic player inside the parity target would put an automated control surface inside the thing being kept faithful to Angband 4.2.6. Upstream's borg is a compile-time option precisely because it is not the game.
-- It uses the published mod API and nothing private. It reads the known world, sends the same commands your keys do, and has no test hook. Two of the parts it reads are restricted: only first-party mods get the truth domain, and the engine domain, where the port finds the game's numeric code tables, takes first-party status or your consent. If the Borg could only be written against internals, the modding API would not be finished, and that is worth finding out.
+- It uses the published mod API and sends player commands. The truth domain requires the monster truth grant, and the engine domain supplies the game's numeric code tables. The Borg reads hidden monster data only through the two calls listed in `src/api2/truth.ts`.
 
 The second point is what makes it worth having. It is the most demanding mod anyone could write against this API, so it is the best available test of whether the API does what it claims. Two of the problems found while wiring it up were engine bugs, not Borg bugs.
 
 ## Telling it how to play
 
-See the [settings reference](https://github.com/neostryder/neo-angband-mod-borg/blob/74a017d/SETTINGS.md) for every flag, its default, and when a change takes effect.
+See the [settings reference](SETTINGS.md) for every flag, its default, and when a change takes effect.
 
 Upstream's borg reads a `borg.txt` out of the user's Angband folder and takes
 about thirty settings from it. There is no such folder here, and no path to one
@@ -198,16 +196,7 @@ setting. The log line the Borg writes when it takes the keyboard names every
 setting that is not on its stock value, so the record of an unattended run says
 what it was told to do.
 
-Three of upstream's settings are deliberately absent rather than merely
-unimplemented: `borg_kills_uniques` and `borg_uses_dynamic_calcs` each need a
-subsystem this port does not have (a live census of which uniques are still
-alive, and a whole second formula-driven calculation engine), and
-`borg_uses_swaps` has a reader but nothing downstream of it - the swap items it
-would value are not ported either, so the toggle would tick and the Borg would
-play identically either way. The numeric settings - depth ceilings, the enchant
-limit, a pinned race or class to respawn as - have no yes-or-no shape, and the
-host's mod-manager toggle is boolean only, so there is no rule type to carry one
-yet. See PLANNED.md for what each of these still needs.
+The mod has no settings for `borg_kills_uniques` or `borg_uses_dynamic_calcs`; it has no live-unique census or formula interpreter. Backup weapon and armor scoring, home retrieval, and emergency swaps are implemented, with `borg_uses_swaps` enabled internally and no manager toggle. The manifest exposes only boolean rules, so depth ceilings, the enchant limit, and pinned respawn race or class have no setting here. See PLANNED.md for the remaining work.
 
 Since Neo Angband 0.27.2 the mod manager also shows an **Autoplayer speed**
 row while an autoplayer holds the keyboard, with Turbo/Fast/Normal/Slow tiers
@@ -217,7 +206,7 @@ no manifest change here.
 
 ## Two things it does not do
 
-- It does not read the real map. Upstream's borg reads the game's own structures directly (its comments call these "cheats") and scrapes the terminal for the rest. This one plans from the known world: the remembered map, the pack, and the stores as the character last saw them. With the real-map permission turned on, it also reads the exact hit points and race records of the monsters the character can perceive, and nothing else. It acts only through commands a player could issue.
+- The borg plans from what the character knows: the remembered map, the pack, and the stores as the character last saw them. Upstream's borg reads the game's internal structures directly (its own comments call these "cheats") and scrapes the terminal for everything else. With the `state:monsters-actual.read` permission turned on, this port also reads the exact hit points and race records of the monsters the character can perceive, and nothing more. Every action goes through a command a player could issue.
 - It does not cost you reproducibility. Borg is deterministic: it draws
   only its own seeded generator and never the game's, so a Borg game stays
   replayable and the save's determinism ratchet stays untripped. An autoplayer that
@@ -265,11 +254,12 @@ flowchart TD
     src/api2/        the bridge between mod API 2 and the port
     src/             the port itself
 
-`src/api2/host.ts` and `src/api2/controller.ts` are the place to start under `src/`: they read the game, build the view the port decides from, and submit its commands. `src/core-api.ts` holds the engine's code tables, and its header explains the single rule that arrangement imposes on every other file. [docs/API2-MIGRATION.md](https://github.com/neostryder/neo-angband-mod-borg/blob/74a017d/docs/API2-MIGRATION.md) describes the whole arrangement.
+`src/api2/host.ts` and `src/api2/controller.ts` are the place to start under `src/`: they read the game, build the view the port decides from, and submit its commands. `src/core-api.ts` holds the engine's code tables, and its header explains the single rule that arrangement imposes on every other file. [docs/API2-MIGRATION.md](docs/API2-MIGRATION.md) describes the whole arrangement.
 
 ## Building and testing
 
     pnpm install --frozen-lockfile
+    pnpm build      # rebuild plugin.js after source changes
     pnpm verify     # typecheck, test, and prove plugin.js is a current build
 
 `plugin.js` is committed, because an install fetches it from a pinned tag and runs it
@@ -294,10 +284,7 @@ To develop against an unreleased engine:
 
 ## Releasing
 
-A tag matching `vX.Y.Z` is the release: there is no separate publish step. A
-minor or major bump posts an announcement to the RPGM Tools Discord's Neo
-Angband announcements forum automatically, built from the matching
-[CHANGELOG.md](https://github.com/neostryder/neo-angband-mod-borg/blob/74a017d/CHANGELOG.md) heading. A patch-only bump stays quiet by design.
+A tag matching `vX.Y.Z` triggers `.github/workflows/github-release.yml`, which creates a GitHub Release from the matching [CHANGELOG.md](CHANGELOG.md) section. The workflow marks versions with a prerelease suffix, or versions starting with `0.`, as prereleases.
 
 ## Questions, or something wrong
 
@@ -312,21 +299,21 @@ conflict report that looks wrong), and the game **not matching Angband 4.2.6**
 once this mod is switched off - changing the game is what a mod is for.
 
 For anything that should not be public, including a security report:
-**strider-angband (at) rpgm.tools**. See [SECURITY.md](https://github.com/neostryder/neo-angband-mod-borg/blob/74a017d/SECURITY.md), which also
+**strider-angband (at) rpgm.tools**. See [SECURITY.md](SECURITY.md), which also
 links to the core policy for anything owned by the engine rather than this mod.
 
-Asking about AI use in this project? [AI_USAGE_POLICY.md](https://github.com/neostryder/neo-angband-mod-borg/blob/74a017d/AI_USAGE_POLICY.md) is
+Asking about AI use in this project? [AI_USAGE_POLICY.md](AI_USAGE_POLICY.md) is
 the complete answer.
 
-[TERMS.md](https://github.com/neostryder/neo-angband-mod-borg/blob/74a017d/TERMS.md) covers use of this mod. The core repository's
+[TERMS.md](TERMS.md) covers use of this mod. The core repository's
 [PRIVACY.md](https://github.com/neostryder/neo-angband/blob/master/PRIVACY.md)
 covers what is stored and what network requests the game makes. Project
-participation is subject to the shared [CODE_OF_CONDUCT.md](https://github.com/neostryder/neo-angband-mod-borg/blob/74a017d/CODE_OF_CONDUCT.md).
+participation is subject to the shared [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## Licence
 
 Same dual licence as Neo Angband and Angband: GPL v2 or the Angband licence. See
-[LICENSE.md](https://github.com/neostryder/neo-angband-mod-borg/blob/74a017d/LICENSE.md).
+[LICENSE.md](LICENSE.md).
 
 ## Credits
 

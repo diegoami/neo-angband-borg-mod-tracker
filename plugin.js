@@ -5221,6 +5221,7 @@ var PACK_SIZE = 23;
 var DEFAULT_MAX_STACK = 40;
 function createStoreMemory() {
   return {
+    visited: /* @__PURE__ */ new Set(),
     soldTval: [],
     soldSval: [],
     soldPval: [],
@@ -5789,6 +5790,8 @@ function createFlowState(hooks = defaultFlowHooks()) {
     closed: new BorgTrack(100),
     glyph: new BorgTrack(200),
     vein: new BorgTrack(100),
+    shopX: new Array(9).fill(0),
+    shopY: new Array(9).fill(0),
     avoidance: 0,
     borgDesperate: false,
     borgDigging: false,
@@ -5974,6 +5977,13 @@ function borgFlowCommit(ctx, flow, why) {
 function alterCommand(dir) {
   return { code: "alter", dir };
 }
+var CHEST_FAIL_TOLERANCE = 7;
+function isLiveChest(item) {
+  return item.tval === TV.CHEST && item.label.includes("chest") && !item.label.includes("Ruined");
+}
+function trapIsKnown(item) {
+  return "trapKnown" in item && item.trapKnown === true;
+}
 function borgPlayStep(ctx, flow, y2, x2) {
   const w = ctx.world;
   const act = ctx.act;
@@ -6040,6 +6050,16 @@ function borgPlayStep(ctx, flow, y2, x2) {
     return act.melee(dir);
   }
   if (ag.take && w.takes.has(ag.take)) {
+    const take = w.takes.at(ag.take);
+    const head = ctx.view.floorItems(x, y)[0];
+    if (head !== void 0 && isLiveChest(head)) {
+      const known = trapIsKnown(head);
+      if (known && head.pval > 1 && trait(w, 56 /* DEV */) - head.pval >= CHEST_FAIL_TOLERANCE) return act.disarm(dir);
+      if (!known || head.pval < 0) return act.open(dir);
+    } else if (head === void 0 && take.tval === TV.CHEST) {
+      w.takes.delete(ag.take);
+      return null;
+    }
     w.takes.delete(ag.take);
     ag.take = 0;
     return act.move(dir);
@@ -6511,11 +6531,27 @@ function borgFlowVein(ctx, flow, viewable, nearness) {
   if (!borgFlowCommit(ctx, flow, GOAL_TAKE)) return null;
   return borgFlowOld(ctx, flow, GOAL_TAKE);
 }
+function borgTrackShops(ctx, flow) {
+  if (trait(ctx.world, 105 /* CDEPTH */)) return;
+  const stores = ctx.view.stores();
+  for (let y = 0; y < ctx.world.map.height; y++) {
+    for (let x = 0; x < ctx.world.map.width; x++) {
+      const grid = ctx.world.map.at(x, y);
+      if (!featIsShop(grid.feat)) continue;
+      const i = stores.findIndex((store2) => store2.feat === grid.feat);
+      if (i < 0) continue;
+      grid.store = i;
+      flow.shopX[i] = x;
+      flow.shopY[i] = y;
+    }
+  }
+}
 function borgFlowShopEntry(ctx, flow, i) {
   const w = ctx.world;
   if (trait(w, 105 /* CDEPTH */)) return null;
-  const x = w.shopX[i] ?? 0;
-  const y = w.shopY[i] ?? 0;
+  borgTrackShops(ctx, flow);
+  const x = flow.shopX[i];
+  const y = flow.shopY[i];
   if (!x || !y) return null;
   if (x === w.self.c.x && y === w.self.c.y) {
     return ctx.act.hold();
@@ -8062,10 +8098,14 @@ function borgNotice(ctx, opts = {}) {
   finishNotice(c);
   ctx.world.self.trait = t;
   if (opts.noticeSwap ?? true) {
+    const suppliedSwap = opts.weaponSwap;
     d.weaponSwapOpts = {
       cfg: { ...R2.cfg },
       ...opts.spells ? { spells: { ...opts.spells } } : {},
-      ...opts.weaponSwap ? { weaponSwap: { ...opts.weaponSwap } } : {}
+      weaponSwap: {
+        ...suppliedSwap,
+        tarrasqueDead: suppliedSwap?.tarrasqueDead ?? uniqueSlain(p, "the-tarrasque", "The Tarrasque")
+      }
     };
     d.weaponSwap = borgWeaponSwap(ctx, d.weaponSwapOpts);
     d.armourSwapOpts = { ...d.weaponSwapOpts, ...opts.armourSwap ? { armourSwap: { ...opts.armourSwap } } : {} };
@@ -8138,6 +8178,20 @@ function borgNoticePlayer(c) {
   }
   if (!c.derive) t[44 /* SPEED */] = p.speed;
   t[52 /* INFRA */] = c.derive ? c.R.frame.infra ?? 0 : p.seeInfra;
+  t[263 /* SAURON_DEAD */] = uniqueSlain(p, "sauron-the-sorcerer", "Sauron, the Sorcerer") ? 1 : 0;
+}
+function localRaceId(raceId) {
+  const at = raceId.indexOf(":");
+  return at < 0 ? raceId : raceId.slice(at + 1);
+}
+function uniqueSlain(player, localId, cName) {
+  const list = player.slainUniques;
+  if (list === void 0) return false;
+  for (const entry of list) {
+    if (typeof entry.raceId === "string" && localRaceId(entry.raceId) === localId) return true;
+    if (entry.name === cName) return true;
+  }
+  return false;
 }
 function borgCalcBlows(c, item) {
   const t = c.t;
@@ -11255,6 +11309,11 @@ function borgThinkShopBuy(ctx, shopNum, d) {
 function borgChooseShop(ctx, d) {
   const goal = ctx.world.self.goal;
   const mem = d?.mem ?? createStoreMemory();
+  const visit = (shop) => {
+    if (st(ctx, 45 /* GOLD */) <= 0 || mem.visited.has(shop) || !d?.shopKnown?.(shop)) return false;
+    goal.shop = shop;
+    return true;
+  };
   if (st(ctx, 105 /* CDEPTH */)) return false;
   if (ctx.world.clock - (d?.began ?? 0) > 2e3) return false;
   if (ctx.world.self.timeThisPanel > 1350) return false;
@@ -11266,6 +11325,7 @@ function borgChooseShop(ctx, d) {
   if (st(ctx, 26 /* LIGHT */) === 0 || st(ctx, 39 /* FOOD */) === 0 || st(ctx, 116 /* ISCUT */) || st(ctx, 115 /* ISPOISONED */) || st(ctx, 26 /* LIGHT */) === 1 && st(ctx, 45 /* GOLD */) >= 100 && st(ctx, 35 /* CLEVEL */) < 10) {
     if (borgThinkShopBuyUseful(ctx, d)) return true;
     if (borgThinkHomeBuyUseful(ctx, d)) return true;
+    if (visit(goal.shop)) return true;
   }
   if (goal.shop !== -1 && goal.ware !== -1) return true;
   goal.shop = -1;
@@ -11288,12 +11348,16 @@ function borgChooseShop(ctx, d) {
   if (borgThinkShopGrabInteresting(ctx, d)) return true;
   if (borgUsesSwaps(ctx, d) && borgThinkHomeBuySwapWeapon(ctx, d)) return true;
   if (borgUsesSwaps(ctx, d) && borgThinkHomeBuySwapArmour(ctx, d)) return true;
+  for (let shop = 0; shop < ctx.view.stores().length; shop++) {
+    if (visit(shop)) return true;
+  }
   return false;
 }
 function borgThinkStore(ctx, shopNum, d, wearDeps) {
   if (ctx.world.clock >= 2e4 && ctx.world.clock <= 20010) {
     return ctx.act.shopExit();
   }
+  d?.mem?.visited.add(shopNum);
   borgNotice(ctx);
   const best = borgBestStuff(ctx, shopNum, wearDeps, d);
   if (best) return best;
@@ -11840,7 +11904,7 @@ function borgCrushJunk(ctx, d) {
     if (item.tval === TV.SCROLL && !item.aware) continue;
     if (!valueKnown(item, d)) continue;
     let value = valueOf(item, d);
-    if ((item.tval === TV.STAFF || item.tval === TV.WAND) && item.number > item.pval) {
+    if ((item.tval === TV.STAFF || item.tval === TV.WAND) && isAware(item, d) && item.number > item.pval) {
       value = 0;
     }
     if (item.tval >= TV.CHEST) {
@@ -15912,7 +15976,7 @@ function borgStrategicRetreat(ctx, flow, posDanger, nasty, surrounded) {
   };
   let bestRange = -1, bestX = self.c.x, bestY = self.c.y;
   for (const target of retreatView(ctx)) {
-    if (!borgCaveFloorGrid(w.map.at(target.x, target.y)) || bouncing(target.x, target.y) || !borgHappyGridBold(ctx, flow, target.y, target.x)) continue;
+    if (!borgCaveFloorBold(w, target.y, target.x) || bouncing(target.x, target.y) || !borgHappyGridBold(ctx, flow, target.y, target.x)) continue;
     if (bestRange >= 0 && (Math.abs(target.x - self.c.x) > bestRange || Math.abs(target.y - self.c.y) > bestRange)) continue;
     let x = self.c.x, y = self.c.y, r = 0;
     while (true) {
@@ -16605,6 +16669,7 @@ function buildStoreDeps(session) {
   const began = session.flow.state.borgBegan;
   const common = {
     mem: session.storeMem,
+    shopKnown: (shop) => !!session.flow.state.shopX[shop] && !!session.flow.state.shopY[shop],
     began,
     ...storeCfg(),
     isAware,
@@ -16681,6 +16746,7 @@ function buildThinkSession(resolvers = {}) {
     arrivalPickup: false,
     lastGrid: "",
     junked: /* @__PURE__ */ new Set(),
+    junkedIds: /* @__PURE__ */ new Set(),
     pickupTried: ""
   };
   session.flow = createFlow(buildFlowHooks(session));
@@ -16908,7 +16974,8 @@ function borgPickUpHere(ctx, session) {
   for (const item of items) {
     if (takeValue(item, {
       kindCost: session.resolvers.kindCost,
-      junked: session.junked
+      junked: session.junked,
+      junkedIds: session.junkedIds
     }) > 0) {
       worth = true;
       break;
@@ -16931,9 +16998,14 @@ function findByHandle(ctx, handle) {
 function rememberJunkDrop(ctx, session, cmd) {
   if (cmd?.code === "drop") {
     const dropped = findByHandle(ctx, handleOf(cmd));
-    if (dropped) session.junked.add(junkKey(dropped.tval, dropped.sval));
+    if (dropped) rememberJunk(dropped, quantityOf(cmd), session.junked, session.junkedIds);
   }
   return cmd;
+}
+function quantityOf(cmd) {
+  const args = cmd.args;
+  const q = args?.["quantity"];
+  return typeof q === "number" ? q : void 0;
 }
 function T(ctx, i) {
   return ctx.world.self.trait[i] ?? 0;
@@ -17511,9 +17583,7 @@ function borgThinkDungeon(ctx, session) {
   {
     const cmd = borgCrushJunk(ctx, itemDeps);
     if (cmd) {
-      const dropped = findByHandle(ctx, handleOf(cmd));
-      if (dropped) session.junked.add(junkKey(dropped.tval, dropped.sval));
-      return cmd;
+      return rememberJunkDrop(ctx, session, cmd);
     }
   }
   {
@@ -18514,7 +18584,7 @@ function ingestMonsters(world, view, raceSymbol) {
       world.self.goal.type = 0;
     }
     const target = world.flowTarget;
-    if (moved && ((world.self.trait[37 /* ESP */] ?? 0) === 0 && world.self.goal.type === GOAL_KILL && (target?.flowY[0] === k.pos.y || target?.flowX[0] === k.pos.x) || world.self.goal.type === GOAL_TAKE && world.self.munchkinMode)) {
+    if (moved && ((world.self.trait[37 /* ESP */] ?? 0) === 0 && world.self.goal.type === GOAL_KILL && (target?.flowY[0] === k.pos.y && target?.flowX[0] === k.pos.x) || world.self.goal.type === GOAL_TAKE && world.self.munchkinMode)) {
       world.self.goal.type = 0;
     }
     k.awake = !m.asleep;
@@ -18573,6 +18643,17 @@ function clearLocalRegionFear(world) {
 function junkKey(tval, sval) {
   return `${String(tval)}:${String(sval)}`;
 }
+function objectIdOf(item) {
+  if (!("objectId" in item)) return void 0;
+  const id = item.objectId;
+  return typeof id === "number" ? id : void 0;
+}
+function rememberJunk(item, quantity, junked, junkedIds) {
+  const whole = quantity === void 0 || quantity >= item.number;
+  const id = whole ? objectIdOf(item) : void 0;
+  if (id !== void 0) junkedIds.add(id);
+  else junked.add(junkKey(item.tval, item.sval));
+}
 var TV_GOLD = 35;
 function takeValue(item, valuation) {
   let value;
@@ -18584,6 +18665,8 @@ function takeValue(item, valuation) {
   }
   if (item.toA < 0 || item.toD < 0 || item.toH < 0) value = -10;
   if (item.inscription?.startsWith("borg ignore")) value = -10;
+  const ignored = objectIdOf(item);
+  if (ignored !== void 0 && valuation.junkedIds?.has(ignored)) value = -10;
   if (valuation.junked?.has(junkKey(item.tval, item.sval))) value = -10;
   return value;
 }
@@ -18706,6 +18789,7 @@ function createBorg(opts = {}) {
     store: false,
     resetLevel: world.resetLevel,
     junked: new Set(session.junked),
+    junkedIds: new Set(session.junkedIds),
     needAlter: false,
     noAlter: false
   };
@@ -18722,6 +18806,7 @@ function createBorg(opts = {}) {
       store: false,
       resetLevel: world.resetLevel,
       junked: new Set(session.junked),
+      junkedIds: new Set(session.junkedIds),
       needAlter: world.self.needAlter,
       noAlter: world.self.noAlter
     };
@@ -18755,6 +18840,7 @@ function createBorg(opts = {}) {
       st2.glyph.wipe();
       st2.vein.wipe();
       const mem = session.storeMem;
+      mem.visited.clear();
       mem.soldNum = mem.boughtNum = 0;
       mem.soldNxt = mem.boughtNxt = 1;
       for (const records of [
@@ -18779,9 +18865,11 @@ function createBorg(opts = {}) {
     borgNotice(ctx);
     perceive(world, view, memo, tables, {
       kindCost: session.resolvers.kindCost,
-      junked: session.junked
+      junked: session.junked,
+      junkedIds: session.junkedIds
     }, (i) => session.resolvers.resolveMonsterFacts?.(ctx, i).dChar);
     borgTrackStairs(world, session.flow.state);
+    borgTrackShops(ctx, session.flow.state);
     if (recordStep) {
       borgTrackStep(session.flow.state.step, world.self.c.y, world.self.c.x);
     }
@@ -18816,6 +18904,8 @@ function createBorg(opts = {}) {
     session.ringTakeoff = before.ringTakeoff;
     session.junked.clear();
     for (const key of before.junked) session.junked.add(key);
+    session.junkedIds.clear();
+    for (const id of before.junkedIds) session.junkedIds.add(id);
   };
   CONTROLLER_WORLDS.set(controller, world);
   return { world, rng, controller, rewind };
@@ -18964,10 +19054,10 @@ var ActivationBook = class {
   kind(tval, sval) {
     return this.names.get(`k:${String(tval)}:${String(sval)}`) ?? null;
   }
-  /** Read the activations of every given item that has one (worn, carried or at home), for any source not read yet. */
-  async ensure(api, equipment2) {
+  /** Hypothetical equipment needs activation identities even when the item has never been worn. */
+  async ensure(api, items) {
     const asks = /* @__PURE__ */ new Map();
-    for (const item of equipment2) {
+    for (const item of items) {
       if (item === null || !item.activation) continue;
       if (item.artifact && item.artifactName) asks.set(`a:${item.artifactName}`, { artifact: item.artifactName });
       if (item.ego && item.egoName) asks.set(`e:${item.egoName}`, { ego: item.egoName });
@@ -19043,7 +19133,7 @@ var LoadoutBook = class {
 function gearSignature(inventory, equipment2, stores, player) {
   const one = (item) => item === null ? "-" : `${String(item.handle)}:${item.kindKey}:${String(item.number)}:${String(item.toH)}:${String(item.toD)}:${String(item.toA)}`;
   const stock = stores.map((store2) => `${String(store2.feat)}[${store2.stock.map(one).join(",")}]`).join(";");
-  return `${inventory.map(one).join(",")}|${equipment2.map(one).join(",")}|${stock}|${String(player?.level ?? 0)}`;
+  return `${inventory.map(one).join(",")}|${equipment2.map(one).join(",")}|${stock}|${String(player?.level ?? 0)}|${String(player?.shopnum ?? -1)}`;
 }
 
 // src/api2/feed.ts
@@ -19442,9 +19532,19 @@ function playerView(known, floors) {
   const timed = {};
   for (const [field, record] of Object.entries(TIMED_RECORDS)) {
     const grade = status[field];
-    timed[field] = grade == null ? 0 : floors.get(record)?.get(grade) ?? 1;
+    timed[field] = typeof grade === "string" ? floors.get(record)?.get(grade) ?? 1 : 0;
   }
-  return { ...rest, status: { ...timed, food: status.food * 100, fearful: status.fearful }, recall: recall ? 1 : 0, descent: descent ? 1 : 0 };
+  return {
+    ...rest,
+    status: {
+      ...timed,
+      food: status.food * 100,
+      fearful: status.fearful,
+      countdown: typeof status.countdown === "number" ? status.countdown : 0
+    },
+    recall: recall ? 1 : 0,
+    descent: descent ? 1 : 0
+  };
 }
 function itemView(item, analyze) {
   const { charging, fuel, ...rest } = writable(item);
@@ -19555,8 +19655,7 @@ async function readWorld(api, reads) {
   const floorHere = (known.floorHere ?? []).map(adapt);
   const monsters = await monsterViews(known, reads);
   if (reads.truth !== null) await reads.races.ensure(reads.truth, monsters.map((monster) => monster.raceIndex));
-  const homeStock = (known.stores ?? []).filter((store2) => store2.isHome).flatMap((store2) => store2.stock.map(adapt));
-  await reads.activations.ensure(api, [...equipment2, ...inventory, ...homeStock]);
+  await reads.activations.ensure(api, [...equipment2, ...inventory, ...(known.stores ?? []).flatMap((store2) => store2.stock.map(adapt))]);
   reads.loadouts.begin(gearSignature(known.inventory ?? [], known.equipment ?? [], known.stores ?? [], known.player));
   const width = known.level?.width ?? 0;
   const height = known.level?.height ?? 0;
@@ -19582,7 +19681,8 @@ async function readWorld(api, reads) {
       monster: occupant,
       objectCount: memory.objects.length,
       knownObjectCount: memory.objects.length,
-      glow: remembered.glow,
+      /* borg_check_dark_only uses glow; the known view limits it to visible grids. */
+      glow: remembered.visible && remembered.glow,
       /* The disarm command's own check: a visible trap whose kind is a TRAP and that is not disabled. */
       trap: memory.traps.some((trap) => !trap.disabled && statics.trapKinds[trap.index] === true)
     };
@@ -19688,10 +19788,7 @@ function createBridge(mod2) {
         raceSymbol: (ridx) => symbols.get(ridx),
         objects,
         birthRandarts: () => facts.birthRandarts ?? null,
-        /* borg_think takes the store branch only while the store screen is
-         * up (borg-think.c:322-327 reads "Stor"/"Home" off the screen, then
-         * square_shopnum). Standing on an entrance after the screen has
-         * closed is play, not shopping. */
+        /* borg_think dispatches on the store screen, not the entrance grid (borg-think.c:324). */
         shopnum: () => input?.phase === "store" ? facts.shopnum : null,
         kindCost: (tval, sval) => facts.kinds.get(`${String(tval)}:${String(sval)}`) ?? null,
         blowMethods: blows.map((message) => ({ messages: [message] })),
@@ -19804,11 +19901,16 @@ function aimedGrid(command, from) {
   return { x: from.x + DIR_DX[dir], y: from.y + DIR_DY[dir] };
 }
 var AFFLICTIONS = ["blind", "confused", "afraid", "poisoned", "cut", "stun", "paralyzed"];
+function tickCount(status) {
+  if (status === void 0 || !("countdown" in status)) return 0;
+  const count = status.countdown;
+  return typeof count === "number" ? count : 0;
+}
 function sceneOf(world) {
   const player = world.view.player();
   const afflictions = AFFLICTIONS.map((name) => player.status?.[name] ?? 0);
   const monsters = world.view.monsters().map((monster) => [monster.grid.x, monster.grid.y, monster.hp]);
-  return JSON.stringify([player.grid.x, player.grid.y, player.depth, player.hp, player.sp, player.exp, player.gold, afflictions, monsters]);
+  return JSON.stringify([player.grid.x, player.grid.y, player.depth, player.hp, player.sp, player.exp, player.gold, afflictions, tickCount(player.status), monsters]);
 }
 function createTick(bridge2, borg) {
   let refusals = 0;
@@ -19949,7 +20051,7 @@ async function begin(mod2) {
   return { bridge: made, tick: createTick(made, { controller: borg.controller, rewind: borg.rewind, forget }) };
 }
 var definition = {
-  api: ">=2.0.0 <3.0.0",
+  api: ">=2.1.0 <3.0.0",
   async start(mod2) {
     running = begin(mod2).catch((error) => {
       mod2.meta.log(`the Borg could not start: ${error instanceof Error ? error.message : String(error)}`);

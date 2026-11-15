@@ -22,7 +22,13 @@ import { borgChooseShop } from "./think-store.js";
 import { borgNotice } from "../trait/trait.js";
 
 function town(cells: Record<string, { feat: number }>, at = { x: 20, y: 10 }): BorgContext {
-  const view = makeScenarioView({ player: { grid: at, depth: 0 }, cells });
+  const base = makeScenarioView({ player: { grid: at, depth: 0 }, cells });
+  /* API2 supplies the shop catalogue even before stock is observed. The
+   * upstream tracker maps remembered door features through this catalogue. */
+  const view = { ...base, stores: () => Array.from({ length: 8 }, (_, index) => ({
+    feat: FEAT.STORE_GENERAL + index, featName: "Store", isHome: index === BORG_HOME,
+    owner: { name: "", purse: 0 }, stock: [],
+  })) };
   const world = new BorgWorld();
   world.wipeLevel(0);
   const ctx: BorgContext = { world, view, act: makeFakeActions(), rng: makeBorgRng() };
