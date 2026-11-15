@@ -67,3 +67,12 @@ test('legacy display adaptation refuses an ambiguous observer site and preserves
  assert.throws(()=>displayBundle(source+source),/no supported display observer site/);
  assert.equal(displayBundle('o.onObservation?.(known)').adapted,false);
 });
+test('earlier runs without rich observations still produce final inventory and a qualified chronology',()=>fixture(({root,put})=>{
+ put('runs/worker-0/0-7/run/observations.jsonl','');
+ const out=join(root,'legacy-report');reportExperiment(root,out);
+ const sequence=JSON.parse(readFileSync(join(out,'deaths/0-7/sequence.json')));
+ assert.equal(sequence.boundary.threat,'not recorded; HP alone does not establish safety');
+ assert.ok(sequence.sequence.some(r=>r.source==='messages.jsonl'));
+ assert.match(readFileSync(join(out,'deaths/0-7/inventory.md'),'utf8'),/run.json finalKnownWorld/);
+ assert.match(readFileSync(join(out,'deaths/0-7/report.md'),'utf8'),/Sparse older traces/);
+}));
