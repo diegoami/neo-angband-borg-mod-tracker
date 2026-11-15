@@ -169,7 +169,7 @@ pnpm report --experiment /tmp/borg-experiment --out /tmp/borg-cemetery-report
 
 The output directory must be new. This works with earlier harness runs, including
 your completed 18-game smoke. Older traces have sparse state samples and final
-inventory; absent observations are explicitly unavailable. New bundles record
+inventory; absent observations are explicitly unavailable. With `--record true`, new bundles record
 known-state inventory, spells, nearby remembered terrain and HP/SP at least every
 100 ticks at a command boundary, plus health/resource/depth changes and endpoints.
 They do not record unlogged Borg thoughts or fabricate terminal screenshots.
@@ -355,3 +355,49 @@ pnpm report:serve --dir /tmp/borg-death-reports-current-cyjz_dgo/report \
 The server binds only127.0.0.1 and exposes only the selected report and its
 explicit raw-run tree. It does not expose all of/tmp or your repository. Your
 original measurements are unchanged.
+
+## Review corrections: cost, replay locations and locked runs
+
+Full per-command frames and sampled inventory/spell observations are **off by
+default**, including frozen survey suites and manual CI runs. Ordinary games do
+not receive those callbacks, so they do not build a known-world snapshot on every
+command or write the large observations stream. Commands, messages, sparse state
+observations and the final known state remain available for statistics/reports.
+Use `--record true` on `pnpm experiment` (or the single-game runner) only when
+requesting that detailed capture. It adds measurable CPU and disk cost; it is not
+a free survey default. Diagnostic `watch`/`capture` replays explicitly enable it.
+You can reconstruct selected deaths afterward without counting them as new lives.
+
+New experiment records include their working directory and normalized bundle
+path. New builds record engine/Borg locations. Locally generated commands quote
+absolute tool, bundle and engine paths and work from another directory. After
+moving/downloading CI artifacts, regenerate the report with their new locations:
+
+```sh
+pnpm report --experiment /path/to/downloaded/experiment \
+  --bundle /path/to/downloaded/build/bundle.mjs \
+  --engine-dir /path/to/pinned/engine --out /tmp/relocated-death-report
+```
+
+CI exports explain relocation instead of presenting a runner-temp path as a
+working local replay command. A legacy relative path without a recorded working
+directory requires an explicit `--bundle`; the tool does not guess today's cwd.
+The original generated entry can locate a legacy engine only if that checkout
+still exists. No `../engine` assumption is made in regenerated death commands.
+
+Pinned graphical launch refuses a measured dirty Borg or an unaudited dirty
+engine build, and rejects current uncommitted/untracked engine inputs. New build
+receipts distinguish the two pnpm-created SDK executable bits from source-content
+changes and record that narrow exception explicitly. Some old artifacts contain
+only `dirty: true` without enough detail to audit its origin: their original
+bundle still supports verified **headless** replay, but a graphical source-based
+run is not silently called pinned. An explicit `--allow-unpinned true` permits an
+unverified graphical diagnostic, clearly labelled in its console/title/receipt;
+it does not weaken the current-engine content checks or claim equivalence.
+
+Under the shared validation lock, default interactive serving is suppressed so
+the completed heavy command exits and releases the lock. Export with
+`--serve false` when scripting or when using another lock mechanism, then run
+`pnpm report:serve` outside the lock. Ordinary unlocked interactive report commands
+still serve/open automatically. An explicit `--serve true` under the detected validation lock is rejected; serve
+the exported directory after releasing it.

@@ -6,8 +6,8 @@ import { join } from 'node:path';
 import { request } from 'node:http';
 import { serveReport,autoServe } from './serve-report.mjs';
 test('interactive report commands serve automatically; batch and CI remain finite',()=>{
- assert.equal(autoServe({}, {tty:true,ci:''}),true);assert.equal(autoServe({}, {tty:false,ci:''}),false);assert.equal(autoServe({}, {tty:true,ci:'true'}),false);
- assert.equal(autoServe({serve:'false'},{tty:true}),false);assert.equal(autoServe({serve:'true'},{tty:false,ci:'true'}),true);assert.throws(()=>autoServe({serve:'typo'}));
+ assert.equal(autoServe({}, {tty:true,ci:'',locked:false}),true);assert.equal(autoServe({}, {tty:false,ci:'',locked:false}),false);assert.equal(autoServe({}, {tty:true,ci:'true'}),false);assert.equal(autoServe({}, {tty:true,ci:'',locked:true}),false);
+ assert.equal(autoServe({serve:'false'},{tty:true}),false);assert.equal(autoServe({serve:'true'},{tty:false,ci:'true',locked:false}),true);assert.throws(()=>autoServe({serve:'typo'}));assert.throws(()=>autoServe({serve:'true'},{locked:true}),/validation lock/);
 });
 test('HTTP report serves death pages, images and explicitly mounted raw logs with working rewritten links',async()=>{
  const root=mkdtempSync(join(tmpdir(),'neo-report-http-'));let server;

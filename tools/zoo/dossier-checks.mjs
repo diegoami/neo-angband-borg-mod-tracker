@@ -9,7 +9,7 @@ function fixture(run) {
   const root=mkdtempSync(join(tmpdir(),'neo-dossiers-'));
   const put=(p,data)=>{mkdirSync(join(root,p,'..'),{recursive:true});writeFileSync(join(root,p),typeof data==='string'?data:JSON.stringify(data));};
   const c={seed:7,race:'Human',class:'Mage'},suite={schema:'neo-headless-suite@1',id:'fixture',birthProfile:'c-seeded-point-buy-v2',turns:100,wallSeconds:2,cases:[c]};
-  put('suite.json',suite);put('experiment.json',{workers:1,argv:['--bundle','/tmp/original build/bundle.mjs']});
+  put('suite.json',suite);put('original build/bundle.mjs','');put('original build/build.json',{sourcePaths:{engine:join(root,'engine')}});put('engine/package.json',{});put('experiment.json',{workers:1,argv:['--bundle',join(root,'original build/bundle.mjs')]});
   put('runs/worker-0/cells.json',[{...c,id:'0-7',suite:'fixture',outcome:'death',turn:40,hp:-1,level:1,depth:1,maxDepth:1,cause:'a rat <script>alert(1)</script>',evidence:'0-7/run'}]);
   const player={...c,cls:'Mage',hp:10,maxHp:10,sp:2,maxSp:3,level:1,depth:1,grid:{x:5,y:5}};
   const known={player,inventory:[{number:1,name:'Potion <unknown>'}],equipment:[],quiver:[],spellbooks:[{name:'First spells',spells:[{name:'Phase Door',learned:true,mana:1,chance:5,forgotten:false}]}],level:{cells:[{x:5,y:5,remembered:{featCode:'FLOOR',passable:true}}]},monsters:[]};
@@ -30,7 +30,7 @@ test('old run can be reported without execution; dossiers have chronology, inven
  const before=readFileSync(join(dir,'run.json'),'utf8');const out=join(root,'cemetery');const result=reportExperiment(root,out);
  assert.equal(result.deaths,1);assert.equal(result.complete,true);
  const report=readFileSync(join(out,'deaths/0-7/report.md'),'utf8');
- assert.match(report,/Exact game seed: \*\*7\*\*/);assert.match(report,/--mode watch/);assert.match(report,/--mode game/);assert.match(report,/--bundle '\/tmp\/original build\/bundle.mjs'/);assert.match(report,/100 engine ticks/);
+ assert.match(report,/Exact game seed: \*\*7\*\*/);assert.match(report,/--mode watch/);assert.match(report,/--mode game/);assert.ok(report.includes("--bundle '"+join(root,'original build/bundle.mjs')+"'"));assert.match(report,/100 engine ticks/);
  assert.match(report,/Relative ordering.*unresolved/);assert.match(report,/incomplete or invalid JSON/);
  const inventory=readFileSync(join(out,'deaths/0-7/inventory.md'),'utf8');assert.match(inventory,/Phase Door/);assert.match(inventory,/Potion/);
  const html=readFileSync(join(out,'deaths/0-7/index.html'),'utf8');assert.ok(!html.includes('<script>alert(1)</script>'));assert.match(html,/&lt;script&gt;/);

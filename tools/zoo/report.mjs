@@ -3,6 +3,8 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, realpathSync } from
 import { resolve, join, dirname, relative, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { aggregate, render, portableReport } from './ci/report.mjs';
+import { recordedSourcesClean } from './source-integrity.mjs';
+import { replayPaths } from './replay-paths.mjs';
 import { autoServe,serveReport } from './serve-report.mjs';
 import { animatedSvg,playerMarkup } from './frames.mjs';
 import { loadSuite } from './ci/suite.mjs';
@@ -105,15 +107,16 @@ function page(title,body) {
 function sourceLines(cell) {
   const b=cell.build;return b?`Engine: ${b.engine?.repository??'unknown'} @ ${b.engine?.commit??'unknown'}; Borg: ${b.borg?.repository??'unknown'} @ ${b.borg?.commit??'unknown'}; bundle SHA256: ${b.bundleSha256??'unknown'}.`:'Build identity unavailable.';
 }
-export function writeReport(report,{out,runsRoot,experimentRoot=dirname(runsRoot),capturesRoot=null}) {
+export function writeReport(report,{out,runsRoot,experimentRoot=dirname(runsRoot),capturesRoot=null,bundle:bundleOverride,engine:engineOverride,portable=false}) {
   mkdirSync(out,{recursive:false});
 
   const deaths=report.cells.filter(c=>c.outcome==='death'),index=[];
-  const args=readJson(join(experimentRoot,'experiment.json'))?.argv??[];
-  const bundle=args.indexOf('--bundle')>=0?args[args.indexOf('--bundle')+1]:'build/bundle.mjs';
+  const paths=replayPaths(experimentRoot,{bundle:bundleOverride,engine:engineOverride,portable});
+  const bundle=paths.bundle??'UNRESOLVED-BUNDLE';
+
   const quote=value=>"'"+String(value).replaceAll("'","'\"'\"'")+"'";
 
-  text(join(out,'report.md'),render(report,{bundle,replayOut:"/tmp/borg-repeat"})+'\n\n## Death dossiers\n\n'+report.cells.filter(c=>c.outcome==='death').map(c=>`- [Seed ${c.seed}: chronological report, inventory and in-game replay commands](deaths/${c.id}/README.md)`).join('\n')+'\n');json(join(out,'report.json'),portableReport(report,runsRoot));
+  text(join(out,'report.md'),render(report,{bundle,commands:paths.bundleAvailable,runner:join(paths.tools,'tools/zoo/run.mjs')})+'\n\n## Death dossiers\n\n'+report.cells.filter(c=>c.outcome==='death').map(c=>`- [Seed ${c.seed}: chronological report, inventory and in-game replay commands](deaths/${c.id}/README.md)`).join('\n')+'\n');json(join(out,'report.json'),portableReport(report,runsRoot));
   mkdirSync(join(out,'deaths'));
   for(const cell of deaths) {
     if(!/^\d+-\d+$/.test(cell.id))throw Error('Invalid death identifier');
@@ -135,19 +138,22 @@ export function writeReport(report,{out,runsRoot,experimentRoot=dirname(runsRoot
     account+=displayed.map(r=>`| ${r.turn} | ${r.source}:${r.line} | ${md(observation(r))} |`).join('\n')+'\n';
     if(ep.sequence.length>displayed.length)account+=`\nShowing ${displayed.length} of ${ep.sequence.length} rows. Complete chronology is in sequence.json.\n`;
     account+='\n## Evidence limits\n\n'+[...ep.warnings,...ep.unavailable].map(s=>`- ${s}`).join('\n')+'\n';
+    if(!recordedSourcesClean(cell.build??{}))account+='\n**Graphical provenance warning:** this artifact lacks clean-source receipts. The pinned game launcher will refuse it. Verified headless replay remains available with the retained bundle; `--allow-unpinned true` is an explicitly unverified graphical diagnostic only.\n';
     account+='\n## Investigating this death\n\nThe recorded killer is not a causal diagnosis. Compare available HP/resources, known monsters and requested actions; distinguish observed facts from hypotheses and missing instrumentation. No automatic gameplay fix or survival claim is generated.\n';
-    const watchCommand=`pnpm replay --experiment ${quote(experimentRoot)} --case ${cell.id} --bundle ${quote(bundle)} --out ${quote(join(experimentRoot,'replay-'+cell.id))} --mode watch`;
-    const gameCommand=`borg_game_dir=$(mktemp -d /tmp/borg-game-${cell.seed}-XXXXXX) &&\npnpm replay --experiment ${quote(experimentRoot)} --case ${cell.id} --seed ${cell.seed} --bundle ${quote(bundle)} --engine-dir ../engine --out "$borg_game_dir/game" --mode game --autodelay 1000 --start-delay 3000`;
-    const nearCommand=gameCommand.replace('/tmp/borg-game-','/tmp/borg-before-death-').replace('--mode game','--mode game --before-death 100');
+    const watchCommand=paths.bundleAvailable?`pnpm --dir ${quote(paths.tools)} replay --experiment ${quote(experimentRoot)} --case ${cell.id} --bundle ${quote(bundle)} --out ${quote(join(experimentRoot,'replay-'+cell.id))} --mode watch`:'# Relocate the retained build using pnpm report --bundle /absolute/build/bundle.mjs';
+    const gameCommand=paths.available?`borg_game_dir=$(mktemp -d /tmp/borg-game-${cell.seed}-XXXXXX) &&\npnpm --dir ${quote(paths.tools)} replay --experiment ${quote(experimentRoot)} --case ${cell.id} --seed ${cell.seed} --bundle ${quote(bundle)} --engine-dir ${quote(paths.engine??'UNRESOLVED-ENGINE')} --out "$borg_game_dir/game" --mode game --autodelay 1000 --start-delay 3000`:`# ${paths.reason}\n# Regenerate with pnpm report --bundle /absolute/build/bundle.mjs --engine-dir /absolute/engine`;
+    const commandPrefix=paths.available?'':`# Replay paths need relocation: ${paths.reason}\n# Regenerate this report with --bundle /absolute/build/bundle.mjs --engine-dir /absolute/engine\n`;
+    const nearCommand=commandPrefix+gameCommand.replace('/tmp/borg-game-','/tmp/borg-before-death-').replace('--mode game','--mode game --before-death 100');
     account+=`\n## Start 100 turns before death\n\nThese turns use the engine counter shown by the death report, not a count of player actions. A command-boundary engine save at or before death minus100 is reconstructed and accepted only if the complete diagnostic replay matches the original command hash. The launcher prints the actual start turn and lead. The engine RNG is preserved; Borg private memory starts fresh, so this is a saved-position experiment rather than uninterrupted continuation.\n\n\`\`\`sh\n${nearCommand}\n\`\`\`\n`;
     account+=`\n## Repeat this complete run\n\nExact game seed: **${cell.seed}**. Assigned birth: **${cell.race} ${cell.class}**. Full requested cap: **${report.suite.turns} engine ticks**. Use the original retained build; the first command displays a real fresh-birth replay and checks the complete command hash.\n\n\`\`\`sh\n${watchCommand}\n\`\`\`\n\nOpen the local URL it prints and press Start full replay. Verification remains pending until the full command hash, birth, outcome and endpoint match. Legacy bundles use an explicitly recorded display-observer copy; the original is unchanged.\n\nLaunch the normal Neo browser game with this seed:\n\n\`\`\`sh\n${gameCommand}\n\`\`\`\n\nThis launches the actual Neo frontend using a turn-zero birth exported from the recorded seed and bundle, and automatically installs the recorded Borg into the isolated diagnostic session. It preserves recorded birth/RNG/options; frontend and headless decision streams can still diverge and are not declared equal without verification.\n`;
+    if(!paths.available)account+='\nReplay commands are unavailable until the source/artifact paths are relocated.\n';
     text(join(folder,'report.md'),account);json(join(folder,'sequence.json'),{...ep,record:undefined,known:undefined});
     text(join(folder,'inventory.md'),inventoryMarkdown(ep));
     const map=knownMapSvg(ep.known);if(map)text(join(folder,'known-map.svg'),map);
     const saveLinks=[];
     for(const name of ['birth.save.json','final.save.json'])if(evidence&&existsSync(join(evidence,name)))saveLinks.push(`[${name}](${link(folder,join(evidence,name))})`);
     const raw=evidence?`[Raw observations and run record](${link(folder,evidence)}/)`:'Raw evidence unavailable.';
-    const replay=`borg_repeat_dir=$(mktemp -d /tmp/borg-${cell.seed}-XXXXXX) &&\nnode tools/zoo/run.mjs --bundle ${quote(bundle)} --seed ${cell.seed} --race '${cell.race}' --class '${cell.class}' ${report.suite.birthProfile==='ordinary-rolled-v1'?'':`--birth-profile ${report.suite.birthProfile}`} --turns ${report.suite.turns} --out "$borg_repeat_dir/run"`;
+    const replay=paths.bundleAvailable?`borg_repeat_dir=$(mktemp -d /tmp/borg-${cell.seed}-XXXXXX) &&\nnode ${quote(join(paths.tools,'tools/zoo/run.mjs'))} --bundle ${quote(bundle)} --seed ${cell.seed} --race '${cell.race}' --class '${cell.class}' ${report.suite.birthProfile==='ordinary-rolled-v1'?'':`--birth-profile ${report.suite.birthProfile}`} --turns ${report.suite.turns} --out "$borg_repeat_dir/run"`:'# Relocate the retained build before generating a copyable replay command.';
     const readme=`# Death · ${title}\n\nRecorded cause: **${md(cell.cause)}**, tick **${cell.turn??'unknown'}**.\n\n[Chronological report](report.md) · [Inventory and learned spells](inventory.md) · [Complete chronology](sequence.json)\n\n${map?'![Last observed known map](known-map.svg)\n\nThis is a diagram of retained known-state data, not a terminal screenshot.':'Known map unavailable: no suitable observation was retained.'}\n\n## Start 100 turns before death\n\n\`\`\`sh\n${nearCommand}\n\`\`\`\n\nThe actual checkpoint turn is reported by the launcher; engine state/RNG are saved, while Borg private memory starts fresh. One life only: death stops the Borg without rerolling.\n\n## Watch or launch in game\n\n\`\`\`sh\n${watchCommand}\n${gameCommand}\n\`\`\`\n\nThe first command verifies a visible replay; the second starts the ordinary browser game with this seed and documented startup limits.\n\n## Reproduce headless\n\nUse the original retained build and pack (identities are in report.md):\n\n\`\`\`sh\n${replay}\n\`\`\`\n\nThis reruns from birth. It does not restore private Borg memory or provide a saved-position comparison. Replays are not additional independent lives.\n\n## Retained engine snapshots\n\n${saveLinks.length?saveLinks.join(' · '):'Unavailable: this run did not retain engine snapshots.'}\n\nNo checkpoint near the inferred boundary is selected. A birth/final save is not a verified episode-start scenario.\n\n${raw}\n\n[All deaths](../../README.md)\n`;
     text(join(folder,'README.md'),readme);
     const rawLinks=evidence?['run.json','messages.jsonl','commands.jsonl','states.jsonl','observations.jsonl','last-actions.json'].filter(name=>existsSync(join(evidence,name))).map(name=>`<a href="${html(link(folder,join(evidence,name)))}">${html(name)}</a>`).join(' · '):'Raw logs unavailable';
@@ -178,8 +184,8 @@ export function reportExperiment(experiment,out,options={}) {
 }
 async function mainReport() {
  const argv=process.argv.slice(2),args={};
- if(argv.includes('--help')){console.log('pnpm report --experiment DIR --out NEW-DIR [--reconstruct true] [--bundle ORIGINAL-BUNDLE] [--serve true|false] [--open false] [--port N]');return;}
- for(let i=0;i<argv.length;i+=2){if(!['--experiment','--out','--reconstruct','--bundle','--serve','--open','--port'].includes(argv[i])||!argv[i+1]||args[argv[i]])throw Error('Expected flag/value pairs');args[argv[i]]=argv[i+1];}
+ if(argv.includes('--help')){console.log('pnpm report --experiment DIR --out NEW-DIR [--reconstruct true] [--bundle ORIGINAL-BUNDLE] [--engine-dir PINNED-ENGINE] [--serve true|false] [--open false] [--port N]');return;}
+ for(let i=0;i<argv.length;i+=2){if(!['--experiment','--out','--reconstruct','--bundle','--engine-dir','--serve','--open','--port'].includes(argv[i])||!argv[i+1]||args[argv[i]])throw Error('Expected flag/value pairs');args[argv[i]]=argv[i+1];}
  if(!args['--experiment']||!args['--out'])throw Error('Expected --experiment DIR --out NEW-DIR');
  const serve=autoServe({serve:args['--serve'],open:args['--open']});
  let capturesRoot=null;
@@ -187,7 +193,7 @@ async function mainReport() {
   const root=resolve(args['--experiment']),manifest=readJson(join(root,'experiment.json')),source=readJson(join(root,'report/report.json'));
   if(!source?.cells)throw Error('Original report.json is required for reconstruction');
   const deaths=source.cells.filter(c=>c.outcome==='death');if(deaths.length>20)throw Error('At most 20 death replays per reconstruction command; use per-case replay for larger cohorts');
-  const argv=manifest.argv??[],bundle=args['--bundle']??argv[argv.indexOf('--bundle')+1];if(!bundle)throw Error('Original --bundle is required');
+  const locations=replayPaths(root,{bundle:args['--bundle'],engine:args['--engine-dir']});const bundle=locations.bundle;if(!locations.bundleAvailable)throw Error(locations.reason??'Original --bundle is required');
   capturesRoot=resolve(args['--out'])+'.replays';mkdirSync(capturesRoot,{recursive:false});
   const {spawnSync}=await import('node:child_process');const replay=new URL('./replay.mjs',import.meta.url);
   for(const cell of deaths) {
@@ -197,7 +203,7 @@ async function mainReport() {
    if(child.status!==0)console.error(`Replay ${cell.id} is not verified; its frames will not be displayed`);
   }
  }
- const result=reportExperiment(args['--experiment'],args['--out'],{capturesRoot});console.log(`Browsable report: ${result.index}`);if(!result.complete||result.errors.length)process.exitCode=1;
+ const result=reportExperiment(args['--experiment'],args['--out'],{capturesRoot,bundle:args['--bundle'],engine:args['--engine-dir'],portable:!!process.env.CI});console.log(`Browsable report: ${result.index}`);if(!result.complete||result.errors.length)process.exitCode=1;
  if(serve)await serveReport({dir:args['--out'],experiment:args['--experiment'],port:Number(args['--port']??0),openBrowser:args['--open']!=='false'});
 }
 if(process.argv[1]&&pathToFileURL(resolve(process.argv[1])).href===import.meta.url)mainReport().catch(error=>{console.error(error.message);process.exitCode=1;});

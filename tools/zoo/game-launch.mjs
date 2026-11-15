@@ -4,9 +4,10 @@ import { resolve,join,dirname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { execFileSync,spawn } from 'node:child_process';
+import { sourceIntegrity,recordedSourcesClean } from './source-integrity.mjs';
 import { pathToFileURL } from 'node:url';
 const sha=s=>createHash('sha256').update(s).digest('hex');
-export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnly=false,openBrowser=true,autodelay=1000,startDelay=1000,beforeDeath=undefined}) {
+export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnly=false,openBrowser=true,autodelay=1000,startDelay=1000,beforeDeath=undefined,allowUnpinned=false}) {
  if(!Number.isInteger(autodelay)||autodelay<0||autodelay>10000)throw Error('autodelay must be 0..10000 milliseconds');
  if(!Number.isInteger(startDelay)||startDelay<0||startDelay>600000)throw Error('start-delay must be 0..600000 milliseconds');
  const root=resolve(experiment),buildPath=resolve(bundle),engineRoot=resolve(engine),output=resolve(out);
@@ -17,6 +18,10 @@ export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnl
  const worker=index%Math.min(manifest.workers,suite.cases.length),raw=join(root,'runs',`worker-${worker}`,caseId,'run');
  const original=JSON.parse(readFileSync(join(raw,'run.json'))),build=JSON.parse(readFileSync(join(dirname(buildPath),'build.json')));
  if(sha(readFileSync(buildPath))!==original.provenance.bundleSha256)throw Error('Use the original recorded bundle');
+ const sourceVerified=recordedSourcesClean(build);
+ if(!sourceVerified&&!allowUnpinned)throw Error('Recorded build is marked dirty or lacks a clean-source receipt. The retained bundle remains headless-replayable; rebuild clean sources, or explicitly use --allow-unpinned true for an unverified graphical diagnostic.');
+ if(!sourceVerified)console.log('UNVERIFIED GRAPHICAL DIAGNOSTIC: recorded source dirtiness is not resolved; this is not a pinned reproduction.');
+ const currentIntegrity=sourceIntegrity(engineRoot,{engine:true});
  const git=(...a)=>execFileSync('git',['-C',engineRoot,...a],{encoding:'utf8'}).trim();
  if(git('rev-parse','HEAD')!==build.engine.commit)throw Error('Engine checkout differs from recorded pin');
  for(const [file,hash] of Object.entries(build.contentFiles))if(sha(readFileSync(join(engineRoot,'packages/content/pack',file)))!==hash)throw Error('Engine content differs from retained build');
@@ -39,7 +44,7 @@ export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnl
  const states=readFileSync(join(raw,'states.jsonl'),'utf8').split('\n').filter(Boolean).map(s=>JSON.parse(s));
  const initial=states.find(s=>s.kind==='alignment'),active=states.find(s=>s.kind==='alignment-active');
  const options=active?.options?.values??{};
- const config={singleLife:true,autodelay,startDelay,startTurn:checkpoint?.receipt.actualTurn??0,checkpoint:checkpoint?.receipt??null,seed:c.seed,birth:original.birth,options,birthRng:checkpoint?null:initial?.worldRng??null,borgSeed:active?.seededBorgSeed??null,
+ const config={sourceVerified,currentIntegrity,singleLife:true,autodelay,startDelay,startTurn:checkpoint?.receipt.actualTurn??0,checkpoint:checkpoint?.receipt??null,seed:c.seed,birth:original.birth,options,birthRng:checkpoint?null:initial?.worldRng??null,borgSeed:active?.seededBorgSeed??null,
   seeded:build.cSeedStartup===true,truth:!!original.truthUse?.capabilityUse?.entries?.length,settings:original.settings,engine:build.engine,borg:build.borg};
  writeFileSync(join(output,'birth.save.json'),JSON.stringify(birth));writeFileSync(join(output,'launch.json'),JSON.stringify(config,null,2));
  const borgRoot=resolve(dirname(new URL(import.meta.url).pathname),'../..');
@@ -83,6 +88,7 @@ const __reportStart = async () => {
     return installedController?.id==='borg';
   };
   window.__neoReport={seed:__reportConfig.seed,startTurn:state.turn,started:false,engineRngMatchedAtStart,resume,isRunning:()=>!dead&&installedController?.id==='borg',lifeEnded:()=>dead,deathPolicy:()=>installedController?.onDeath,autodelay:__reportConfig.autodelay,startDelay:__reportConfig.startDelay,actualBirth:{turn:state.turn,race:state.actor.player.race.name,class:state.actor.player.cls.name,hp:state.actor.player.chp,sp:state.actor.player.csp,gold:state.actor.player.au,stats:[...state.actor.player.statBirth],grid:{...state.actor.grid}},speed:(value)=>installedControllerSpeed?.(value),birth:__reportConfig.birth,hostTruth:__reportConfig.truth};
+  if(!__reportConfig.sourceVerified)document.title='Unverified Neo graphical diagnostic';
   panelCues.setEnabled(false);
   for(const id of ['inventory','equipment','messages','monsters'])setSubwindowEnabledLive(id,true);
   render();

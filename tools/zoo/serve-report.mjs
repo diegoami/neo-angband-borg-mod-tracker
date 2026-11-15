@@ -1,6 +1,6 @@
 // Serve only the selected report and its explicitly selected raw-evidence tree.
 import { createServer } from 'node:http';
-import { readFileSync,realpathSync,statSync,existsSync } from 'node:fs';
+import { readFileSync,realpathSync,statSync,existsSync,readdirSync,readlinkSync } from 'node:fs';
 import { resolve,join,dirname,relative,sep,extname } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { spawn } from 'node:child_process';
@@ -11,10 +11,22 @@ function browserOpen(url) {
  const child=spawn(process.platform==='darwin'?'open':'xdg-open',[url],{stdio:'ignore'});
  child.on('error',()=>console.log('Open the report URL above in your browser.'));child.unref();
 }
-export function autoServe(options,{tty=process.stdout.isTTY,ci=process.env.CI}={}) {
+export function inheritedValidationLock(lockPath='/tmp/angband-validation.lock') {
+ if(process.platform!=='linux')return false;
+ let pid=process.pid;
+ for(let depth=0;pid>0&&depth<16;depth++) {
+  try {
+   for(const fd of readdirSync(`/proc/${pid}/fd`))try{if(readlinkSync(`/proc/${pid}/fd/${fd}`)===lockPath)return true;}catch{}
+   const match=readFileSync(`/proc/${pid}/status`,'utf8').match(/^PPid:\s+(\d+)/m);pid=match?Number(match[1]):0;
+  }catch{return false;}
+ }
+ return false;
+}
+export function autoServe(options,{tty=process.stdout.isTTY,ci=process.env.CI,locked=inheritedValidationLock()}={}) {
+ if(locked&&options.serve==='true')throw Error('Cannot serve while inheriting the validation lock; export with --serve false and serve after releasing it');
  if(options.open!==undefined&&!['true','false'].includes(options.open))throw Error('--open must be true or false');
  if(options.serve!==undefined&&!['true','false'].includes(options.serve))throw Error('--serve must be true or false');
- return options.serve===undefined?!!tty&&!ci:options.serve==='true';
+ return options.serve===undefined?!!tty&&!ci&&!locked:options.serve==='true';
 }
 export async function serveReport({dir,experiment,port=0,openBrowser=true}) {
  if(!Number.isInteger(port)||port<0||port>65535||(port>0&&port<1024))throw Error('Invalid report port');

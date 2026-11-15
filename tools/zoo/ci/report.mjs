@@ -13,7 +13,7 @@ export function aggregate(suite,rows){
 export function portableReport(report,root){return {...report,cells:report.cells.map(({evidencePath,...c})=>({...c,...(evidencePath?{evidencePath:relative(resolve(root),evidencePath)}:{})}))};}
 const escape=s=>String(s??'').replace(/[|<>`\r\n\[\]()*!_#@]/g,' ');
 function walk(dir){return readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):e.name==='cells.json'?[join(dir,e.name)]:[]);}
-export function render(report,{bundle="build/bundle.mjs",replayOut="rerun"}={}){
+export function render(report,{bundle="build/bundle.mjs",replayOut="rerun",commands=true,runner="tools/zoo/run.mjs"}={}){
  const quote=value=>"'"+String(value).replaceAll("'","'\"'\"'")+"'";
  let text=`# Headless Borg death report: ${report.suite.id}\n\nAssigned: ${report.assigned}; recorded: ${report.recorded}. Every assignment is counted.\n\nProfile: ${report.suite.birthProfile}; cap: ${report.suite.turns} game ticks; per-game watchdog: ${report.suite.wallSeconds} seconds.\n\n| Outcome | Count |\n| --- | ---: |\n`;
  for(const [k,n] of Object.entries(report.counts))text+=`| ${escape(k)} | ${n} |\n`;
@@ -33,7 +33,9 @@ export function render(report,{bundle="build/bundle.mjs",replayOut="rerun"}={}){
  const builds=[...new Map(report.cells.filter(c=>c.build).map(c=>[JSON.stringify(c.build),c.build])).values()];
  text+='\n## Source and bundle identities\n\n'+builds.map(b=>`- Engine: ${escape(b.engine.repository)} @ ${b.engine.commit}; Borg: ${escape(b.borg.repository)} @ ${b.borg.commit}; bundle SHA256: ${b.bundleSha256}; adapters: ${b.appliedPatches.join(', ')}.`).join('\n')+'\n';
  for(const c of report.cells.filter(c=>c.outcome==='death')){
-  text+=`\n### Death ${c.id}: ${c.race} ${c.class}\n\nCause: ${escape(c.cause)}. Seed ${c.seed}, turn ${c.turn}, level ${c.level}, maximum depth ${c.maxDepth}.\n\nReproduce after extracting the build artifact:\n\n\`\`\`sh\nborg_repeat_dir=$(mktemp -d /tmp/borg-${c.seed}-XXXXXX) &&\nnode tools/zoo/run.mjs --bundle ${quote(bundle)} --seed ${c.seed} --race '${c.race}' --class '${c.class}' ${report.suite.birthProfile==='ordinary-rolled-v1'?'':`--birth-profile ${report.suite.birthProfile}`} --turns ${report.suite.turns} --out "$borg_repeat_dir/run"\n\`\`\`\n`;
+  text+=`\n### Death ${c.id}: ${c.race} ${c.class}\n\nCause: ${escape(c.cause)}. Seed ${c.seed}, turn ${c.turn}, level ${c.level}, maximum depth ${c.maxDepth}.\n`;
+  if(commands)text+=`\n\nReproduce after extracting the build artifact:\n\n\`\`\`sh\nborg_repeat_dir=$(mktemp -d /tmp/borg-${c.seed}-XXXXXX) &&\nnode ${quote(runner)} --bundle ${quote(bundle)} --seed ${c.seed} --race '${c.race}' --class '${c.class}' ${report.suite.birthProfile==='ordinary-rolled-v1'?'':`--birth-profile ${report.suite.birthProfile}`} --turns ${report.suite.turns} --out "$borg_repeat_dir/run"\n\`\`\`\n`;
+  else text+='\nReplay paths must be relocated after downloading the artifact. Regenerate with --bundle and --engine-dir in your current checkout.\n';
   for(const [name,label] of [['messages.jsonl','Last messages'],['commands.jsonl','Last commands'],['states.jsonl','Last state observations']]){
    const f=c.evidencePath&&join(c.evidencePath,name);if(f&&existsSync(f)){
     // Bound the Markdown size; full unmodified JSONL remains in the artifact.

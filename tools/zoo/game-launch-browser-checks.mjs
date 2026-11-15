@@ -10,7 +10,7 @@ const playwright=await import(createRequire(join(engine,'package.json')).resolve
 const chromium=playwright.chromium??playwright.default?.chromium;
 let browser,game;
 try {
- game=await launchGame({engine,experiment:a.experiment,caseId:a.case,bundle:a.bundle,out:a.out,openBrowser:false,autodelay:250,startDelay:3000});
+ game=await launchGame({engine,experiment:a.experiment,caseId:a.case,bundle:a.bundle,out:a.out,openBrowser:false,autodelay:250,startDelay:3000,allowUnpinned:a['allow-unpinned']==='true'});
  browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE}:{})});
  const page=await browser.newPage({viewport:{width:1280,height:850}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto(game.url);await page.waitForFunction(()=>!!window.__neoReport,{timeout:30000});

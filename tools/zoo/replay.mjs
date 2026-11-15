@@ -4,6 +4,7 @@ import { createHash,randomBytes } from 'node:crypto';
 import { readFileSync,writeFileSync,mkdirSync,cpSync,existsSync } from 'node:fs';
 import { resolve,join,dirname } from 'node:path';
 import { fileURLToPath,pathToFileURL } from 'node:url';
+import { replayPaths } from './replay-paths.mjs';
 import { spawn,execFileSync } from 'node:child_process';
 const tool=dirname(fileURLToPath(import.meta.url));
 const hash=s=>createHash('sha256').update(s).digest('hex');
@@ -30,7 +31,7 @@ const events=new EventSource('/events?token='+token);events.onmessage=e=>{const 
 document.querySelector('#start').onclick=async()=>{document.querySelector('#start').disabled=true;const response=await fetch('/start?token='+token,{method:'POST'});if(!response.ok)document.querySelector('#status').textContent=await response.text()};
 </script></html>`;
 function argsOf(argv) {
-  const args={};for(let i=0;i<argv.length;i+=2){if(!['--experiment','--case','--bundle','--out','--mode','--engine-dir','--prepare-only','--seed','--open','--autodelay','--start-delay','--before-death'].includes(argv[i])||!argv[i+1]||args[argv[i]])throw Error('Expected flag/value pairs; see --help');args[argv[i]]=argv[i+1];}return args;
+  const args={};for(let i=0;i<argv.length;i+=2){if(!['--experiment','--case','--bundle','--out','--mode','--engine-dir','--prepare-only','--seed','--open','--autodelay','--start-delay','--before-death','--allow-unpinned'].includes(argv[i])||!argv[i+1]||args[argv[i]])throw Error('Expected flag/value pairs; see --help');args[argv[i]]=argv[i+1];}return args;
 }
 async function main() {
   if(process.argv.includes('--help')){console.log('pnpm replay --experiment DIR --case INDEX-SEED --bundle BUILD/bundle.mjs --out NEW-DIR --mode watch\npnpm replay --experiment DIR --case INDEX-SEED --engine-dir ../engine --out NEW-DIR --mode game');return;}
@@ -43,10 +44,10 @@ async function main() {
   const out=resolve(a['--out']);
   if(a['--mode']==='game') {
     if(!a['--engine-dir'])throw Error('Actual game launch requires --engine-dir');
-    const argv=manifest.argv??[],bundle=a['--bundle']??argv[argv.indexOf('--bundle')+1];
+    const locations=replayPaths(root,{bundle:a['--bundle'],engine:a['--engine-dir']});const bundle=locations.bundle;
     if(!bundle)throw Error('Actual game launch requires the original --bundle');
     const {launchGame}=await import('./game-launch.mjs');
-    await launchGame({experiment:root,caseId:a['--case'],bundle,engine:a['--engine-dir'],out,prepareOnly:a['--prepare-only']==='true',openBrowser:a['--open']!=='false',autodelay:Number(a['--autodelay']??1000),startDelay:Number(a['--start-delay']??1000),beforeDeath:a['--before-death']===undefined?undefined:Number(a['--before-death'])});return;
+    await launchGame({experiment:root,caseId:a['--case'],bundle,engine:a['--engine-dir'],out,prepareOnly:a['--prepare-only']==='true',openBrowser:a['--open']!=='false',autodelay:Number(a['--autodelay']??1000),startDelay:Number(a['--start-delay']??1000),beforeDeath:a['--before-death']===undefined?undefined:Number(a['--before-death']),allowUnpinned:a['--allow-unpinned']==='true'});return;
   }
   mkdirSync(out,{recursive:false});
   if(!a['--bundle'])throw Error('Visible replay requires the original --bundle');
@@ -56,7 +57,7 @@ async function main() {
   textFile(join(work,'bundle.mjs'),display.source);
   const derived={...build,bundleSha256:hash(display.source),derivedFromBundleSha256:build.bundleSha256,displayAdapter:display.adapted?'legacy-known-state-observer-v1':null};
   textFile(join(work,'build.json'),JSON.stringify(derived,null,2)+'\n');
-  const runArgs=[join(tool,'run.mjs'),'--bundle',join(work,'bundle.mjs'),'--seed',String(original.seed),'--race',original.birth.race,'--class',original.birth.class,'--turns',String(original.inputs.turns),'--decisions',String(original.inputs.decisions??10000000),'--out',join(out,'run')];
+  const runArgs=[join(tool,'run.mjs'),'--bundle',join(work,'bundle.mjs'),'--seed',String(original.seed),'--race',original.birth.race,'--class',original.birth.class,'--turns',String(original.inputs.turns),'--decisions',String(original.inputs.decisions??10000000),'--out',join(out,'run'),'--record','true'];
   if(original.inputs.birthProfile)runArgs.push('--birth-profile',original.inputs.birthProfile);
   if(a['--mode']==='capture') {
     const {spawnSync}=await import('node:child_process');
@@ -74,7 +75,7 @@ async function main() {
     if(url.pathname==='/events'&&request.method==='GET'){response.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-store'});response.flushHeaders();clients.add(response);if(last)response.write(`data: ${JSON.stringify(last)}\n\n`);if(result)response.write(`data: ${JSON.stringify({result})}\n\n`);request.on('close',()=>clients.delete(response));return;}
     if(url.pathname!=='/start'||request.method!=='POST'||child){response.writeHead(404).end();return;}
     response.end('Started');
-    const argv=[join(tool,'run.mjs'),'--bundle',join(work,'bundle.mjs'),'--seed',String(original.seed),'--race',original.birth.race,'--class',original.birth.class,'--turns',String(original.inputs.turns),'--decisions',String(original.inputs.decisions??10000000),'--out',join(out,'run'),'--watch','true'];
+    const argv=[join(tool,'run.mjs'),'--bundle',join(work,'bundle.mjs'),'--seed',String(original.seed),'--race',original.birth.race,'--class',original.birth.class,'--turns',String(original.inputs.turns),'--decisions',String(original.inputs.decisions??10000000),'--out',join(out,'run'),'--watch','true','--record','true'];
     if(original.inputs.birthProfile)argv.push('--birth-profile',original.inputs.birthProfile);
     child=spawn(process.execPath,argv,{stdio:['ignore','pipe','inherit']});
     let partial='';child.stdout.on('data',data=>{partial+=data;let end;while((end=partial.indexOf('\n'))>=0){const line=partial.slice(0,end);partial=partial.slice(end+1);try{const event=JSON.parse(line);if(event.frame)send(event);}catch{console.log(line);}}});
