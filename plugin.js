@@ -274,6 +274,7 @@ var BorgKills = class {
     if (!kill.rIdx) return;
     const world = this.world;
     if (world) {
+      world.invalidateDanger();
       const flow = world.flowTarget;
       if (world.self.goal.type === GOAL_KILL && flow?.flowX[0] === kill.pos.x && flow.flowY[0] === kill.pos.y)
         world.self.goal.type = 0;
@@ -469,9 +470,9 @@ function makeGoals() {
     waiting: false,
     recalling: 0,
     descending: 0,
-    shop: 0,
-    ware: 0,
-    item: 0,
+    shop: -1,
+    ware: -1,
+    item: -1,
     doBest: false
   };
 }
@@ -572,6 +573,16 @@ var BorgWorld = class {
   /** Recall queues its depth answer (borg-escape.c:63-115). */
   resetRecallDepth = false;
   /**
+   * The item the Borg chose for an item-choice prompt its command will raise:
+   * borg_recharging presses the chosen wand's or staff's letter after the read,
+   * cast or activation (borg-item-use.c:1182). Null when there is none.
+   */
+  itemChoice = null;
+  /** borg_danger_wipe: lazily clear flow know/icky on the next flow build. */
+  invalidateDanger() {
+    if (this.flowTarget) this.flowTarget.borgDangerWipe = true;
+  }
+  /**
    * Reset everything for a new level (borg_init_cave + the new-level branch of
    * borg_update, borg-update.c:2050-2180). `depth` is the depth just ARRIVED at,
    * because three of the resets ask about it.
@@ -588,6 +599,7 @@ var BorgWorld = class {
    * it climb straight back up - a town/level-1 shuttle that never played a turn.
    */
   wipeLevel(depth) {
+    this.invalidateDanger();
     this.map.wipe();
     this.kills.wipe(false);
     this.takes.wipe(false);
@@ -4163,6 +4175,11 @@ function deviceFail(ctx, lev) {
   if (denominator === 0) denominator = numerator > 0 ? 1 : -1;
   return Math.trunc(100 * numerator / denominator);
 }
+function withItemTarget(ctx, cmd, handle) {
+  if (!cmd) return null;
+  ctx.world.itemChoice = handle;
+  return { ...cmd, args: { ...cmd.args ?? {}, tgtitem: { handle } } };
+}
 
 // src/trait/config.ts
 function defaultCfg() {
@@ -4230,7 +4247,7 @@ function contextFrame(ctx) {
 function resolveOpts(opts = {}, ctx) {
   return {
     cfg: { ...borgCfg(), ...opts.cfg },
-    spells: opts.spells ?? defaultSpellSeam(),
+    spells: opts.spells ?? ctx?.spellSeam?.(ctx) ?? defaultSpellSeam(),
     home: opts.home ?? defaultHomeSeam(),
     frame: opts.frame ?? contextFrame(ctx) ?? defaultFrame(),
     svals: opts.svals ?? flatSvals(),
@@ -5194,6 +5211,7 @@ var PACK_SIZE = 23;
 var DEFAULT_MAX_STACK = 40;
 function createStoreMemory() {
   return {
+    visited: /* @__PURE__ */ new Set(),
     soldTval: [],
     soldSval: [],
     soldPval: [],
@@ -5885,6 +5903,13 @@ function borgFlowCommit(ctx, flow, why) {
 function alterCommand(dir) {
   return { code: "alter", dir };
 }
+var CHEST_FAIL_TOLERANCE = 7;
+function isLiveChest(item) {
+  return item.tval === TV.CHEST && item.label.includes("chest") && !item.label.includes("Ruined");
+}
+function trapIsKnown(item) {
+  return "trapKnown" in item && item.trapKnown === true;
+}
 function borgPlayStep(ctx, flow, y2, x2) {
   const w = ctx.world;
   const act = ctx.act;
@@ -5951,6 +5976,16 @@ function borgPlayStep(ctx, flow, y2, x2) {
     return act.melee(dir);
   }
   if (ag.take && w.takes.has(ag.take)) {
+    const take = w.takes.at(ag.take);
+    const head = ctx.view.floorItems(x, y)[0];
+    if (head !== void 0 && isLiveChest(head)) {
+      const known = trapIsKnown(head);
+      if (known && head.pval > 1 && trait(w, 56 /* DEV */) - head.pval >= CHEST_FAIL_TOLERANCE) return act.disarm(dir);
+      if (!known || head.pval < 0) return act.open(dir);
+    } else if (head === void 0 && take.tval === TV.CHEST) {
+      w.takes.delete(ag.take);
+      return null;
+    }
     w.takes.delete(ag.take);
     ag.take = 0;
     return act.move(dir);
@@ -6422,14 +6457,30 @@ function borgFlowVein(ctx, flow, viewable, nearness) {
   if (!borgFlowCommit(ctx, flow, GOAL_TAKE)) return null;
   return borgFlowOld(ctx, flow, GOAL_TAKE);
 }
+function borgTrackShops(ctx, flow) {
+  if (trait(ctx.world, 105 /* CDEPTH */)) return;
+  const stores = ctx.view.stores();
+  for (let y = 0; y < ctx.world.map.height; y++) {
+    for (let x = 0; x < ctx.world.map.width; x++) {
+      const grid = ctx.world.map.at(x, y);
+      if (!featIsShop(grid.feat)) continue;
+      const i = stores.findIndex((store2) => store2.feat === grid.feat);
+      if (i < 0) continue;
+      grid.store = i;
+      flow.shopX[i] = x;
+      flow.shopY[i] = y;
+    }
+  }
+}
 function borgFlowShopEntry(ctx, flow, i) {
   const w = ctx.world;
   if (trait(w, 105 /* CDEPTH */)) return null;
+  borgTrackShops(ctx, flow);
   const x = flow.shopX[i];
   const y = flow.shopY[i];
   if (!x || !y) return null;
   if (x === w.self.c.x && y === w.self.c.y) {
-    return ctx.act.move(5);
+    return ctx.act.hold();
   }
   borgFlowClear(flow);
   borgFlowEnqueueGrid(ctx, flow, y, x);
@@ -7093,6 +7144,7 @@ function borgFollowKill(ctx, flow, i) {
   kill.pos.x = nx;
   kill.pos.y = ny;
   w.map.at(nx, ny).kill = i;
+  flow.borgDangerWipe = true;
   if (!trait(w, 37 /* ESP */) && w.self.goal.type === GOAL_KILL && w.self.goal.g.y === kill.pos.y && w.self.goal.g.x === kill.pos.x) {
     w.self.goal.type = 0;
   }
@@ -7852,7 +7904,7 @@ function borgRecharging(ctx, d, playerHas2) {
     }
     if (!charge) continue;
     const cmd = borgReadScroll(ctx, SVAL.scroll.recharging, d) || borgSpellFail(ctx, 7 /* RECHARGING */, 96, playerHas2) || borgActivateItem(ctx, "act_recharge", d);
-    if (cmd) return cmd;
+    if (cmd) return withItemTarget(ctx, cmd, item.handle);
     break;
   }
   return null;
@@ -7917,7 +7969,11 @@ function borgTestStuff(ctx, d) {
     bestV = v;
   }
   if (best) {
-    return borgSpell(ctx, 8 /* IDENTIFY_RUNE */) || borgReadScroll(ctx, SVAL.scroll.identify, d);
+    return withItemTarget(
+      ctx,
+      borgSpell(ctx, 8 /* IDENTIFY_RUNE */) || borgReadScroll(ctx, SVAL.scroll.identify, d),
+      best.handle
+    );
   }
   return null;
 }
@@ -7936,6 +7992,7 @@ function borgNotice(ctx, opts = {}) {
   const view = ctx.view;
   const p = view.player();
   const t = new Array(BI_MAX).fill(0);
+  ctx.world.self.trait = t;
   const previous = getDerived(ctx.world);
   const d = resetDerived(ctx.world);
   t[146 /* BLOWS */] = 1;
@@ -7967,10 +8024,14 @@ function borgNotice(ctx, opts = {}) {
   finishNotice(c);
   ctx.world.self.trait = t;
   if (opts.noticeSwap ?? true) {
+    const suppliedSwap = opts.weaponSwap;
     d.weaponSwapOpts = {
       cfg: { ...R2.cfg },
       ...opts.spells ? { spells: { ...opts.spells } } : {},
-      ...opts.weaponSwap ? { weaponSwap: { ...opts.weaponSwap } } : {}
+      weaponSwap: {
+        ...suppliedSwap,
+        tarrasqueDead: suppliedSwap?.tarrasqueDead ?? uniqueSlain(p, "the-tarrasque", "The Tarrasque")
+      }
     };
     d.weaponSwap = borgWeaponSwap(ctx, d.weaponSwapOpts);
     d.armourSwapOpts = { ...d.weaponSwapOpts, ...opts.armourSwap ? { armourSwap: { ...opts.armourSwap } } : {} };
@@ -8043,6 +8104,20 @@ function borgNoticePlayer(c) {
   }
   if (!c.derive) t[44 /* SPEED */] = p.speed;
   t[52 /* INFRA */] = c.derive ? c.R.frame.infra ?? 0 : p.seeInfra;
+  t[263 /* SAURON_DEAD */] = uniqueSlain(p, "sauron-the-sorcerer", "Sauron, the Sorcerer") ? 1 : 0;
+}
+function localRaceId(raceId) {
+  const at = raceId.indexOf(":");
+  return at < 0 ? raceId : raceId.slice(at + 1);
+}
+function uniqueSlain(player, localId, cName) {
+  const list = player.slainUniques;
+  if (list === void 0) return false;
+  for (const entry of list) {
+    if (typeof entry.raceId === "string" && localRaceId(entry.raceId) === localId) return true;
+    if (entry.name === cName) return true;
+  }
+  return false;
 }
 function borgCalcBlows(c, item) {
   const t = c.t;
@@ -11051,6 +11126,11 @@ function borgThinkShopBuy(ctx, shopNum, d) {
 function borgChooseShop(ctx, d) {
   const goal = ctx.world.self.goal;
   const mem = d?.mem ?? createStoreMemory();
+  const visit = (shop) => {
+    if (st(ctx, 45 /* GOLD */) <= 0 || mem.visited.has(shop) || !d?.shopKnown?.(shop)) return false;
+    goal.shop = shop;
+    return true;
+  };
   if (st(ctx, 105 /* CDEPTH */)) return false;
   if (ctx.world.clock - (d?.began ?? 0) > 2e3) return false;
   if (ctx.world.self.timeThisPanel > 1350) return false;
@@ -11062,6 +11142,7 @@ function borgChooseShop(ctx, d) {
   if (st(ctx, 26 /* LIGHT */) === 0 || st(ctx, 39 /* FOOD */) === 0 || st(ctx, 116 /* ISCUT */) || st(ctx, 115 /* ISPOISONED */) || st(ctx, 26 /* LIGHT */) === 1 && st(ctx, 45 /* GOLD */) >= 100 && st(ctx, 35 /* CLEVEL */) < 10) {
     if (borgThinkShopBuyUseful(ctx, d)) return true;
     if (borgThinkHomeBuyUseful(ctx, d)) return true;
+    if (visit(goal.shop)) return true;
   }
   if (goal.shop !== -1 && goal.ware !== -1) return true;
   goal.shop = -1;
@@ -11084,12 +11165,16 @@ function borgChooseShop(ctx, d) {
   if (borgThinkShopGrabInteresting(ctx, d)) return true;
   if (borgUsesSwaps(ctx, d) && borgThinkHomeBuySwapWeapon(ctx, d)) return true;
   if (borgUsesSwaps(ctx, d) && borgThinkHomeBuySwapArmour(ctx, d)) return true;
+  for (let shop = 0; shop < ctx.view.stores().length; shop++) {
+    if (visit(shop)) return true;
+  }
   return false;
 }
 function borgThinkStore(ctx, shopNum, d, wearDeps) {
   if (ctx.world.clock >= 2e4 && ctx.world.clock <= 20010) {
     return ctx.act.shopExit();
   }
+  d?.mem?.visited.add(shopNum);
   borgNotice(ctx);
   const best = borgBestStuff(ctx, shopNum, wearDeps, d);
   if (best) return best;
@@ -11145,21 +11230,33 @@ function borgEnchantToA(ctx, d, playerHas2) {
     bestA = a;
   }
   if (!best) return null;
-  return borgReadScroll(ctx, SVAL.scroll.star_enchant_armor, d) || borgReadScroll(ctx, SVAL.scroll.enchant_armor, d) || borgSpellFail(ctx, 76 /* ENCHANT_ARMOUR */, 65, playerHas2);
+  return withItemTarget(
+    ctx,
+    borgReadScroll(ctx, SVAL.scroll.star_enchant_armor, d) || borgReadScroll(ctx, SVAL.scroll.enchant_armor, d) || borgSpellFail(ctx, 76 /* ENCHANT_ARMOUR */, 65, playerHas2),
+    best.handle
+  );
 }
 function borgEnchantToH(ctx, d, playerHas2) {
   if (!trait3(ctx, 241 /* NEED_ENCHANT_TO_H */)) return null;
   if (!trait3(ctx, 234 /* AENCH_TOH */) && !trait3(ctx, 236 /* AENCH_SWEP */)) return null;
   const item = pickLeastEnchantedWeapon(ctx, d, playerHas2, (it) => it.toH);
   if (!item) return null;
-  return borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_hit, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2);
+  return withItemTarget(
+    ctx,
+    borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_hit, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2),
+    item.handle
+  );
 }
 function borgEnchantToD(ctx, d, playerHas2) {
   if (!trait3(ctx, 242 /* NEED_ENCHANT_TO_D */)) return null;
   if (!trait3(ctx, 235 /* AENCH_TOD */) && !trait3(ctx, 236 /* AENCH_SWEP */)) return null;
   const item = pickLeastEnchantedWeapon(ctx, d, playerHas2, (it) => it.toD);
   if (!item) return null;
-  return borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_dam, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2);
+  return withItemTarget(
+    ctx,
+    borgReadScroll(ctx, SVAL.scroll.star_enchant_weapon, d) || borgReadScroll(ctx, SVAL.scroll.enchant_weapon_to_dam, d) || borgSpellFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2),
+    item.handle
+  );
 }
 function pickLeastEnchantedWeapon(ctx, d, playerHas2, bonus) {
   const canSpell = borgSpellOkayFail(ctx, 75 /* ENCHANT_WEAPON */, 65, playerHas2) || trait3(ctx, 236 /* AENCH_SWEP */) >= 1;
@@ -11624,7 +11721,7 @@ function borgCrushJunk(ctx, d) {
     if (item.tval === TV.SCROLL && !item.aware) continue;
     if (!valueKnown(item, d)) continue;
     let value = valueOf(item, d);
-    if ((item.tval === TV.STAFF || item.tval === TV.WAND) && item.number > item.pval) {
+    if ((item.tval === TV.STAFF || item.tval === TV.WAND) && isAware(item, d) && item.number > item.pval) {
       value = 0;
     }
     if (item.tval >= TV.CHEST) {
@@ -12842,7 +12939,7 @@ function auxObject(ctx, fs) {
   let bD = -1;
   for (const item of ctx.view.inventory()) {
     if (item.number <= 0) continue;
-    if (item.tval === TV.MAGIC_BOOK || item.tval === TV.PRAYER_BOOK) continue;
+    if (canBrowse(item)) continue;
     const d = idiv(item.dd * (item.ds + 1), 2);
     if ((item.value ?? 0) > 100 && d < 5) continue;
     if (d <= 0) continue;
@@ -15602,6 +15699,138 @@ function borgPermaSpell(ctx) {
   return fs.pending;
 }
 
+// src/fight/retreat.ts
+function borgDesperateStairs(ctx, flow, posDanger) {
+  const w = ctx.world, self = w.self;
+  if (!(flow.less.num || flow.more.num) || !(self.goal.fleeing || w.facts.scaryGuyOnLevel || posDanger > getDangerGlobals(w).avoidance && trait3(ctx, 35 /* CLEVEL */) < 35)) return null;
+  const stairDistance = (track) => {
+    let best = -1;
+    for (let i = 0; i < track.num; i++) {
+      const x = track.x[i], y = track.y[i];
+      if (w.map.at(x, y).kill) continue;
+      const d = distance(self.c.y, self.c.x, y, x);
+      if (best >= d) continue;
+      best = d;
+    }
+    return best;
+  };
+  const up = stairDistance(flow.less), down = stairDistance(flow.more);
+  const attempt = (less) => {
+    flow.borgDesperate = true;
+    try {
+      return less ? borgFlowStairLess(ctx, flow, GOAL_FLEE, false) : borgFlowStairMore(ctx, flow, GOAL_FLEE, false, false);
+    } finally {
+      flow.borgDesperate = false;
+    }
+  };
+  if (up < 3 && up !== -1 && posDanger < trait3(ctx, 27 /* CURHP */)) {
+    const cmd = attempt(true);
+    if (cmd) return cmd;
+  }
+  if (up <= 2 && up !== -1) {
+    const cmd = attempt(true);
+    if (cmd) return cmd;
+  }
+  if (up < 20 && up !== -1 && w.facts.scaryGuyOnLevel && trait3(ctx, 35 /* CLEVEL */) < 20) {
+    let safe = true;
+    for (let i = 0; i < 8; i++) {
+      const x = self.c.x + ddx_ddd[i], y = self.c.y + ddy_ddd[i];
+      if (!w.map.inBounds(x, y)) continue;
+      const kill = w.map.at(x, y).kill;
+      if (kill && w.kills.at(kill).speed > trait3(ctx, 44 /* SPEED */)) safe = false;
+    }
+    if (!(trait3(ctx, 105 /* CDEPTH */) <= 5 && trait3(ctx, 105 /* CDEPTH */) !== 0 && getFightState(w).fightingUnique) && safe) {
+      const cmd = attempt(true);
+      if (cmd) return cmd;
+    }
+  }
+  if (down <= 2 && down !== -1) return attempt(false);
+  return null;
+}
+function* retreatView(ctx) {
+  const { x, y } = ctx.world.self.c;
+  const full = 20, over = idiv(full * 3, 2);
+  const visible = (xx, yy) => ctx.world.map.inBounds(xx, yy) && (ctx.world.map.at(xx, yy).info & BORG_VIEW) !== 0;
+  for (const [sx, sy] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) {
+    for (let d = 1; d <= idiv(full * 2, 3); d++) {
+      const xx = x + sx * d, yy = y + sy * d;
+      if (visible(xx, yy)) yield { x: xx, y: yy };
+    }
+  }
+  for (const [sx, sy] of [[0, 1], [0, -1], [1, 0], [-1, 0]]) {
+    for (let d = 1; d <= full; d++) {
+      const xx = x + sx * d, yy = y + sy * d;
+      if (visible(xx, yy)) yield { x: xx, y: yy };
+    }
+  }
+  for (let n = 1; n <= idiv(over, 2); n++) {
+    let z = Math.min(over - n - n, full - n);
+    while (z + n + (n >> 1) > full) z--;
+    for (const [sx, sy, vertical] of [
+      [1, 1, true],
+      [-1, 1, true],
+      [1, -1, true],
+      [-1, -1, true],
+      [1, 1, false],
+      [1, -1, false],
+      [-1, 1, false],
+      [-1, -1, false]
+    ]) {
+      for (let d = 1; d <= z; d++) {
+        const xx = x + sx * (vertical ? n : n + d), yy = y + sy * (vertical ? n + d : n);
+        if (visible(xx, yy)) yield { x: xx, y: yy };
+      }
+    }
+  }
+}
+function borgStrategicRetreat(ctx, flow, posDanger, nasty, surrounded) {
+  const w = ctx.world, self = w.self, g = getDangerGlobals(w);
+  if (!(posDanger > idiv(g.avoidance, 3) && !nasty && !self.noRetreat || surrounded && posDanger !== 0) || g.morgothPosition || w.clock - getFightState(w).tAntisummon < 50 || trait3(ctx, 114 /* ISCONFUSED */) || trait3(ctx, 27 /* CURHP */) >= 500) return null;
+  const bouncing = (x, y) => {
+    const st2 = flow.step;
+    return trait3(ctx, 27 /* CURHP */) >= idiv(trait3(ctx, 28 /* MAXHP */) * 7, 10) && st2.num > 2 && st2.y[st2.num - 2] === y && st2.x[st2.num - 2] === x && st2.y[st2.num - 3] === self.c.y && st2.x[st2.num - 3] === self.c.x || // FORK: the port's existing back-away anti-loop proxy; no distinct C antibounce counter is exposed.
+    self.timeThisPanel >= 300;
+  };
+  let bestRange = -1, bestX = self.c.x, bestY = self.c.y;
+  for (const target of retreatView(ctx)) {
+    if (!borgCaveFloorBold(w, target.y, target.x) || bouncing(target.x, target.y) || !borgHappyGridBold(ctx, flow, target.y, target.x)) continue;
+    if (bestRange >= 0 && (Math.abs(target.x - self.c.x) > bestRange || Math.abs(target.y - self.c.y) > bestRange)) continue;
+    let x = self.c.x, y = self.c.y, r = 0;
+    while (true) {
+      const d2 = borgGotoDir(w, y, x, target.y, target.x);
+      if (d2 === 0 || d2 === 5) break;
+      r++;
+      x += ddx[d2];
+      y += ddy[d2];
+      if (!w.map.inBounds(x, y) || bouncing(x, y)) break;
+      const ag = w.map.at(x, y);
+      if (!borgCaveFloorGrid(ag) || ag.feat === FEAT.LAVA && !trait3(ctx, 64 /* IFIRE */) || r >= 10) break;
+      const danger2 = borgDanger(ctx, y, x, 1, true, false);
+      if (danger2 >= posDanger) break;
+      if (r === 1) {
+        if (!surrounded || self.goal.ignoring) {
+          if (danger2 >= idiv(trait3(ctx, 27 /* CURHP */) * 4, 10) || danger2 > idiv(posDanger * 5, 10)) break;
+        } else if (trait3(ctx, 35 /* CLEVEL */) >= 20) {
+          if (danger2 >= (bestRange <= 5 ? idiv(trait3(ctx, 27 /* CURHP */) * 15, 10) : trait3(ctx, 27 /* CURHP */))) break;
+        } else if (danger2 >= trait3(ctx, 27 /* CURHP */) * 4) break;
+      }
+      if (ag.kill || ag.trap && !ag.glyph) break;
+      if (x === target.x && y === target.y) {
+        bestRange = r;
+        bestX = x;
+        bestY = y;
+        break;
+      }
+    }
+  }
+  if (bestRange < 0) return null;
+  const d = borgGotoDir(w, self.c.y, self.c.x, bestY, bestX);
+  self.goal.g.x = self.c.x + ddx[d];
+  self.goal.g.y = self.c.y + ddy[d];
+  self.goal.type = 0;
+  return ctx.act.move(d);
+}
+
 // src/fight/caution.ts
 function av2(ctx) {
   return getDangerGlobals(ctx.world).avoidance;
@@ -15963,6 +16192,10 @@ function borgCaution(ctx, flow) {
       ctx.world.self.goal.fleeing = true;
     }
   }
+  const stairs = borgDesperateStairs(ctx, flow, posDanger);
+  if (stairs) return stairs;
+  const retreat = borgStrategicRetreat(ctx, flow, posDanger, nasty, surrounded);
+  if (retreat) return retreat;
   const esc = borgEscape(ctx, posDanger);
   if (esc) {
     ctx.world.self.escapes += 1;
@@ -16243,6 +16476,7 @@ function buildStoreDeps(session) {
   const began = session.flow.state.borgBegan;
   const common = {
     mem: session.storeMem,
+    shopKnown: (shop) => !!session.flow.state.shopX[shop] && !!session.flow.state.shopY[shop],
     began,
     ...storeCfg(),
     isAware,
@@ -16319,6 +16553,7 @@ function buildThinkSession(resolvers = {}) {
     arrivalPickup: false,
     lastGrid: "",
     junked: /* @__PURE__ */ new Set(),
+    junkedIds: /* @__PURE__ */ new Set(),
     pickupTried: ""
   };
   session.flow = createFlow(buildFlowHooks(session));
@@ -16331,21 +16566,21 @@ function getThinkSession(world) {
     s = buildThinkSession();
     SESSIONS.set(world, s);
   }
+  world.flowTarget = s.flow.state;
   return s;
 }
 function installThinkSession(world, session) {
   SESSIONS.set(world, session);
+  world.flowTarget = session.flow.state;
 }
 function primeSession(session, ctx) {
   session.ctx = ctx;
   const w = ctx.world;
   const g = getDangerGlobals(w);
-  const curhp = w.self.trait[27 /* CURHP */] ?? 0;
-  g.avoidance = curhp;
+  w.flowTarget = session.flow.state;
   if (session.resolvers.resolveMonsterFacts) {
     g.resolveFacts = session.resolvers.resolveMonsterFacts;
   }
-  session.flow.state.avoidance = curhp;
   session.flow.state.hooks.forceDescend = session.resolvers.forceDescend ?? false;
 }
 
@@ -16546,7 +16781,8 @@ function borgPickUpHere(ctx, session) {
   for (const item of items) {
     if (takeValue(item, {
       kindCost: session.resolvers.kindCost,
-      junked: session.junked
+      junked: session.junked,
+      junkedIds: session.junkedIds
     }) > 0) {
       worth = true;
       break;
@@ -16569,9 +16805,14 @@ function findByHandle(ctx, handle) {
 function rememberJunkDrop(ctx, session, cmd) {
   if (cmd?.code === "drop") {
     const dropped = findByHandle(ctx, handleOf(cmd));
-    if (dropped) session.junked.add(junkKey(dropped.tval, dropped.sval));
+    if (dropped) rememberJunk(dropped, quantityOf(cmd), session.junked, session.junkedIds);
   }
   return cmd;
+}
+function quantityOf(cmd) {
+  const args = cmd.args;
+  const q = args?.["quantity"];
+  return typeof q === "number" ? q : void 0;
 }
 function T(ctx, i) {
   return ctx.world.self.trait[i] ?? 0;
@@ -17145,9 +17386,7 @@ function borgThinkDungeon(ctx, session) {
   {
     const cmd = borgCrushJunk(ctx, itemDeps);
     if (cmd) {
-      const dropped = findByHandle(ctx, handleOf(cmd));
-      if (dropped) session.junked.add(junkKey(dropped.tval, dropped.sval));
-      return cmd;
+      return rememberJunkDrop(ctx, session, cmd);
     }
   }
   {
@@ -18112,6 +18351,7 @@ function ingestMonsters(world, view, raceSymbol) {
     visibleIds.add(m.id);
     names.set(m.id, m.race);
     let idx = byMidx.get(m.id);
+    const isNew = idx === void 0;
     if (idx === void 0) {
       idx = world.kills.alloc();
       byMidx.set(m.id, idx);
@@ -18120,6 +18360,9 @@ function ingestMonsters(world, view, raceSymbol) {
       }
     }
     const k = world.kills.at(idx);
+    const moved = !isNew && (k.pos.x !== m.grid.x || k.pos.y !== m.grid.y);
+    const converted = !isNew && k.rIdx !== m.raceIndex;
+    const fellAsleep = !isNew && k.awake && m.asleep;
     k.mIdx = m.id;
     k.rIdx = m.raceIndex;
     k.isMorgoth = m.race.toLowerCase().startsWith("morgoth");
@@ -18131,6 +18374,15 @@ function ingestMonsters(world, view, raceSymbol) {
     }
     k.pos.x = m.grid.x;
     k.pos.y = m.grid.y;
+    if (isNew || moved || converted || fellAsleep) world.invalidateDanger();
+    if (converted || fellAsleep) world.self.goal.type = 0;
+    if (isNew && (world.self.trait[26 /* LIGHT */] ?? 0) && borgLos(world, k.pos.y, k.pos.x, world.self.c.y, world.self.c.x)) {
+      world.self.goal.type = 0;
+    }
+    const target = world.flowTarget;
+    if (moved && ((world.self.trait[37 /* ESP */] ?? 0) === 0 && world.self.goal.type === GOAL_KILL && (target?.flowY[0] === k.pos.y && target?.flowX[0] === k.pos.x) || world.self.goal.type === GOAL_TAKE && world.self.munchkinMode)) {
+      world.self.goal.type = 0;
+    }
     k.awake = !m.asleep;
     k.afraid = m.afraid;
     k.confused = m.confused;
@@ -18187,6 +18439,17 @@ function clearLocalRegionFear(world) {
 function junkKey(tval, sval) {
   return `${String(tval)}:${String(sval)}`;
 }
+function objectIdOf(item) {
+  if (!("objectId" in item)) return void 0;
+  const id = item.objectId;
+  return typeof id === "number" ? id : void 0;
+}
+function rememberJunk(item, quantity, junked, junkedIds) {
+  const whole = quantity === void 0 || quantity >= item.number;
+  const id = whole ? objectIdOf(item) : void 0;
+  if (id !== void 0) junkedIds.add(id);
+  else junked.add(junkKey(item.tval, item.sval));
+}
 var TV_GOLD = 35;
 function takeValue(item, valuation) {
   let value;
@@ -18198,6 +18461,8 @@ function takeValue(item, valuation) {
   }
   if (item.toA < 0 || item.toD < 0 || item.toH < 0) value = -10;
   if (item.inscription?.startsWith("borg ignore")) value = -10;
+  const ignored = objectIdOf(item);
+  if (ignored !== void 0 && valuation.junkedIds?.has(ignored)) value = -10;
   if (valuation.junked?.has(junkKey(item.tval, item.sval))) value = -10;
   return value;
 }
@@ -18256,10 +18521,47 @@ function ingestFloor(world, view, oldX, oldY, valuation) {
   }
 }
 
+// src/trait/spell-seam.ts
+function spellNamed(name) {
+  const spell = Spell[name];
+  return typeof spell === "number" ? spell : null;
+}
+function contextSpellSeam(ctx, resolveActivation) {
+  const has2 = (flag) => playerHas(ctx, flag);
+  return {
+    spellLegal: (name) => {
+      const spell = spellNamed(name);
+      return spell !== null && borgSpellLegal(ctx, spell);
+    },
+    spellLegalFail: (name, fail) => {
+      const spell = spellNamed(name);
+      return spell !== null && borgSpellLegalFail(ctx, spell, fail, has2);
+    },
+    /* Every borg_notice call passes check_charge = false (borg-trait.c). */
+    equipsItem: (act) => resolveActivation?.(ctx, act, false) ?? false,
+    equipsRing: (sval) => borgEquipsRing(ctx, sval),
+    /* spell_chance(0) (borg-power.c:321): the game's own live failure for class
+     * spell 0 - mana shortfall, fear, stun and amnesia included - which the
+     * view carries as SpellView.chance. Without it, the Borg's own estimate. */
+    spellChance: () => {
+      for (const book of ctx.view.spellbooks()) {
+        const first2 = book.spells.find((s) => s.sidx === 0);
+        if (first2 && typeof first2.chance === "number") return first2.chance;
+      }
+      const first = ratingsForClass(ctx.world.self.trait[25 /* CLASS */] ?? -1)?.[0];
+      return first ? borgSpellFailRate(ctx, first.spell, has2) : 100;
+    },
+    playerHas: has2
+  };
+}
+
 // src/controller.ts
 var CONTROLLER_WORLDS = /* @__PURE__ */ new WeakMap();
 function recallDepthAnswer(controller) {
   return CONTROLLER_WORLDS.get(controller)?.resetRecallDepth ?? false;
+}
+function itemChoiceAnswer(controller) {
+  return CONTROLLER_WORLDS.get(controller)?.itemChoice ?? null;
 }
 function createBorg(opts = {}) {
   const world = new BorgWorld();
@@ -18283,11 +18585,12 @@ function createBorg(opts = {}) {
     store: false,
     resetLevel: world.resetLevel,
     junked: new Set(session.junked),
+    junkedIds: new Set(session.junkedIds),
     needAlter: false,
     noAlter: false
   };
   const controller = hostController((view, act) => {
-    const ctx = { world, view, act, rng, bookKind: session.resolvers.bookKind, spellEffect: session.resolvers.spellEffect, frame: session.resolvers.frame };
+    const ctx = { world, view, act, rng, bookKind: session.resolvers.bookKind, spellEffect: session.resolvers.spellEffect, frame: session.resolvers.frame, spellSeam: (c) => contextSpellSeam(c, session.resolvers.resolveActivation) };
     const recordStep = !retry;
     retry = false;
     before = {
@@ -18299,10 +18602,12 @@ function createBorg(opts = {}) {
       store: false,
       resetLevel: world.resetLevel,
       junked: new Set(session.junked),
+      junkedIds: new Set(session.junkedIds),
       needAlter: world.self.needAlter,
       noAlter: world.self.noAlter
     };
     world.resetRecallDepth = false;
+    world.itemChoice = null;
     const shopNum = session.resolvers.inShop?.(ctx) ?? null;
     if (shopNum !== null && shopNum >= 0) {
       before.store = true;
@@ -18331,6 +18636,7 @@ function createBorg(opts = {}) {
       st2.glyph.wipe();
       st2.vein.wipe();
       const mem = session.storeMem;
+      mem.visited.clear();
       mem.soldNum = mem.boughtNum = 0;
       mem.soldNxt = mem.boughtNxt = 1;
       for (const records of [
@@ -18355,9 +18661,11 @@ function createBorg(opts = {}) {
     borgNotice(ctx);
     perceive(world, view, memo, tables, {
       kindCost: session.resolvers.kindCost,
-      junked: session.junked
+      junked: session.junked,
+      junkedIds: session.junkedIds
     }, (i) => session.resolvers.resolveMonsterFacts?.(ctx, i).dChar);
     borgTrackStairs(world, session.flow.state);
+    borgTrackShops(ctx, session.flow.state);
     if (recordStep) {
       borgTrackStep(session.flow.state.step, world.self.c.y, world.self.c.x);
     }
@@ -18392,6 +18700,8 @@ function createBorg(opts = {}) {
     session.ringTakeoff = before.ringTakeoff;
     session.junked.clear();
     for (const key of before.junked) session.junked.add(key);
+    session.junkedIds.clear();
+    for (const id of before.junkedIds) session.junkedIds.add(id);
   };
   CONTROLLER_WORLDS.set(controller, world);
   return { world, rng, controller, rewind };
@@ -18540,10 +18850,10 @@ var ActivationBook = class {
   kind(tval, sval) {
     return this.names.get(`k:${String(tval)}:${String(sval)}`) ?? null;
   }
-  /** Read the activations of every worn item that has one, for any source not read yet. */
-  async ensure(api, equipment2) {
+  /** Hypothetical equipment needs activation identities even when the item has never been worn. */
+  async ensure(api, items) {
     const asks = /* @__PURE__ */ new Map();
-    for (const item of equipment2) {
+    for (const item of items) {
       if (item === null || !item.activation) continue;
       if (item.artifact && item.artifactName) asks.set(`a:${item.artifactName}`, { artifact: item.artifactName });
       if (item.ego && item.egoName) asks.set(`e:${item.egoName}`, { ego: item.egoName });
@@ -18619,7 +18929,7 @@ var LoadoutBook = class {
 function gearSignature(inventory, equipment2, stores, player) {
   const one = (item) => item === null ? "-" : `${String(item.handle)}:${item.kindKey}:${String(item.number)}:${String(item.toH)}:${String(item.toD)}:${String(item.toA)}`;
   const stock = stores.map((store2) => `${String(store2.feat)}[${store2.stock.map(one).join(",")}]`).join(";");
-  return `${inventory.map(one).join(",")}|${equipment2.map(one).join(",")}|${stock}|${String(player?.level ?? 0)}`;
+  return `${inventory.map(one).join(",")}|${equipment2.map(one).join(",")}|${stock}|${String(player?.level ?? 0)}|${String(player?.shopnum ?? -1)}`;
 }
 
 // src/api2/feed.ts
@@ -19018,9 +19328,19 @@ function playerView(known, floors) {
   const timed = {};
   for (const [field, record] of Object.entries(TIMED_RECORDS)) {
     const grade = status[field];
-    timed[field] = grade == null ? 0 : floors.get(record)?.get(grade) ?? 1;
+    timed[field] = typeof grade === "string" ? floors.get(record)?.get(grade) ?? 1 : 0;
   }
-  return { ...rest, status: { ...timed, food: status.food * 100, fearful: status.fearful }, recall: recall ? 1 : 0, descent: descent ? 1 : 0 };
+  return {
+    ...rest,
+    status: {
+      ...timed,
+      food: status.food * 100,
+      fearful: status.fearful,
+      countdown: typeof status.countdown === "number" ? status.countdown : 0
+    },
+    recall: recall ? 1 : 0,
+    descent: descent ? 1 : 0
+  };
 }
 function itemView(item, analyze) {
   const { charging, fuel, ...rest } = writable(item);
@@ -19131,7 +19451,7 @@ async function readWorld(api, reads) {
   const floorHere = (known.floorHere ?? []).map(adapt);
   const monsters = await monsterViews(known, reads);
   if (reads.truth !== null) await reads.races.ensure(reads.truth, monsters.map((monster) => monster.raceIndex));
-  await reads.activations.ensure(api, equipment2);
+  await reads.activations.ensure(api, [...equipment2, ...inventory, ...(known.stores ?? []).flatMap((store2) => store2.stock.map(adapt))]);
   reads.loadouts.begin(gearSignature(known.inventory ?? [], known.equipment ?? [], known.stores ?? [], known.player));
   const width = known.level?.width ?? 0;
   const height = known.level?.height ?? 0;
@@ -19157,7 +19477,8 @@ async function readWorld(api, reads) {
       monster: occupant,
       objectCount: memory.objects.length,
       knownObjectCount: memory.objects.length,
-      glow: remembered.glow,
+      /* borg_check_dark_only uses glow; the known view limits it to visible grids. */
+      glow: remembered.visible && remembered.glow,
       /* The disarm command's own check: a visible trap whose kind is a TRAP and that is not disabled. */
       trap: memory.traps.some((trap) => !trap.disabled && statics.trapKinds[trap.index] === true)
     };
@@ -19263,7 +19584,8 @@ function createBridge(mod2) {
         raceSymbol: (ridx) => symbols.get(ridx),
         objects,
         birthRandarts: () => facts.birthRandarts ?? null,
-        shopnum: () => facts.shopnum,
+        /* borg_think dispatches on the store screen, not the entrance grid (borg-think.c:324). */
+        shopnum: () => input?.phase === "store" ? facts.shopnum : null,
         kindCost: (tval, sval) => facts.kinds.get(`${String(tval)}:${String(sval)}`) ?? null,
         blowMethods: blows.map((message) => ({ messages: [message] })),
         monsterSpells: spells,
@@ -19352,7 +19674,7 @@ var STALLS_BEFORE_FORGET = 6;
 var STALLS_BEFORE_RELEASE = 40;
 var DIR_DX = [0, -1, 0, 1, -1, 0, 1, -1, 0, 1];
 var DIR_DY = [0, 1, 1, 1, 0, 0, 0, -1, -1, -1];
-function promptAnswer(prompt, resetRecallDepth = false) {
+function promptAnswer(prompt, resetRecallDepth = false, itemChoice = null) {
   switch (prompt.kind) {
     case "ack":
       return { action: "acknowledge" };
@@ -19363,6 +19685,8 @@ function promptAnswer(prompt, resetRecallDepth = false) {
       return prompt.defaultValue;
     case "text":
       return prompt.defaultValue;
+    case "item":
+      return itemChoice !== null && prompt.choices.some((choice) => choice.handle === itemChoice) ? itemChoice : { action: "cancel" };
     default:
       return { action: "cancel" };
   }
@@ -19373,11 +19697,16 @@ function aimedGrid(command, from) {
   return { x: from.x + DIR_DX[dir], y: from.y + DIR_DY[dir] };
 }
 var AFFLICTIONS = ["blind", "confused", "afraid", "poisoned", "cut", "stun", "paralyzed"];
+function tickCount(status) {
+  if (status === void 0 || !("countdown" in status)) return 0;
+  const count = status.countdown;
+  return typeof count === "number" ? count : 0;
+}
 function sceneOf(world) {
   const player = world.view.player();
   const afflictions = AFFLICTIONS.map((name) => player.status?.[name] ?? 0);
   const monsters = world.view.monsters().map((monster) => [monster.grid.x, monster.grid.y, monster.hp]);
-  return JSON.stringify([player.grid.x, player.grid.y, player.depth, player.hp, player.sp, player.exp, player.gold, afflictions, monsters]);
+  return JSON.stringify([player.grid.x, player.grid.y, player.depth, player.hp, player.sp, player.exp, player.gold, afflictions, tickCount(player.status), monsters]);
 }
 function createTick(bridge2, borg) {
   let refusals = 0;
@@ -19389,7 +19718,7 @@ function createTick(bridge2, borg) {
   return async (mod2, input) => {
     bridge2.setInput(input);
     if (input.prompt !== null) {
-      await mod2.act.answer(input.prompt.promptId, promptAnswer(input.prompt, recallDepthAnswer(borg.controller)));
+      await mod2.act.answer(input.prompt.promptId, promptAnswer(input.prompt, recallDepthAnswer(borg.controller), itemChoiceAnswer(borg.controller)));
       return;
     }
     if (input.phase !== "play" && input.phase !== "store") return;
@@ -19518,7 +19847,7 @@ async function begin(mod2) {
   return { bridge: made, tick: createTick(made, { controller: borg.controller, rewind: borg.rewind, forget }) };
 }
 var definition = {
-  api: ">=2.0.0 <3.0.0",
+  api: ">=2.1.0 <3.0.0",
   async start(mod2) {
     running = begin(mod2).catch((error) => {
       mod2.meta.log(`the Borg could not start: ${error instanceof Error ? error.message : String(error)}`);

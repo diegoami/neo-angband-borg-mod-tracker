@@ -17,7 +17,8 @@
  * - A timed effect is the lowest duration in the grade the status line names, so
  *   a check against a grade boundary answers as API 1 did and a check inside a
  *   grade does not. Food is the status line's percentage times 100.
- * - No square glows unless the known level says so.
+ *   `status.countdown` holds a raw tick count and is copied unchanged, with no grade lookup.
+ * - A square glows only while visible and marked as glowing in the known level.
  * - An item's timeout is the number its name says are charging. A light's fuel is
  *   read from the known item.
  * - Monsters come from `truth` when the game gives the mod that domain: exact
@@ -33,6 +34,11 @@ import type { ActivationBook, LoadoutBook, RaceBook } from "./caches.js";
 import { gearSignature } from "./caches.js";
 import { TIMED_RECORDS, itemAnalyzer, valueOf, type GradeFloors, type ItemAnalyzer } from "./records.js";
 import type { BorgTruth } from "./truth.js";
+
+/** The API 1 player view plus `status.countdown` as a raw tick count, separate from timed-effect durations. */
+export type PlayerViewWithCountdown = PlayerView & {
+  status: PlayerView["status"] & { countdown: number };
+};
 
 /** Removes `readonly` all the way down, so known-world data can stand in for the API 1 view types. */
 type Writable<T> = T extends (...args: never[]) => unknown
@@ -85,16 +91,26 @@ export interface World {
 /* The player. */
 
 /** A known player as the API 1 player view, with each timed effect at the floor of its named grade. */
-export function playerView(known: KnownPlayer, floors: GradeFloors): PlayerView {
+export function playerView(known: KnownPlayer, floors: GradeFloors): PlayerViewWithCountdown {
   const { status, recall, descent, ...rest } = writable(known);
   const timed = {} as Record<keyof typeof TIMED_RECORDS, number>;
   for (const [field, record] of Object.entries(TIMED_RECORDS) as [keyof typeof TIMED_RECORDS, string][]) {
     const grade = status[field];
-    /* A field the source view omits reads as off, like null; only a grade the records do not
-     * name (an older or patched file) still says the effect is on. */
-    timed[field] = grade == null ? 0 : (floors.get(record)?.get(grade) ?? 1);
+    /* A string is a grade name, and an unnamed grade still counts as on. null is
+     * off. A number bypasses the floor table, which takes grade names only. */
+    timed[field] = typeof grade === "string" ? (floors.get(record)?.get(grade) ?? 1) : 0;
   }
-  return { ...rest, status: { ...timed, food: status.food * 100, fearful: status.fearful }, recall: recall ? 1 : 0, descent: descent ? 1 : 0 };
+  return {
+    ...rest,
+    status: {
+      ...timed,
+      food: status.food * 100,
+      fearful: status.fearful,
+      countdown: typeof status.countdown === "number" ? status.countdown : 0,
+    },
+    recall: recall ? 1 : 0,
+    descent: descent ? 1 : 0,
+  };
 }
 
 /* Items. */
@@ -238,7 +254,8 @@ export async function readWorld(api: Api2Reads, reads: WorldReads): Promise<Worl
   const floorHere = (known.floorHere ?? []).map(adapt);
   const monsters = await monsterViews(known, reads);
   if (reads.truth !== null) await reads.races.ensure(reads.truth, monsters.map((monster) => monster.raceIndex));
-  await reads.activations.ensure(api, equipment);
+  /* borg_wear_stuff calls borg_notice(false) with the candidate worn, so its known activation must be ready before scoring. */
+  await reads.activations.ensure(api, [...equipment, ...inventory, ...(known.stores ?? []).flatMap((store) => store.stock.map(adapt))]);
   reads.loadouts.begin(gearSignature(known.inventory ?? [], known.equipment ?? [], known.stores ?? [], known.player));
 
   const width = known.level?.width ?? 0;
@@ -266,7 +283,8 @@ export async function readWorld(api: Api2Reads, reads: WorldReads): Promise<Worl
       monster: occupant,
       objectCount: memory.objects.length,
       knownObjectCount: memory.objects.length,
-      glow: remembered.glow,
+      /* borg_check_dark_only uses glow; the known view limits it to visible grids. */
+      glow: remembered.visible && remembered.glow,
       /* The disarm command's own check: a visible trap whose kind is a TRAP and that is not disabled. */
       trap: memory.traps.some((trap) => !trap.disabled && statics.trapKinds[trap.index] === true),
     };

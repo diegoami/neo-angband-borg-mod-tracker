@@ -53,6 +53,14 @@ describe("what the Borg says to a prompt", () => {
     expect(promptAnswer(prompt({ kind: "text", defaultValue: "x" }))).toBe("x");
     expect(promptAnswer(prompt({ kind: "menu" }))).toEqual({ action: "cancel" });
   });
+
+  it("answers an item prompt with the item its command chose (borg_recharging, borg-item-use.c:1182)", () => {
+    const item = prompt({ kind: "item", choices: [{ handle: 7, label: "a Wand", letter: "a" }, { handle: 9, label: "a Staff", letter: "b" }] });
+    expect(promptAnswer(item, false, 9)).toBe(9);
+    /* Controls: nothing chosen, or the chosen item not offered, is cancelled. */
+    expect(promptAnswer(item)).toEqual({ action: "cancel" });
+    expect(promptAnswer(item, false, 12)).toEqual({ action: "cancel" });
+  });
 });
 
 /** A bridge with nothing behind it, and a world the decision code is never shown the inside of. */
@@ -357,6 +365,24 @@ describe("one tick", () => {
       await tick(game.mod, game.input());
     }
     expect(game.released).toHaveLength(1);
+    await host.dispose();
+  });
+
+  it("resets the stall count when only the timed-effect tick count advances", async () => {
+    const { game, host, status } = await publishedGame();
+    const ticks = status as { countdown?: number };
+    const forgotten: string[] = [];
+    const tick = createTick(host, {
+      controller: () => ({ code: "open", dir: 2 }) as AgentCommand,
+      rewind: () => undefined,
+      forget: (x, y) => void forgotten.push(`${String(x)},${String(y)}`),
+    });
+    for (let n = 0; n <= STALLS_BEFORE_RELEASE; n++) {
+      ticks.countdown = n;
+      await tick(game.mod, game.input());
+    }
+    expect(forgotten).toEqual([]);
+    expect(game.released).toEqual([]);
     await host.dispose();
   });
 

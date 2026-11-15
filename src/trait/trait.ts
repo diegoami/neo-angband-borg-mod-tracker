@@ -136,8 +136,13 @@ export function borgNotice(ctx: BorgContext, opts: BorgTraitOpts = {}): void {
   const view = ctx.view;
   const p = view.player();
 
-  /* Fresh trait buffer sized to BI_MAX (memset borg.trait, trait.c:2829). */
+  /* Fresh trait buffer sized to BI_MAX (memset borg.trait, trait.c:2829). The C
+   * clears and refills borg.trait in place, so everything notice consults on
+   * the way - borg_spell_legal_fail reading BI_MAXSP, BI_CLEVEL, BI_FAIL1/2,
+   * fear and amnesia - sees this notice's values, not the last one's. Publish
+   * the buffer now for the same reason; it is published again at the end. */
   const t = new Array<number>(BI_MAX).fill(0);
+  ctx.world.self.trait = t;
   const previous = getDerived(ctx.world);
   const d = resetDerived(ctx.world);
 
@@ -176,10 +181,19 @@ export function borgNotice(ctx: BorgContext, opts: BorgTraitOpts = {}): void {
   ctx.world.self.trait = t;
   if (opts.noticeSwap ?? true) {
     // borg_notice(true), trait.c:2861: carried backup selection/value.
+    /* borg_notice_weapon_swap and borg_notice_armour_swap add the alive bonus
+     * while borg_race_death[borg_tarrasque_id] is 0 (borg-trait-swap.c:516, 1084).
+     * That id is the race named "The Tarrasque" (borg-flow-kill.c:3142). An
+     * explicit tarrasqueDead is already that known fact, so the kill list fills
+     * the field only when the caller left it out. */
+    const suppliedSwap = opts.weaponSwap;
     d.weaponSwapOpts = {
       cfg: { ...R.cfg },
       ...(opts.spells ? { spells: { ...opts.spells } } : {}),
-      ...(opts.weaponSwap ? { weaponSwap: { ...opts.weaponSwap } } : {}),
+      weaponSwap: {
+        ...suppliedSwap,
+        tarrasqueDead: suppliedSwap?.tarrasqueDead ?? uniqueSlain(p, "the-tarrasque", "The Tarrasque"),
+      },
     };
     d.weaponSwap = borgWeaponSwap(ctx, d.weaponSwapOpts);
     // C computes weapon first: armour high-resist value excludes its selected weapon.
@@ -306,8 +320,31 @@ function borgNoticePlayer(c: Ctx): void {
   /* Base infravision (purely racial), borg-trait.c:1253. */
   t[BI.INFRA] = c.derive ? (c.R.frame.infra ?? 0) : p.seeInfra;
 
-  /* Neither AgentView nor API 2 exposes a race death counter. History has
-   * display text without a race identity, so it cannot supply SAURON_DEAD. */
+  /* Sauron's death is his row in the known kill list (borg-trait.c:3136). C copies
+   * borg_race_death[borg_sauron_id], and that id is the race named "Sauron, the
+   * Sorcerer" (borg-flow-kill.c:3140). The list has no kill count, so the trait
+   * is 1 when the race id or that name is present, and 0 otherwise. */
+  t[BI.SAURON_DEAD] = uniqueSlain(p, "sauron-the-sorcerer", "Sauron, the Sorcerer") ? 1 : 0;
+}
+
+/** Local part of a namespaced race id. An id with no colon is already local. */
+function localRaceId(raceId: string): string {
+  const at = raceId.indexOf(":");
+  return at < 0 ? raceId : raceId.slice(at + 1);
+}
+
+/**
+ * True when the known kill list has this unique, by the stable local race id
+ * or the C name (borg-flow-kill.c:3137-3143).
+ */
+function uniqueSlain(player: PlayerView, localId: string, cName: string): boolean {
+  const list = (player as PlayerView & { slainUniques?: readonly { raceIndex: number; raceId?: string; name: string }[] }).slainUniques;
+  if (list === undefined) return false;
+  for (const entry of list) {
+    if (typeof entry.raceId === "string" && localRaceId(entry.raceId) === localId) return true;
+    if (entry.name === cName) return true;
+  }
+  return false;
 }
 
 /**

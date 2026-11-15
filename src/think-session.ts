@@ -182,12 +182,16 @@ export interface ThinkSession {
   /** "depth:x,y" of the grid the Borg stood on last think. */
   lastGrid: string;
   /**
-   * Kinds the Borg has thrown away, as "tval:sval". See TakeValuation.junked:
-   * this is upstream's "borg ignore" inscription, which the frozen action
-   * surface cannot write. Without it the Borg drops a stack of junk and then
-   * walks straight back to collect it.
+   * Kinds thrown away when the drop had no surviving objectId, as "tval:sval".
+   * See TakeValuation.junked. Cleared on a level change: a kind key would
+   * refuse every later item of that kind.
    */
   readonly junked: Set<string>;
+  /**
+   * objectId of whole stacks thrown away. The id still names that object after
+   * a drop and a level change, so this lasts as long as the id does.
+   */
+  readonly junkedIds: Set<number>;
   /**
    * "depth:x,y:pile size" of the last pickup attempt, or "" for none.
    *
@@ -474,6 +478,7 @@ export function buildStoreDeps(session: ThinkSession): StoreDeps {
    * Keep these hooks even when no loadout evaluator is installed. */
   const common: StoreDeps = {
     mem: session.storeMem,
+    shopKnown: (shop) => !!session.flow.state.shopX[shop] && !!session.flow.state.shopY[shop],
     began,
     ...storeCfg(),
     isAware,
@@ -556,6 +561,7 @@ export function buildThinkSession(resolvers: BorgResolvers = {}): ThinkSession {
     arrivalPickup: false,
     lastGrid: "",
     junked: new Set<string>(),
+    junkedIds: new Set<number>(),
     pickupTried: "",
   };
   (session as { flow: Flow }).flow = createFlow(buildFlowHooks(session));
@@ -575,6 +581,7 @@ export function getThinkSession(world: BorgWorld): ThinkSession {
     s = buildThinkSession();
     SESSIONS.set(world, s);
   }
+  world.flowTarget = s.flow.state;
   return s;
 }
 
@@ -584,22 +591,23 @@ export function installThinkSession(
   session: ThinkSession,
 ): void {
   SESSIONS.set(world, session);
+  world.flowTarget = session.flow.state;
 }
 
 /**
  * Set the per-think danger globals the C toggles around maneuvers
- * (avoidance = current HP, the facts resolver, the flow avoidance mirror), then
- * refresh the session ctx holder. Call at the top of every think.
+ * (the facts resolver and flow hooks), then refresh the session ctx holder.
+ * Leave avoidance untouched: borg-think-dungeon.c:1375 compares its previous
+ * value with current HP to invalidate cached danger before replacing it.
+ * Call at the top of every think.
  */
 export function primeSession(session: ThinkSession, ctx: BorgContext): void {
   session.ctx = ctx;
   const w = ctx.world;
   const g = getDangerGlobals(w);
-  const curhp = w.self.trait[BI.CURHP] ?? 0;
-  g.avoidance = curhp;
+  w.flowTarget = session.flow.state;
   if (session.resolvers.resolveMonsterFacts) {
     g.resolveFacts = session.resolvers.resolveMonsterFacts;
   }
-  session.flow.state.avoidance = curhp;
   session.flow.state.hooks.forceDescend = session.resolvers.forceDescend ?? false;
 }
