@@ -1,4 +1,4 @@
-// Headless Core/API2 session for borg-zoo. Copied unchanged from
+// Headless Core/API2 session, originally copied from
 // diegoami/neo-angband-tracker 2668adc5ab3e, tools/original-borg/session.ts.
 //
 // The "ENGINE/" and "BORG/" import prefixes are placeholders that build.mjs
@@ -7,7 +7,7 @@
 // (tsconfig.json includes only *.ts and src/**/*.ts).
 //
 // FORK: message-host.mjs supplies the browser-equivalent event/message host.
-// Other host behavior remains copied from the source. The host description strings below
+// Optional birth/final saves and standalone orchestration extend that host. The host description strings below
 // (e.g. "original-source-developer-api2", "Original Borg refused armed birth")
 // are kept as-is because borg-zoo's parser reads this record format; they
 // describe the host adapter's origin in the tracker toolkit, not this Borg,
@@ -212,6 +212,13 @@ export async function run(o: any) {
 					? {}
 					: { reason: result.reason ?? result.code }),
 			});
+            if (intent.kind === "command" && o.onFrame) {
+                const known = core.buildKnownWorld(state, deps, grants), grid = known.player?.grid;
+                o.onFrame({ ...known, turn: state.turn, action: intent.command, accepted: result.accepted,
+                    messages: messages.slice(-5),
+                    level: known.level && { ...known.level, cells: known.level.cells.filter((c: any) =>
+                        grid && Math.abs(c.x-grid.x)<=12 && Math.abs(c.y-grid.y)<=12) } });
+            }
 			if (intent.kind === "command") {
 				decisions++;
 				census[intent.command.code] =
@@ -311,6 +318,7 @@ export async function run(o: any) {
 			terrain: { height: state.chunk.height, width: state.chunk.width, terrain } });
 		delete (globalThis as any).__observeBirthRng;
 	}
+	o.onSave?.('birth', core.saveGame(game));
 	let lastPeriodic = 0,
 		lastDepth = 0;
 	const snapshot = (kind: string) => {
@@ -332,7 +340,22 @@ export async function run(o: any) {
 			energy: state.actor.energy,
 		};
 	};
-	const observe = () => {
+	let lastObservationTurn = -Infinity, lastVitals = "";
+    const observeKnown = (kind: string, force = false) => {
+        if (!o.onObservation) return;
+        const vitals = JSON.stringify([p.chp, p.csp, state.chunk.depth]);
+        if (!force && state.turn < lastObservationTurn + 100 && vitals === lastVitals) return;
+        const known = core.buildKnownWorld(state, deps, grants);
+        const grid = known.player?.grid;
+        o.onObservation({ kind, turn: state.turn, player: known.player,
+            inventory: known.inventory, equipment: known.equipment, quiver: known.quiver,
+            spellbooks: known.spellbooks, monsters: known.monsters,
+            level: known.level && { ...known.level, cells: known.level.cells.filter((c: any) =>
+                grid && Math.abs(c.x-grid.x)<=12 && Math.abs(c.y-grid.y)<=12) } });
+        lastObservationTurn = state.turn; lastVitals = vitals;
+    };
+    const observe = () => {
+        observeKnown("decision-boundary");
 		const s = snapshot("periodic");
 		if (decisions >= lastPeriodic + 100) {
 			o.onState(s);
@@ -361,12 +384,10 @@ export async function run(o: any) {
 		(globalThis as any).__alignmentTickCap = (current: any) => {
 			if (current === state && state.turn >= o.turns) throw capStop;
 		};
-	const truthHost = installTruthHost({ state, grants, consent: truthConsent,
-		identity: o.truthIdentity, record: o.onState });
+	const truthHost = installTruthHost({ state, grants, consent: truthConsent, identity: o.truthIdentity, record: o.onState });
 	let error: any = null,
 		started = false;
 	try {
-		// Fail the measurement rather than silently playing with lore-only danger.
 		const truthReady = await mod.truth?.monsters();
 		if (!truthReady?.ok) throw new Error("Zoo monster truth unavailable: " + JSON.stringify(truthReady));
 		if (
@@ -385,6 +406,7 @@ export async function run(o: any) {
 		);
 		if (failure) throw new Error(failure);
 		o.onState(snapshot("birth"));
+        observeKnown("birth", true);
 		if (o.birthProfile) o.onState({ kind: "alignment-active", options: state.options.snapshot(), seededBorgSeed, worldRng: alignmentRng!.getState() });
 		while (
 			loopCalls < o.decisions &&
@@ -459,6 +481,8 @@ export async function run(o: any) {
 		if (started) await definition.stop?.();
 		disposeApi2Host(mod);
 	}
+    observeKnown("final", true);
+	o.onSave?.('final', core.saveGame(game));
 	const finalKnownWorld = core.buildKnownWorld(state, deps, grants);
 	const stop = snapshot("stop");
 	o.onState(stop);
