@@ -13,7 +13,7 @@ test('relative measured paths use recorded cwd; local relocation overrides stale
   put(root,'experiment/experiment.json',{cwd:join(root,'work'),argv:['--bundle','build/bundle.mjs']});
   put(root,'work/build/bundle.mjs','');put(root,'work/build/build.json',{sourcePaths:{engine:join(root,'engine')}});put(root,'engine/package.json',{});
   const p=replayPaths(join(root,'experiment'));assert.equal(p.bundle,join(root,'work/build/bundle.mjs'));assert.equal(p.engine,join(root,'engine'));assert.equal(p.available,true);
-  put(root,'experiment/experiment.json',{argv:['--bundle','/home/runner/stale/bundle.mjs']});assert.equal(replayPaths(join(root,'experiment')).available,false);
+  put(root,'experiment/experiment.json',{argv:['--bundle','/tmp/ci-artifacts-stale/bundle.mjs']});assert.equal(replayPaths(join(root,'experiment')).available,false);
   assert.equal(replayPaths(join(root,'experiment'),{bundle:p.bundle,engine:p.engine}).available,true);
   assert.equal(replayPaths(join(root,'experiment'),{bundle:p.bundle,engine:p.engine,portable:true}).available,false);
   put(root,'experiment/experiment.json',{argv:['--bundle','relative-without-cwd.mjs']});assert.equal(replayPaths(join(root,'experiment')).bundle,null);
