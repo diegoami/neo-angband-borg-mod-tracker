@@ -5,6 +5,24 @@ borg-zoo checkout, Python runner, catalogue service, or deployment. Node 26 and
 pnpm are required. The host uses the game's API2 host, intent gate and real
 message/event bus. Gameplay source and the committed plugin are unchanged.
 
+## Install Node and pnpm
+
+The build requires Node 26 and pnpm. If they are already installed, check
+`node --version` before continuing. With an existing `npm`, this installs both
+under your user directory without sudo:
+
+```sh
+npm install --prefix "$HOME/.local/share/neo-borg-tools" \
+  node@26.13.1 pnpm@12.16.1
+export PATH="$HOME/.local/share/neo-borg-tools/node_modules/.bin:$PATH"
+node --version
+pnpm --version
+```
+
+Keep using that terminal, or add the PATH export to your shell profile. pnpm may
+select the engine's declared 12.3.4 or the Borg's declared 12.16.1 automatically;
+leave each repository's packageManager and lockfile unchanged.
+
 ## Build and run
 
 Start from a workspace directory. These commands create explicit sibling
