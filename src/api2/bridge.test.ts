@@ -26,6 +26,8 @@ import { borgNotice } from "../trait/trait.js";
 import { borgPower } from "../trait/power.js";
 import { BI } from "../trait/trait-index.js";
 import { SVAL } from "../item/svals.js";
+import { borgView } from "../core-api.js";
+import { borgFlowDarkInteresting, createFlowState } from "../flow/index.js";
 
 const SCENARIO: Scenario = {
   player: { grid: { x: 5, y: 5 }, depth: 3 },
@@ -41,6 +43,48 @@ async function primed(options: Parameters<typeof fakeGame>[0] = {}): Promise<{ g
   await bridge.prime();
   return { game, bridge };
 }
+
+describe("remembered terrain through the API 2 bridge (#415)", () => {
+  it.each([
+    [Core.FEAT.GRANITE, false, Core.FEAT.SECRET],
+    [Core.FEAT.CLOSED, false, Core.FEAT.OPEN],
+    [Core.FEAT.GRANITE, false, Core.FEAT.FLOOR],
+    [Core.FEAT.FLOOR, true, Core.FEAT.GRANITE],
+    [Core.FEAT.OPEN, true, Core.FEAT.CLOSED],
+  ] as const)("the map and exploration use remembered feature %i with passability %s instead of actual feature %i", async (feat, passable, actual) => {
+    const { game, bridge } = await primed({ scenario: { player: { grid: { x: 5, y: 5 } } } });
+    const base = knownWorld(game.view);
+    const known = { ...base, level: { ...base.level!, cells: [{ x: 6, y: 5,
+      remembered: { feat, passable, traps: [], objects: [], items: null },
+      visible: false, lit: null, seen: false, glow: false,
+      actual: { feat: actual, traps: [], objects: [], monster: 0 },
+    }] } };
+    game.mod.view.world = async () => ({ ok: true, value: known });
+    const view = borgView((await bridge.readWorld())!.view);
+    const world = new BorgWorld();
+    perceive(world, view, makePerceiveMemo());
+    expect(view.cell(6, 5)).toMatchObject({ feat, passable });
+    expect(world.map.at(6, 5).feat).toBe(feat);
+    const ctx = { world, view, act: makeFakeActions(), rng: makeBorgRng() };
+    expect(borgFlowDarkInteresting(ctx, createFlowState(), 5, 6)).toBe(feat === Core.FEAT.CLOSED);
+    expect(game.truthCalls).toEqual([]);
+    await bridge.dispose();
+  });
+
+  it.each([false, true])("the illumination view requires current visibility %s", async (visible) => {
+    const { game, bridge } = await primed();
+    const base = knownWorld(game.view);
+    const known = { ...base, level: { ...base.level!, cells: [{ x: 6, y: 5,
+      remembered: { feat: Core.FEAT.FLOOR, passable: true, traps: [], objects: [], items: null },
+      visible, lit: visible ? true : null, seen: visible, glow: true,
+    }] } };
+    game.mod.view.world = async () => ({ ok: true, value: known });
+    const view = borgView((await bridge.readWorld())!.view);
+    expect(view.cell(6, 5)?.glow).toBe(visible);
+    expect(view.cell(7, 5)).toMatchObject({ feat: Core.FEAT.NONE, passable: false, known: false, glow: false });
+    await bridge.dispose();
+  });
+});
 
 describe("the bridge", () => {
   it("will not prime without an engine, and says so", async () => {

@@ -20,6 +20,9 @@ import { borgReadScroll, borgReadUnknown } from "./item-use.js";
 import { borgSpell, borgSpellFailRate, ratingsForClass, Spell } from "./magic.js";
 import * as light from "./light.js";
 import { SVAL, TV } from "./svals.js";
+import * as Core from "@rpgm-tools/neo-angband-core";
+import { fakeGame, knownWorld } from "../harness-api2.js";
+import { createBridge } from "../api2/host.js";
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -352,6 +355,24 @@ describe("lantern maintenance (borg-light.c:544-658)", () => {
 });
 
 describe("darkness recovery (borg-light.c:44-99)", () => {
+  it.each([false, true])("the darkness spell counts only visible remembered glow (%s)", async (visible) => {
+    const cells: NonNullable<Scenario["cells"]> = {};
+    for (let y = 8; y <= 12; y++) for (let x = 8; x <= 12; x++) cells[`${x},${y}`] = { glow: true };
+    const s = scenario({ player: { cls: "Necromancer", light: 1, hp: 90 }, spells: [Spell.CREATE_DARKNESS], cells });
+    const game = fakeGame({ engine: { core: Core } });
+    const base = knownWorld({ ...game.view, ...s.ctx.view });
+    const known = { ...base, level: { ...base.level!, cells: base.level!.cells.map(cell => ({ ...cell, visible })) } };
+    game.mod.view.world = async () => ({ ok: true, value: known });
+    const bridge = createBridge(game.mod);
+    await bridge.prime();
+    s.ctx.view = (await bridge.readWorld())!.view;
+    perceive(s.world, s.ctx.view, makePerceiveMemo());
+    const cmd = light.borgCheckLightOnly(s.ctx, buildItemDeps(s.session));
+    if (visible) expect(cmd?.code).toBe("cast");
+    else expect(cmd).toBeNull();
+    await bridge.dispose();
+  });
+
   it("counts remembered floor terrain before calling darkness", () => {
     const cells: NonNullable<Scenario["cells"]> = {};
     for (let y = 8; y <= 12; y++) for (let x = 8; x <= 12; x++) cells[`${x},${y}`] = { glow: true };
