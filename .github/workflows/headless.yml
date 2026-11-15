@@ -1,19 +1,6 @@
 # FORK: bounded, observable headless runs. No production deployment or C parity claim.
 name: Headless Borg death reports
-on:
-  pull_request:
-    paths: ['src/**', 'plugin.ts', 'tools/zoo/**', '.github/workflows/headless.yml']
-  workflow_dispatch:
-    inputs:
-      suite:
-        description: Frozen suite (18 short games or 90-game death survey)
-        type: choice
-        options: [smoke-v1, death-survey-v1]
-        default: smoke-v1
-      issue:
-        description: Optional existing issue number for a durable summary (default-branch dispatch only)
-        type: string
-        default: ''
+on: {"pull_request":{"paths":["src/**","plugin.ts","tools/zoo/**",".github/workflows/headless.yml"]},"workflow_dispatch":{"inputs":{"suite":{"description":"Frozen suite (18 short games or 90-game death survey)","type":"choice","options":["smoke-v1","death-survey-v1"],"default":"smoke-v1"},"issue":{"description":"Optional existing issue number for a durable summary (default-branch dispatch only)","type":"string","default":""}}}}
 permissions:
   contents: read
 concurrency:

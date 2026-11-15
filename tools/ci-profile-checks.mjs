@@ -1,3 +1,4 @@
+import { assertHeadlessWorkflow } from './zoo/ci/workflow-contract.mjs';
 /** FORK: explicit Node controls; filename deliberately excluded from Vitest discovery. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -69,9 +70,9 @@ test("CLI writes complete boolean outputs on an actual git diff", () => fixture(
   execFileSync(process.execPath,[join(root,"tools/ci-profile.mjs")],{cwd,env:{...process.env,GITHUB_EVENT_NAME:"push",GITHUB_EVENT_PATH:event,GITHUB_OUTPUT:output,GITHUB_STEP_SUMMARY:join(cwd,"summary")},stdio:"pipe"});
   assert.equal(readFileSync(output,"utf8"),"profile=docs\nfull=false\nsource=false\n");
 }));
-test("one automatic workflow preserves PR/master/manual triggers and concurrency", () => {
+test("main CI preserves PR/master/manual triggers and concurrency", () => {
   validateTriggers(ci,"ci"); validateTriggers(source,"source");
-  assert.deepEqual(readdirSync(join(root,".github/workflows")).sort(),["ci.yml","dependabot-automerge.yml","github-release.yml","nexus-publish.yml","notespot-source.yml","push-scan.yml","redirect-issue.yml"]);
+  assert.deepEqual(readdirSync(join(root,".github/workflows")).sort(),["ci.yml","dependabot-automerge.yml","github-release.yml","headless.yml","nexus-publish.yml","notespot-source.yml","push-scan.yml","redirect-issue.yml"]);
   assert.equal(existsSync(join(root,".github/workflows/privacy.yml")),false);
   assert.equal(existsSync(join(root,".github/workflows/fork-session-docs.yml")),false);
   assert.match(ci,/uses: neostryder\/neo-angband\/\.github\/actions\/private-scan@master/);
@@ -99,4 +100,9 @@ test("stable final gate accepts only complete matching profiles", () => {
 test("ordinary and exact-source shared logs reject missing cases, failures and any skips", () => {
   assertFullSuite("Tests 1170 passed (1170)\n");
   for (const text of ["Tests 830 passed | 36 skipped (866)","Tests 862 passed | 4 failed (866)","Tests 866 passed (866)","Tests 896 passed (896)","Tests 924 passed (924)","Tests 932 passed (932)","Tests 951 passed (951)","Tests 954 passed (954)","Tests 994 passed (994)","Tests 1000 passed (1000)","Tests 1056 passed (1056)","Tests 1074 passed (1074)","Tests 1079 passed (1079)","Tests 1156 passed (1156)","Tests 1163 passed (1163)","Tests 1164 passed (1164)","Tests 1165 passed (1165)","Tests 1170 passed (1170)\n1 skipped","Tests 1170 passed | 1 failed (1171)", "Tests 5 passed (5)", ""]) assert.throws(()=>assertFullSuite(text));
+});
+
+test("headless measurement keeps issue writes on trusted default-branch dispatch only",()=>{
+ const text=readFileSync(join(root,".github/workflows/headless.yml"),"utf8");assertHeadlessWorkflow(text);
+ for(const broken of [text.replace("github.event_name == 'workflow_dispatch'","true"),text.replace("github.ref == format('refs/heads/{0}', github.event.repository.default_branch)","true"),text.replace("permissions:\n  contents: read","permissions:\n  contents: write")])assert.throws(()=>assertHeadlessWorkflow(broken));
 });
