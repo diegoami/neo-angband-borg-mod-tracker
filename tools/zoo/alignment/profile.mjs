@@ -1,3 +1,4 @@
+import { C_SEEDED_PROFILE_ID } from "./seed-startup.mjs";
 // Explicit pinned C defaults; opt-in measurement profile, not a Borg policy change.
 export const C_POINT_BUY_PROFILE = {
   id: "c-point-buy-v1",
@@ -56,7 +57,7 @@ export const C_POINT_BUY_PROFILE = {
 
 export function alignedBirth(core, pack, name, raceName, className) {
   if (name === undefined) return {};
-  if (name !== C_POINT_BUY_PROFILE.id)
+  if (name !== C_POINT_BUY_PROFILE.id && name !== C_SEEDED_PROFILE_ID)
     throw new Error("Unknown birth profile: " + name);
   const players = core.bindPlayer(pack.player),
     race = players.raceByName(raceName),

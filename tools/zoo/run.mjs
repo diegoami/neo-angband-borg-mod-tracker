@@ -42,6 +42,8 @@ const input = {
 	turns: Number(a.turns ?? 100000),
 	decisions: Number(a.decisions ?? 10000000),
 };
+if (build.cGccCoordinateOrder && input.birthProfile !== "c-seeded-point-buy-v2")
+	throw new Error("Compiler coordinate adapter requires c-seeded-point-buy-v2");
 const started = performance.now();
 let record;
 try {
@@ -56,6 +58,7 @@ try {
 	record = await m.run({
 		...input,
 		exactTickCap: build.exactTickCap === true,
+		cSeedStartup: build.cSeedStartup === true,
 		packDir: join(dirname(bundle), "pack"),
 		manifest: build.borg.manifest.data,
 		onState: (r) => writeSync(states, JSON.stringify(r) + "\n"),

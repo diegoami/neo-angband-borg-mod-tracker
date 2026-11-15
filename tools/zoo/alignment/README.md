@@ -99,3 +99,51 @@ runs a new version of the Neo arm. Both versions remain available; do not
 replace the initial after-loop evidence. Before accepting the change, verify
 all10 new Neo runs stop at2000 and preserve their old pre-cap command prefix,
 and verify the no-profile control retains its original command hash.
+
+## Seed continuation follow-up (v2)
+
+`c-seeded-point-buy-v2` additionally performs the native menu's four actual
+age/history generations before HP, retains the accepted age/history, and draws
+one Borg startup seed from the main stream. It never pads draws, applies an
+integer seed offset, or copies an observed C RNG state into a live game.
+Build with `--c-seed-startup true`; the runtime profile fails closed without it.
+The ordinary runner and `c-point-buy-v1` retain their existing startup behavior.
+
+Native GCC 14.2 evaluates the two random `loc(x,y)` arguments in Y-before-X
+order. C does not specify that order. The explicitly compiled option
+`--c-gcc-coordinate-order true` reproduces it at streamer start and distant
+monster placement. It requires v2 at runtime and is recorded in `build.json`'s
+`cGccCoordinateOrder` and `appliedPatches`. This is compiler-specific benchmark
+compatibility, not a portable C semantics claim or a default engine change.
+Other generation paths may contain additional compiler-dependent expressions.
+
+Two separate source corrections are also required for the measured continuation:
+store/home insertion at the head of the pile (engine tracker #635), and class
+starting equipment in C's prepended parse order (#636). The measured engine is
+06a2321 plus commits8120673 and18ee52e; proposals against current upstream765f399
+remain separate from these benchmark backports. A pristine06a2321 run must not
+be labelled corrected.
+
+The bounded follow-up covers all nine Human classes (seeds303–311), Dwarf
+Warrior313 and High-Elf Mage314, each with a2000-tick cap. All eleven match
+initial stats, HP/SP, gold, exact gear, all1452 town terrain cells, the active
+32-word game stream/index, and the Borg startup seed after both adapters and
+source corrections. C's dormant quick-stream value differs before Borg startup;
+Neo uses a separate Borg RNG, while C switches its global RNG mode. Those are
+representation differences and are excluded explicitly, not called byte parity.
+Initial alignment does not establish identical future actions, dungeon generation,
+monster state, or survival. No large cohort follows automatically.
+
+Run the native menu regression controls with:
+
+```sh
+ALIGNMENT_ENGINE=BUILT_ENGINE ALIGNMENT_PACK=BUILD/pack \
+  node --test tools/zoo/alignment/seed-startup-checks.mjs
+node tools/zoo/alignment/compare-startup.mjs PAIRS.json
+```
+
+`PAIRS.json` contains `cases`, each with `seed`, native/Neo output directory paths
+(relative to the manifest), and explicit native `bodySlots` (12 in this pilot).
+The comparator checks initial observations and exits nonzero for any mismatch.
+Archive the raw traces, source deltas, build manifests, commands and hashes with
+that manifest; a comparison summary alone is not a replay artifact.
