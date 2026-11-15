@@ -8,7 +8,8 @@ and commits, and retains build/content hashes. No external zoo checkout is neede
 The **Headless Borg death reports** workflow runs `smoke-v1` on relevant PRs:
 18 explicitly assigned births, all nine classes, 5,000 ticks each. Manually
 choose `death-survey-v1` for 90 assigned births at100,000ticks. Four shards run
-at most four jobs concurrently; each child process has a120-second watchdog.
+at most four jobs concurrently; smoke children have a120-second watchdog, survey children600seconds.
+The PR job budget is15minutes; a manual survey shard is bounded at240minutes.
 Deaths are ordinary measured endpoints; harness/configuration errors, missing
 records and wall timeouts fail the measurement check. Stalls and decision caps
 remain visible separately. Suites are immutable once measured; add a new ID

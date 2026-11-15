@@ -24,3 +24,10 @@ test('exported reports use portable artifact-relative evidence paths',()=>{
  assert.equal(portableReport(r,'/tmp/artifacts').cells[0].evidencePath,'shard/case/run');
  assert.equal(r.cells[0].evidencePath,'/tmp/artifacts/shard/case/run');
 });
+
+test('frozen suites fit their per-shard workflow time budgets',()=>{
+ const smoke=loadSuite(new URL('./suites/smoke-v1.json',import.meta.url));
+ const survey=loadSuite(new URL('./suites/death-survey-v1.json',import.meta.url));
+ assert.ok(Math.ceil(smoke.cases.length/4)*smoke.wallSeconds<15*60);
+ assert.ok(Math.ceil(survey.cases.length/4)*survey.wallSeconds<240*60);
+});

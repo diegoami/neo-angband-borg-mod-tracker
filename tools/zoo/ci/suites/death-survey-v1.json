@@ -3,7 +3,7 @@
   "id": "death-survey-v1",
   "birthProfile": "c-seeded-point-buy-v2",
   "turns": 100000,
-  "wallSeconds": 120,
+  "wallSeconds": 600,
   "cases": [
     {
       "seed": 3000,
