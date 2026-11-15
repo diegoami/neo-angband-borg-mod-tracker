@@ -154,8 +154,8 @@ There is no scheduled cohort, write token or automatic issue publication.
 
 ## Cemetery-style reports and replay
 
-Each new experiment also writes `report/index.html` and a death registry. Open
-that HTML file directly in your browser. Filter by seed, race, class or cause;
+Each new experiment also writes `report/index.html` and a death registry. In an
+interactive terminal the command serves it on localhost and opens your browser. Filter by seed, race, class or cause;
 each death links to a chronological account, inventory/equipment/learned-spell
 observations, a known-map diagram, source identities and replay commands. The
 Markdown landing page is `report/README.md`; raw evidence remains unchanged.
@@ -164,7 +164,7 @@ Generate the same report for an **existing** experiment without rerunning games:
 
 ```sh
 pnpm report --experiment /tmp/borg-experiment --out /tmp/borg-cemetery-report
-xdg-open /tmp/borg-cemetery-report/index.html
+
 ```
 
 The output directory must be new. This works with earlier harness runs, including
@@ -333,3 +333,25 @@ launcher sets the API2 controller's standard `onDeath: end` policy only for this
 diagnostic session; the recorded plugin and engine source stay unchanged.
 
 The default Borg autodelay is1000ms, also written explicitly in generated replay commands. An explicit `--autodelay` can still select another pace for a diagnostic check.
+
+## Reports open automatically over localhost
+
+When run in an interactive terminal, `pnpm experiment` and `pnpm report` now
+start a local HTTP server and open the generated report in your browser. The
+printed URL links to the death pages, animations, inventory and original raw
+logs. Keep the command running; Ctrl-C stops the server. No public hosting or
+extra Python server is required. CI/non-interactive exports finish normally.
+Use `--serve false` for an interactive export without a server, or `--serve true`
+to explicitly serve even when output is redirected; `--open false` suppresses
+browser opening. `--port 8765` selects a fixed local port when desired.
+
+Serve an existing report without generating it or replaying anything:
+
+```sh
+pnpm report:serve --dir /tmp/borg-death-reports-current-cyjz_dgo/report \
+  --experiment /tmp/borg-experiment
+```
+
+The server binds only127.0.0.1 and exposes only the selected report and its
+explicit raw-run tree. It does not expose all of/tmp or your repository. Your
+original measurements are unchanged.

@@ -7,6 +7,7 @@ import { spawn } from 'node:child_process';
 import { classes, races, loadSuite } from './ci/suite.mjs';
 import { aggregate } from './ci/report.mjs';
 import { writeReport } from './report.mjs';
+import { autoServe,serveReport } from './serve-report.mjs';
 
 const tool = dirname(fileURLToPath(import.meta.url));
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -15,12 +16,13 @@ const usage = `Usage: node tools/zoo/experiment.mjs --bundle BUILD/bundle.mjs --
   [--seed 3000] [--race Human] [--class Warrior] [--save-games true]
   [--birth-profile c-seeded-point-buy-v2|ordinary-rolled-v1]
   [--suite tools/zoo/ci/suites/classes-1800.json] [--plan-only]
+  [--serve true|false] [--open false] [--port N]
 
 The output directory must be new. A frozen suite supplies assigned seeds/births;
 --games selects its first N games. Overrides create a distinct saved plan.
 The bundle's startup adapters must match the selected birth profile.
 `;
-const allowed = new Set(['bundle','out','games','max-ticks','wall-seconds','workers','seed','race','class','save-games','birth-profile','suite']);
+const allowed = new Set(['bundle','out','games','max-ticks','wall-seconds','workers','seed','race','class','save-games','birth-profile','suite','serve','open','port']);
 export function parseArgs(argv) {
   const args = {};
   for (let i = 0; i < argv.length; i++) {
@@ -66,6 +68,7 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) { console.log(usage); return; }
   if (!args.out || (!args.bundle && !args.planOnly)) throw Error(usage);
+  const serve=autoServe(args);
   const plan = makePlan(args), out = resolve(args.out);
   // Fail before launching anything if an existing directory could be overwritten.
   mkdirSync(out, {recursive:false});
@@ -75,7 +78,7 @@ async function main() {
   const manifest = {schema:'neo-experiment@1', startedAt:new Date().toISOString(),
     argv:process.argv.slice(2), node:process.version, platform:process.platform,
     suiteSha256:hash(readFileSync(suiteFile)), sourceSuite:plan.sourceSuite,
-    workers:plan.workers, toolingSha256:Object.fromEntries(['experiment.mjs','ci/run.mjs','ci/suite.mjs','ci/report.mjs','run.mjs','report.mjs'].map(file=>[file,hash(readFileSync(join(tool,file)))])), build:args.bundle ? JSON.parse(readFileSync(join(dirname(resolve(args.bundle)),'build.json'),'utf8')) : null};
+    workers:plan.workers, toolingSha256:Object.fromEntries(['experiment.mjs','ci/run.mjs','ci/suite.mjs','ci/report.mjs','run.mjs','report.mjs','serve-report.mjs'].map(file=>[file,hash(readFileSync(join(tool,file)))])), build:args.bundle ? JSON.parse(readFileSync(join(dirname(resolve(args.bundle)),'build.json'),'utf8')) : null};
   writeFileSync(join(out,'experiment.json'), JSON.stringify(manifest,null,2)+'\n',{flag:'wx'});
   if (args.planOnly) { console.log(`Saved ${suite.cases.length}-game plan: ${suiteFile}`); return; }
   const runs = join(out,'runs'); mkdirSync(runs);
@@ -96,5 +99,6 @@ async function main() {
   writeReport(report,{out:reportDir,runsRoot:runs,experimentRoot:out});
   console.log(`Report: ${join(reportDir,'report.md')}\n${JSON.stringify(report.counts)}`);
   if (report.errors.length || report.recorded!==report.assigned || results.some(r=>r.code!==0) || ['harness_failure','config_error','wall_timeout'].some(k=>report.counts[k])) process.exitCode=1;
+  if(serve)await serveReport({dir:reportDir,experiment:out,port:Number(args.port??0),openBrowser:args.open!=='false'});
 }
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href===import.meta.url) main().catch(error=>{console.error(error.message);process.exitCode=1;});

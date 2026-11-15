@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, realpathSync } from
 import { resolve, join, dirname, relative, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { aggregate, render, portableReport } from './ci/report.mjs';
+import { autoServe,serveReport } from './serve-report.mjs';
 import { animatedSvg,playerMarkup } from './frames.mjs';
 import { loadSuite } from './ci/suite.mjs';
 const html = value => String(value ?? 'unknown').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -177,9 +178,10 @@ export function reportExperiment(experiment,out,options={}) {
 }
 async function mainReport() {
  const argv=process.argv.slice(2),args={};
- if(argv.includes('--help')){console.log('pnpm report --experiment DIR --out NEW-DIR [--reconstruct true] [--bundle ORIGINAL-BUNDLE]');return;}
- for(let i=0;i<argv.length;i+=2){if(!['--experiment','--out','--reconstruct','--bundle'].includes(argv[i])||!argv[i+1]||args[argv[i]])throw Error('Expected flag/value pairs');args[argv[i]]=argv[i+1];}
+ if(argv.includes('--help')){console.log('pnpm report --experiment DIR --out NEW-DIR [--reconstruct true] [--bundle ORIGINAL-BUNDLE] [--serve true|false] [--open false] [--port N]');return;}
+ for(let i=0;i<argv.length;i+=2){if(!['--experiment','--out','--reconstruct','--bundle','--serve','--open','--port'].includes(argv[i])||!argv[i+1]||args[argv[i]])throw Error('Expected flag/value pairs');args[argv[i]]=argv[i+1];}
  if(!args['--experiment']||!args['--out'])throw Error('Expected --experiment DIR --out NEW-DIR');
+ const serve=autoServe({serve:args['--serve'],open:args['--open']});
  let capturesRoot=null;
  if(args['--reconstruct']==='true') {
   const root=resolve(args['--experiment']),manifest=readJson(join(root,'experiment.json')),source=readJson(join(root,'report/report.json'));
@@ -196,5 +198,6 @@ async function mainReport() {
   }
  }
  const result=reportExperiment(args['--experiment'],args['--out'],{capturesRoot});console.log(`Browsable report: ${result.index}`);if(!result.complete||result.errors.length)process.exitCode=1;
+ if(serve)await serveReport({dir:args['--out'],experiment:args['--experiment'],port:Number(args['--port']??0),openBrowser:args['--open']!=='false'});
 }
 if(process.argv[1]&&pathToFileURL(resolve(process.argv[1])).href===import.meta.url)mainReport().catch(error=>{console.error(error.message);process.exitCode=1;});
