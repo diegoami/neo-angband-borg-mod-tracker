@@ -287,3 +287,17 @@ reseed it. Normal key handling and game rendering remain in the real frontend.
 The resume hook is part of the isolated diagnostic boot adapter; the engine
 checkout is unchanged. You can also press Ctrl-Z during the initial delay to
 start immediately, which cancels the scheduled start.
+
+The real-screen delay/pause/resume check can be repeated with the pinned
+engine's Playwright installation (install its Chromium first if needed):
+
+```sh
+node tools/zoo/game-launch-browser-checks.mjs --engine-dir ../engine \
+  --experiment /tmp/borg-experiment --case 11-305119160 \
+  --bundle /tmp/borg-build/bundle.mjs --out /tmp/borg-browser-check
+```
+
+That check keeps the game at turn0 during its startup delay, verifies normal
+Borg play, pauses with Escape, confirms the clock remains stopped, then resumes
+with Ctrl-Z and saves a real frontend screenshot. It is optional and separate
+from lightweight headless controls because it requires a browser installation.
