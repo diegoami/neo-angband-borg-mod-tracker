@@ -6,6 +6,7 @@ import {
 	openSync,
 	writeSync,
 	closeSync,
+	fsyncSync,
 } from "node:fs";
 import { resolve, dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -61,7 +62,12 @@ try {
 		cSeedStartup: build.cSeedStartup === true,
 		packDir: join(dirname(bundle), "pack"),
 		manifest: build.borg.manifest.data,
-		onState: (r) => writeSync(states, JSON.stringify(r) + "\n"),
+		truthIdentity: { id: build.borg.manifest.data.id, version: build.borg.manifest.data.version,
+			digest: build.bundleSha256, installation: "headless:" + build.bundleSha256 },
+		onState: (r) => {
+			writeSync(states, JSON.stringify(r) + "\n");
+			if (r.kind === "truth-use") fsyncSync(states);
+		},
 		onCommand: (r) => writeSync(commands, r),
 		onMessage: (r) => writeSync(messageFile, JSON.stringify(r) + "\n"),
 	});

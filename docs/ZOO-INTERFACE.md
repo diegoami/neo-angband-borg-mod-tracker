@@ -93,3 +93,22 @@ the mod and the retained evidence, as the browser does.
 Historical toolkit pins through 9c17cb0 recorded text without delivering message
 events; those results remain preserved but measure a message-deaf host. A
 corrected run must name the new toolkit pin and state which run it corrects.
+
+### Monster truth permission receipts
+
+The headless host installs the engine’s normal truth-save callback before the
+Borg starts. It grants only the manifest’s perceived-monster combat-data seam;
+the actual map remains denied. Before the first allowed read it records the
+engine’s hidden-information capability receipt and noscore consequence in
+`states.jsonl`, flushes that journal to disk, and returns the receipt summary as
+`truthUse` in `run.json`. The identity includes the measured bundle digest.
+A missing truth domain or a failed receipt write stops the measurement as a
+harness failure rather than allowing lore-only danger estimates. The callback
+is removed when the isolated session ends. This corrects fork issue #100; older
+runs without the callback remain unchanged and must retain that limitation.
+
+`pnpm check:zoo-host` runs the receipt/denial controls. The exact-source CI also
+bundles and runs `tools/zoo/truth-host-engine-checks.mjs ENGINE_DIR` against the
+real engine API and the production session. It checks full eye paralysis data,
+missing-writer and failed-write denial, absence of a map grant, cleanup, and the
+production session’s receipt.

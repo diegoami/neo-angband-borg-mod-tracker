@@ -22,7 +22,7 @@ There is no top-level path filter that can strand required checks.
 | Changed inputs | Required checks |
 | --- | --- |
 | Explicit audited prose names; inert receipt `.md`, `.log`, `.exit`, `.txt` files immediately below a run directory | Session, routing controls, privacy, actual `docs-sync.test.ts` and `version-sync.test.ts` contracts |
-| Source, tests, dependencies/lockfiles, patches, scripts, CI/workflows, JSON/data or executable fixtures anywhere, unknown paths, empty/unavailable/invalid diff | Full ordinary typecheck, four installed-package memory controls, all 1170 port tests with zero skips, grants/plugin currency, session/privacy/routing controls, exact-source compatibility |
+| Source, tests, dependencies/lockfiles, patches, scripts, CI/workflows, JSON/data or executable fixtures anywhere, unknown paths, empty/unavailable/invalid diff | Full ordinary typecheck, four installed-package memory controls, all 1194 port tests with zero skips, grants/plugin currency, session/privacy/routing controls, exact-source compatibility |
 
 The allowlist is intentionally narrow, not `docs/**`. `docs/README.md` is
 read as settings data by the docs contract; `CHANGELOG.md` is read by the
@@ -52,8 +52,8 @@ trigger/concurrency negative controls, final-gate failure/cancellation paths,
 and missing/skipped full-suite rejection. They are explicit Node controls
 outside Vitest discovery; routing controls do not add or remove gameplay cases.
 
-The current 1170 cases retain the earlier 1000 baseline (including armour curse classification)
-and add fifty-six tactical backup, public-command, SR and declared-option controls, plus the spellbook throw guard (#64), race/class frame (#68), spell seam (#69), item-derived notice and home search (#61) and shop routing (#56, #58, #60) cases, the #75 review follow-ups and the store-phase home plan (#83) and the item-choice commands (#85). The shared ordinary/source
+The current 1194 cases retain the earlier 1000 baseline (including armour curse classification)
+and add fifty-six tactical backup, public-command, SR and declared-option controls, plus the spellbook throw guard (#64), race/class frame (#68), spell seam (#69), item-derived notice and home search (#61) and shop routing (#56, #58, #60) cases, the #75 review follow-ups and the store-phase home plan (#83) and the item-choice commands (#85), plus 24 danger-cache/HP invalidation and pre-escape retreat cases (#88/#89). The shared ordinary/source
 full-suite guard rejects skipped or incomplete output. Historical run records
 retain their original counts and dependency profiles; beta.3 upgrade task39
 updates the source artifact recipe only from the engine producer's verified pin.
