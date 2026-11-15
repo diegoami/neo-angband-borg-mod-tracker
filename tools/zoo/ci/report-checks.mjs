@@ -31,3 +31,11 @@ test('frozen suites fit their per-shard workflow time budgets',()=>{
  assert.ok(Math.ceil(smoke.cases.length/4)*smoke.wallSeconds<15*60);
  assert.ok(Math.ceil(survey.cases.length/4)*survey.wallSeconds<240*60);
 });
+test('both tick and decision caps count in endpoint and class statistics',()=>{
+ const small={...suite,cases:suite.cases.slice(0,3).map(c=>({...c,class:'Warrior'}))};
+ const rows=small.cases.map((c,i)=>({...c,suite:small.id,outcome:['death','turn_cap','decision_cap'][i],turn:42}));
+ const r=aggregate(small,rows),md=render(r);
+ assert.match(md,/1\/3 \(33.33%\)/);assert.match(md,/Warrior \| 3 \| 1 \| 2 \| 0/);
+ const allCaps=render(aggregate(small,rows.map(c=>({...c,outcome:'decision_cap'}))));
+ assert.match(allCaps,/0\/3 \(0.00%\)/);
+});

@@ -105,3 +105,30 @@ jobs:
             ${{ runner.temp }}/plan
             ${{ runner.temp }}/build
             ${{ runner.temp }}/experiment
+  engine-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: neostryder/neo-angband
+          ref: d27ed50f9e3b650a43cceda5a0c007d03cc321df
+          path: contract-engine
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26.13.1
+      - working-directory: contract-engine
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+        run: pnpm install --frozen-lockfile
+      - working-directory: contract-engine
+        run: pnpm exec tsc -b packages/core packages/mod-sdk packages/content
+      - name: Verify point-buy and native-menu RNG observations
+        env:
+          ALIGNMENT_ENGINE: ${{ github.workspace }}/contract-engine
+          ALIGNMENT_PACK: ${{ github.workspace }}/contract-engine/packages/content/pack
+          ALIGNMENT_ENGINE_PIN: d27ed50f9e3b650a43cceda5a0c007d03cc321df
+        run: node --test tools/zoo/alignment/profile-checks.mjs tools/zoo/alignment/seed-startup-checks.mjs
+      - name: Verify production host truth receipts and actual attacks
+        run: node tools/zoo/truth-host-engine-checks.mjs contract-engine

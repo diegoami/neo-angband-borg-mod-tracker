@@ -13,15 +13,16 @@ export function aggregate(suite,rows){
 export function portableReport(report,root){return {...report,cells:report.cells.map(({evidencePath,...c})=>({...c,...(evidencePath?{evidencePath:relative(resolve(root),evidencePath)}:{})}))};}
 const escape=s=>String(s??'').replace(/[|<>`\r\n\[\]()*!_#@]/g,' ');
 function walk(dir){return readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):e.name==='cells.json'?[join(dir,e.name)]:[]);}
-export function render(report){
+export function render(report,{bundle="build/bundle.mjs",replayOut="rerun"}={}){
+ const quote=value=>"'"+String(value).replaceAll("'","'\"'\"'")+"'";
  let text=`# Headless Borg death report: ${report.suite.id}\n\nAssigned: ${report.assigned}; recorded: ${report.recorded}. Every assignment is counted.\n\nProfile: ${report.suite.birthProfile}; cap: ${report.suite.turns} game ticks; per-game watchdog: ${report.suite.wallSeconds} seconds.\n\n| Outcome | Count |\n| --- | ---: |\n`;
  for(const [k,n] of Object.entries(report.counts))text+=`| ${escape(k)} | ${n} |\n`;
- const deaths=report.counts.death??0,caps=report.counts.turn_cap??0;
+ const deaths=report.counts.death??0,caps=(report.counts.turn_cap??0)+(report.counts.decision_cap??0);
  text+=`\nDeaths / assigned: ${deaths}/${report.assigned} (${(100*deaths/report.assigned).toFixed(2)}%). Deaths / death-or-cap endpoints: ${deaths}/${deaths+caps} (${deaths+caps?(100*deaths/(deaths+caps)).toFixed(2):'n/a'}%). All other outcomes remain in the assigned denominator.\n`;
  text+='\n## Deaths\n\n| Seed | Race | Class | Turn | Level | Max depth | Cause |\n| --- | --- | --- | ---: | ---: | ---: | --- |\n';
  for(const c of report.cells.filter(c=>c.outcome==='death'))text+=`| ${c.seed} | ${c.race} | ${c.class} | ${c.turn} | ${c.level} | ${c.maxDepth} | ${escape(c.cause)} |\n`;
  text+='\n## By class\n\n| Class | Assigned | Deaths | Caps | Other outcomes |\n| --- | ---: | ---: | ---: | ---: |\n';
- for(const cls of [...new Set(report.cells.map(c=>c.class))]){const cells=report.cells.filter(c=>c.class===cls),deaths=cells.filter(c=>c.outcome==='death').length,caps=cells.filter(c=>c.outcome==='turn_cap').length;text+=`| ${cls} | ${cells.length} | ${deaths} | ${caps} | ${cells.length-deaths-caps} |\n`;}
+ for(const cls of [...new Set(report.cells.map(c=>c.class))]){const cells=report.cells.filter(c=>c.class===cls),deaths=cells.filter(c=>c.outcome==='death').length,caps=cells.filter(c=>['turn_cap','decision_cap'].includes(c.outcome)).length;text+=`| ${cls} | ${cells.length} | ${deaths} | ${caps} | ${cells.length-deaths-caps} |\n`;}
  text+='\n## Death causes\n\n| Cause | Deaths |\n| --- | ---: |\n';
  const causes=new Map();for(const c of report.cells.filter(c=>c.outcome==='death'))causes.set(c.cause??'unknown',(causes.get(c.cause??'unknown')??0)+1);
  for(const [cause,n] of [...causes].sort((a,b)=>b[1]-a[1]||String(a[0]).localeCompare(String(b[0]))))text+=`| ${escape(cause)} | ${n} |\n`;
@@ -32,7 +33,7 @@ export function render(report){
  const builds=[...new Map(report.cells.filter(c=>c.build).map(c=>[JSON.stringify(c.build),c.build])).values()];
  text+='\n## Source and bundle identities\n\n'+builds.map(b=>`- Engine: ${escape(b.engine.repository)} @ ${b.engine.commit}; Borg: ${escape(b.borg.repository)} @ ${b.borg.commit}; bundle SHA256: ${b.bundleSha256}; adapters: ${b.appliedPatches.join(', ')}.`).join('\n')+'\n';
  for(const c of report.cells.filter(c=>c.outcome==='death')){
-  text+=`\n### Death ${c.id}: ${c.race} ${c.class}\n\nCause: ${escape(c.cause)}. Seed ${c.seed}, turn ${c.turn}, level ${c.level}, maximum depth ${c.maxDepth}.\n\nReproduce after extracting the build artifact:\n\n\`\`\`sh\nnode tools/zoo/run.mjs --bundle build/bundle.mjs --seed ${c.seed} --race '${c.race}' --class '${c.class}' ${report.suite.birthProfile==='ordinary-rolled-v1'?'':`--birth-profile ${report.suite.birthProfile}`} --turns ${report.suite.turns} --out rerun-${c.id}\n\`\`\`\n`;
+  text+=`\n### Death ${c.id}: ${c.race} ${c.class}\n\nCause: ${escape(c.cause)}. Seed ${c.seed}, turn ${c.turn}, level ${c.level}, maximum depth ${c.maxDepth}.\n\nReproduce after extracting the build artifact:\n\n\`\`\`sh\nborg_repeat_dir=$(mktemp -d /tmp/borg-${c.seed}-XXXXXX) &&\nnode tools/zoo/run.mjs --bundle ${quote(bundle)} --seed ${c.seed} --race '${c.race}' --class '${c.class}' ${report.suite.birthProfile==='ordinary-rolled-v1'?'':`--birth-profile ${report.suite.birthProfile}`} --turns ${report.suite.turns} --out "$borg_repeat_dir/run"\n\`\`\`\n`;
   for(const [name,label] of [['messages.jsonl','Last messages'],['commands.jsonl','Last commands'],['states.jsonl','Last state observations']]){
    const f=c.evidencePath&&join(c.evidencePath,name);if(f&&existsSync(f)){
     // Bound the Markdown size; full unmodified JSONL remains in the artifact.

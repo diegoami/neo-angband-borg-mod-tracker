@@ -16,7 +16,7 @@ assert.equal(
   execFileSync("git", ["-C", engine, "rev-parse", "HEAD"], {
     encoding: "utf8",
   }).trim(),
-  fixture.source.Neo,
+  process.env.ALIGNMENT_ENGINE_PIN ?? fixture.source.Neo,
 );
 const core = await import(
     pathToFileURL(resolve(engine, "packages/core/dist/index.js"))

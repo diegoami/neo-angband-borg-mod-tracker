@@ -197,15 +197,46 @@ made in the new output directory; the adapter and both bundle hashes are recorde
 and the original stays untouched. A mismatch stays unverified. This is a live
 Core/Borg replay with a diagnostic map display, rather than Neo's normal UI.
 
-Normal-game mode checks the engine checkout's commit, starts its web frontend on
-localhost port 5187 (override with `--port`), and prints a seed URL. Open it in a
-browser, select the recorded race/class/birth/options, and install/enable the
-recorded Borg version. `launch.json` retains those settings and source pins.
-The ordinary UI does **not** apply the harness's C-startup/compiler adapters or
-private Borg RNG initialization; matching the seed alone is not a verified replay
-of the full trajectory. `--prepare-only true` writes the launch plan without
-starting the web server. Ctrl-C stops either local viewer/server. Nothing is
-published or installed into an existing game profile automatically.
+Game mode launches **the actual Neo frontend**, not the custom viewer. It
+exports a fresh turn-zero birth from the original seed/bundle, loads it into the
+pinned engine, restores recorded startup options/RNG, and automatically starts
+the exact recorded Borg plugin. Inventory, equipment, messages and monster panels
+are enabled in this isolated session. Escape takes the keyboard back; Ctrl-C
+closes the server. The engine checkout and content hashes are checked; missing
+renderer support is built once from that checkout. No game source or existing
+browser profile is rewritten. Browser and headless hosts can still make different
+choices; the graphical run is not declared command-equivalent without checking.
+Historical runs also retain their recorded monster-truth permission contract.
+
+For your original two deaths, after switching to this follow-up branch:
+
+```sh
+borg_game_dir=$(mktemp -d /tmp/borg-crow-305119160-XXXXXX) &&
+pnpm replay --experiment /tmp/borg-experiment --case 11-305119160 \
+  --seed 305119160 --bundle /tmp/borg-build/bundle.mjs \
+  --engine-dir ../engine --out "$borg_game_dir/game" --mode game
+```
+
+For the wild cat use case `2-1746645326` / seed `1746645326` with another fresh
+output directory. Each generated death report contains its **complete** command,
+including these original local paths and a `mktemp` step. No BUILD/NEW placeholders
+are emitted for a retained experiment. Open the printed local URL: the game starts
+at turn 0 and the Borg takes the keyboard automatically.
+
+To reconstruct the last thirty actions of an older run for the written report:
+
+```sh
+pnpm report --experiment /tmp/borg-experiment \
+  --out /tmp/borg-cemetery-report-v2 --reconstruct true
+```
+
+This performs diagnostic replays of at most twenty deaths, accepts frames only
+when the full original command hash/birth/endpoint match, and leaves the original
+statistics and records unchanged. The last-action display includes HP/SP/status,
+inventory, game messages and actual recorded monster glyphs (`f` for the wild cat,
+`B` for the crow). It is labelled reconstructed known-state data; the game-launch
+command above is the path to the real full Neo screen. Unknown glyphs use `?`,
+not a generic monster `M`.
 
 Snapshots retained with `--save-games true` are linked when present, but no
 near-boundary checkpoint or saved-position controller continuation is invented.
@@ -216,3 +247,22 @@ not additional independent births in the death statistics.
 The report layout was informed by
 [borg-cemetery](https://github.com/diegoami/borg-cemetery), inspected at
 `42e0647fbbb08393b97128c78142c7759760fd9d`. This harness has no dependency on that repository or its Borgs.
+
+## Review corrections and host provenance
+
+The death-or-cap denominator includes both `turn_cap` and `decision_cap`.
+Pinned-engine alignment and production truth-host controls run in the automated
+engine-contracts job, in addition to lightweight host/report controls. The merged
+fork PR101 truth-writer correction is carried here: new measurements synchronize
+a durable capability-use receipt before monster/race truth is released; actual
+map truth remains denied. Old pre-correction runs stay historical and are not
+relabelled as browser-equivalent measurements.
+
+The primary death-page command now starts the actual game at turn 0 and starts
+the recorded Borg automatically; it does not ask you to navigate birth menus or
+install a mod manually. It exports the recorded birth from the retained bundle,
+uses the recorded plugin from Git, and applies a diagnostic boot adapter in memory
+while serving the unchanged pinned Neo frontend. No engine source is rewritten.
+This follows angband-recorder's pinned-runtime/fresh-start approach; the native C
+recorder cannot be linked directly into the TypeScript engine. The separate
+`watch` mode is still a diagnostic known-map viewer, not the normal game screen.

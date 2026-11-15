@@ -28,6 +28,8 @@ import definition from "BORG/plugin.ts";
 import { borgCfg, buffTimerSafetyNetEnabled } from "BORG/src/trait/config.ts";
 import { loadPack } from "./pack.ts";
 import { installMessageHost } from "./message-host.mjs";
+import { installTruthHost } from "./truth-host.mjs";
+import * as truthConsent from "ENGINE/packages/web/src/mod-truth-consent.ts";
 import { alignedBirth, C_POINT_BUY_PROFILE } from "./alignment/profile.mjs";
 import { nativeMenuBirth, C_SEEDED_PROFILE_ID } from "./alignment/seed-startup.mjs";
 import { readFileSync, readdirSync } from "node:fs";
@@ -210,6 +212,13 @@ export async function run(o: any) {
 					? {}
 					: { reason: result.reason ?? result.code }),
 			});
+            if (intent.kind === "command" && o.onFrame) {
+                const known = core.buildKnownWorld(state, deps, grants), grid = known.player?.grid;
+                o.onFrame({ ...known, turn: state.turn, action: intent.command, accepted: result.accepted,
+                    messages: messages.slice(-5),
+                    level: known.level && { ...known.level, cells: known.level.cells.filter((c: any) =>
+                        grid && Math.abs(c.x-grid.x)<=12 && Math.abs(c.y-grid.y)<=12) } });
+            }
 			if (intent.kind === "command") {
 				decisions++;
 				census[intent.command.code] =
@@ -375,9 +384,12 @@ export async function run(o: any) {
 		(globalThis as any).__alignmentTickCap = (current: any) => {
 			if (current === state && state.turn >= o.turns) throw capStop;
 		};
+	const truthHost = installTruthHost({ state, grants, consent: truthConsent, identity: o.truthIdentity, record: o.onState });
 	let error: any = null,
 		started = false;
 	try {
+		const truthReady = await mod.truth?.monsters();
+		if (!truthReady?.ok) throw new Error("Zoo monster truth unavailable: " + JSON.stringify(truthReady));
 		if (
 			!definition.armed?.({
 				id: "borg",
@@ -465,6 +477,7 @@ export async function run(o: any) {
 	} finally {
 		if (seededStartup) delete (globalThis as any).__cSeedBorg;
 		if (o.birthProfile && o.exactTickCap) delete (globalThis as any).__alignmentTickCap;
+		truthHost.dispose();
 		if (started) await definition.stop?.();
 		disposeApi2Host(mod);
 	}
@@ -511,6 +524,7 @@ export async function run(o: any) {
 		messages,
 		logs,
 		finalKnownWorld,
+		truthUse: truthHost.manifest,
 		finalInventory: gear(),
 		turnCap: {
 			requested: o.turns,

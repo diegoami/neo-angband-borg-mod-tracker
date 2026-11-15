@@ -62,10 +62,10 @@ test('command hash, birth and endpoint must all match before calling a visible r
  for(const change of [{playSha256:'other'},{seed:2},{turn:41},{outcome:'turn_cap'},{birth:{...r.birth,stats:[11]}}])assert.equal(replayMatches(r,{...r,...change}),false);
 });
 test('legacy display adaptation refuses an ambiguous observer site and preserves new bundles',()=>{
- const source='const observe = () => {\n\t\tconst s = snapshot("periodic");\n};\nconst finalKnownWorld = buildKnownWorld(state, deps, grants);';
- assert.equal(displayBundle(source).adapted,true);assert.match(displayBundle(source).source,/o.onObservation/);
- assert.throws(()=>displayBundle(source+source),/no supported display observer site/);
- assert.equal(displayBundle('o.onObservation?.(known)').adapted,false);
+ const source='const result = originalGate.submit(token, intent);\nconst finalKnownWorld = buildKnownWorld(state, deps, grants);';
+ assert.equal(displayBundle(source).adapted,true);assert.match(displayBundle(source).source,/o.onFrame/);
+ assert.throws(()=>displayBundle(source+source),/no supported command display observer site/);
+ assert.equal(displayBundle('o.onFrame?.(known)').adapted,false);
 });
 test('earlier runs without rich observations still produce final inventory and a qualified chronology',()=>fixture(({root,put})=>{
  put('runs/worker-0/0-7/run/observations.jsonl','');
@@ -75,4 +75,11 @@ test('earlier runs without rich observations still produce final inventory and a
  assert.ok(sequence.sequence.some(r=>r.source==='messages.jsonl'));
  assert.match(readFileSync(join(out,'deaths/0-7/inventory.md'),'utf8'),/run.json finalKnownWorld/);
  assert.match(readFileSync(join(out,'deaths/0-7/report.md'),'utf8'),/Sparse older traces/);
+}));
+test('copyable repeat commands use retained paths and create fresh /tmp output',()=>fixture(({root})=>{
+ const out=join(root,'commands-report');reportExperiment(root,out);
+ for(const file of ['report.md','deaths/0-7/README.md','deaths/0-7/report.md','deaths/0-7/index.html']) {
+  const text=readFileSync(join(out,file),'utf8');assert.ok(!text.includes('BUILD/bundle.mjs'),file);assert.ok(!text.includes('NEW-REPLAY-DIRECTORY'),file);
+ }
+ const text=readFileSync(join(out,'deaths/0-7/index.html'),'utf8');assert.match(text,/mktemp -d \/tmp\/borg-game-7-/);assert.match(text,/--seed 7/);assert.match(text,/--mode game/);
 }));
