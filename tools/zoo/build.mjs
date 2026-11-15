@@ -168,6 +168,7 @@ await build({
 	},
 	resolve: {
 		alias: [
+            { find: "@rpgm-tools/neo-angband-mod-sdk/backup-policy", replacement: join(engine, "packages/mod-sdk/dist/backup-policy.js") },
 			{
 				find: "@rpgm-tools/neo-angband-core/log",
 				replacement: join(engine, "packages/core/dist/log.js"),
@@ -177,7 +178,7 @@ await build({
 				replacement: join(engine, "packages/core/dist/index.js"),
 			},
 			{
-				find: "@rpgm-tools/neo-angband-mod-sdk",
+				find: /^@rpgm-tools\/neo-angband-mod-sdk$/,
 				replacement: join(engine, "packages/mod-sdk/dist/index.js"),
 			},
 		],
