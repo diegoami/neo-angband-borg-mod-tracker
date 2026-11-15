@@ -46,7 +46,7 @@ async function main() {
     const argv=manifest.argv??[],bundle=a['--bundle']??argv[argv.indexOf('--bundle')+1];
     if(!bundle)throw Error('Actual game launch requires the original --bundle');
     const {launchGame}=await import('./game-launch.mjs');
-    await launchGame({experiment:root,caseId:a['--case'],bundle,engine:a['--engine-dir'],out,prepareOnly:a['--prepare-only']==='true',openBrowser:a['--open']!=='false',autodelay:Number(a['--autodelay']??120),startDelay:Number(a['--start-delay']??1000),beforeDeath:a['--before-death']===undefined?undefined:Number(a['--before-death'])});return;
+    await launchGame({experiment:root,caseId:a['--case'],bundle,engine:a['--engine-dir'],out,prepareOnly:a['--prepare-only']==='true',openBrowser:a['--open']!=='false',autodelay:Number(a['--autodelay']??1000),startDelay:Number(a['--start-delay']??1000),beforeDeath:a['--before-death']===undefined?undefined:Number(a['--before-death'])});return;
   }
   mkdirSync(out,{recursive:false});
   if(!a['--bundle'])throw Error('Visible replay requires the original --bundle');

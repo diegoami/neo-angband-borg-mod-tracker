@@ -6,7 +6,7 @@ import { createRequire } from 'node:module';
 import { execFileSync,spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 const sha=s=>createHash('sha256').update(s).digest('hex');
-export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnly=false,openBrowser=true,autodelay=120,startDelay=1000,beforeDeath=undefined}) {
+export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnly=false,openBrowser=true,autodelay=1000,startDelay=1000,beforeDeath=undefined}) {
  if(!Number.isInteger(autodelay)||autodelay<0||autodelay>10000)throw Error('autodelay must be 0..10000 milliseconds');
  if(!Number.isInteger(startDelay)||startDelay<0||startDelay>600000)throw Error('start-delay must be 0..600000 milliseconds');
  const root=resolve(experiment),buildPath=resolve(bundle),engineRoot=resolve(engine),output=resolve(out);
@@ -39,7 +39,7 @@ export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnl
  const states=readFileSync(join(raw,'states.jsonl'),'utf8').split('\n').filter(Boolean).map(s=>JSON.parse(s));
  const initial=states.find(s=>s.kind==='alignment'),active=states.find(s=>s.kind==='alignment-active');
  const options=active?.options?.values??{};
- const config={autodelay,startDelay,startTurn:checkpoint?.receipt.actualTurn??0,checkpoint:checkpoint?.receipt??null,seed:c.seed,birth:original.birth,options,birthRng:checkpoint?null:initial?.worldRng??null,borgSeed:active?.seededBorgSeed??null,
+ const config={singleLife:true,autodelay,startDelay,startTurn:checkpoint?.receipt.actualTurn??0,checkpoint:checkpoint?.receipt??null,seed:c.seed,birth:original.birth,options,birthRng:checkpoint?null:initial?.worldRng??null,borgSeed:active?.seededBorgSeed??null,
   seeded:build.cSeedStartup===true,truth:!!original.truthUse?.capabilityUse?.entries?.length,settings:original.settings,engine:build.engine,borg:build.borg};
  writeFileSync(join(output,'birth.save.json'),JSON.stringify(birth));writeFileSync(join(output,'launch.json'),JSON.stringify(config,null,2));
  const borgRoot=resolve(dirname(new URL(import.meta.url).pathname),'../..');
@@ -71,7 +71,7 @@ const __reportStart = async () => {
   await __reportDefinition.start?.(api);
   const engineRngMatchedAtStart=!__reportConfig.checkpoint||Object.keys(__reportBirth.rng).every(key=>JSON.stringify(__reportBirth.rng[key])===JSON.stringify(state.rng.getState()[key]));
   if(!engineRngMatchedAtStart)throw Error('Loaded checkpoint RNG differs from the retained engine state');
-  const wrapper=__reportShim(__reportDefinition,opts);
+  const wrapper=__reportShim({...__reportDefinition,onDeath:'end'},opts);
   const loaded={id:'borg',api:2,manifest:__reportManifest,plugin:wrapper,tier:{trust:'first-party',execution:'in-process'}};
   let autoTimer;
   const resume=()=>{
@@ -82,7 +82,7 @@ const __reportStart = async () => {
     finishAutoplayerInstall(loaded,controllerInstallOf(answer));
     return installedController?.id==='borg';
   };
-  window.__neoReport={seed:__reportConfig.seed,startTurn:state.turn,started:false,engineRngMatchedAtStart,resume,isRunning:()=>installedController?.id==='borg',autodelay:__reportConfig.autodelay,startDelay:__reportConfig.startDelay,actualBirth:{turn:state.turn,race:state.actor.player.race.name,class:state.actor.player.cls.name,hp:state.actor.player.chp,sp:state.actor.player.csp,gold:state.actor.player.au,stats:[...state.actor.player.statBirth],grid:{...state.actor.grid}},speed:(value)=>installedControllerSpeed?.(value),birth:__reportConfig.birth,hostTruth:__reportConfig.truth};
+  window.__neoReport={seed:__reportConfig.seed,startTurn:state.turn,started:false,engineRngMatchedAtStart,resume,isRunning:()=>!dead&&installedController?.id==='borg',lifeEnded:()=>dead,deathPolicy:()=>installedController?.onDeath,autodelay:__reportConfig.autodelay,startDelay:__reportConfig.startDelay,actualBirth:{turn:state.turn,race:state.actor.player.race.name,class:state.actor.player.cls.name,hp:state.actor.player.chp,sp:state.actor.player.csp,gold:state.actor.player.au,stats:[...state.actor.player.statBirth],grid:{...state.actor.grid}},speed:(value)=>installedControllerSpeed?.(value),birth:__reportConfig.birth,hostTruth:__reportConfig.truth};
   panelCues.setEnabled(false);
   for(const id of ['inventory','equipment','messages','monsters'])setSubwindowEnabledLive(id,true);
   render();
@@ -99,6 +99,9 @@ void __reportStart().catch(error=>{console.error(error);document.body.insertAdja
    const resumeSite='function tryBorgCommand(): void {';
    if(code.split(resumeSite).length!==2)throw Error('Unsupported Borg resume command site');
    code=code.replace(resumeSite,resumeSite+`\nif(!installedController&&window.__neoReport?.resume){window.__neoReport.resume();return;}\n`);
+   const deathSite='if (holder.onDeath === "end") return false;';
+   if(code.split(deathSite).length!==2)throw Error('Unsupported single-life death policy site');
+   code=code.replace(deathSite,`if(holder.onDeath === "end"){stopInstalledController?.("recorded life ended", "Borg stopped: this recorded life has ended.");return false;}`);
    return imports+code+append;
   }}]});
  await server.listen();const address=server.httpServer.address(),url=`http://127.0.0.1:${address.port}/?new=1&seed=${c.seed}`;

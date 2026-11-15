@@ -269,16 +269,16 @@ recorder cannot be linked directly into the TypeScript engine. The separate
 
 ### Delay, pause and resume in the real game
 
-Add `--autodelay 500` for a 500-millisecond interval between Borg controller
+Add `--autodelay 1000` for a 1000-millisecond interval between Borg controller
 polls, and `--start-delay 5000` to leave the initial turn-zero screen visible for
 five seconds before autoplay begins. These are wall-clock delays, not engine
-ticks. Defaults are120ms/1000ms; accepted ranges are0–10000ms and0–600000ms.
+ticks. Defaults are1000ms/1000ms; accepted ranges are0–10000ms and0–600000ms.
 
 ```sh
 borg_game_dir=$(mktemp -d /tmp/borg-crow-305119160-XXXXXX) &&
 pnpm replay --experiment /tmp/borg-experiment --case 11-305119160 \
   --seed 305119160 --bundle /tmp/borg-build/bundle.mjs --engine-dir ../engine \
-  --out "$borg_game_dir/game" --mode game --autodelay 500 --start-delay 5000
+  --out "$borg_game_dir/game" --mode game --autodelay 1000 --start-delay 5000
 ```
 
 Escape stops the Borg. **Ctrl-Z resumes it** in this diagnostic session, using
@@ -310,7 +310,7 @@ Every death page also includes a complete command with `--before-death 100`:
 borg_game_dir=$(mktemp -d /tmp/borg-crow-near-death-XXXXXX) &&
 pnpm replay --experiment /tmp/borg-experiment --case 11-305119160 \
   --seed 305119160 --bundle /tmp/borg-build/bundle.mjs --engine-dir ../engine \
-  --out "$borg_game_dir/game" --mode game --before-death 100 --autodelay 0
+  --out "$borg_game_dir/game" --mode game --before-death 100 --autodelay 1000
 ```
 
 The requested target is death minus100 in the engine counter used by the report
@@ -326,3 +326,10 @@ danger, and no mismatch is accepted as a valid original checkpoint.
 `--autodelay 0` now removes the intentional controller wait. The game's **base
 delay factor** controls animation timing separately. Rendering, AI work and browser
 scheduling still cost time; near-death launch avoids watching the entire birth run.
+
+Diagnostic game launches run **one life only**. On death, the Borg stops and Neo
+shows the ordinary death screen instead of automatically reincarnating. The
+launcher sets the API2 controller's standard `onDeath: end` policy only for this
+diagnostic session; the recorded plugin and engine source stay unchanged.
+
+The default Borg autodelay is1000ms, also written explicitly in generated replay commands. An explicit `--autodelay` can still select another pace for a diagnostic check.

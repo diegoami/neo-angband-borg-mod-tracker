@@ -48,3 +48,13 @@ startup. With `--autodelay 0` it advances to2593 in the one-second browser check
 with no runtime errors. That progression is a fresh-Borg saved-position diagnostic,
 not a rescue claim or exact continuation of original private controller memory.
 The expanded lightweight regression suite passes38cases without skips.
+
+## One life and 1000-ms default
+
+The diagnostic wrapper uses the standard API2 `onDeath: end` policy and releases
+Borg ownership when the ordinary death handler runs. A real-game wild-cat saved
+position test with the default1000-ms controller interval ends at860, remains
+at860 after a1.5-second observation, reports the life ended, and has no active
+Borg owner or browser runtime errors. No character was automatically rerolled.
+A prepare-only check confirms the default autodelay1000 and single-life setting;
+all generated near-death commands explicitly specify `--autodelay 1000`.

@@ -16,7 +16,7 @@ try {
  await page.goto(game.url);await page.waitForFunction(()=>!!window.__neoReport,{timeout:30000});
  assert.deepEqual(await page.evaluate(()=>({turn:window.__neo.turn,running:window.__neoReport.isRunning(),delay:window.__neoReport.autodelay,start:window.__neoReport.startDelay})),{turn:0,running:false,delay:250,start:3000});
  await page.waitForTimeout(500);assert.equal(await page.evaluate(()=>window.__neo.turn),0);
- await page.waitForFunction(()=>window.__neoReport.isRunning(),{timeout:6000});await page.waitForFunction(()=>window.__neo.turn>0,{timeout:5000});
+ await page.waitForFunction(()=>window.__neoReport.isRunning(),{timeout:6000});assert.equal(await page.evaluate(()=>window.__neoReport.deathPolicy()),'end');await page.waitForFunction(()=>window.__neo.turn>0,{timeout:5000});
  await page.keyboard.press('Escape');await page.waitForFunction(()=>!window.__neoReport.isRunning());await page.waitForTimeout(500);
  const stopped=await page.evaluate(()=>window.__neo.turn);await page.waitForTimeout(600);assert.equal(await page.evaluate(()=>window.__neo.turn),stopped);
  await page.keyboard.press('Control+z');await page.waitForFunction(()=>window.__neoReport.isRunning(),{timeout:3000});await page.waitForFunction(t=>window.__neo.turn>t,stopped,{timeout:5000});

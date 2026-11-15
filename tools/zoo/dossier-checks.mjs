@@ -91,7 +91,7 @@ test('invalid wall-clock delays are rejected before preparing a game or writing 
 test('death reports include the complete before-death launch command',()=>fixture(({root})=>{
  const out=join(root,'before-death-report');reportExperiment(root,out);
  for(const file of ['deaths/0-7/report.md','deaths/0-7/README.md','deaths/0-7/index.html']){
-  const text=readFileSync(join(out,file),'utf8');assert.match(text,/--before-death 100/);assert.match(text,/\/tmp\/borg-before-death-/);assert.match(text,/private memory/);
+  const text=readFileSync(join(out,file),'utf8');assert.match(text,/--before-death 100/);assert.match(text,/--autodelay 1000/);assert.match(text,/\/tmp\/borg-before-death-/);assert.match(text,/private memory/);
  }
 }));
 test('checkpoint selection validates death endpoints and refuses unsupported observer sites',async()=>{
