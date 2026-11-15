@@ -38,7 +38,7 @@ Every numeric game seed and assigned birth is materialized in `suite.json`.
 directories are refused, preserving previous attempts. Retain the entire output:
 
 - `experiment.json`: UTC start, exact arguments, Node/platform, source-suite ID,
-  worker count, suite SHA256 and full build provenance;
+  worker count, suite and orchestration-tool SHA256 hashes, and full build provenance;
 - `suite.json`: immutable effective assignments, birth protocol and limits;
 - `runs/worker-N/INDEX-SEED/run/`: per-game `run.json`, command, message and state
   JSONL streams; stdout/stderr are alongside it. Streams survive watchdog kills;

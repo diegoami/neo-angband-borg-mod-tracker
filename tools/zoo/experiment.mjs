@@ -74,7 +74,7 @@ async function main() {
   const manifest = {schema:'neo-experiment@1', startedAt:new Date().toISOString(),
     argv:process.argv.slice(2), node:process.version, platform:process.platform,
     suiteSha256:hash(readFileSync(suiteFile)), sourceSuite:plan.sourceSuite,
-    workers:plan.workers, build:args.bundle ? JSON.parse(readFileSync(join(dirname(resolve(args.bundle)),'build.json'),'utf8')) : null};
+    workers:plan.workers, toolingSha256:Object.fromEntries(['experiment.mjs','ci/run.mjs','ci/suite.mjs','ci/report.mjs','run.mjs'].map(file=>[file,hash(readFileSync(join(tool,file)))])), build:args.bundle ? JSON.parse(readFileSync(join(dirname(resolve(args.bundle)),'build.json'),'utf8')) : null};
   writeFileSync(join(out,'experiment.json'), JSON.stringify(manifest,null,2)+'\n',{flag:'wx'});
   if (args.planOnly) { console.log(`Saved ${suite.cases.length}-game plan: ${suiteFile}`); return; }
   const runs = join(out,'runs'); mkdirSync(runs);
