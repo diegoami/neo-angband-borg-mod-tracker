@@ -3,7 +3,7 @@
 **Opened 2026-08-21. Target: full functionality, validated by several successful
 runs, where a successful run means it tries its best and gets as far as it can.**
 
-This file records earlier wiring failures and release observations. The dated sections describe the interfaces used at the time. README.md and docs/API2-MIGRATION.md describe the current controller and bridge.
+Each dated section covers wiring failures and release observations from that date and uses the interfaces that existed then. The current controller and bridge are documented in `README.md` and `docs/API2-MIGRATION.md`.
 
 ## What was actually wrong
 

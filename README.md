@@ -206,7 +206,7 @@ no manifest change here.
 
 ## Two things it does not do
 
-- It does not read the real map. Upstream's borg reads the game's own structures directly (its comments call these "cheats") and scrapes the terminal for the rest. This one plans from the known world: the remembered map, the pack, and the stores as the character last saw them. With the `state:monsters-actual.read` permission turned on, it also reads the exact hit points and race records of the monsters the character can perceive, and nothing else. It acts only through commands a player could issue.
+- The borg plans from what the character knows: the remembered map, the pack, and the stores as the character last saw them. Upstream's borg reads the game's internal structures directly (its own comments call these "cheats") and scrapes the terminal for everything else. With the `state:monsters-actual.read` permission turned on, this port also reads the exact hit points and race records of the monsters the character can perceive, and nothing more. Every action goes through a command a player could issue.
 - It does not cost you reproducibility. Borg is deterministic: it draws
   only its own seeded generator and never the game's, so a Borg game stays
   replayable and the save's determinism ratchet stays untripped. An autoplayer that
