@@ -1,6 +1,7 @@
+import { createHash } from 'node:crypto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -41,5 +42,19 @@ test('plan-only creates a portable frozen plan and refuses to overwrite runs',()
   assert.equal(JSON.parse(readFileSync(join(out,'suite.json'))).cases.length,2);
   const before=readFileSync(join(out,'suite.json'),'utf8');
   assert.notEqual(spawnSync(process.execPath,argv).status,0);assert.equal(readFileSync(join(out,'suite.json'),'utf8'),before);
+ } finally {rmSync(dir,{recursive:true,force:true});}
+});
+test('two workers retain every game, diagnostic saves and an aggregated death rate',()=>{
+ const dir=mkdtempSync(join(tmpdir(),'neo-workers-'));try {
+  const bundle=join(dir,'bundle.mjs');
+  const source=`export async function run(o){o.onState({turn:100});o.onSave?.('birth',{fixture:true});o.onSave?.('final',{fixture:true});return {outcome:o.class==='Warrior'?'death':'turn_cap',turn:o.turns,level:1,maxDepth:1,causeOfDeath:o.class==='Warrior'?'a rat':null,birth:{race:o.race,class:o.class}}}`;
+  writeFileSync(bundle,source);
+  writeFileSync(join(dir,'build.json'),JSON.stringify({contentFiles:{},exactTickCap:true,cSeedStartup:true,cGccCoordinateOrder:true,bundleSha256:createHash('sha256').update(source).digest('hex'),engine:{commit:'a'.repeat(40)},borg:{commit:'b'.repeat(40),manifest:{data:{}}},appliedPatches:[]}));
+  const out=join(dir,'results');
+  const child=spawnSync(process.execPath,[new URL('./experiment.mjs',import.meta.url).pathname,'--bundle',bundle,'--games','3','--max-ticks','100','--workers','2','--save-games','true','--out',out],{encoding:'utf8',timeout:10000});
+  assert.equal(child.status,0,child.stderr);
+  const report=JSON.parse(readFileSync(join(out,'report/report.json')));
+  assert.equal(report.assigned,3);assert.equal(report.recorded,3);assert.deepEqual(report.counts,{death:1,turn_cap:2});
+  for(const c of report.cells){const evidence=join(out,'runs',c.evidencePath);assert.equal(JSON.parse(readFileSync(join(evidence,'birth.save.json'))).fixture,true);assert.equal(JSON.parse(readFileSync(join(evidence,'final.save.json'))).fixture,true);}
  } finally {rmSync(dir,{recursive:true,force:true});}
 });
