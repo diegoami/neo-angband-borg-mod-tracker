@@ -29,6 +29,8 @@ const args = Object.fromEntries(
 );
 for (const name of ["engine-dir", "borg-dir", "out"])
 	if (!args[name]) throw new Error("Missing --" + name);
+if (args["c-gcc-coordinate-order"] === "true" && args["c-seed-startup"] !== "true")
+	throw new Error("GCC coordinate adapter requires C seeded startup");
 const pins = {
 	engine: args["engine-pin"],
 	borg: args["borg-pin"],
@@ -81,12 +83,14 @@ cpSync(join(tool, "pack.ts"), join(out, "pack.ts"));
 cpSync(join(tool, "message-host.mjs"), join(out, "message-host.mjs"));
 mkdirSync(join(out, "alignment"));
 cpSync(join(tool, "alignment/profile.mjs"), join(out, "alignment/profile.mjs"));
+cpSync(join(tool, "alignment/seed-startup.mjs"), join(out, "alignment/seed-startup.mjs"));
 let exactTickSites = 0;
+const startupSites = { birth: 0, borg: 0, gcc: 0 };
 await build({
 	configFile: false,
-	// Optional read-only probes in the compiled Core copy; source stays pristine.
-	plugins: (args["alignment-probes"] === "true" || args["exact-tick-cap"] === "true") ? [{
-		name: "read-only-birth-observations",
+	// FORK: opt-in observers and explicit C startup/compiler adapters in the bundle.
+	plugins: (args["alignment-probes"] === "true" || args["exact-tick-cap"] === "true" || args["c-seed-startup"] === "true") ? [{
+		name: "explicit-c-startup-and-observations",
 		transform(code, id) {
 			if (id === engine + "/packages/core/dist/game/loop.js" && args["exact-tick-cap"] === "true") {
 				const needle = "state.turn++;";
@@ -94,7 +98,50 @@ await build({
 				exactTickSites++;
 				return code.replace(needle, needle + " globalThis.__alignmentTickCap?.(state);");
 			}
-			if (args["alignment-probes"] !== "true") return;
+			if (id === engine + "/packages/core/dist/store/store.js" && args["c-seed-startup"] === "true") {
+				const start = code.indexOf("function storeReset(ctx)");
+				const end = code.indexOf("\n}", start) + 2;
+				if (start < 0 || end < start) throw new Error("Missing store reset probe site");
+				let part = code.slice(start,end);
+				part = part.replace("for (const store of ctx.stores) {", "for (const [i, store] of ctx.stores.entries()) { globalThis.__observeBirthRng?.(`store-${i}-owner-before`,ctx.rng);");
+				part = part.replace("store.owner = storeChooseOwner(ctx.rng, store);", "store.owner = storeChooseOwner(ctx.rng, store); globalThis.__observeBirthRng?.(`store-${i}-owner-after`,ctx.rng);");
+				part = part.replace(/for \(let j = 0; j < 10; j\+\+\)\s*storeMaint\(ctx, store\);/, "for (let j = 0; j < 10; j++) { globalThis.__observeBirthRng?.(`store-${i}-maint-${j}-before`,ctx.rng); storeMaint(ctx,store); globalThis.__observeBirthRng?.(`store-${i}-maint-${j}-after`,ctx.rng); }");
+				return code.slice(0,start)+part+code.slice(end);
+			}
+			if (id === engine + "/packages/core/dist/session/game.js" && args["c-seed-startup"] === "true") {
+				code = code.replace("earlyStores = createTownStores(", "globalThis.__observeBirthRng?.('stores-before',mainRng); earlyStores = createTownStores(");
+				code = code.replace("let resolved = false;", "globalThis.__observeBirthRng?.('stores-after',mainRng); let resolved = false;");
+				code = code.replace("const booted = bootLevel(pack,", "globalThis.__observeBirthRng?.('outfit-after',mainRng); const booted = bootLevel(pack,");
+				return code;
+			}
+			if (id === engine + "/packages/core/dist/gen/cave.js" && args["c-seed-startup"] === "true") {
+				const needle = "function townGenLayout(g) {";
+				if (!code.includes(needle)) throw new Error("Missing town layout probe site");
+				code = code.replace(needle, needle + " globalThis.__observeBirthRng?.('town-before',g.rng);");
+                const stream = /for \(let n = 0; n < 3 \+ numLava; n\+\+\)\s*buildStreamer\(g, FEAT.LAVA, 0\);/;
+                if (!stream.test(code)) throw new Error("Missing town streamer probe site");
+                code = code.replace(stream, "for (let n=0;n<3+numLava;n++) { globalThis.__observeBirthRng?.(`town-stream-${n}-before`,g.rng); buildStreamer(g,FEAT.LAVA,0); globalThis.__observeBirthRng?.(`town-stream-${n}-after`,g.rng); }");
+                if (args["c-gcc-coordinate-order"] === "true") {
+                    const old = "let grid = loc(g.rng.randSpread(Math.trunc(c.width / 2), 15), g.rng.randSpread(Math.trunc(c.height / 2), 10));";
+                    if (code.split(old).length !== 2) throw new Error("Missing unique streamer rand_loc site");
+                    startupSites.gcc++;
+                    code = code.replace(old, "const gccY = g.rng.randSpread(Math.trunc(c.height / 2), 10); let grid = loc(g.rng.randSpread(Math.trunc(c.width / 2), 15), gccY);");
+                }
+                return code;
+			}
+			if (id === engine + "/packages/core/dist/gen/util.js" && args["c-gcc-coordinate-order"] === "true") {
+                const old = "const grid = loc(g.rng.randint0(c.width), g.rng.randint0(c.height));";
+                if (code.split(old).length !== 2) throw new Error("Missing unique distant monster coordinate site");
+                startupSites.gcc++;
+                return code.replace(old, "const gccY = g.rng.randint0(c.height); const grid = loc(g.rng.randint0(c.width), gccY);");
+            }
+			if (id === borg + "/plugin.ts" && args["c-seed-startup"] === "true") {
+				const needle = /createBorg\(\{\s*resolvers:/;
+				if (!needle.test(code)) throw new Error("Missing Borg construction site");
+				startupSites.borg++;
+				return code.replace(needle, "createBorg({ rngSeed: globalThis.__cSeedBorg?.(), resolvers:");
+			}
+			if (args["alignment-probes"] !== "true" && args["c-seed-startup"] !== "true") return;
 			if (id !== engine + "/packages/core/dist/player/birth.js") return;
 			for (const [needle, tag] of [
 				["rollHp(player, rng);", "hp"],
@@ -103,6 +150,11 @@ await build({
 			]) {
 				if (!code.includes(needle)) throw new Error("Missing alignment probe site: " + needle);
 				code = code.replace(needle, `globalThis.__observeBirthRng?.('${tag}-before',rng); ${needle} globalThis.__observeBirthRng?.('${tag}-after',rng);`);
+			}
+			if (args["c-seed-startup"] === "true") {
+				startupSites.birth++;
+				code = code.replace("const ahw = rollAhw(race, rng);", "const ahw = globalThis.__cSeedBirth?.ahw ?? rollAhw(race, rng);");
+				code = code.replace("const rolledHistory = generateHistory(options.historyChart, rng);", "const rolledHistory = globalThis.__cSeedBirth?.history ?? generateHistory(options.historyChart, rng);");
 			}
 			return code;
 		},
@@ -147,6 +199,10 @@ await build({
 });
 
 if (args["exact-tick-cap"] === "true" && exactTickSites !== 1) throw new Error("Exact tick observer was not installed");
+if (args["c-seed-startup"] === "true" && (startupSites.birth !== 1 || startupSites.borg !== 1))
+	throw new Error("C startup adapters were not installed exactly once");
+if (args["c-gcc-coordinate-order"] === "true" && startupSites.gcc !== 2)
+	throw new Error("GCC coordinate adapter was not installed exactly once");
 
 cpSync(join(engine, "packages/content/pack"), join(out, "pack"), {
 	recursive: true,
@@ -167,6 +223,8 @@ writeFileSync(
 			schema: "neo-original-build@1",
 			alignmentProbes: args["alignment-probes"] === "true",
 			exactTickCap: args["exact-tick-cap"] === "true",
+			cSeedStartup: args["c-seed-startup"] === "true",
+			cGccCoordinateOrder: args["c-gcc-coordinate-order"] === "true",
 			versions: Object.fromEntries(
 				["core", "content", "mod-sdk"].map((n) => [
 					n,
@@ -177,7 +235,10 @@ writeFileSync(
 					).version,
 				]),
 			),
-			appliedPatches: [],
+			appliedPatches: [
+				...(args["c-seed-startup"] === "true" ? ["c-native-menu-birth-and-borg-startup-v2"] : []),
+				...(args["c-gcc-coordinate-order"] === "true" ? ["gcc14-native-rand-loc-y-before-x"] : []),
+			],
 			lockSha256: sha(join(engine, "pnpm-lock.yaml")),
 			engine: {
 				repository: "neostryder/neo-angband",
@@ -225,7 +286,7 @@ writeFileSync(
 					.map((f) => [f, sha(join(out, "pack", f))]),
 			),
 			toolSha256: Object.fromEntries(
-				["session.ts", "pack.ts", "message-host.mjs", "build.mjs", "run.mjs", "alignment/profile.mjs"].map((f) => [
+				["session.ts", "pack.ts", "message-host.mjs", "build.mjs", "run.mjs", "alignment/profile.mjs", "alignment/seed-startup.mjs"].map((f) => [
 					f,
 					sha(join(tool, f)),
 				]),

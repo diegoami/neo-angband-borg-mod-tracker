@@ -29,6 +29,7 @@ import { borgCfg, buffTimerSafetyNetEnabled } from "BORG/src/trait/config.ts";
 import { loadPack } from "./pack.ts";
 import { installMessageHost } from "./message-host.mjs";
 import { alignedBirth, C_POINT_BUY_PROFILE } from "./alignment/profile.mjs";
+import { nativeMenuBirth, C_SEEDED_PROFILE_ID } from "./alignment/seed-startup.mjs";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
@@ -54,7 +55,15 @@ export async function run(o: any) {
 			rngObservations.push({ stage, ...rng.getState() });
 		(globalThis as any).__observeBirthRng("seeded", alignmentRng);
 	}
-	const game = core.startGame(pack, {
+	const seededStartup = o.birthProfile === C_SEEDED_PROFILE_ID;
+	if (seededStartup) {
+		if (!o.cSeedStartup) throw new Error("Seeded birth requires compiled C startup adapter");
+		(globalThis as any).__cSeedBirth = nativeMenuBirth(core, pack, alignmentRng, o.race,
+			(globalThis as any).__observeBirthRng);
+	}
+	let game: ReturnType<typeof core.startGame>;
+	try {
+	game = core.startGame(pack, {
 			...birthInputs,
 			...(alignmentRng ? { rng: alignmentRng } : {}),
 			seed: o.seed,
@@ -62,6 +71,9 @@ export async function run(o: any) {
 			...(o.race ? { raceName: o.race } : {}),
 			...(o.class ? { className: o.class } : {}),
 		});
+	} finally {
+		if (seededStartup) delete (globalThis as any).__cSeedBirth;
+	}
 	const state = game.state,
 		p = state.actor.player;
 	if (o.race && p.race.name !== o.race)
@@ -291,7 +303,7 @@ export async function run(o: any) {
 		for (let y = 0; y < state.chunk.height; y++)
 			for (let x = 0; x < state.chunk.width; x++)
 				terrain.push(state.chunk.feat({ x, y }));
-		o.onState({ kind: "alignment", profile: C_POINT_BUY_PROFILE.id, birth,
+		o.onState({ kind: "alignment", profile: o.birthProfile, birth,
 			options: state.options.snapshot(), rngObservations,
 			worldRng: alignmentRng.getState(),
 			terrain: { height: state.chunk.height, width: state.chunk.width, terrain } });
@@ -336,6 +348,12 @@ export async function run(o: any) {
 			state.options.set(name, value);
 	// Same observer boundary as native measure_tick: immediately after turn++.
 	// Unwind only this isolated measurement, without changing live game state.
+	let seededBorgSeed: number | null = null;
+	if (seededStartup) (globalThis as any).__cSeedBorg = () => {
+		if (seededBorgSeed !== null) throw new Error("Duplicate seeded Borg construction");
+		seededBorgSeed = alignmentRng!.randint1(0x10000000);
+		return seededBorgSeed;
+	};
 	const capStop = {};
 	if (o.birthProfile && o.exactTickCap)
 		(globalThis as any).__alignmentTickCap = (current: any) => {
@@ -360,7 +378,7 @@ export async function run(o: any) {
 		);
 		if (failure) throw new Error(failure);
 		o.onState(snapshot("birth"));
-		if (o.birthProfile) o.onState({ kind: "alignment-active", options: state.options.snapshot() });
+		if (o.birthProfile) o.onState({ kind: "alignment-active", options: state.options.snapshot(), seededBorgSeed, worldRng: alignmentRng!.getState() });
 		while (
 			loopCalls < o.decisions &&
 			state.turn < o.turns &&
@@ -428,6 +446,7 @@ export async function run(o: any) {
 	} catch (e) {
 		error = String((e as Error).stack ?? e);
 	} finally {
+		if (seededStartup) delete (globalThis as any).__cSeedBorg;
 		if (o.birthProfile && o.exactTickCap) delete (globalThis as any).__alignmentTickCap;
 		if (started) await definition.stop?.();
 		disposeApi2Host(mod);

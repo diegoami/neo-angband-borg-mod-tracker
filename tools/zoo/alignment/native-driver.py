@@ -112,6 +112,40 @@ def main():
             assert t.count(old) == 1, (old, t.count(old))
             t = t.replace(old, new)
         f.write_text(t)
+        store = source / "src/store.c"
+        text = store.read_text()
+        begin = text.index("void store_reset(void)")
+        end = text.index("struct init_module store_module", begin)
+        part = text[begin:end]
+        part = part.replace(
+            "\t\tstore_shuffle(s);",
+            '\t\tmeasure_alignment(format("store-%d-owner-before",i));\n\t\tstore_shuffle(s);\n\t\tmeasure_alignment(format("store-%d-owner-after",i));',
+        )
+        part = part.replace(
+            "\t\tfor (j = 0; j < 10; j++)\n\t\t\tstore_maint(s);",
+            '\t\tfor (j = 0; j < 10; j++) {\n\t\t\tmeasure_alignment(format("store-%d-maint-%d-before",i,j));\n\t\t\tstore_maint(s);\n\t\t\tmeasure_alignment(format("store-%d-maint-%d-after",i,j));\n\t\t}',
+        )
+        assert part != text[begin:end]
+        store.write_text(
+            '#include "native-observer.h"\n' + text[:begin] + part + text[end:]
+        )
+        gen = source / "src/gen-cave.c"
+        text = gen.read_text()
+        needle = "int num_lava = 3 + randint0(3);"
+        assert text.count(needle) == 1
+        text = text.replace(
+            needle,
+            'int num_lava = (measure_alignment("town-before"), 3 + randint0(3));',
+        )
+        old = (
+            "for (n = 0; n < 3 + num_lava; n++)\n\t\t\tbuild_streamer(c, FEAT_LAVA, 0);"
+        )
+        assert text.count(old) == 1
+        text = text.replace(
+            old,
+            'for (n = 0; n < 3 + num_lava; n++) {\nmeasure_alignment(format("town-stream-%d-before",n));\nbuild_streamer(c, FEAT_LAVA, 0);\nmeasure_alignment(format("town-stream-%d-after",n));\n}',
+        )
+        gen.write_text('#include "native-observer.h"\n' + text)
 
     r.named_play_bridge = instrument
     if a.action == "build":
