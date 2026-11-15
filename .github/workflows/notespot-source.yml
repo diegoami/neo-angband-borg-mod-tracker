@@ -18,3 +18,27 @@ jobs:
           node-version: 26.13.0
       - run: bash tools/build-notespot-artifacts.sh engine-source "$RUNNER_TEMP/engine-artifacts"
       - run: node tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"
+  zoo-truth-host:
+    # The measured engine has the durable monster-truth gate; legacy06a does not.
+    if: github.repository == 'diegoami/neo-angband-borg-mod-tracker'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: diegoami/neo-angband-tracker
+          ref: b4af703493d314aa35cb719604f06103aa4918f4
+          path: measurement-engine
+      - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: measurement-engine/package.json
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26.13.0
+      - working-directory: measurement-engine
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+        run: pnpm install --frozen-lockfile
+      - working-directory: measurement-engine
+        run: pnpm exec tsc -b packages/core packages/content packages/mod-sdk
+      - run: node tools/zoo/truth-host-engine-checks.mjs measurement-engine
