@@ -1,0 +1,117 @@
+# FORK: bounded, observable headless runs. No production deployment or C parity claim.
+name: Headless Borg death reports
+on: {"pull_request":{"paths":["src/**","plugin.ts","tools/zoo/**",".github/workflows/headless.yml"]},"workflow_dispatch":{"inputs":{"suite":{"description":"Frozen suite (18 short games or 90-game death survey)","type":"choice","options":["smoke-v1","death-survey-v1"],"default":"smoke-v1"},"issue":{"description":"Optional existing issue number for a durable summary (default-branch dispatch only)","type":"string","default":""}}}}
+permissions:
+  contents: read
+concurrency:
+  group: headless-${{ github.event.pull_request.number || github.ref }}-${{ inputs.suite || 'smoke-v1' }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      suite: ${{ steps.config.outputs.suite }}
+      engine_repo: ${{ steps.config.outputs.repository }}
+      engine_ref: ${{ steps.config.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v7
+        with: {path: borg, persist-credentials: false}
+      - uses: actions/setup-node@v7
+        with: {node-version: 26}
+      - id: config
+        env:
+          SUITE: ${{ inputs.suite || 'smoke-v1' }}
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync,appendFileSync } from 'node:fs';
+          const suite=process.env.SUITE;
+          if(!['smoke-v1','death-survey-v1'].includes(suite))throw Error('Unknown suite');
+          const c=JSON.parse(readFileSync('borg/tools/zoo/ci/engine.json','utf8'));
+          if(!/^[-\w]+\/[-\w.]+$/.test(c.repository)||!/^[a-f0-9]{40}$/.test(c.commit))throw Error('Invalid immutable engine pin');
+          appendFileSync(process.env.GITHUB_OUTPUT,`suite=${suite}\nrepository=${c.repository}\ncommit=${c.commit}\n`);
+          JS
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ steps.config.outputs.repository }}
+          ref: ${{ steps.config.outputs.commit }}
+          path: engine
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6
+        with: {version: '12.3.4'}
+      - name: Test report accounting
+        run: node --test borg/tools/zoo/ci/*-checks.mjs
+      - name: Build pinned engine
+        working-directory: engine
+        env: {CI: '1', ELECTRON_SKIP_BINARY_DOWNLOAD: '1'}
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec tsc -b packages/core packages/content packages/mod-sdk
+      - name: Build measured Borg from this exact checkout
+        run: |
+          node borg/tools/zoo/build.mjs --engine-dir engine --borg-dir borg --out build --exact-tick-cap true --c-seed-startup true --c-gcc-coordinate-order true
+          tar -czf build.tgz build
+      - uses: actions/upload-artifact@v5
+        with: {name: headless-build, path: build.tgz, retention-days: 90}
+  run:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ needs.build.outputs.suite == 'death-survey-v1' && 240 || 15 }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: {shard: [0, 1, 2, 3]}
+    steps:
+      - uses: actions/checkout@v7
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v7
+        with: {node-version: 26}
+      - uses: actions/download-artifact@v5
+        with: {name: headless-build}
+      - run: tar -xzf build.tgz
+      - name: Play assigned births with per-game watchdogs
+        env:
+          SUITE: ${{ needs.build.outputs.suite }}
+          SHARD: ${{ matrix.shard }}
+        run: node tools/zoo/ci/run.mjs --bundle build/bundle.mjs --suite "tools/zoo/ci/suites/$SUITE.json" --shard "$SHARD" --shards 4 --out cells
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: headless-cells-${{ matrix.shard }}
+          path: cells/
+          retention-days: 90
+          if-no-files-found: error
+  report:
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
+    needs: [build, run]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v7
+        with: {node-version: 26}
+      - uses: actions/download-artifact@v5
+        with: {pattern: headless-cells-*, path: runs}
+      - name: Account for every assignment and produce death narratives
+        env:
+          SUITE: ${{ needs.build.outputs.suite }}
+        run: node tools/zoo/ci/report.mjs --suite "tools/zoo/ci/suites/$SUITE.json" --runs runs --out report
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with: {name: headless-death-report, path: report/, retention-days: 90, if-no-files-found: error}
+  publish:
+    if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.issue != '' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+    needs: report
+    runs-on: ubuntu-latest
+    permissions: {contents: read, issues: write}
+    steps:
+      - uses: actions/checkout@v7
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v7
+        with: {node-version: 26}
+      - uses: actions/download-artifact@v5
+        with: {name: headless-death-report, path: report}
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPORT_ISSUE: ${{ inputs.issue }}
+        run: node tools/zoo/ci/publish.mjs
