@@ -5,7 +5,9 @@ import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawn } from 'node:child_process';
 import { classes, races, loadSuite } from './ci/suite.mjs';
-import { aggregate, render, portableReport } from './ci/report.mjs';
+import { aggregate } from './ci/report.mjs';
+import { writeReport } from './report.mjs';
+import { autoServe,serveReport } from './serve-report.mjs';
 
 const tool = dirname(fileURLToPath(import.meta.url));
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -14,12 +16,13 @@ const usage = `Usage: node tools/zoo/experiment.mjs --bundle BUILD/bundle.mjs --
   [--seed 3000] [--race Human] [--class Warrior] [--save-games true]
   [--birth-profile c-seeded-point-buy-v2|ordinary-rolled-v1]
   [--suite tools/zoo/ci/suites/classes-1800.json] [--plan-only]
+  [--record true] [--serve true|false] [--open false] [--port N]
 
 The output directory must be new. A frozen suite supplies assigned seeds/births;
 --games selects its first N games. Overrides create a distinct saved plan.
 The bundle's startup adapters must match the selected birth profile.
 `;
-const allowed = new Set(['bundle','out','games','max-ticks','wall-seconds','workers','seed','race','class','save-games','birth-profile','suite']);
+const allowed = new Set(['bundle','out','games','max-ticks','wall-seconds','workers','seed','race','class','save-games','birth-profile','suite','serve','open','port','record']);
 export function parseArgs(argv) {
   const args = {};
   for (let i = 0; i < argv.length; i++) {
@@ -45,6 +48,7 @@ export function makePlan(args) {
   if (args.race && !races.includes(args.race)) throw Error('Unknown race');
   if (args.class && !classes.includes(args.class)) throw Error('Unknown class');
   if (args['save-games'] !== undefined && !['true','false'].includes(args['save-games'])) throw Error('Invalid --save-games');
+  if(args.record!==undefined&&!['true','false'].includes(args.record))throw Error('Invalid --record');
   const cases = source ? source.cases.slice(0,count) : Array.from({length:count}, (_,i) => ({
     seed: Number(BigInt('0x'+hash(`neo-experiment:${seed}:${i}`).slice(0,16)) % 4294967296n),
     race: args.race ?? races[Math.floor(i/classes.length)%races.length],
@@ -56,6 +60,7 @@ export function makePlan(args) {
     turns: integer(args['max-ticks'], source?.turns ?? 5000, 1, 200000, 'max-ticks'),
     wallSeconds: integer(args['wall-seconds'], source?.wallSeconds ?? 120, 1, 3600, 'wall-seconds'),
     saveGames: args['save-games'] === 'true',
+    record: args.record==='true',
     cases: cases.map(({seed,race,class:cls}) => ({seed,race,class:cls})),
   };
   if (!['ordinary-rolled-v1','c-seeded-point-buy-v2'].includes(suite.birthProfile)) throw Error('Unknown birth profile');
@@ -65,16 +70,18 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) { console.log(usage); return; }
   if (!args.out || (!args.bundle && !args.planOnly)) throw Error(usage);
+  const serve=autoServe(args);
   const plan = makePlan(args), out = resolve(args.out);
   // Fail before launching anything if an existing directory could be overwritten.
   mkdirSync(out, {recursive:false});
   const suiteFile = join(out,'suite.json');
   writeFileSync(suiteFile, JSON.stringify(plan.suite,null,2)+'\n', {flag:'wx'});
   const suite = loadSuite(suiteFile);
-  const manifest = {schema:'neo-experiment@1', startedAt:new Date().toISOString(),
+  const manifest = {schema:'neo-experiment@1', startedAt:new Date().toISOString(), cwd:process.cwd(),
+    locations:{bundle:args.bundle?resolve(args.bundle):null,tools:resolve(tool,'../..')},
     argv:process.argv.slice(2), node:process.version, platform:process.platform,
     suiteSha256:hash(readFileSync(suiteFile)), sourceSuite:plan.sourceSuite,
-    workers:plan.workers, toolingSha256:Object.fromEntries(['experiment.mjs','ci/run.mjs','ci/suite.mjs','ci/report.mjs','run.mjs'].map(file=>[file,hash(readFileSync(join(tool,file)))])), build:args.bundle ? JSON.parse(readFileSync(join(dirname(resolve(args.bundle)),'build.json'),'utf8')) : null};
+    workers:plan.workers, toolingSha256:Object.fromEntries(['experiment.mjs','ci/run.mjs','ci/suite.mjs','ci/report.mjs','run.mjs','report.mjs','replay-paths.mjs','source-integrity.mjs','serve-report.mjs'].map(file=>[file,hash(readFileSync(join(tool,file)))])), build:args.bundle ? JSON.parse(readFileSync(join(dirname(resolve(args.bundle)),'build.json'),'utf8')) : null};
   writeFileSync(join(out,'experiment.json'), JSON.stringify(manifest,null,2)+'\n',{flag:'wx'});
   if (args.planOnly) { console.log(`Saved ${suite.cases.length}-game plan: ${suiteFile}`); return; }
   const runs = join(out,'runs'); mkdirSync(runs);
@@ -91,10 +98,10 @@ async function main() {
     catch { /* aggregate accounts for every missing assignment. */ }
   }
   const report=aggregate(suite,rows); report.execution=results;
-  const reportDir=join(out,'report'); mkdirSync(reportDir);
-  writeFileSync(join(reportDir,'report.json'),JSON.stringify(portableReport(report,runs),null,2)+'\n');
-  writeFileSync(join(reportDir,'report.md'),render(report));
+  const reportDir=join(out,'report');
+  writeReport(report,{out:reportDir,runsRoot:runs,experimentRoot:out,portable:!!process.env.CI});
   console.log(`Report: ${join(reportDir,'report.md')}\n${JSON.stringify(report.counts)}`);
   if (report.errors.length || report.recorded!==report.assigned || results.some(r=>r.code!==0) || ['harness_failure','config_error','wall_timeout'].some(k=>report.counts[k])) process.exitCode=1;
+  if(serve)await serveReport({dir:reportDir,experiment:out,port:Number(args.port??0),openBrowser:args.open!=='false'});
 }
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href===import.meta.url) main().catch(error=>{console.error(error.message);process.exitCode=1;});

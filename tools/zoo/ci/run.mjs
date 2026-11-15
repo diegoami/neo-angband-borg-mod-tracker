@@ -13,6 +13,7 @@ const rows=[];
 for(const c of shardCases(suite,Number(a.shard),Number(a.shards))){
  const dir=join(out,c.id);mkdirSync(dir);const stdout=openSync(join(dir,'stdout.log'),'wx'),stderr=openSync(join(dir,'stderr.log'),'wx');
  const argv=[fileURLToPath(new URL('../run.mjs',import.meta.url)),'--bundle',bundle,'--seed',String(c.seed),'--race',c.race,'--class',c.class,...(aligned?['--birth-profile',suite.birthProfile]:[]),'--turns',String(suite.turns),'--out',join(dir,'run')];
+ if(suite.record===true)argv.push('--record','true');
  if(suite.saveGames===true)argv.push('--save-games','true');
  const start=performance.now();let child;
  try{child=spawnSync(process.execPath,argv,{timeout:suite.wallSeconds*1000,killSignal:'SIGKILL',stdio:['ignore',stdout,stderr]});}finally{closeSync(stdout);closeSync(stderr);}
