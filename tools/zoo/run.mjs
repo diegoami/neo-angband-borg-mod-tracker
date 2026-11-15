@@ -34,6 +34,7 @@ const build = JSON.parse(readFileSync(join(dirname(bundle), "build.json")));
 const states = openSync(join(out, "states.jsonl"), "wx"),
 	commands = openSync(join(out, "commands.jsonl"), "wx");
 const messageFile = openSync(join(out, "messages.jsonl"), "wx");
+const observations = openSync(join(out, "observations.jsonl"), "wx");
 const input = {
 	seed: Number(a.seed),
 	birthProfile: a["birth-profile"],
@@ -61,7 +62,8 @@ try {
 		cSeedStartup: build.cSeedStartup === true,
 		packDir: join(dirname(bundle), "pack"),
 		manifest: build.borg.manifest.data,
-		onSave: a['save-games'] === 'true' ? (stage, save) => writeFileSync(join(out, stage + '.save.json'), JSON.stringify(save) + '\n', { flag: 'wx' }) : undefined,
+		onObservation: (r) => { writeSync(observations, JSON.stringify(r) + "\n"); if (a.watch === 'true') process.stdout.write(JSON.stringify({frame:r}) + "\n"); },
+        onSave: a['save-games'] === 'true' ? (stage, save) => writeFileSync(join(out, stage + '.save.json'), JSON.stringify(save) + '\n', { flag: 'wx' }) : undefined,
 		onState: (r) => writeSync(states, JSON.stringify(r) + "\n"),
 		onCommand: (r) => writeSync(commands, r),
 		onMessage: (r) => writeSync(messageFile, JSON.stringify(r) + "\n"),
@@ -82,7 +84,8 @@ record = {
 	wallSeconds: (performance.now() - started) / 1000,
 };
 writeFileSync(join(out, "run.json"), JSON.stringify(record, null, 2) + "\n");
-for (const fd of [states, commands, messageFile]) closeSync(fd);
+if (a.watch === 'true' && record.finalKnownWorld) process.stdout.write(JSON.stringify({frame:{...record.finalKnownWorld,turn:record.turn,kind:"final"}})+"\n");
+for (const fd of [states, commands, messageFile, observations]) closeSync(fd);
 
 console.log(
 	JSON.stringify({

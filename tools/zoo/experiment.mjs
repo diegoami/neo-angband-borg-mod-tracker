@@ -5,7 +5,8 @@ import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawn } from 'node:child_process';
 import { classes, races, loadSuite } from './ci/suite.mjs';
-import { aggregate, render, portableReport } from './ci/report.mjs';
+import { aggregate } from './ci/report.mjs';
+import { writeReport } from './report.mjs';
 
 const tool = dirname(fileURLToPath(import.meta.url));
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -74,7 +75,7 @@ async function main() {
   const manifest = {schema:'neo-experiment@1', startedAt:new Date().toISOString(),
     argv:process.argv.slice(2), node:process.version, platform:process.platform,
     suiteSha256:hash(readFileSync(suiteFile)), sourceSuite:plan.sourceSuite,
-    workers:plan.workers, toolingSha256:Object.fromEntries(['experiment.mjs','ci/run.mjs','ci/suite.mjs','ci/report.mjs','run.mjs'].map(file=>[file,hash(readFileSync(join(tool,file)))])), build:args.bundle ? JSON.parse(readFileSync(join(dirname(resolve(args.bundle)),'build.json'),'utf8')) : null};
+    workers:plan.workers, toolingSha256:Object.fromEntries(['experiment.mjs','ci/run.mjs','ci/suite.mjs','ci/report.mjs','run.mjs','report.mjs'].map(file=>[file,hash(readFileSync(join(tool,file)))])), build:args.bundle ? JSON.parse(readFileSync(join(dirname(resolve(args.bundle)),'build.json'),'utf8')) : null};
   writeFileSync(join(out,'experiment.json'), JSON.stringify(manifest,null,2)+'\n',{flag:'wx'});
   if (args.planOnly) { console.log(`Saved ${suite.cases.length}-game plan: ${suiteFile}`); return; }
   const runs = join(out,'runs'); mkdirSync(runs);
@@ -91,9 +92,8 @@ async function main() {
     catch { /* aggregate accounts for every missing assignment. */ }
   }
   const report=aggregate(suite,rows); report.execution=results;
-  const reportDir=join(out,'report'); mkdirSync(reportDir);
-  writeFileSync(join(reportDir,'report.json'),JSON.stringify(portableReport(report,runs),null,2)+'\n');
-  writeFileSync(join(reportDir,'report.md'),render(report));
+  const reportDir=join(out,'report');
+  writeReport(report,{out:reportDir,runsRoot:runs,experimentRoot:out});
   console.log(`Report: ${join(reportDir,'report.md')}\n${JSON.stringify(report.counts)}`);
   if (report.errors.length || report.recorded!==report.assigned || results.some(r=>r.code!==0) || ['harness_failure','config_error','wall_timeout'].some(k=>report.counts[k])) process.exitCode=1;
 }

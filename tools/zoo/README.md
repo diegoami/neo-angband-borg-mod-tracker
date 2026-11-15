@@ -151,3 +151,68 @@ assignments and CLI argument/output preservation. `pnpm verify` keeps the normal
 Borg typecheck/test/plugin gate. A separate workflow runs these harness controls
 on PRs and offers manually requested headless runs with retained artifacts.
 There is no scheduled cohort, write token or automatic issue publication.
+
+## Cemetery-style reports and replay
+
+Each new experiment also writes `report/index.html` and a death registry. Open
+that HTML file directly in your browser. Filter by seed, race, class or cause;
+each death links to a chronological account, inventory/equipment/learned-spell
+observations, a known-map diagram, source identities and replay commands. The
+Markdown landing page is `report/README.md`; raw evidence remains unchanged.
+
+Generate the same report for an **existing** experiment without rerunning games:
+
+```sh
+pnpm report --experiment /tmp/borg-experiment --out /tmp/borg-cemetery-report
+xdg-open /tmp/borg-cemetery-report/index.html
+```
+
+The output directory must be new. This works with earlier harness runs, including
+your completed 18-game smoke. Older traces have sparse state samples and final
+inventory; absent observations are explicitly unavailable. New bundles record
+known-state inventory, spells, nearby remembered terrain and HP/SP at least every
+100 ticks at a command boundary, plus health/resource/depth changes and endpoints.
+They do not record unlogged Borg thoughts or fabricate terminal screenshots.
+The episode boundary is the last sustained high-HP observation, with threat data
+explicitly unknown; it is a navigation heuristic, not proof of safety or cause.
+
+Every death report contains the exact numeric seed and these two commands,
+filled with that death's actual case ID and retained paths:
+
+```sh
+# Visible full-run replay in a local game viewer:
+pnpm replay --experiment /tmp/borg-experiment --case INDEX-SEED \
+  --bundle /tmp/borg-build/bundle.mjs --out /tmp/borg-visible-replay --mode watch
+# Launch the ordinary Neo browser game with the recorded seed:
+pnpm replay --experiment /tmp/borg-experiment --case INDEX-SEED \
+  --engine-dir ../engine --out /tmp/borg-game-launch --mode game
+```
+
+For visible replay, open the printed local URL and press **Start full replay**.
+The original engine/Borg bundle runs from birth. The viewer shows known-map and
+HP/SP/depth observations, and checks the complete command hash, birth metadata,
+settings, outcome and endpoint against the original. Only a matching completed
+run is labelled verified. For older bundles, a derived display-observer copy is
+made in the new output directory; the adapter and both bundle hashes are recorded,
+and the original stays untouched. A mismatch stays unverified. This is a live
+Core/Borg replay with a diagnostic map display, rather than Neo's normal UI.
+
+Normal-game mode checks the engine checkout's commit, starts its web frontend on
+localhost port 5187 (override with `--port`), and prints a seed URL. Open it in a
+browser, select the recorded race/class/birth/options, and install/enable the
+recorded Borg version. `launch.json` retains those settings and source pins.
+The ordinary UI does **not** apply the harness's C-startup/compiler adapters or
+private Borg RNG initialization; matching the seed alone is not a verified replay
+of the full trajectory. `--prepare-only true` writes the launch plan without
+starting the web server. Ctrl-C stops either local viewer/server. Nothing is
+published or installed into an existing game profile automatically.
+
+Snapshots retained with `--save-games true` are linked when present, but no
+near-boundary checkpoint or saved-position controller continuation is invented.
+Screenshots/GIF capture, human alternatives and shared-save candidate trials are
+not provided by this report generator. Replay runs are diagnostic continuations,
+not additional independent births in the death statistics.
+
+The report layout was informed by
+[borg-cemetery](https://github.com/diegoami/borg-cemetery), inspected at
+`42e0647fbbb08393b97128c78142c7759760fd9d`. This harness has no dependency on that repository or its Borgs.

@@ -331,7 +331,22 @@ export async function run(o: any) {
 			energy: state.actor.energy,
 		};
 	};
-	const observe = () => {
+	let lastObservationTurn = -Infinity, lastVitals = "";
+    const observeKnown = (kind: string, force = false) => {
+        if (!o.onObservation) return;
+        const vitals = JSON.stringify([p.chp, p.csp, state.chunk.depth]);
+        if (!force && state.turn < lastObservationTurn + 100 && vitals === lastVitals) return;
+        const known = core.buildKnownWorld(state, deps, grants);
+        const grid = known.player?.grid;
+        o.onObservation({ kind, turn: state.turn, player: known.player,
+            inventory: known.inventory, equipment: known.equipment, quiver: known.quiver,
+            spellbooks: known.spellbooks, monsters: known.monsters,
+            level: known.level && { ...known.level, cells: known.level.cells.filter((c: any) =>
+                grid && Math.abs(c.x-grid.x)<=12 && Math.abs(c.y-grid.y)<=12) } });
+        lastObservationTurn = state.turn; lastVitals = vitals;
+    };
+    const observe = () => {
+        observeKnown("decision-boundary");
 		const s = snapshot("periodic");
 		if (decisions >= lastPeriodic + 100) {
 			o.onState(s);
@@ -379,6 +394,7 @@ export async function run(o: any) {
 		);
 		if (failure) throw new Error(failure);
 		o.onState(snapshot("birth"));
+        observeKnown("birth", true);
 		if (o.birthProfile) o.onState({ kind: "alignment-active", options: state.options.snapshot(), seededBorgSeed, worldRng: alignmentRng!.getState() });
 		while (
 			loopCalls < o.decisions &&
@@ -452,6 +468,7 @@ export async function run(o: any) {
 		if (started) await definition.stop?.();
 		disposeApi2Host(mod);
 	}
+    observeKnown("final", true);
 	o.onSave?.('final', core.saveGame(game));
 	const finalKnownWorld = core.buildKnownWorld(state, deps, grants);
 	const stop = snapshot("stop");
