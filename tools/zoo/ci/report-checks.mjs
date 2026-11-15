@@ -16,7 +16,7 @@ test('duplicate and wrong-birth rows cannot create successful coverage',()=>{
 });
 test('death, timeout, stall and cap remain distinct with reproduction details',()=>{
  const rows=suite.cases.map(row);rows[1].outcome='wall_timeout';rows[2].outcome='stalled';rows[3].outcome='turn_cap';const r=aggregate(suite,rows);
- assert.equal(r.counts.death,15);assert.equal(r.counts.wall_timeout,1);assert.equal(r.counts.stalled,1);assert.equal(r.counts.turn_cap,1);const md=render(r);assert.match(md,/--seed 3000/);assert.match(md,/--birth-profile c-seeded-point-buy-v2/);assert.ok(!md.includes('<tag>'));
+ assert.equal(r.counts.death,15);assert.equal(r.counts.wall_timeout,1);assert.equal(r.counts.stalled,1);assert.equal(r.counts.turn_cap,1);const md=render(r);assert.match(md,/Profile: c-seeded-point-buy-v2; cap: 5000 game ticks/);assert.match(md,/--seed 3000/);assert.match(md,/--birth-profile c-seeded-point-buy-v2/);assert.ok(!md.includes('<tag>'));
 });
 
 test('exported reports use portable artifact-relative evidence paths',()=>{

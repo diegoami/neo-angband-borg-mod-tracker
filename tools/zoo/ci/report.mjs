@@ -14,7 +14,7 @@ export function portableReport(report,root){return {...report,cells:report.cells
 const escape=s=>String(s??'').replace(/[|<>`\r\n\[\]()*!_#@]/g,' ');
 function walk(dir){return readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):e.name==='cells.json'?[join(dir,e.name)]:[]);}
 export function render(report){
- let text=`# Headless Borg death report: ${report.suite.id}\n\nAssigned: ${report.assigned}; recorded: ${report.recorded}. Every assignment is counted.\n\n| Outcome | Count |\n| --- | ---: |\n`;
+ let text=`# Headless Borg death report: ${report.suite.id}\n\nAssigned: ${report.assigned}; recorded: ${report.recorded}. Every assignment is counted.\n\nProfile: ${report.suite.birthProfile}; cap: ${report.suite.turns} game ticks; per-game watchdog: ${report.suite.wallSeconds} seconds.\n\n| Outcome | Count |\n| --- | ---: |\n`;
  for(const [k,n] of Object.entries(report.counts))text+=`| ${escape(k)} | ${n} |\n`;
  text+='\n## Deaths\n\n| Seed | Race | Class | Turn | Level | Max depth | Cause |\n| --- | --- | --- | ---: | ---: | ---: | --- |\n';
  for(const c of report.cells.filter(c=>c.outcome==='death'))text+=`| ${c.seed} | ${c.race} | ${c.class} | ${c.turn} | ${c.level} | ${c.maxDepth} | ${escape(c.cause)} |\n`;
