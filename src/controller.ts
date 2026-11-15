@@ -31,11 +31,13 @@ import { borgUpdateMonsterFear } from "./danger/index.js";
 import { borgFollowMissingKills } from "./flow/index.js";
 import { borgTrackStep } from "./flow/flow.js";
 import { borgTrackStairs } from "./flow/flow-stairs.js";
+import { borgTrackShops } from "./flow/flow-misc.js";
 import { think } from "./think.js";
 import { borgNotice, borgPower, borgCfg, setBorgCfg, BI, type BorgCfg } from "./trait/index.js";
 import { getFightState } from "./fight/index.js";
 import type { BorgContext } from "./context.js";
 import { hostController } from "./core-api.js";
+import { contextSpellSeam } from "./trait/spell-seam.js";
 import {
   buildThinkSession,
   installThinkSession,
@@ -96,6 +98,11 @@ export function recallDepthAnswer(controller: AgentController): boolean {
   return CONTROLLER_WORLDS.get(controller)?.resetRecallDepth ?? false;
 }
 
+/** The item the controller's last command chose for its item prompt, if any. */
+export function itemChoiceAnswer(controller: AgentController): number | null {
+  return CONTROLLER_WORLDS.get(controller)?.itemChoice ?? null;
+}
+
 /**
  * Build a Borg. The returned controller is stateful (owns the world model,
  * perception memo, and wiring session), so build one Borg per game session.
@@ -131,20 +138,23 @@ export function createBorg(opts: BorgOptions = {}): Borg {
   let before = { lastGrid: session.lastGrid, arrival: session.arrivalPickup,
     rechargeRest: session.rechargeRest ?? false, ringTakeoff: session.ringTakeoff ?? false,
     panel: 0, store: false, resetLevel: world.resetLevel, junked: new Set(session.junked),
+    junkedIds: new Set(session.junkedIds),
     needAlter: false, noAlter: false };
 
   /* The host's view and actions arrive wrapped by the adapter (core-api.ts). */
   const controller: AgentController = hostController((view, act) => {
-    const ctx: BorgContext = { world, view, act, rng, bookKind: session.resolvers.bookKind, spellEffect: session.resolvers.spellEffect, frame: session.resolvers.frame };
+    const ctx: BorgContext = { world, view, act, rng, bookKind: session.resolvers.bookKind, spellEffect: session.resolvers.spellEffect, frame: session.resolvers.frame, spellSeam: (c) => contextSpellSeam(c, session.resolvers.resolveActivation) };
     const recordStep = !retry;
     retry = false;
     before = { lastGrid: session.lastGrid, arrival: session.arrivalPickup,
       rechargeRest: session.rechargeRest ?? false, ringTakeoff: session.ringTakeoff ?? false,
       panel: world.self.timeThisPanel, store: false, resetLevel: world.resetLevel, junked: new Set(session.junked),
+      junkedIds: new Set(session.junkedIds),
       needAlter: world.self.needAlter, noAlter: world.self.noAlter };
 
     /* Unknown recall effects keep the depth (borg-messages-react.c:229-242). */
     world.resetRecallDepth = false;
+    world.itemChoice = null;
 
     /* A store decision returns before borg_update (borg-think.c:324-369): the C notices
      * the character and scores the world, then runs the store ladder. The clocks, the
@@ -206,6 +216,7 @@ export function createBorg(opts: BorgOptions = {}): Borg {
       st.vein.wipe();
       /* Level updates clear purchase and sale records (borg-update.c:2040-2056). */
       const mem = session.storeMem;
+      mem.visited.clear();
       mem.soldNum = mem.boughtNum = 0;
       mem.soldNxt = mem.boughtNxt = 1;
       for (const records of [mem.soldTval, mem.soldSval, mem.soldPval, mem.soldStore,
@@ -215,6 +226,8 @@ export function createBorg(opts: BorgOptions = {}): Borg {
       }
       session.junked.clear();
       before.junked.clear();
+      /* junkedIds stays. It names one object for the rest of the session, and
+       * a kind key would refuse every later item of that kind. */
       before.panel = 0;
       before.resetLevel = false;
 
@@ -228,10 +241,12 @@ export function createBorg(opts: BorgOptions = {}): Borg {
     perceive(world, view, memo, tables, {
       kindCost: session.resolvers.kindCost,
       junked: session.junked,
+      junkedIds: session.junkedIds,
     }, (i) => session.resolvers.resolveMonsterFacts?.(ctx, i).dChar);
 
     /* borg-update.c:491-525 tracks newly known stairs on every decision. */
     borgTrackStairs(world, session.flow.state);
+    borgTrackShops(ctx, session.flow.state);
 
     /* borg-update.c:2466-2479 records after the map update. Loadout retries
      * share the decision's entry, matching one borg_update per dungeon decision
@@ -299,6 +314,8 @@ export function createBorg(opts: BorgOptions = {}): Borg {
     session.ringTakeoff = before.ringTakeoff;
     session.junked.clear();
     for (const key of before.junked) session.junked.add(key);
+    session.junkedIds.clear();
+    for (const id of before.junkedIds) session.junkedIds.add(id);
   };
 
   CONTROLLER_WORLDS.set(controller, world);

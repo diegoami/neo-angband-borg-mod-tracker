@@ -54,7 +54,7 @@ AI assistance is not a substitute for being able to explain what a change does, 
 
 Design decisions, compatibility decisions, gameplay decisions, balance decisions, release decisions, and exceptions to this mod's own established rules remain human responsibilities.
 
-Neo Angband's core stays a faithful reproduction of Angband 4.2.6, and this mod is an optional layer on top of it. Everything in the mod is off by default, and the core itself stays unedited.
+Neo Angband's core stays a faithful reproduction of Angband 4.2.6, and this mod is an optional layer on top of it. The mod starts without taking the keyboard, and it leaves the core unedited.
 
 ## Licensing and Provenance
 

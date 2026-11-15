@@ -50,7 +50,7 @@ export interface Goals {
   bestItems?: Array<{ tval: number; sval: number; pval: number; home: boolean } | null>;
 }
 
-/** A fresh, zeroed goal set. */
+/** A fresh goal set (borg_update, borg-update.c:2128). */
 export function makeGoals(): Goals {
   return {
     type: 0,
@@ -66,9 +66,9 @@ export function makeGoals(): Goals {
     waiting: false,
     recalling: 0,
     descending: 0,
-    shop: 0,
-    ware: 0,
-    item: 0,
+    shop: -1,
+    ware: -1,
+    item: -1,
     doBest: false,
   };
 }
@@ -260,7 +260,7 @@ export class BorgWorld {
   readonly kills = new BorgKills(this);
   readonly takes = new BorgTakes(this);
   /** borg-flow-kill.c:423-424 reads the flow queue when deleting a target. */
-  flowTarget?: { readonly flowX: ArrayLike<number>; readonly flowY: ArrayLike<number> };
+  flowTarget?: { readonly flowX: ArrayLike<number>; readonly flowY: ArrayLike<number>; borgDangerWipe?: boolean };
   /** borg_detect_wall/trap/door/evil/obj (borg-update.c:82-86). See world/panel.ts. */
   readonly detect = new BorgDetectGrid();
   readonly self = makeBorgSelf();
@@ -287,6 +287,17 @@ export class BorgWorld {
   liveUniques = 0;
   /** Recall queues its depth answer (borg-escape.c:63-115). */
   resetRecallDepth = false;
+  /**
+   * The item the Borg chose for an item-choice prompt its command will raise:
+   * borg_recharging presses the chosen wand's or staff's letter after the read,
+   * cast or activation (borg-item-use.c:1182). Null when there is none.
+   */
+  itemChoice: number | null = null;
+
+  /** borg_danger_wipe: lazily clear flow know/icky on the next flow build. */
+  invalidateDanger(): void {
+    if (this.flowTarget) this.flowTarget.borgDangerWipe = true;
+  }
 
   /**
    * Reset everything for a new level (borg_init_cave + the new-level branch of
@@ -305,6 +316,8 @@ export class BorgWorld {
    * it climb straight back up - a town/level-1 shuttle that never played a turn.
    */
   wipeLevel(depth: number): void {
+    /* borg-update.c:2087: old coordinate danger belongs to the old level. */
+    this.invalidateDanger();
     this.map.wipe();
     this.kills.wipe(false);
     this.takes.wipe(false);

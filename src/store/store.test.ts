@@ -130,10 +130,6 @@ function makeCtx(over: {
     }
   }
   world.self.power = over.power ?? 0;
-  /* the C convention: -1 means "no goal". */
-  world.self.goal.shop = -1;
-  world.self.goal.ware = -1;
-  world.self.goal.item = -1;
   const act = makeFakeActions();
   const ctx: BorgContext = { world, view, act, rng: makeBorgRng(1) };
   return { ctx, act };
@@ -452,6 +448,40 @@ describe("borgThinkHomeSellUseful", () => {
  * ------------------------------------------------------------------ */
 
 describe("borgChooseShop", () => {
+  it("starts without a ware goal and selects a known healing purchase", () => {
+    const { ctx } = makeCtx({
+      stores: [store(0, false, []), store(0, false, []), store(0, false, []),
+        store(0, false, [ware(4, { tval: TV.POTION, sval: SVAL.potion.cure_light, price: 15 })])],
+      traits: { [BI.GOLD]: 100, [BI.FOOD]: 5, [BI.LIGHT]: 2, [BI.CLEVEL]: 1 },
+    });
+    expect(borgChooseShop(ctx, { buyShopEval: () => 100 })).toBe(true);
+    expect(ctx.world.self.goal.shop).toBe(SHOP_TEMPLE);
+    expect(borgThinkShopBuy(ctx, SHOP_TEMPLE)?.code).toBe("shop-buy");
+  });
+
+  it("visits a known door before it can choose from unseen stock", () => {
+    const shops = [store(0, false, [])];
+    const { ctx } = makeCtx({ stores: shops,
+      traits: { [BI.GOLD]: 100, [BI.FOOD]: 5, [BI.LIGHT]: 2, [BI.CLEVEL]: 1 } });
+    const deps = { mem: createStoreMemory(), shopKnown: (i: number) => i === 0, buyShopEval: () => 100 };
+    expect(borgChooseShop(ctx, deps)).toBe(true);
+    expect(ctx.world.self.goal.shop).toBe(0);
+    expect(ctx.world.self.goal.ware).toBe(-1);
+    expect(borgThinkShopBuy(ctx, 0, deps)).toBeNull();
+    shops[0]!.stock.push(ware(2, { tval: TV.FOOD, sval: SVAL.food.ration, price: 3 }));
+    expect(borgChooseShop(ctx, deps)).toBe(true);
+    expect(borgThinkShopBuy(ctx, 0, deps)).toMatchObject({ code: "shop-buy", args: { index: 2 } });
+  });
+
+  it("does not plan a stock visit without a known door or spending money", () => {
+    const { ctx } = makeCtx({ stores: [store(0, false, [])],
+      traits: { [BI.GOLD]: 100, [BI.FOOD]: 5, [BI.LIGHT]: 2 } });
+    expect(borgChooseShop(ctx, { shopKnown: () => false })).toBe(false);
+    ctx.world.self.trait[BI.GOLD] = 0;
+    expect(borgChooseShop(ctx, { shopKnown: () => true })).toBe(false);
+  });
+
+
   it("bails out in the dungeon", () => {
     const { ctx } = makeCtx({ traits: { [BI.CDEPTH]: 5 } });
     expect(borgChooseShop(ctx)).toBe(false);
@@ -507,6 +537,18 @@ function leaveThen(ctx: BorgContext) {
 }
 
 describe("the production shop ladder", () => {
+  it("moves on after inspecting an empty store instead of visiting it again", () => {
+    const { ctx, session } = shopScenario(0);
+    ctx.world.self.goal.doBest = false;
+    expect(think(ctx)?.code).toBe("shop-exit");
+    expect(session.storeMem.visited.has(0)).toBe(true);
+    ctx.world.self.trait[BI.GOLD] = 100;
+    session.flow.state.shopX[0] = session.flow.state.shopY[0] = 10;
+    session.flow.state.shopX[1] = session.flow.state.shopY[1] = 12;
+    expect(borgChooseShop(ctx, buildStoreDeps(session))).toBe(true);
+    expect(ctx.world.self.goal.shop).toBe(1);
+  });
+
   it.each([
     [2000, 1350, "shop-buy"],
     [2001, 1350, "shop-exit"],
@@ -587,7 +629,7 @@ describe("the production shop ladder", () => {
 
   it.each([TV.SWORD, TV.DIGGING])("keeps ordinary weapons and artifact diggers out of the shop wear fallback (%i)", (tval) => {
     const { ctx } = shopScenario(0, [item({ handle: 20, tval: TV.SWORD, value: 100 })], [item({ tval, artifact: tval === TV.DIGGING })], [], (change) => change.wield?.length ? 1100 : 1000);
-    expect(think(ctx)).toMatchObject({ code: "shop-sell" });
+    expect(think(ctx)).toMatchObject({ code: "shop-exit" });
     const fallback = shopScenario(0, [item({ handle: 20, tval: TV.SWORD, value: 100 })], [item({ tval: TV.DIGGING })], [], (change) => change.wield?.length ? 1100 : 1000);
     expect(leaveThen(fallback.ctx)).toMatchObject({ code: "wield", args: { handle: 20 } });
   });

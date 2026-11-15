@@ -118,6 +118,65 @@ describe("borg_notice_player", () => {
     expect(t[BI.ISHUNGRY]).toBe(0); /* food 5000 is "normal" */
   });
 
+  it("sets SAURON_DEAD from slainUniques by race id or name, not by race index (borg-trait.c:3136, borg-flow-kill.c:3140)", () => {
+    const notice = (slainUniques: readonly { raceIndex: number; raceId?: string; name: string }[]) => {
+      const base = makeScenarioView({ player: { cls: "Warrior", level: 20, depth: 99, maxDepth: 99 } });
+      const player = base.player();
+      Object.assign(player, { slainUniques });
+      const ctx: BorgContext = { world: new BorgWorld(), view: { ...base, player: () => player }, act: makeFakeActions(), rng: makeBorgRng() };
+      borgNotice(ctx);
+      return ctx;
+    };
+    const dead = notice([{ raceIndex: 9, raceId: "core:sauron-the-sorcerer", name: "not the display name" }]);
+    expect(dead.world.self.trait[BI.SAURON_DEAD]).toBe(1);
+    expect(notice([{ raceIndex: 1, name: "Sauron, the Sorcerer" }]).world.self.trait[BI.SAURON_DEAD]).toBe(1);
+    expect(notice([{ raceIndex: 9, raceId: "frost:sauron-the-sorcerer", name: "Sauron, the Sorcerer" }]).world.self.trait[BI.SAURON_DEAD]).toBe(1);
+    expect(notice([{ raceIndex: 9, raceId: "core:fang", name: "Fang, Farmer" }]).world.self.trait[BI.SAURON_DEAD]).toBe(0);
+    expect(notice([]).world.self.trait[BI.SAURON_DEAD]).toBe(0);
+
+    /* borg_power adds 2500 per mass-banish scroll once Sauron is dead (borg-power.c:1454). */
+    dead.world.self.trait[BI.AMASSBAN] = 2;
+    dead.world.self.trait[BI.PREP_BIG_FIGHT] = 0;
+    const withSauron = borgPower(dead);
+    dead.world.self.trait[BI.SAURON_DEAD] = 0;
+    expect(withSauron - borgPower(dead)).toBe(5000);
+  });
+
+  it("drops the Tarrasque alive bonus once slainUniques lists it (borg-trait-swap.c:516, borg-flow-kill.c:3142)", () => {
+    const sword = item({
+      handle: 1, tval: TV.SWORD, sval: 1, dd: 2, ds: 6,
+      resists: [{ element: "COLD", level: 3 }],
+    });
+    const cloak = item({
+      handle: 2, tval: TV.CLOAK, sval: 1,
+      resists: [{ element: "FIRE", level: 3 }],
+    });
+    const notice = (slainUniques: readonly { raceIndex: number; raceId?: string; name: string }[]) => {
+      const base = makeScenarioView({ player: { cls: "Warrior", level: 30, depth: 75, maxDepth: 75 } });
+      const player = base.player();
+      Object.assign(player, { slainUniques });
+      const ctx: BorgContext = {
+        world: new BorgWorld(),
+        view: { ...base, player: () => player, inventory: () => [sword, cloak] },
+        act: makeFakeActions(),
+        rng: makeBorgRng(),
+      };
+      borgNotice(ctx);
+      return getDerived(ctx.world);
+    };
+    const alive = notice([]);
+    const byName = notice([{ raceIndex: 4, name: "The Tarrasque" }]);
+    const byId = notice([{ raceIndex: 4, raceId: "core:the-tarrasque", name: "not the display name" }]);
+    const other = notice([{ raceIndex: 4, raceId: "core:fang", name: "Fang, Farmer" }]);
+    /* C adds 90000 for each missing cold or fire immunity while the Tarrasque is alive. */
+    expect(alive.weaponSwap.value - byName.weaponSwap.value).toBe(90000);
+    expect(alive.armourSwap.value - byName.armourSwap.value).toBe(90000);
+    expect(byId.weaponSwap.value).toBe(byName.weaponSwap.value);
+    expect(byId.armourSwap.value).toBe(byName.armourSwap.value);
+    expect(other.weaponSwap.value).toBe(alive.weaponSwap.value);
+    expect(other.armourSwap.value).toBe(alive.armourSwap.value);
+  });
+
   it("classifies food thresholds (PY_FOOD_*)", () => {
     const weak = mkCtx({ status: { blind: 0, confused: 0, afraid: 0, poisoned: 0, cut: 0, stun: 0, paralyzed: 0, food: 500 } });
     borgNotice(weak);

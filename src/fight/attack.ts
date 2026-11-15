@@ -48,7 +48,7 @@ import {
   CLASS_RANGER,
   CLASS_PALADIN,
 } from "../trait/trait-index.js";
-import { trait, needsIdent, perItemValue } from "../item/deps.js";
+import { trait, needsIdent, perItemValue, canBrowse } from "../item/deps.js";
 import type { BorgKill } from "../world/kill.js";
 import { FEAT, borgCaveFloorGrid } from "../flow/flow-consts.js";
 import { GOAL_KILL } from "../world/model.js";
@@ -1209,8 +1209,10 @@ function auxObject(ctx: BorgContext, fs: FightState): number {
   let bD = -1;
   for (const item of ctx.view.inventory()) {
     if (item.number <= 0) continue;
-    /* skip spellbooks / wieldables / ammo handled elsewhere (attack.c:2294). */
-    if (item.tval === TV.MAGIC_BOOK || item.tval === TV.PRAYER_BOOK) continue;
+    /* Skip my own spell/prayer books: obj_kind_can_browse (attack.c:2294), i.e.
+     * any realm the class can read - Nature and Shadow included - and not a
+     * book the class cannot browse. */
+    if (canBrowse(item)) continue;
     const d = idiv(item.dd * (item.ds + 1), 2);
     if ((item.value ?? 0) > 100 && d < 5) continue;
     if (d <= 0) continue;

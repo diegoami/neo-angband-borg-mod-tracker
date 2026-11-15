@@ -9,13 +9,14 @@ import { BI, CLASS_WARRIOR } from "../trait/trait-index.js";
 import { FEAT } from "../core-api.js";
 import { TV, SVAL } from "./svals.js";
 import { borgDropHole, borgDropSlow, borgDumpQuiver } from "./junk-space.js";
+import { borgCrushJunk } from "./junk.js";
 import { borgWearRecharge } from "./item-wear.js";
 import { borgFirstEmptyInventorySlot } from "../store/store.js";
 import { borgView } from "../core-api.js";
 import { buildThinkSession, buildItemDeps, getThinkSession, primeSession } from "../think-session.js";
 import { borgThinkDungeon } from "../think-ladder.js";
 import { borgNotice, borgPower } from "../trait/index.js";
-import { perceive, makePerceiveMemo } from "../perceive.js";
+import { perceive, makePerceiveMemo, rememberJunk, takeValue } from "../perceive.js";
 import { itemView, playerView } from "../api2/world.js";
 import { knownWorld } from "../harness-api2.js";
 import { makeCoreResolvers } from "../resolvers.js";
@@ -30,6 +31,33 @@ function item(p: Partial<ItemView> = {}): ItemView {
     modifiers: [], brands: [], slays: [], resists: [], curses: [], egoName: null,
     artifactName: null, activation: false, timeout: 0, inscription: null, value: 0, ...p };
 }
+
+describe("dropped object identity (borg-junk.c:462-467, borg-flow-take.c:271)", () => {
+  it("prices the dropped object at -10 by objectId and leaves another of the same kind alone", () => {
+    const dropped = { ...item({ tval: TV.CHEST, sval: 2 }), objectId: 40 };
+    const other = { ...item({ tval: TV.CHEST, sval: 2 }), objectId: 41 };
+    const valuation = { junkedIds: new Set([40]) };
+    expect(takeValue(dropped, valuation)).toBe(-10);
+    expect(takeValue(other, valuation)).toBe(1);
+    expect(takeValue(other, { junked: new Set([`${TV.CHEST}:2`]), junkedIds: valuation.junkedIds })).toBe(-10);
+  });
+
+  it("remembers a whole drop by objectId and a split drop by kind", () => {
+    const whole = { ...item({ tval: TV.CHEST, sval: 2, number: 1 }), objectId: 40 };
+    const junked = new Set<string>();
+    const junkedIds = new Set<number>();
+    rememberJunk(whole, 1, junked, junkedIds);
+    expect([...junkedIds]).toEqual([40]);
+    expect(junked.size).toBe(0);
+
+    const stack = { ...item({ tval: TV.CHEST, sval: 3, number: 5 }), objectId: 9 };
+    const splitKinds = new Set<string>();
+    const splitIds = new Set<number>();
+    rememberJunk(stack, 1, splitKinds, splitIds);
+    expect(splitIds.size).toBe(0);
+    expect([...splitKinds]).toEqual([`${TV.CHEST}:3`]);
+  });
+});
 
 function context(inventory: ItemView[] = [], equipment: Array<ItemView | null> = [], quiver: ItemView[] = []): BorgContext {
   const world = new BorgWorld();
@@ -187,6 +215,17 @@ function fullPack(candidates: ItemView[]): ItemView[] {
 }
 
 describe("production inventory decisions", () => {
+  it.each([TV.WAND, TV.STAFF])("keeps an unaware device of type %i when its charge count is hidden", (tval) => {
+    for (const depth of [1, 10, 95]) {
+      const unknown = production([item({ tval, sval: -3, aware: false, pval: 0, value: 0 })], [], [], { depth });
+      const deps = buildItemDeps(unknown.session);
+      expect(deps.itemValue!(unknown.items[0]!)).toBe(tval === TV.WAND ? 50 : 70);
+      expect(borgCrushJunk(unknown.ctx, deps), String(depth)).toBeNull();
+      const known = production([item({ tval, aware: true, pval: 0, value: 0 })], [], [], { depth });
+      expect(borgCrushJunk(known.ctx, buildItemDeps(known.session))).toMatchObject({ code: "drop", args: { handle: 1 } });
+    }
+  });
+
   it("keeps unidentified boots and unknown runes while choosing a whole known stack", () => {
     const boots = { ...item({ handle: 1, tval: TV.BOOTS }), unknownRunes: true };
     const sword = { ...item({ handle: 2 }), unknownRunes: true };
@@ -282,6 +321,22 @@ describe("production inventory decisions", () => {
     settled = true;
     expect(borg.controller(view, makeFakeActions())).toMatchObject({ code: "drop", args: { handle: 2 } });
     expect([...session.junked]).toEqual([`${TV.CHEST}:2`]);
+  });
+
+  it("remembers one dropped chest by objectId and rewinds that id", () => {
+    const kept = { ...item({ handle: 1, tval: TV.CHEST, sval: 2, value: 2000 }), objectId: 41 };
+    const junk = { ...item({ handle: 2, tval: TV.CHEST, sval: 2, value: 1000 }), objectId: 40 };
+    const { view } = production(fullPack([kept, junk]));
+    const borg = createBorg({ resolvers: makeCoreResolvers({}), rngSeed: 1 });
+    const session = getThinkSession(borg.world);
+    expect(borg.controller(view, makeFakeActions())).toMatchObject({ code: "drop", args: { handle: 2 } });
+    expect([...session.junkedIds]).toEqual([40]);
+    expect(session.junked.size).toBe(0);
+    const floor = (objectId: number) => ({ ...item({ tval: TV.CHEST, sval: 2 }), objectId });
+    expect(takeValue(floor(40), { junked: session.junked, junkedIds: session.junkedIds })).toBe(-10);
+    expect(takeValue(floor(41), { junked: session.junked, junkedIds: session.junkedIds })).toBe(1);
+    borg.rewind();
+    expect(session.junkedIds.size).toBe(0);
   });
 
   it("rewinds the quiver rung's panel increment and discard memory before deciding again", () => {
