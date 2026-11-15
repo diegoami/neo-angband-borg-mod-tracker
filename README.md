@@ -112,7 +112,7 @@ flowchart TD
 
 *Source of truth: `src/controller.ts`, `src/think.ts`, and `src/think-ladder.ts`. The magic rungs study spells from carried books and test untried spells in town. Ring swaps compare both slots and check danger with the simulated equipment. The destroy-valueless rung remains unported.*
 
-Two item behaviors still differ from the C reference because the published item view lacks the required fields. The discard memory records kinds: a carried item's `gear:` key becomes a position-based `memory:` key on the floor, so no identity links the item across a drop, and the action facade has no inscription command. Chest handling walks onto the item; the view has no boolean corresponding to the chest object's `known` pointer, which `borg_play_step` uses to choose opening or disarming (`borg-flow.c:781-816`). Book prices and activation prices match `borg_object_value_known` (`borg-item-analyze.c:43-259`): books use their kind cost, and an activation adds no separate price bonus.
+The discard memory records kinds, and the action facade has no inscription command. Chest handling walks onto the item. The port does not consume the mod API 2.1 `objectId` or `trapKnown` fields yet; these fields provide drop-stable object identity and the knowledge needed for the `borg_play_step` open-or-disarm choice (`borg-flow.c:781-816`). Book prices and activation prices match `borg_object_value_known` (`borg-item-analyze.c:43-259`): books use their kind cost, and an activation adds no separate price bonus.
 
 The port in `src/` and the mod you install are not quite the same thing. The installed mod depends on `plugin.ts`, which builds the Borg from resolvers the game supplies, and for a long time most of those did not exist.
 

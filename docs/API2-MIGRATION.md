@@ -32,6 +32,8 @@ A loadout simulation is never ready the first time the decision code asks for it
 
 The rest check follows `borg_check_rest`: on a vault level it treats a remembered permanent wall at offsets -1 or 0 from the player as shelter. It skips fear, deep danger, food, light, proximity danger, and wall-walker refusals there, while adjacent monsters, breeders, ranged attacks, and lava still prevent resting. The `borg_fear_grid` and `borg_fear_regional` guards need a separate per-grid vault marker. BORG-4: the known map has no such marker; the smallest addition is a remembered `vault` boolean on known level cells, populated only when the player learns that fact.
 
+The installed `1.23.0-beta.3` core omits the documented mod API 2.1 additions. The bridge does not consume `slainUniques`, `objectId`, `trapKnown`, or `status.countdown`. Sauron's death in `borg_notice_player` and the Tarrasque death used by `borg_notice_weapon_swap` and `borg_notice_armour_swap` therefore have no game-side writer. BORG-5: the smallest addition is a published core and SDK that carry those documented known-player and known-item fields. The mod keeps its API 2.0 range until it uses them.
+
 ## The truth domain
 
 The game gives the Borg its truth domain through one capability, `state:monsters-actual.read`. The consent screen tags it as powerful and keeps it off unless the player turns it on with "Choose one by one". The grant covers the exact monsters and the race records and nothing about the real map or a store's stock, which stay behind `state:map-actual.read`, a capability the Borg does not ask for.
