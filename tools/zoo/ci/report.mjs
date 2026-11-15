@@ -22,6 +22,9 @@ export function render(report){
  for(const c of report.cells.filter(c=>c.outcome==='death'))text+=`| ${c.seed} | ${c.race} | ${c.class} | ${c.turn} | ${c.level} | ${c.maxDepth} | ${escape(c.cause)} |\n`;
  text+='\n## By class\n\n| Class | Assigned | Deaths | Caps | Other outcomes |\n| --- | ---: | ---: | ---: | ---: |\n';
  for(const cls of [...new Set(report.cells.map(c=>c.class))]){const cells=report.cells.filter(c=>c.class===cls),deaths=cells.filter(c=>c.outcome==='death').length,caps=cells.filter(c=>c.outcome==='turn_cap').length;text+=`| ${cls} | ${cells.length} | ${deaths} | ${caps} | ${cells.length-deaths-caps} |\n`;}
+ text+='\n## Death causes\n\n| Cause | Deaths |\n| --- | ---: |\n';
+ const causes=new Map();for(const c of report.cells.filter(c=>c.outcome==='death'))causes.set(c.cause??'unknown',(causes.get(c.cause??'unknown')??0)+1);
+ for(const [cause,n] of [...causes].sort((a,b)=>b[1]-a[1]||String(a[0]).localeCompare(String(b[0]))))text+=`| ${escape(cause)} | ${n} |\n`;
  const settings=report.cells.find(c=>c.settings)?.settings;
  if(settings)text+='\nMeasured Borg settings (raw run records retain the full birth/options observations):\n\n```json\n'+JSON.stringify(settings,null,2)+'\n```\n';
  text+='\n## Measurement limits\n\nBirth/profile and adapter choices are recorded in the suite and build identities. Seeded-v2 requests C recommended point buy/no-selling/native-menu and GCC coordinate adapters with an exact tick cap; ordinary-rolled-v1 uses engine-default rolled birth and the historical after-loop cap, which can overshoot. Engine behavior depends on the recorded commit; clock equivalence was unresolved in the historical measurements. These counts describe this cohort; they do not establish C parity or improvement over differently configured runs. Stalls, timeouts and harness/configuration failures remain separate outcomes.\n';

@@ -20,9 +20,9 @@ for(const c of shardCases(suite,Number(a.shard),Number(a.shards))){
  let outcome=record?.outcome;
  if(child.error?.code==='ETIMEDOUT')outcome='wall_timeout';
  else if(child.status!==0||record?.schema!=='neo-original/run@1'||!['death','turn_cap','stalled','decision_cap','borg_stopped','harness_failure'].includes(outcome)){outcome='harness_failure';error??=String(child.error??`child status ${child.status}`);}
- else if(record.birth?.race!==c.race||record.birth?.class!==c.class||(record.inputs?.birthProfile??'ordinary-rolled-v1')!==suite.birthProfile){outcome='config_error';error='Assigned birth/profile differs from played birth';}
+ else if(record.inputs?.seed!==c.seed||record.birth?.race!==c.race||record.birth?.class!==c.class||(record.inputs?.birthProfile??'ordinary-rolled-v1')!==suite.birthProfile){outcome='config_error';error='Assigned birth/profile differs from played birth';}
  else if(record.provenance?.bundleSha256!==build.bundleSha256||record.provenance?.engine?.commit!==build.engine.commit||record.provenance?.borg?.commit!==build.borg.commit){outcome='config_error';error='Build provenance mismatch';}
- else if(aligned&&record.turn>suite.turns){outcome='harness_failure';error='Exact tick cap exceeded';}
+ else if(!Number.isSafeInteger(record.turn)||record.turn<0||(aligned&&record.turn>suite.turns)){outcome='harness_failure';error='Exact tick cap exceeded';}
  const row={...c,suite:suite.id,outcome,error:error??record?.error??null,turn:record?.turn??null,level:record?.level??null,depth:record?.depth??null,maxDepth:record?.maxDepth??null,hp:record?.hp??null,cause:record?.causeOfDeath??null,wallSeconds:(performance.now()-start)/1000,build:{engine:build.engine,borg:build.borg,bundleSha256:build.bundleSha256,appliedPatches:build.appliedPatches},evidence:`${c.id}/run`};
  row.settings=record?.settings??null;row.birth=record?.birth??null;
  rows.push(row);writeFileSync(join(out,'cells.json'),JSON.stringify(rows,null,2)+'\n');console.log(JSON.stringify({id:c.id,outcome,turn:row.turn,cause:row.cause}));
