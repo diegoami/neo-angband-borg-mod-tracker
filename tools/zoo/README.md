@@ -51,6 +51,36 @@ pnpm experiment --bundle /tmp/borg-build/bundle.mjs --games 18 \
   --max-ticks 5000 --wall-seconds 120 --workers 2 --out /tmp/borg-experiment
 ```
 
+### If the engine is already built, or you are in the tracker checkout
+
+An older tracker/default checkout may not contain `tools/zoo/build.mjs` or the
+`experiment` script yet. `Cannot find module .../tools/zoo/build.mjs` or
+`Command "experiment" not found` means you need the proposed harness checkout;
+installing dependencies in the old checkout does not add it. Leave that checkout
+unchanged and create `borg` next to the existing `engine`:
+
+```sh
+cd ~/projects/angband &&
+git clone --branch task/standalone-experiments \
+  https://github.com/diegoami/neo-angband-borg-mod-tracker.git borg &&
+cd borg &&
+pnpm install --frozen-lockfile &&
+node tools/zoo/build.mjs --engine-dir ../engine --borg-dir . \
+  --out /tmp/borg-build --exact-tick-cap true \
+  --c-seed-startup true --c-gcc-coordinate-order true &&
+pnpm experiment --bundle /tmp/borg-build/bundle.mjs --games 18 \
+  --max-ticks 5000 --wall-seconds 120 --workers 2 \
+  --out /tmp/borg-experiment
+```
+
+Replace `~/projects/angband` with your workspace path. This assumes `borg` does
+not already exist, the pinned `engine` is already built, and Node/pnpm are on
+PATH as described above. If you already cloned this branch into `borg`, start
+with `cd ~/projects/angband/borg` and continue at the install step. The `&&`
+operators stop after the first failed step. Build and experiment output paths
+must be new: choose fresh paths for another attempt rather than overwriting
+previous evidence.
+
 `--max-ticks` counts engine ticks, not controller decisions or wall seconds.
 A normal player action usually uses ten ticks. Limits: 1–1,800 games,
 1–200,000 ticks, 1–3,600 seconds per game, 1–8 isolated worker processes.
