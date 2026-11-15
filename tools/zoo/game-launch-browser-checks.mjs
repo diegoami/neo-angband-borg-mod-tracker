@@ -6,7 +6,8 @@ import { launchGame } from './game-launch.mjs';
 const a=Object.fromEntries(process.argv.slice(2).reduce((r,v,i,all)=>i%2?r:r.concat([[v.replace(/^--/,''),all[i+1]]]),[]));
 for(const key of ['engine-dir','experiment','case','bundle','out'])if(!a[key])throw Error('Required --'+key);
 const engine=resolve(a['engine-dir']);
-const {chromium}=await import(createRequire(join(engine,'package.json')).resolve('playwright'));
+const playwright=await import(createRequire(join(engine,'package.json')).resolve('playwright'));
+const chromium=playwright.chromium??playwright.default?.chromium;
 let browser,game;
 try {
  game=await launchGame({engine,experiment:a.experiment,caseId:a.case,bundle:a.bundle,out:a.out,openBrowser:false,autodelay:250,startDelay:3000});
