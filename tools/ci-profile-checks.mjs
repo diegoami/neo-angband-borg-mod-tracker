@@ -71,12 +71,15 @@ test("CLI writes complete boolean outputs on an actual git diff", () => fixture(
 }));
 test("one automatic workflow preserves PR/master/manual triggers and concurrency", () => {
   validateTriggers(ci,"ci"); validateTriggers(source,"source");
-  assert.deepEqual(readdirSync(join(root,".github/workflows")).sort(),["ci.yml","dependabot-automerge.yml","github-release.yml","nexus-publish.yml","notespot-source.yml","push-scan.yml","redirect-issue.yml"]);
+  assert.deepEqual(readdirSync(join(root,".github/workflows")).sort(),["ci.yml","dependabot-automerge.yml","experiments.yml","github-release.yml","nexus-publish.yml","notespot-source.yml","push-scan.yml","redirect-issue.yml"]);
+  const harness=readFileSync(join(root,".github/workflows/experiments.yml"),"utf8");
+  assert.match(harness,/  workflow_call:/); assert.doesNotMatch(harness,/  pull_request:/);
+  assert.match(ci,/uses: \.\/\.github\/workflows\/experiments\.yml/);
   assert.equal(existsSync(join(root,".github/workflows/privacy.yml")),false);
   assert.equal(existsSync(join(root,".github/workflows/fork-session-docs.yml")),false);
   assert.match(ci,/uses: neostryder\/neo-angband\/\.github\/actions\/private-scan@master/);
   assert.match(ci,/if: always\(\)/);
-  assert.match(ci,/needs: \[profile, checks, scan, exact-source\]/);
+  assert.match(ci,/needs: \[profile, checks, scan, exact-source, harness\]/);
   assert.match(ci,/if: needs\.profile\.outputs\.source == 'true'/);
   assert.match(ci,/uses: \.\/\.github\/workflows\/notespot-source\.yml/);
   assert.match(ci,/pnpm verify \| tee/);
@@ -86,10 +89,10 @@ test("trigger negative controls reject duplicates, issue events and bypasses", (
   for (const broken of [ci.replace('"branches":["master"]','"branches":["**"]'),ci.replace('"pull_request":{}','"pull_request":{"paths-ignore":["docs/**"]}'),ci.replace('"workflow_dispatch":{}','"issue_comment":{}'),ci.replace('cancel-in-progress:','cancel-disabled:')]) assert.throws(()=>validateTriggers(broken,"ci"));
   assert.throws(()=>validateTriggers(source.replace('"workflow_call":{}','"pull_request":{}'),"source"));
 });
-const needs = (profile) => ({profile:{result:"success",outputs:{profile,full:String(profile==="full"),source:String(profile==="full")}},checks:{result:"success"},scan:{result:"success"},"exact-source":{result:profile==="full"?"success":"skipped"}});
+const needs = (profile) => ({profile:{result:"success",outputs:{profile,full:String(profile==="full"),source:String(profile==="full")}},checks:{result:"success"},scan:{result:"success"},harness:{result:profile==="full"?"success":"skipped"},"exact-source":{result:profile==="full"?"success":"skipped"}});
 test("stable final gate accepts only complete matching profiles", () => {
   assertGate(needs("docs")); assertGate(needs("full"));
-  for (const name of ["profile","checks","scan","exact-source"]) {
+  for (const name of ["profile","checks","scan","exact-source","harness"]) {
     for (const result of ["failure","cancelled","skipped"]) { const n=needs("full"); n[name].result=result; assert.throws(()=>assertGate(n)); }
   }
   const missing=needs("docs"); missing.profile.outputs={}; assert.throws(()=>assertGate(missing));

@@ -55,6 +55,7 @@ export function assertGate(needs) {
   const profile = needs.profile.outputs;
   if (!["docs", "full"].includes(profile.profile) || profile.full !== String(profile.profile === "full") || profile.source !== profile.full) throw new Error("Invalid or inconsistent profile outputs");
   const required = profile.source === "true";
+  if (needs.harness?.result !== (required ? "success" : "skipped")) throw new Error("Harness gate result disagrees with the required profile");
   if (needs["exact-source"]?.result !== (required ? "success" : "skipped")) throw new Error("Exact-source gate result disagrees with the required profile");
 }
 export function validateTriggers(text, kind) {

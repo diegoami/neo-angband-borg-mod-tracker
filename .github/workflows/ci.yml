@@ -60,10 +60,14 @@ jobs:
     needs: profile
     if: needs.profile.outputs.source == 'true'
     uses: ./.github/workflows/notespot-source.yml
+  harness:
+    needs: profile
+    if: needs.profile.outputs.full == 'true'
+    uses: ./.github/workflows/experiments.yml
   # Stable required result; a failed classifier/privacy/required source job cannot look green.
   verify:
     if: always()
-    needs: [profile, checks, scan, exact-source]
+    needs: [profile, checks, scan, exact-source, harness]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7

@@ -17,6 +17,7 @@ import { resolve, join, dirname } from "node:path";
 import { createRequire } from "node:module";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { sourceIntegrity } from "./source-integrity.mjs";
 import { fileURLToPath } from "node:url";
 const args = Object.fromEntries(
 	process.argv
@@ -71,6 +72,7 @@ for (const [dir, pin] of [
 	)
 		throw new Error("Unapproved tracked mode changes");
 }
+const engineIntegrity=sourceIntegrity(engine,{engine:true}),borgIntegrity=sourceIntegrity(borg);
 mkdirSync(out, { recursive: false });
 const tool = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(join(engine, "packages/web/package.json"));
@@ -209,20 +211,23 @@ if (args["c-gcc-coordinate-order"] === "true" && startupSites.gcc !== 2)
 cpSync(join(engine, "packages/content/pack"), join(out, "pack"), {
 	recursive: true,
 });
-const borgRepository = (() => {
+const repositoryOf = (checkout) => {
 	try {
-		const url = git(borg, "remote", "get-url", "origin");
+		const url = git(checkout, "remote", "get-url", "origin");
 		return url.replace(/\.git$/, "").replace(/^.*github\.com[:/]/, "");
 	} catch {
 		return "unknown";
 	}
-})();
+};
+const borgRepository = repositoryOf(borg);
+const engineRepository = repositoryOf(engine);
 const sha = (p) => createHash("sha256").update(readFileSync(p)).digest("hex");
 writeFileSync(
 	join(out, "build.json"),
 	JSON.stringify(
 		{
 			schema: "neo-original-build@1",
+            sourcePaths: {engine,borg,bundle:join(out,"bundle.mjs")},
 			alignmentProbes: args["alignment-probes"] === "true",
 			exactTickCap: args["exact-tick-cap"] === "true",
 			cSeedStartup: args["c-seed-startup"] === "true",
@@ -243,7 +248,8 @@ writeFileSync(
 			],
 			lockSha256: sha(join(engine, "pnpm-lock.yaml")),
 			engine: {
-				repository: "neostryder/neo-angband",
+				repository: engineRepository,
+                sourceIntegrity:engineIntegrity,
 				commit: git(engine, "rev-parse", "HEAD"),
 				dirty: git(engine, "status", "--porcelain") !== "",
 				version: JSON.parse(readFileSync(join(engine, "package.json")))
@@ -251,6 +257,7 @@ writeFileSync(
 			},
 			borg: {
 				repository: borgRepository,
+                sourceIntegrity:borgIntegrity,
 				commit: git(borg, "rev-parse", "HEAD"),
 				dirty: git(borg, "status", "--porcelain") !== "",
 				manifest: JSON.parse(readFileSync(join(borg, "manifest.json"))),
@@ -288,7 +295,7 @@ writeFileSync(
 					.map((f) => [f, sha(join(out, "pack", f))]),
 			),
 			toolSha256: Object.fromEntries(
-				["session.ts", "pack.ts", "message-host.mjs", "build.mjs", "run.mjs", "alignment/profile.mjs", "alignment/seed-startup.mjs"].map((f) => [
+				["session.ts", "pack.ts", "message-host.mjs", "truth-host.mjs", "source-integrity.mjs", "build.mjs", "run.mjs", "alignment/profile.mjs", "alignment/seed-startup.mjs"].map((f) => [
 					f,
 					sha(join(tool, f)),
 				]),
