@@ -207,14 +207,16 @@ if (args["c-gcc-coordinate-order"] === "true" && startupSites.gcc !== 2)
 cpSync(join(engine, "packages/content/pack"), join(out, "pack"), {
 	recursive: true,
 });
-const borgRepository = (() => {
+const repositoryOf = (checkout) => {
 	try {
-		const url = git(borg, "remote", "get-url", "origin");
+		const url = git(checkout, "remote", "get-url", "origin");
 		return url.replace(/\.git$/, "").replace(/^.*github\.com[:/]/, "");
 	} catch {
 		return "unknown";
 	}
-})();
+};
+const borgRepository = repositoryOf(borg);
+const engineRepository = repositoryOf(engine);
 const sha = (p) => createHash("sha256").update(readFileSync(p)).digest("hex");
 writeFileSync(
 	join(out, "build.json"),
@@ -241,7 +243,7 @@ writeFileSync(
 			],
 			lockSha256: sha(join(engine, "pnpm-lock.yaml")),
 			engine: {
-				repository: "neostryder/neo-angband",
+				repository: engineRepository,
 				commit: git(engine, "rev-parse", "HEAD"),
 				dirty: git(engine, "status", "--porcelain") !== "",
 				version: JSON.parse(readFileSync(join(engine, "package.json")))

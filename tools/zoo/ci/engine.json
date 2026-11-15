@@ -1,0 +1,5 @@
+{
+  "repository": "diegoami/neo-angband-tracker",
+  "commit": "b4af703493d314aa35cb719604f06103aa4918f4",
+  "note": "FORK: includes native stock/kit order corrections; use the accepted official engine pin when proposing upstream."
+}
