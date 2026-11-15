@@ -58,5 +58,5 @@ node tools/zoo/ci/report.mjs --suite tools/zoo/ci/suites/smoke-v1.json \
 
 A timeout is a wall_timeout, never a death. A missing result becomes an explicit
 harness_failure row, and duplicate/unexpected/mismatched records fail aggregation.
-No old results or suites are rewritten. Absolute evidence paths in report.json
-are diagnostic; complete raw records remain in the corresponding shard artifact.
+No old results or suites are rewritten. Evidence paths in report.json are relative to the downloaded shard-artifact root;
+complete raw records remain in the corresponding shard artifact.

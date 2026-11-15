@@ -1,6 +1,6 @@
 // FORK: count every assignment; missing/duplicate records cannot disappear.
 import { readdirSync,readFileSync,mkdirSync,writeFileSync,appendFileSync,existsSync } from 'node:fs';
-import { resolve,join,dirname } from 'node:path';
+import { resolve,join,dirname,relative } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { loadSuite,flags } from './suite.mjs';
 export function aggregate(suite,rows){
@@ -10,6 +10,7 @@ export function aggregate(suite,rows){
  const counts={};for(const c of cells)counts[c.outcome]=(counts[c.outcome]??0)+1;
  return {schema:'neo-headless-report@1',suite,assigned:cells.length,recorded:found.size,counts,errors,cells};
 }
+export function portableReport(report,root){return {...report,cells:report.cells.map(({evidencePath,...c})=>({...c,...(evidencePath?{evidencePath:relative(resolve(root),evidencePath)}:{})}))};}
 const escape=s=>String(s??'').replace(/[|<>`\r\n\[\]()*!_#@]/g,' ');
 function walk(dir){return readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):e.name==='cells.json'?[join(dir,e.name)]:[]);}
 export function render(report){
@@ -39,7 +40,7 @@ export function render(report){
 if(process.argv[1]&&pathToFileURL(resolve(process.argv[1])).href===import.meta.url){
  const a=flags(process.argv.slice(2)),suite=loadSuite(resolve(a.suite)),rows=[];
  for(const file of walk(resolve(a.runs)))for(const c of JSON.parse(readFileSync(file,'utf8')))rows.push({...c,evidencePath:join(dirname(file),c.evidence)});
- const report=aggregate(suite,rows),out=resolve(a.out);mkdirSync(out,{recursive:true});const markdown=render(report);writeFileSync(join(out,'report.json'),JSON.stringify(report,null,2)+'\n');writeFileSync(join(out,'report.md'),markdown);
+ const report=aggregate(suite,rows),out=resolve(a.out);mkdirSync(out,{recursive:true});const markdown=render(report);writeFileSync(join(out,'report.json'),JSON.stringify(portableReport(report,a.runs),null,2)+'\n');writeFileSync(join(out,'report.md'),markdown);
  if(process.env.GITHUB_STEP_SUMMARY)appendFileSync(process.env.GITHUB_STEP_SUMMARY,markdown.slice(0,900000));
  if(report.errors.length||report.recorded!==report.assigned||['harness_failure','config_error','wall_timeout'].some(k=>report.counts[k]))process.exitCode=1;
 }

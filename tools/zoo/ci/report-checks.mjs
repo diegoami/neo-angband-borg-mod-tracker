@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { aggregate,render } from './report.mjs';
+import { aggregate,render,portableReport } from './report.mjs';
 import { loadSuite,shardCases } from './suite.mjs';
 const suite=loadSuite(new URL('./suites/smoke-v1.json',import.meta.url));
 const row=c=>({...c,suite:suite.id,outcome:'death',turn:42,level:1,maxDepth:1,cause:'a rat | <tag> `text`'});
@@ -17,4 +17,10 @@ test('duplicate and wrong-birth rows cannot create successful coverage',()=>{
 test('death, timeout, stall and cap remain distinct with reproduction details',()=>{
  const rows=suite.cases.map(row);rows[1].outcome='wall_timeout';rows[2].outcome='stalled';rows[3].outcome='turn_cap';const r=aggregate(suite,rows);
  assert.equal(r.counts.death,15);assert.equal(r.counts.wall_timeout,1);assert.equal(r.counts.stalled,1);assert.equal(r.counts.turn_cap,1);const md=render(r);assert.match(md,/--seed 3000/);assert.match(md,/--birth-profile c-seeded-point-buy-v2/);assert.ok(!md.includes('<tag>'));
+});
+
+test('exported reports use portable artifact-relative evidence paths',()=>{
+ const r={cells:[{id:'case',evidencePath:'/tmp/artifacts/shard/case/run'}]};
+ assert.equal(portableReport(r,'/tmp/artifacts').cells[0].evidencePath,'shard/case/run');
+ assert.equal(r.cells[0].evidencePath,'/tmp/artifacts/shard/case/run');
 });

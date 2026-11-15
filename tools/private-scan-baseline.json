@@ -1,0 +1,11 @@
+{
+  "$comment": "One immutable public GitHub runner receipt; new reports use artifact-relative paths. This does not permit personal workstation paths.",
+  "entries": [
+    {
+      "rule": "user-home-path",
+      "path": "docs/runs/headless-ci-43667982596/report.txt",
+      "count": 18,
+      "why": "The 18 evidencePath fields in the unmodified report from public GitHub Actions run43667982596 name its ephemeral runner account. Retained verbatim under append-only evidence rules; no personal account, save or workstation paths. New report exports use relative artifact paths."
+    }
+  ]
+}
