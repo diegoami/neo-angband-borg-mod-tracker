@@ -455,6 +455,42 @@ describe("resting when SP only returns in combat", () => {
 
 /* borg_check_rest's vault arm (borg-flow-misc.c:1243-1258, :1270, :1336, :1356). */
 describe("resting beside a vault wall", () => {
+  it.each(["regional fear", "monster fear", "danger", "food", "light", "weakness", "proximity", "PASS_WALL", "KILL_WALL"])("skips %s only beside a remembered vault wall", (guard) => {
+    const made = ctxFor({ player: { grid: AWAY, depth: 85, hp: 20, maxHp: 20 },
+      monsters: [{ grid: { x: AWAY.x + 3, y: AWAY.y }, hp: 10, maxHp: 10 }] });
+    const { world, ctx } = made;
+    world.clock = 10;
+    world.self.trait[BI.FOOD] = guard === "food" ? 0 : 10;
+    world.self.trait[BI.LIGHT] = guard === "light" ? 0 : 1;
+    world.self.trait[BI.ISWEAK] = guard === "weakness" ? 1 : 0;
+    const fear = getFearCaches(world);
+    if (guard === "regional fear") fear.region2d[Math.trunc(AWAY.y / 11)]![Math.trunc(AWAY.x / 11)] = 100;
+    if (guard === "monster fear") fear.monsters2d[AWAY.y]![AWAY.x] = 100;
+    const flow = createFlowState();
+    flow.avoidance = 30;
+    flow.hooks.danger = () => guard === "danger" ? 100 : 0;
+    flow.hooks.dangerOneKill = () => guard === "proximity" ? 100 : 0;
+    flow.hooks.monsterHasFlag = (_w, _i, flag) => flag === guard;
+    flow.hooks.los = () => false;
+    expect(borgCheckRest(ctx, flow, AWAY.y, AWAY.x)).toBe(false);
+    world.facts.vaultOnLevel = true;
+    world.map.at(AWAY.x - 1, AWAY.y).feat = FEAT.PERM;
+    expect(borgCheckRest(ctx, flow, AWAY.y, AWAY.x)).toBe(true);
+  });
+
+  it.each(["adjacent", "multiplier", "ranged", "lava"])("still refuses %s inside a vault", (guard) => {
+    const { ctx, world } = ctxFor({ player: { grid: AWAY, hp: 20, maxHp: 20 },
+      monsters: [{ grid: { x: AWAY.x + (guard === "adjacent" ? 1 : 3), y: AWAY.y }, hp: 10, maxHp: 10 }] });
+    world.clock = 10;
+    world.facts.vaultOnLevel = true;
+    world.map.at(AWAY.x - 1, AWAY.y).feat = FEAT.PERM;
+    if (guard === "lava") world.map.at(AWAY.x, AWAY.y).feat = FEAT.LAVA;
+    for (const [, kill] of world.kills.entries()) kill.rangedAttack = guard === "ranged" ? 1 : 0;
+    const flow = createFlowState();
+    flow.hooks.monsterHasFlag = (_w, _i, flag) => guard === "multiplier" && flag === "MULTIPLY";
+    expect(borgCheckRest(ctx, flow, AWAY.y, AWAY.x)).toBe(false);
+  });
+
   /* No food on hand would normally refuse the rest (misc.c:1288). The clock is
    * past the multiplier-kill window so the case isolates the vault arm. */
   const hungry = (): { ctx: BorgContext; world: BorgWorld } => {

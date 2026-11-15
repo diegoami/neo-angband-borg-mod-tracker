@@ -30,6 +30,8 @@ Some questions come up partway through a decision, so `src/api2/caches.ts` keeps
 
 A loadout simulation is never ready the first time the decision code asks for it. The cache answers with nothing, which the port reads as no improvement, and notes the question. Once the decision returns, the tick reads up to 48 noted questions together, rewinds the clocks and counters the decision moved so the Borg is not aged by the repeat, and runs the decision again with the answers. It repeats at most six times, and stops sooner when a round brings nothing new. The whole cache is dropped when the pack, the worn set, a store's stock, or the character level changes.
 
+The rest check follows `borg_check_rest`: on a vault level it treats a remembered permanent wall at offsets -1 or 0 from the player as shelter. It skips fear, deep danger, food, light, proximity danger, and wall-walker refusals there, while adjacent monsters, breeders, ranged attacks, and lava still prevent resting. The `borg_fear_grid` and `borg_fear_regional` guards need a separate per-grid vault marker. BORG-4: the known map has no such marker; the smallest addition is a remembered `vault` boolean on known level cells, populated only when the player learns that fact.
+
 ## The truth domain
 
 The game gives the Borg its truth domain through one capability, `state:monsters-actual.read`. The consent screen tags it as powerful and keeps it off unless the player turns it on with "Choose one by one". The grant covers the exact monsters and the race records and nothing about the real map or a store's stock, which stay behind `state:map-actual.read`, a capability the Borg does not ask for.
