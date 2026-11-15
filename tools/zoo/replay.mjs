@@ -30,10 +30,10 @@ const events=new EventSource('/events?token='+token);events.onmessage=e=>{const 
 document.querySelector('#start').onclick=async()=>{document.querySelector('#start').disabled=true;const response=await fetch('/start?token='+token,{method:'POST'});if(!response.ok)document.querySelector('#status').textContent=await response.text()};
 </script></html>`;
 function argsOf(argv) {
-  const args={};for(let i=0;i<argv.length;i+=2){if(!['--experiment','--case','--bundle','--out','--mode','--engine-dir','--port','--prepare-only','--seed'].includes(argv[i])||!argv[i+1]||args[argv[i]])throw Error('Expected flag/value pairs; see --help');args[argv[i]]=argv[i+1];}return args;
+  const args={};for(let i=0;i<argv.length;i+=2){if(!['--experiment','--case','--bundle','--out','--mode','--engine-dir','--prepare-only','--seed'].includes(argv[i])||!argv[i+1]||args[argv[i]])throw Error('Expected flag/value pairs; see --help');args[argv[i]]=argv[i+1];}return args;
 }
 async function main() {
-  if(process.argv.includes('--help')){console.log('pnpm replay --experiment DIR --case INDEX-SEED --bundle BUILD/bundle.mjs --out NEW-DIR --mode watch\npnpm replay --experiment DIR --case INDEX-SEED --engine-dir ../engine --out NEW-DIR --mode game [--port 5187]');return;}
+  if(process.argv.includes('--help')){console.log('pnpm replay --experiment DIR --case INDEX-SEED --bundle BUILD/bundle.mjs --out NEW-DIR --mode watch\npnpm replay --experiment DIR --case INDEX-SEED --engine-dir ../engine --out NEW-DIR --mode game');return;}
   const a=argsOf(process.argv.slice(2));
   if(!a['--experiment']||!/^\d+-\d+$/.test(a['--case']??'')||!a['--out']||!['watch','game','capture'].includes(a['--mode']??'watch'))throw Error('Expected --experiment DIR --case INDEX-SEED --out NEW-DIR and --mode watch|game');
   const root=resolve(a['--experiment']),manifest=JSON.parse(readFileSync(join(root,'experiment.json'))),suite=JSON.parse(readFileSync(join(root,'suite.json'))),index=Number(a['--case'].split('-')[0]),assigned=suite.cases[index];
