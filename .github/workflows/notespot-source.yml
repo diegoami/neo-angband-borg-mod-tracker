@@ -18,3 +18,4 @@ jobs:
           node-version: 26.13.0
       - run: bash tools/build-notespot-artifacts.sh engine-source "$RUNNER_TEMP/engine-artifacts"
       - run: node tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"
+      - run: node tools/zoo/truth-host-engine-checks.mjs "$RUNNER_TEMP/engine-artifacts/source"
