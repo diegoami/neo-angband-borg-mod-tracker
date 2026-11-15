@@ -18791,7 +18791,8 @@ async function readWorld(api, reads) {
       monster: occupant,
       objectCount: memory.objects.length,
       knownObjectCount: memory.objects.length,
-      glow: remembered.glow,
+      /* borg_check_dark_only uses glow; the known view limits it to visible grids. */
+      glow: remembered.visible && remembered.glow,
       /* The disarm command's own check: a visible trap whose kind is a TRAP and that is not disabled. */
       trap: memory.traps.some((trap) => !trap.disabled && statics.trapKinds[trap.index] === true)
     };

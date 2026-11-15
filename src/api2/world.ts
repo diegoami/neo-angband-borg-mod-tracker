@@ -17,7 +17,7 @@
  * - A timed effect is the lowest duration in the grade the status line names, so
  *   a check against a grade boundary answers as API 1 did and a check inside a
  *   grade does not. Food is the status line's percentage times 100.
- * - No square glows unless the known level says so.
+ * - A square glows only while visible and marked as glowing in the known level.
  * - An item's timeout is the number its name says are charging. A light's fuel is
  *   read from the known item.
  * - Monsters come from `truth` when the game gives the mod that domain: exact
@@ -266,7 +266,8 @@ export async function readWorld(api: Api2Reads, reads: WorldReads): Promise<Worl
       monster: occupant,
       objectCount: memory.objects.length,
       knownObjectCount: memory.objects.length,
-      glow: remembered.glow,
+      /* borg_check_dark_only uses glow; the known view limits it to visible grids. */
+      glow: remembered.visible && remembered.glow,
       /* The disarm command's own check: a visible trap whose kind is a TRAP and that is not disabled. */
       trap: memory.traps.some((trap) => !trap.disabled && statics.trapKinds[trap.index] === true),
     };
