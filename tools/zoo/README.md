@@ -272,7 +272,7 @@ recorder cannot be linked directly into the TypeScript engine. The separate
 Add `--autodelay 500` for a 500-millisecond interval between Borg controller
 polls, and `--start-delay 5000` to leave the initial turn-zero screen visible for
 five seconds before autoplay begins. These are wall-clock delays, not engine
-ticks. Defaults are120ms/1000ms; accepted ranges are10–10000ms and0–600000ms.
+ticks. Defaults are120ms/1000ms; accepted ranges are0–10000ms and0–600000ms.
 
 ```sh
 borg_game_dir=$(mktemp -d /tmp/borg-crow-305119160-XXXXXX) &&
@@ -301,3 +301,28 @@ That check keeps the game at turn0 during its startup delay, verifies normal
 Borg play, pauses with Escape, confirms the clock remains stopped, then resumes
 with Ctrl-Z and saves a real frontend screenshot. It is optional and separate
 from lightweight headless controls because it requires a browser installation.
+
+### Start shortly before a recorded death
+
+Every death page also includes a complete command with `--before-death 100`:
+
+```sh
+borg_game_dir=$(mktemp -d /tmp/borg-crow-near-death-XXXXXX) &&
+pnpm replay --experiment /tmp/borg-experiment --case 11-305119160 \
+  --seed 305119160 --bundle /tmp/borg-build/bundle.mjs --engine-dir ../engine \
+  --out "$borg_game_dir/game" --mode game --before-death 100 --autodelay 0
+```
+
+The requested target is death minus100 in the engine counter used by the report
+(100 ticks is not necessarily100 player actions). The original run is replayed
+with a read-only save observer; its full command hash/birth/outcome must match.
+The latest command boundary at or before the target is retained, and the actual
+start turn/lead are written to `checkpoint.json`. The real game loads that engine
+state and RNG and starts a fresh Borg; original private Borg memory is not restored.
+This is a saved-position experiment, not an assertion that the original controller
+will make identical subsequent decisions. No later checkpoint silently skips the
+danger, and no mismatch is accepted as a valid original checkpoint.
+
+`--autodelay 0` now removes the intentional controller wait. The game's **base
+delay factor** controls animation timing separately. Rendering, AI work and browser
+scheduling still cost time; near-death launch avoids watching the entire birth run.

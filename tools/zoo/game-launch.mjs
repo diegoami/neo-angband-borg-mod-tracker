@@ -6,8 +6,8 @@ import { createRequire } from 'node:module';
 import { execFileSync,spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 const sha=s=>createHash('sha256').update(s).digest('hex');
-export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnly=false,openBrowser=true,autodelay=120,startDelay=1000}) {
- if(!Number.isInteger(autodelay)||autodelay<10||autodelay>10000)throw Error('autodelay must be 10..10000 milliseconds');
+export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnly=false,openBrowser=true,autodelay=120,startDelay=1000,beforeDeath=undefined}) {
+ if(!Number.isInteger(autodelay)||autodelay<0||autodelay>10000)throw Error('autodelay must be 0..10000 milliseconds');
  if(!Number.isInteger(startDelay)||startDelay<0||startDelay>600000)throw Error('start-delay must be 0..600000 milliseconds');
  const root=resolve(experiment),buildPath=resolve(bundle),engineRoot=resolve(engine),output=resolve(out);
  const manifest=JSON.parse(readFileSync(join(root,'experiment.json'))),suite=JSON.parse(readFileSync(join(root,'suite.json')));
@@ -21,19 +21,25 @@ export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnl
  if(git('rev-parse','HEAD')!==build.engine.commit)throw Error('Engine checkout differs from recorded pin');
  for(const [file,hash] of Object.entries(build.contentFiles))if(sha(readFileSync(join(engineRoot,'packages/content/pack',file)))!==hash)throw Error('Engine content differs from retained build');
  mkdirSync(output,{recursive:false});
- let birth;const captured={};
- const runtime=await import(pathToFileURL(buildPath));
- try {
-  await runtime.run({...original.inputs,packDir:join(dirname(buildPath),'pack'),manifest:build.borg.manifest.data,
-   exactTickCap:build.exactTickCap,cSeedStartup:build.cSeedStartup,
-   onState:()=>{},onCommand:()=>{},onMessage:()=>{},onSave:(stage,save)=>{if(stage==='birth'){birth=save;throw captured;}},
-   truthIdentity:{id:'borg',version:build.borg.manifest.data.version,digest:build.bundleSha256,installation:'headless:'+build.bundleSha256}});
- } catch(error){if(error!==captured)throw error;}
- if(!birth)throw Error('This retained bundle cannot export its initial birth; use its source to rebuild the recorded host');
+ let birth,checkpoint=null;
+ if(beforeDeath!==undefined) {
+  const {captureCheckpoint}=await import('./checkpoint.mjs');
+  console.log(`Reconstructing ${beforeDeath} engine ticks before death; verifying the original complete run`);
+  checkpoint=await captureCheckpoint({original,build,bundle:buildPath,out:output,beforeDeath,commandFile:join(raw,'commands.jsonl')});birth=checkpoint.save;
+ } else {
+  const captured={},runtime=await import(pathToFileURL(buildPath));
+  try {
+   await runtime.run({...original.inputs,packDir:join(dirname(buildPath),'pack'),manifest:build.borg.manifest.data,
+    exactTickCap:build.exactTickCap,cSeedStartup:build.cSeedStartup,
+    onState:()=>{},onCommand:()=>{},onMessage:()=>{},onSave:(stage,save)=>{if(stage==='birth'){birth=save;throw captured;}},
+    truthIdentity:{id:'borg',version:build.borg.manifest.data.version,digest:build.bundleSha256,installation:'headless:'+build.bundleSha256}});
+  } catch(error){if(error!==captured)throw error;}
+ }
+ if(!birth)throw Error('This retained bundle cannot export the requested initial state');
  const states=readFileSync(join(raw,'states.jsonl'),'utf8').split('\n').filter(Boolean).map(s=>JSON.parse(s));
  const initial=states.find(s=>s.kind==='alignment'),active=states.find(s=>s.kind==='alignment-active');
  const options=active?.options?.values??{};
- const config={autodelay,startDelay,seed:c.seed,birth:original.birth,options,birthRng:initial?.worldRng??null,borgSeed:active?.seededBorgSeed??null,
+ const config={autodelay,startDelay,startTurn:checkpoint?.receipt.actualTurn??0,checkpoint:checkpoint?.receipt??null,seed:c.seed,birth:original.birth,options,birthRng:checkpoint?null:initial?.worldRng??null,borgSeed:active?.seededBorgSeed??null,
   seeded:build.cSeedStartup===true,truth:!!original.truthUse?.capabilityUse?.entries?.length,settings:original.settings,engine:build.engine,borg:build.borg};
  writeFileSync(join(output,'birth.save.json'),JSON.stringify(birth));writeFileSync(join(output,'launch.json'),JSON.stringify(config,null,2));
  const borgRoot=resolve(dirname(new URL(import.meta.url).pathname),'../..');
@@ -48,10 +54,10 @@ export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnl
 // FORK diagnostic launcher only: keep the normal screen, input gate and Borg pump.
 const __reportStart = async () => {
   if(!gameScreenLive || birthPending) {setTimeout(__reportStart,50);return;}
-  if(state.turn!==0)throw Error('Replay must begin at turn zero');
+  if(state.turn!==__reportConfig.startTurn)throw Error('Replay start turn differs from retained checkpoint');
   for(const [name,value] of Object.entries(__reportConfig.options))state.options.set(name,value);
   if(__reportConfig.birthRng)state.rng.setState(__reportConfig.birthRng);
-  globalThis.__neoReportBorgSeed=()=>{const seed=state.rng.randint1(0x10000000);if(__reportConfig.borgSeed!==null&&seed!==__reportConfig.borgSeed)throw Error('Recorded Borg startup RNG mismatch');return seed;};
+  globalThis.__neoReportBorgSeed=()=>{if(__reportConfig.checkpoint)return __reportConfig.borgSeed;const seed=state.rng.randint1(0x10000000);if(__reportConfig.borgSeed!==null&&seed!==__reportConfig.borgSeed)throw Error('Recorded Borg startup RNG mismatch');return seed;};
   const caps={has:(name)=>name==='engine:access'||__reportManifest.capabilities.includes(name)};
   // Reuse the real synchronous save writer and retain the original host contract.
   setTruthSaveWriter(__reportConfig.truth?(id,cap,current)=>{
@@ -63,6 +69,8 @@ const __reportStart = async () => {
   const opts=()=>({grants:caps,tier:'first-party',execution:'in-process',developerInProcess:true,firstParty:{truth:true}});
   const api=createApi2Host(ctx,{...opts(),viewDeps:modSnapshotSource.viewDeps()});
   await __reportDefinition.start?.(api);
+  const engineRngMatchedAtStart=!__reportConfig.checkpoint||Object.keys(__reportBirth.rng).every(key=>JSON.stringify(__reportBirth.rng[key])===JSON.stringify(state.rng.getState()[key]));
+  if(!engineRngMatchedAtStart)throw Error('Loaded checkpoint RNG differs from the retained engine state');
   const wrapper=__reportShim(__reportDefinition,opts);
   const loaded={id:'borg',api:2,manifest:__reportManifest,plugin:wrapper,tier:{trust:'first-party',execution:'in-process'}};
   let autoTimer;
@@ -74,7 +82,7 @@ const __reportStart = async () => {
     finishAutoplayerInstall(loaded,controllerInstallOf(answer));
     return installedController?.id==='borg';
   };
-  window.__neoReport={seed:__reportConfig.seed,startTurn:state.turn,started:false,resume,isRunning:()=>installedController?.id==='borg',autodelay:__reportConfig.autodelay,startDelay:__reportConfig.startDelay,actualBirth:{turn:state.turn,race:state.actor.player.race.name,class:state.actor.player.cls.name,hp:state.actor.player.chp,sp:state.actor.player.csp,gold:state.actor.player.au,stats:[...state.actor.player.statBirth],grid:{...state.actor.grid}},speed:(value)=>installedControllerSpeed?.(value),birth:__reportConfig.birth,hostTruth:__reportConfig.truth};
+  window.__neoReport={seed:__reportConfig.seed,startTurn:state.turn,started:false,engineRngMatchedAtStart,resume,isRunning:()=>installedController?.id==='borg',autodelay:__reportConfig.autodelay,startDelay:__reportConfig.startDelay,actualBirth:{turn:state.turn,race:state.actor.player.race.name,class:state.actor.player.cls.name,hp:state.actor.player.chp,sp:state.actor.player.csp,gold:state.actor.player.au,stats:[...state.actor.player.statBirth],grid:{...state.actor.grid}},speed:(value)=>installedControllerSpeed?.(value),birth:__reportConfig.birth,hostTruth:__reportConfig.truth};
   panelCues.setEnabled(false);
   for(const id of ['inventory','equipment','messages','monsters'])setSubwindowEnabledLive(id,true);
   render();
@@ -94,7 +102,7 @@ void __reportStart().catch(error=>{console.error(error);document.body.insertAdja
    return imports+code+append;
   }}]});
  await server.listen();const address=server.httpServer.address(),url=`http://127.0.0.1:${address.port}/?new=1&seed=${c.seed}`;
- console.log(`Open the actual Neo game: ${url}\nSeed ${c.seed}; ${c.race} ${c.class}; turn 0. The recorded Borg starts after ${startDelay}ms, with ${autodelay}ms controller polls. Escape pauses it; Ctrl-Z resumes it. Ctrl-C closes this isolated server.\nRetained launch: ${output}`);
+ console.log(`Open the actual Neo game: ${url}\nSeed ${c.seed}; ${c.race} ${c.class}; turn ${config.startTurn}. The recorded Borg starts after ${startDelay}ms, with ${autodelay}ms controller polls. Escape pauses it; Ctrl-Z resumes it. Ctrl-C closes this isolated server.\nRetained launch: ${output}`);
  if(openBrowser){const opener=spawn(process.platform==='darwin'?'open':'xdg-open',[url],{stdio:'ignore'});opener.on('error',()=>console.log('Open the printed URL in your browser.'));opener.unref();}
  const stop=()=>server.close();process.once('SIGINT',stop);process.once('SIGTERM',stop);return {server,url,output};
 }

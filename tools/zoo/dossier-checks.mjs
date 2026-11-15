@@ -85,5 +85,21 @@ test('copyable repeat commands use retained paths and create fresh /tmp output',
 }));
 test('invalid wall-clock delays are rejected before preparing a game or writing files',async()=>{
  const {launchGame}=await import('./game-launch.mjs');
- for(const options of [{autodelay:0},{autodelay:NaN},{autodelay:10001},{startDelay:-1},{startDelay:600001}])await assert.rejects(launchGame(options),/milliseconds/);
+ for(const options of [{autodelay:-1},{autodelay:NaN},{autodelay:10001},{startDelay:-1},{startDelay:600001}])await assert.rejects(launchGame(options),/milliseconds/);
+});
+
+test('death reports include the complete before-death launch command',()=>fixture(({root})=>{
+ const out=join(root,'before-death-report');reportExperiment(root,out);
+ for(const file of ['deaths/0-7/report.md','deaths/0-7/README.md','deaths/0-7/index.html']){
+  const text=readFileSync(join(out,file),'utf8');assert.match(text,/--before-death 100/);assert.match(text,/\/tmp\/borg-before-death-/);assert.match(text,/private memory/);
+ }
+}));
+test('checkpoint selection validates death endpoints and refuses unsupported observer sites',async()=>{
+ const {requestedCheckpoint,checkpointBundle}=await import('./checkpoint.mjs');
+ assert.equal(requestedCheckpoint({outcome:'death',turn:2442},100),2342);
+ assert.equal(requestedCheckpoint({outcome:'death',turn:40},100),0);
+ assert.throws(()=>requestedCheckpoint({outcome:'turn_cap',turn:2442},100),/death endpoint/);
+ assert.throws(()=>requestedCheckpoint({outcome:'death',turn:2442},0),/1..200000/);
+ const source='const result = originalGate.submit(token, intent); saveGame(game);';
+ assert.match(checkpointBundle(source),/checkpointCommandOrdinal/);assert.throws(()=>checkpointBundle(source+source),/checkpoint site/);
 });

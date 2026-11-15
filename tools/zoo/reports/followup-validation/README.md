@@ -36,3 +36,15 @@ Borg starts, Escape pauses at turn40, and the game remains at40 through a
 600ms observation. Ctrl-Z resumes ordinary Borg play to turn50, with no runtime
 errors and no reload/reseed. The final lightweight suite has36passing controls,
 including rejection of invalid delay values before any game/output is created.
+
+## Before-death and zero-delay check
+
+For the original crow endpoint2442, `--before-death 100` requests2342 and selects
+the last recorded command boundary2333 (actual lead109). A read-only save observer
+runs only at the selected command ordinal; the full replay command hash remains
+`5339bc6b9168a2594b3c66de7ec62d2be7dfd6fb188aa056111f3a1aeec7c89d`.
+The real frontend loads2333 with the saved engine RNG verified unchanged at Borg
+startup. With `--autodelay 0` it advances to2593 in the one-second browser check,
+with no runtime errors. That progression is a fresh-Borg saved-position diagnostic,
+not a rescue claim or exact continuation of original private controller memory.
+The expanded lightweight regression suite passes38cases without skips.
