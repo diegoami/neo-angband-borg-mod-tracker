@@ -3,10 +3,10 @@ import { readFileSync,writeFileSync,mkdirSync,existsSync } from 'node:fs';
 import { resolve,join,dirname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
-import { execFileSync } from 'node:child_process';
+import { execFileSync,spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 const sha=s=>createHash('sha256').update(s).digest('hex');
-export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnly=false}) {
+export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnly=false,openBrowser=true}) {
  const root=resolve(experiment),buildPath=resolve(bundle),engineRoot=resolve(engine),output=resolve(out);
  const manifest=JSON.parse(readFileSync(join(root,'experiment.json'))),suite=JSON.parse(readFileSync(join(root,'suite.json')));
  if(!/^\d+-\d+$/.test(caseId))throw Error('Invalid case identifier');
@@ -81,5 +81,6 @@ void __reportStart().catch(error=>{console.error(error);document.body.insertAdja
   }}]});
  await server.listen();const address=server.httpServer.address(),url=`http://127.0.0.1:${address.port}/?new=1&seed=${c.seed}`;
  console.log(`Open the actual Neo game: ${url}\nSeed ${c.seed}; ${c.race} ${c.class}; turn 0. The recorded Borg starts automatically. Escape stops it. Ctrl-C closes this isolated server.\nRetained launch: ${output}`);
+ if(openBrowser){const opener=spawn(process.platform==='darwin'?'open':'xdg-open',[url],{stdio:'ignore'});opener.on('error',()=>console.log('Open the printed URL in your browser.'));opener.unref();}
  const stop=()=>server.close();process.once('SIGINT',stop);process.once('SIGTERM',stop);return {server,url,output};
 }

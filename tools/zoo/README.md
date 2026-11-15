@@ -220,7 +220,7 @@ pnpm replay --experiment /tmp/borg-experiment --case 11-305119160 \
 For the wild cat use case `2-1746645326` / seed `1746645326` with another fresh
 output directory. Each generated death report contains its **complete** command,
 including these original local paths and a `mktemp` step. No BUILD/NEW placeholders
-are emitted for a retained experiment. Open the printed local URL: the game starts
+are emitted for a retained experiment. The launcher opens your browser when available (or prints the local URL); `--open false` suppresses automatic opening. The game starts
 at turn 0 and the Borg takes the keyboard automatically.
 
 To reconstruct the last thirty actions of an older run for the written report:
