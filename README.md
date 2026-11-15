@@ -145,7 +145,7 @@ Install it to watch it try, not to watch it win. Most of the other test files co
 It is a mod, not part of the engine, for two reasons:
 
 - It is not core because an automatic player inside the parity target would put an automated control surface inside the thing being kept faithful to Angband 4.2.6. Upstream's borg is a compile-time option precisely because it is not the game.
-- It uses the published mod API and nothing private. It reads the known world, sends the same commands your keys do, and has no test hook. Two of the parts it reads are restricted: only first-party mods get the truth domain, and the engine domain, where the port finds the game's numeric code tables, takes first-party status or your consent. If the Borg could only be written against internals, the modding API would not be finished, and that is worth finding out.
+- It uses the published mod API and sends player commands. The truth domain requires the monster truth grant, and the engine domain supplies the game's numeric code tables. The Borg reads hidden monster data only through the two calls listed in `src/api2/truth.ts`.
 
 The second point is what makes it worth having. It is the most demanding mod anyone could write against this API, so it is the best available test of whether the API does what it claims. Two of the problems found while wiring it up were engine bugs, not Borg bugs.
 
@@ -196,16 +196,7 @@ setting. The log line the Borg writes when it takes the keyboard names every
 setting that is not on its stock value, so the record of an unattended run says
 what it was told to do.
 
-Three of upstream's settings are deliberately absent rather than merely
-unimplemented: `borg_kills_uniques` and `borg_uses_dynamic_calcs` each need a
-subsystem this port does not have (a live census of which uniques are still
-alive, and a whole second formula-driven calculation engine), and
-`borg_uses_swaps` has a reader but nothing downstream of it - the swap items it
-would value are not ported either, so the toggle would tick and the Borg would
-play identically either way. The numeric settings - depth ceilings, the enchant
-limit, a pinned race or class to respawn as - have no yes-or-no shape, and the
-host's mod-manager toggle is boolean only, so there is no rule type to carry one
-yet. See PLANNED.md for what each of these still needs.
+The mod has no settings for `borg_kills_uniques` or `borg_uses_dynamic_calcs`; it has no live-unique census or formula interpreter. Backup weapon and armor scoring, home retrieval, and emergency swaps are implemented, with `borg_uses_swaps` enabled internally and no manager toggle. The manifest exposes only boolean rules, so depth ceilings, the enchant limit, and pinned respawn race or class have no setting here. See PLANNED.md for the remaining work.
 
 Since Neo Angband 0.27.2 the mod manager also shows an **Autoplayer speed**
 row while an autoplayer holds the keyboard, with Turbo/Fast/Normal/Slow tiers
@@ -215,7 +206,7 @@ no manifest change here.
 
 ## Two things it does not do
 
-- It does not read the real map. Upstream's borg reads the game's own structures directly (its comments call these "cheats") and scrapes the terminal for the rest. This one plans from the known world: the remembered map, the pack, and the stores as the character last saw them. With the real-map permission turned on, it also reads the exact hit points and race records of the monsters the character can perceive, and nothing else. It acts only through commands a player could issue.
+- It does not read the real map. Upstream's borg reads the game's own structures directly (its comments call these "cheats") and scrapes the terminal for the rest. This one plans from the known world: the remembered map, the pack, and the stores as the character last saw them. With the `state:monsters-actual.read` permission turned on, it also reads the exact hit points and race records of the monsters the character can perceive, and nothing else. It acts only through commands a player could issue.
 - It does not cost you reproducibility. Borg is deterministic: it draws
   only its own seeded generator and never the game's, so a Borg game stays
   replayable and the save's determinism ratchet stays untripped. An autoplayer that
@@ -268,6 +259,7 @@ flowchart TD
 ## Building and testing
 
     pnpm install --frozen-lockfile
+    pnpm build      # rebuild plugin.js after source changes
     pnpm verify     # typecheck, test, and prove plugin.js is a current build
 
 `plugin.js` is committed, because an install fetches it from a pinned tag and runs it
@@ -292,10 +284,7 @@ To develop against an unreleased engine:
 
 ## Releasing
 
-A tag matching `vX.Y.Z` is the release: there is no separate publish step. A
-minor or major bump posts an announcement to the RPGM Tools Discord's Neo
-Angband announcements forum automatically, built from the matching
-[CHANGELOG.md](CHANGELOG.md) heading. A patch-only bump stays quiet by design.
+A tag matching `vX.Y.Z` triggers `.github/workflows/github-release.yml`, which creates a GitHub Release from the matching [CHANGELOG.md](CHANGELOG.md) section. The workflow marks versions with a prerelease suffix, or versions starting with `0.`, as prereleases.
 
 ## Questions, or something wrong
 

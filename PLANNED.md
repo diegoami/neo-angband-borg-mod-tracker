@@ -3,11 +3,7 @@
 **Opened 2026-08-21. Target: full functionality, validated by several successful
 runs, where a successful run means it tries its best and gets as far as it can.**
 
-This file exists because the mod's tests are green, its port is faithful, and the
-thing a player installs does not play properly. Nothing below is a bug in the
-ported code. Every item is a seam that was built, documented and never connected,
-which is a failure mode this project has now hit four times, so the shape is worth
-naming: a capability that exists in the tree and not in the product.
+This file records earlier wiring failures and release observations. The dated sections describe the interfaces used at the time. README.md and docs/API2-MIGRATION.md describe the current controller and bridge.
 
 ## What was actually wrong
 
@@ -79,11 +75,9 @@ Three claims, and the third is the one that decides it:
    Borg paced with nothing in sight, and it stood still in town while something it
    could not see killed it. Both are diagnosed and fixed below (symptoms 4 and 5),
    and both were found by asking the harness new questions rather than by watching
-   again - which is the shape this claim keeps meeting. The watching is still
-   owed.
+   again. The second watching is recorded below.
 
-Until 3 is done, nothing here says the Borg plays properly. See the README's own
-"What it is" section, which was narrowed on 2026-08-21 for exactly this reason.
+The observations under "Watched playing, 2026-08-22" complete item 3 for those builds. They do not verify the current build.
 
 ## Watched playing, 2026-08-21
 
@@ -515,7 +509,7 @@ is correct given the state it was handed. The instrument that finds them is a
 harness that plays, and the question to ask of any remaining seam is not "is it
 implemented" but "who writes it".
 
-### What is still not ported, named rather than left to be rediscovered
+### Combat regeneration
 
 The `PF_COMBAT_REGEN` gates read `PlayerView.classFlags`. The rest check rejects a
 combat regenerator at full HP (`borg-flow-misc.c:1219-1221`), and the
@@ -551,12 +545,7 @@ the version field is not. Danger vision needs a host that supplies
 that would have pinned a digest on a change inert on every game a player could
 actually be running.
 
-**The engine range is `>=0.26.0` as of 0.7.0, and 0.6.1 is where it stopped being
-permissive.** The move from 0.25.0 to 0.26.0 is the two fixes that live in the
-game: `CellView.trap` narrowed to `square_isdisarmabletrap`, so a locked door is
-no longer offered as something to disarm, and the host answering a blocking
-prompt on an autoplayer's behalf. A Borg without either wedges on the first
-locked door or on the first `-more-`, which is not a reduced Borg.
+The current manifest requires Neo Angband `>=1.23.0-beta.1` and mod API `>=2.0.0 <3.0.0`. Version 0.7.0 required `>=0.27.0`, which includes the trap predicate, prompt handling, multi-turn rest, and store command handlers.
 
 The paragraph below is about the earlier move, from `>=0.12.0`, and the argument
 is the same one.
@@ -670,11 +659,7 @@ docstring says.
   from the loadout the character is actually in - and a test asserts the
   simulated answer field-for-field against really equipping the item.
 
-  This mod's half is `borgSimulatePower` (`src/trait/simulate.ts`): the ported
-  `borg_notice` and `borg_power`, over that view, against a scratch copy of the
-  self-model. Five of the seven questions the ported subsystems ask are wired
-  from it; `weapon_swap_value` and `armour_swap_value` are unreachable, because
-  this port has no swap subsystem and both contribute zero to `borg_power`.
+  `borgSimulatePower` (`src/trait/simulate.ts`) runs `borg_notice` and `borg_power` against a scratch self-model for hypothetical equipment. Carried backup weapon and armor values are scored separately by `src/trait/weapon-swap.ts` and `src/trait/armour-swap.ts`, and both contribute to `borg_power`.
 
   It shipped for one day behind a fourth `makeCoreResolvers` input, `loadout`,
   which carried a capability answer rather than a datum: `plugin.ts` probed
@@ -915,15 +900,7 @@ and none of them is "not yet gotten to":**
   covering ranges, traits, config, activations and every `tv_*`). That is a
   second calculation engine sitting behind the flag, not a flag on this one.
   Porting it is disproportionate to a settings audit and has not been attempted.
-- `borg_uses_swaps` has a real reader (`borgUsesSwaps`, `store.ts:450`) that
-  gates `borgThinkHomeBuySwapWeapon` / `borgThinkHomeBuySwapArmour`
-  (`buy.ts:543-587`) - but both return `false` unconditionally whenever
-  `weaponSwapEval` / `armourSwapEval` are absent, and `think-session.ts:400-405`
-  says in its own comment that they are absent on purpose: "Unreachable until
-  the swap subsystem is ported, not merely unwired." A swap also contributes
-  zero to `borg_power` here. Flipping this toggle would tick in the mod manager
-  and change nothing the Borg does, which is exactly the failure this file
-  exists to name - so unlike `borg_munchkin_start`, it is not shipped.
+- `borg_uses_swaps` is enabled internally. The port scores carried backup weapons and armor, retrieves better backups from home, and equips them during danger through `borgBackupSwap`. The mod manager has no toggle for this setting.
 
 **What is still open on neo-angband#30**, in the order it is worth doing:
 
