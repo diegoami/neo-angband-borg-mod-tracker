@@ -36,7 +36,7 @@ import {
   BORG_VIEW,
 } from "./world/grid.js";
 import { BI } from "./trait/trait-index.js";
-import { borgCaveFloorBold, featIsShop } from "./flow/flow-consts.js";
+import { borgCaveFloorBold } from "./flow/flow-consts.js";
 import type { BorgWorld } from "./world/model.js";
 import { makeLevelFacts } from "./world/model.js";
 import {
@@ -44,6 +44,8 @@ import {
   emptyMessageTables,
   type BorgMessageTables,
 } from "./perceive-messages.js";
+import { borgLos } from "./danger/geometry.js";
+import { GOAL_KILL, GOAL_TAKE } from "./world/model.js";
 import { getFearCaches } from "./danger/state.js";
 import { FEAR_REGION_H, FEAR_REGION_W } from "./danger/fear.js";
 
@@ -187,20 +189,6 @@ function ingestMap(world: BorgWorld, view: BorgView): void {
         if (c.inView) g.info &= ~BORG_IGNORE_MAP;
       }
       g.trap = c.trap;
-
-      /* default store to HOME (borg-update.c, "default store to HOME"):
-       * BORG_HOME, the home's index, is its offset from STORE_GENERAL. */
-      g.store = FEAT.HOME - FEAT.STORE_GENERAL;
-      /* Shop Doors: ag->store = square_shopnum, and track_shop_x/y[i] = x/y.
-       * square_shopnum is f_info[feat].shopnum - 1, and the engine numbers
-       * the shops 1..8 in FEAT order (STORE_GENERAL..HOME), so the index is
-       * the feat's offset from STORE_GENERAL. */
-      if (featIsShop(g.feat)) {
-        const i = g.feat - FEAT.STORE_GENERAL;
-        g.store = i;
-        world.shopX[i] = x;
-        world.shopY[i] = y;
-      }
 
       /* Interior permanent walls mark vault levels (borg-update.c:418-420). */
       if (g.feat === FEAT.PERM && world.facts.depth && x && y && x !== bounds.width - 1 && y !== bounds.height - 1) {
@@ -378,6 +366,7 @@ function ingestMonsters(
     names.set(m.id, m.race);
 
     let idx = byMidx.get(m.id);
+    const isNew = idx === undefined;
     if (idx === undefined) {
       idx = world.kills.alloc();
       byMidx.set(m.id, idx);
@@ -390,6 +379,9 @@ function ingestMonsters(
       }
     }
     const k = world.kills.at(idx);
+    const moved = !isNew && (k.pos.x !== m.grid.x || k.pos.y !== m.grid.y);
+    const converted = !isNew && k.rIdx !== m.raceIndex;
+    const fellAsleep = !isNew && k.awake && m.asleep;
     k.mIdx = m.id;
     k.rIdx = m.raceIndex;
     k.isMorgoth = m.race.toLowerCase().startsWith("morgoth");
@@ -401,6 +393,22 @@ function ingestMonsters(
     }
     k.pos.x = m.grid.x;
     k.pos.y = m.grid.y;
+    /* borg-flow-kill.c:789,1069,1500: invalidate only when the belief changes. */
+    if (isNew || moved || converted || fellAsleep) world.invalidateDanger();
+    /* borg_sleep_kill:444 and race conversion:1503 cancel the active goal. */
+    if (converted || fellAsleep) world.self.goal.type = 0;
+    if (isNew && (world.self.trait[BI.LIGHT] ?? 0) &&
+        borgLos(world, k.pos.y, k.pos.x, world.self.c.y, world.self.c.x)) {
+      /* borg_new_kill:822-825 cancels a flow into a newly seen lit threat. */
+      world.self.goal.type = 0;
+    }
+    const target = world.flowTarget;
+    if (moved && (((world.self.trait[BI.ESP] ?? 0) === 0 && world.self.goal.type === GOAL_KILL &&
+        (target?.flowY[0] === k.pos.y && target?.flowX[0] === k.pos.x)) ||
+        (world.self.goal.type === GOAL_TAKE && world.self.munchkinMode))) {
+      /* borg_update_kill requires both coordinates to avoid cancelling unrelated flows. */
+      world.self.goal.type = 0;
+    }
     k.awake = !m.asleep;
     k.afraid = m.afraid;
     k.confused = m.confused;
@@ -494,19 +502,47 @@ export interface TakeValuation {
   /** Host kind lookup; absent means every kind reads as unaware. */
   kindCost?: KindCostResolver | undefined;
   /**
-   * "tval:sval" of every kind the Borg has thrown away on this level, which is
-   * this port's stand-in for upstream's inscription. borg_drop_junk inscribes
-   * an item "borg ignore" BEFORE dropping it (borg-junk.c:464-467) precisely so
-   * that borg_new_take prices it at -10 and the Borg never walks back to it.
-   * The frozen action surface has no inscribe command, so the Borg remembers
-   * instead. Per kind rather than per object, which is what the price is anyway.
+   * "tval:sval" of kinds thrown away when the drop had no surviving objectId.
+   * borg_drop_junk inscribes that one item "borg ignore" before dropping it
+   * (borg-junk.c:462-467) so borg_new_take prices it at -10
+   * (borg-flow-take.c:271). The action surface has no inscribe command.
    */
   junked?: ReadonlySet<string> | undefined;
+  /**
+   * objectId of whole stacks thrown away. The id is still on that object after
+   * the drop, so only it prices at -10. A split's dropped part gets a new id
+   * (known-world.ts knownObjectId), and those drops stay in `junked`.
+   */
+  junkedIds?: ReadonlySet<number> | undefined;
 }
 
 /** The junked-set key for an object. */
 export function junkKey(tval: number, sval: number): string {
   return `${String(tval)}:${String(sval)}`;
+}
+
+/** Session id of one known object. The API 1 item type does not declare it. */
+function objectIdOf(item: ItemView): number | undefined {
+  if (!("objectId" in item)) return undefined;
+  const id = (item as { objectId?: unknown }).objectId;
+  return typeof id === "number" ? id : undefined;
+}
+
+/**
+ * Remember one dropped object. A whole drop keeps its objectId on the floor.
+ * A split gives the dropped part a new id, so the source id would name the
+ * part still carried (known-world.ts:241).
+ */
+export function rememberJunk(
+  item: ItemView,
+  quantity: number | undefined,
+  junked: Set<string>,
+  junkedIds: Set<number>,
+): void {
+  const whole = quantity === undefined || quantity >= item.number;
+  const id = whole ? objectIdOf(item) : undefined;
+  if (id !== undefined) junkedIds.add(id);
+  else junked.add(junkKey(item.tval, item.sval));
 }
 
 /** tval_is_money: TV_GOLD (generated/tvals.ts). */
@@ -545,6 +581,8 @@ export function takeValue(item: ItemView, valuation: TakeValuation): number {
 
   if (item.toA < 0 || item.toD < 0 || item.toH < 0) value = -10;
   if (item.inscription?.startsWith("borg ignore")) value = -10;
+  const ignored = objectIdOf(item);
+  if (ignored !== undefined && valuation.junkedIds?.has(ignored)) value = -10;
   if (valuation.junked?.has(junkKey(item.tval, item.sval))) value = -10;
 
   return value;
