@@ -83,3 +83,7 @@ test('copyable repeat commands use retained paths and create fresh /tmp output',
  }
  const text=readFileSync(join(out,'deaths/0-7/index.html'),'utf8');assert.match(text,/mktemp -d \/tmp\/borg-game-7-/);assert.match(text,/--seed 7/);assert.match(text,/--mode game/);
 }));
+test('invalid wall-clock delays are rejected before preparing a game or writing files',async()=>{
+ const {launchGame}=await import('./game-launch.mjs');
+ for(const options of [{autodelay:0},{autodelay:NaN},{autodelay:10001},{startDelay:-1},{startDelay:600001}])await assert.rejects(launchGame(options),/milliseconds/);
+});

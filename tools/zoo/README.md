@@ -266,3 +266,24 @@ while serving the unchanged pinned Neo frontend. No engine source is rewritten.
 This follows angband-recorder's pinned-runtime/fresh-start approach; the native C
 recorder cannot be linked directly into the TypeScript engine. The separate
 `watch` mode is still a diagnostic known-map viewer, not the normal game screen.
+
+### Delay, pause and resume in the real game
+
+Add `--autodelay 500` for a 500-millisecond interval between Borg controller
+polls, and `--start-delay 5000` to leave the initial turn-zero screen visible for
+five seconds before autoplay begins. These are wall-clock delays, not engine
+ticks. Defaults are120ms/1000ms; accepted ranges are10–10000ms and0–600000ms.
+
+```sh
+borg_game_dir=$(mktemp -d /tmp/borg-crow-305119160-XXXXXX) &&
+pnpm replay --experiment /tmp/borg-experiment --case 11-305119160 \
+  --seed 305119160 --bundle /tmp/borg-build/bundle.mjs --engine-dir ../engine \
+  --out "$borg_game_dir/game" --mode game --autodelay 500 --start-delay 5000
+```
+
+Escape stops the Borg. **Ctrl-Z resumes it** in this diagnostic session, using
+the same running Borg object/private memory; it does not reload the game or
+reseed it. Normal key handling and game rendering remain in the real frontend.
+The resume hook is part of the isolated diagnostic boot adapter; the engine
+checkout is unchanged. You can also press Ctrl-Z during the initial delay to
+start immediately, which cancels the scheduled start.

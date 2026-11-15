@@ -27,3 +27,12 @@ This is a synthetic validation recording, not another cohort or a survival resul
 
 The screenshot is from Neo's normal renderer. The separate report's known-state
 animation is labelled as reconstructed observations, not an original screenshot.
+
+## Delay and live resume follow-up
+
+Real-frontend browser regression: `autodelay=250ms`, `startDelay=3000ms` leaves
+actual turn0 visible with no controller running during the initial delay. The
+Borg starts, Escape pauses at turn40, and the game remains at40 through a
+600ms observation. Ctrl-Z resumes ordinary Borg play to turn50, with no runtime
+errors and no reload/reseed. The final lightweight suite has36passing controls,
+including rejection of invalid delay values before any game/output is created.

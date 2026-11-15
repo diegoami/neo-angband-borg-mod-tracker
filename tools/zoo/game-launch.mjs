@@ -6,7 +6,9 @@ import { createRequire } from 'node:module';
 import { execFileSync,spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 const sha=s=>createHash('sha256').update(s).digest('hex');
-export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnly=false,openBrowser=true}) {
+export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnly=false,openBrowser=true,autodelay=120,startDelay=1000}) {
+ if(!Number.isInteger(autodelay)||autodelay<10||autodelay>10000)throw Error('autodelay must be 10..10000 milliseconds');
+ if(!Number.isInteger(startDelay)||startDelay<0||startDelay>600000)throw Error('start-delay must be 0..600000 milliseconds');
  const root=resolve(experiment),buildPath=resolve(bundle),engineRoot=resolve(engine),output=resolve(out);
  const manifest=JSON.parse(readFileSync(join(root,'experiment.json'))),suite=JSON.parse(readFileSync(join(root,'suite.json')));
  if(!/^\d+-\d+$/.test(caseId))throw Error('Invalid case identifier');
@@ -31,7 +33,7 @@ export async function launchGame({experiment,caseId,bundle,engine,out,prepareOnl
  const states=readFileSync(join(raw,'states.jsonl'),'utf8').split('\n').filter(Boolean).map(s=>JSON.parse(s));
  const initial=states.find(s=>s.kind==='alignment'),active=states.find(s=>s.kind==='alignment-active');
  const options=active?.options?.values??{};
- const config={seed:c.seed,birth:original.birth,options,birthRng:initial?.worldRng??null,borgSeed:active?.seededBorgSeed??null,
+ const config={autodelay,startDelay,seed:c.seed,birth:original.birth,options,birthRng:initial?.worldRng??null,borgSeed:active?.seededBorgSeed??null,
   seeded:build.cSeedStartup===true,truth:!!original.truthUse?.capabilityUse?.entries?.length,settings:original.settings,engine:build.engine,borg:build.borg};
  writeFileSync(join(output,'birth.save.json'),JSON.stringify(birth));writeFileSync(join(output,'launch.json'),JSON.stringify(config,null,2));
  const borgRoot=resolve(dirname(new URL(import.meta.url).pathname),'../..');
@@ -61,13 +63,22 @@ const __reportStart = async () => {
   const opts=()=>({grants:caps,tier:'first-party',execution:'in-process',developerInProcess:true,firstParty:{truth:true}});
   const api=createApi2Host(ctx,{...opts(),viewDeps:modSnapshotSource.viewDeps()});
   await __reportDefinition.start?.(api);
-  const wrapper=__reportShim(__reportDefinition,opts),answer=wrapper.controller?.(ctx);
-  if(!answer)throw Error('Recorded Borg refused to start');
-  window.__neoReport={seed:__reportConfig.seed,startTurn:state.turn,started:false,actualBirth:{turn:state.turn,race:state.actor.player.race.name,class:state.actor.player.cls.name,hp:state.actor.player.chp,sp:state.actor.player.csp,gold:state.actor.player.au,stats:[...state.actor.player.statBirth],grid:{...state.actor.grid}},speed:(value)=>installedControllerSpeed?.(value),birth:__reportConfig.birth,hostTruth:__reportConfig.truth};
+  const wrapper=__reportShim(__reportDefinition,opts);
+  const loaded={id:'borg',api:2,manifest:__reportManifest,plugin:wrapper,tier:{trust:'first-party',execution:'in-process'}};
+  let autoTimer;
+  const resume=()=>{
+    clearTimeout(autoTimer);
+    if(state.isDead||installedController)return false;
+    const answer=wrapper.controller?.(ctx);if(!answer)throw Error('Recorded Borg refused to resume');
+    MOD_AUTOPLAYER_TICK_MS=__reportConfig.autodelay;
+    finishAutoplayerInstall(loaded,controllerInstallOf(answer));
+    return installedController?.id==='borg';
+  };
+  window.__neoReport={seed:__reportConfig.seed,startTurn:state.turn,started:false,resume,isRunning:()=>installedController?.id==='borg',autodelay:__reportConfig.autodelay,startDelay:__reportConfig.startDelay,actualBirth:{turn:state.turn,race:state.actor.player.race.name,class:state.actor.player.cls.name,hp:state.actor.player.chp,sp:state.actor.player.csp,gold:state.actor.player.au,stats:[...state.actor.player.statBirth],grid:{...state.actor.grid}},speed:(value)=>installedControllerSpeed?.(value),birth:__reportConfig.birth,hostTruth:__reportConfig.truth};
   panelCues.setEnabled(false);
   for(const id of ['inventory','equipment','messages','monsters'])setSubwindowEnabledLive(id,true);
   render();
-  setTimeout(()=>{finishAutoplayerInstall({id:'borg',api:2,manifest:__reportManifest,plugin:wrapper,tier:{trust:'first-party',execution:'in-process'}},controllerInstallOf(answer));window.__neoReport.started=installedController?.id==='borg';},1000);
+  autoTimer=setTimeout(()=>{window.__neoReport.started=resume();},__reportConfig.startDelay);
 };
 void __reportStart().catch(error=>{console.error(error);document.body.insertAdjacentHTML('beforeend','<pre id="report-launch-error"></pre>');document.querySelector('#report-launch-error').textContent=String(error);});
 `;
@@ -77,10 +88,13 @@ void __reportStart().catch(error=>{console.error(error);document.body.insertAdja
    if(id.split('?')[0]!==join(engineRoot,'packages/web/src/main.ts'))return;
    const needle='function bootGame(): ReturnType<typeof startGame> {';if(code.split(needle).length!==2)throw Error('Unsupported normal-game boot site');sites++;
    code=code.replace(needle,needle+`\nlookStore.choose('Vanilla');bootedNew=true;setActiveId(newCharId());attachSlot(getActiveId());reloadStorage.setItem(SKIP_TITLE_KEY,'1');reloadStorage.setItem(BIRTH_DONE_KEY,'1');return loadGame(pack,__reportBirth);\n`);
+   const resumeSite='function tryBorgCommand(): void {';
+   if(code.split(resumeSite).length!==2)throw Error('Unsupported Borg resume command site');
+   code=code.replace(resumeSite,resumeSite+`\nif(!installedController&&window.__neoReport?.resume){window.__neoReport.resume();return;}\n`);
    return imports+code+append;
   }}]});
  await server.listen();const address=server.httpServer.address(),url=`http://127.0.0.1:${address.port}/?new=1&seed=${c.seed}`;
- console.log(`Open the actual Neo game: ${url}\nSeed ${c.seed}; ${c.race} ${c.class}; turn 0. The recorded Borg starts automatically. Escape stops it. Ctrl-C closes this isolated server.\nRetained launch: ${output}`);
+ console.log(`Open the actual Neo game: ${url}\nSeed ${c.seed}; ${c.race} ${c.class}; turn 0. The recorded Borg starts after ${startDelay}ms, with ${autodelay}ms controller polls. Escape pauses it; Ctrl-Z resumes it. Ctrl-C closes this isolated server.\nRetained launch: ${output}`);
  if(openBrowser){const opener=spawn(process.platform==='darwin'?'open':'xdg-open',[url],{stdio:'ignore'});opener.on('error',()=>console.log('Open the printed URL in your browser.'));opener.unref();}
  const stop=()=>server.close();process.once('SIGINT',stop);process.once('SIGTERM',stop);return {server,url,output};
 }
