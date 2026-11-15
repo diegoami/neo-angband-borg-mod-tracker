@@ -1,0 +1,13 @@
+{
+  "upstreamBorg": "aa9229530e079bfecf6478a37b5d13fc6494eb1a",
+  "forkBefore": "76f25aa70b912f12005ef3cd612e4133bd16c279",
+  "publishedTuple": "1.23.0-beta.4",
+  "exactSource": "d27ed50f9e3b650a43cceda5a0c007d03cc321df",
+  "node": "26.13.1",
+  "sourcePnpm": "12.3.4",
+  "sourceArtifacts": {
+    "rpgm-tools-neo-angband-content-1.23.0-beta.4.tgz": "33d4e49969b8161f7bf95276a49486af7851113bec428466b2387faf1cdbfbeb",
+    "rpgm-tools-neo-angband-core-1.23.0-beta.4.tgz": "734734d773d729f6afcfb08b571a8b6aee58ea32a1504d4c09b4a83dedfdcece",
+    "rpgm-tools-neo-angband-mod-sdk-1.23.0-beta.4.tgz": "1e99394479779a242b578e8aa17717639415d022894399870d9685b2f96103f3"
+  }
+}

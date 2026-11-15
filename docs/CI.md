@@ -57,3 +57,13 @@ and add fifty-six tactical backup, public-command, SR and declared-option contro
 full-suite guard rejects skipped or incomplete output. Historical run records
 retain their original counts and dependency profiles; beta.3 upgrade task39
 updates the source artifact recipe only from the engine producer's verified pin.
+
+## API2.1 upstream import (2026-11-15)
+
+The current ordinary profile uses matching published Core/SDK/content
+1.23.0-beta.4. The separate exact-source job builds and verifies official engine
+d27ed50f9e3b650a43cceda5a0c007d03cc321df with Node26.13.1/pnpm12.3.4, checks each
+packed artifact hash, and forces the transitive SDK to the same exact artifact.
+This replaces the old official06a beta.3 compatibility pin because current Borg
+requires the API2.1 fields. The ordinary/source gates retain one shared full-suite
+count with zero skips. Earlier version/count descriptions above are historical.

@@ -1,4 +1,4 @@
-# FORK: RAW official06a compatibility, separate from unchanged published beta.3 default.
+# FORK: RAW official d27ed50 compatibility, separate from the published beta.4 tuple.
 name: notespot-source
 on: {"workflow_call":{},"workflow_dispatch":{}}
 jobs:
@@ -10,11 +10,11 @@ jobs:
       - uses: actions/checkout@v7
         with:
           repository: neostryder/neo-angband
-          ref: 06a2321ce30a414df20d1b20d486446e7688171c
+          ref: d27ed50f9e3b650a43cceda5a0c007d03cc321df
           path: engine-source
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - run: bash tools/build-notespot-artifacts.sh engine-source "$RUNNER_TEMP/engine-artifacts"
       - run: node tools/verify-notespot-source.mjs "$RUNNER_TEMP/engine-artifacts/tarballs"

@@ -34,9 +34,9 @@
     "check:zoo-host": "node --test tools/zoo/message-host-checks.mjs"
   },
   "devDependencies": {
-    "@rpgm-tools/neo-angband-content": "1.23.0-beta.3",
-    "@rpgm-tools/neo-angband-core": "1.23.0-beta.3",
-    "@rpgm-tools/neo-angband-mod-sdk": "1.23.0-beta.3",
+    "@rpgm-tools/neo-angband-content": "1.23.0-beta.4",
+    "@rpgm-tools/neo-angband-core": "1.23.0-beta.4",
+    "@rpgm-tools/neo-angband-mod-sdk": "1.23.0-beta.4",
     "@types/node": "^26.6.6",
     "@typescript/typescript6": "6.0.2",
     "esbuild": "^0.28.1",
@@ -47,8 +47,8 @@
     "node": ">=26"
   },
   "//forkEngineProfile": [
-    "FORK: declared engine profile is matching published Core/SDK/content beta.3.",
-    "The beta.1 noteSpot patch is retained only as historical evidence; four installed-package controls verify its beta.3 replacement.",
+    "FORK: declared engine profile is matching published Core/SDK/content beta.4.",
+    "The beta.1 noteSpot patch is retained only as historical evidence; four installed-package controls continue to verify the accepted replacement.",
     "Exact fork-source compatibility is a separate profile with explicit artifact and SDK resolution."
   ]
 }

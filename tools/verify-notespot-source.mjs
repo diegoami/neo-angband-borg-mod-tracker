@@ -12,12 +12,12 @@ import { assertFullSuite } from "./ci-profile.mjs";
 const artifacts = resolve(process.argv[2] ?? "");
 if (!process.argv[2]) throw new Error("Usage: node tools/verify-notespot-source.mjs /path/to/engine-tarballs");
 const tuple = {
-  core: "ab7a0adf00d05b5e4ce07ba34b6f2b8f22989a5da0ea45068c3bbc8444a7acdc",
-  "mod-sdk": "6f70f63c4ac9376101b8a2158100d66f0e041795b38d0bdb204b923cdede6917",
-  content: "eeec7c55a996fc5cc452b89eab99ae2342dada8450274a68c582f1cf308c6cfb",
+  core: "734734d773d729f6afcfb08b571a8b6aee58ea32a1504d4c09b4a83dedfdcece",
+  "mod-sdk": "1e99394479779a242b578e8aa17717639415d022894399870d9685b2f96103f3",
+  content: "33d4e49969b8161f7bf95276a49486af7851113bec428466b2387faf1cdbfbeb",
 };
 const files = Object.keys(tuple).map((name) => {
-  const file = join(artifacts, `rpgm-tools-neo-angband-${name}-1.23.0-beta.3.tgz`);
+  const file = join(artifacts, `rpgm-tools-neo-angband-${name}-1.23.0-beta.4.tgz`);
   if (createHash("sha256").update(readFileSync(file)).digest("hex") !== tuple[name]) {
     throw new Error(`Wrong engine artifact: ${file}`);
   }
@@ -31,7 +31,7 @@ const archive = execFileSync("git", ["archive", "HEAD"], { cwd: root, maxBuffer:
 execFileSync("tar", ["-x", "-C", tree], { input: archive });
 const run = (command, args) => execFileSync(command, args, { cwd: tree, stdio: "inherit", env: { ...process.env, NEO_ANGBAND_REPO: "", NEO_ANGBAND_LOCAL_CORE: "", CI: "1" } });
 console.log(`Preserved verification tree/logs: ${receipt}`);
-// The declared beta.3 profile has retired the beta.1 carry. Never apply or
+// The declared beta.4 profile has retired the beta.1 carry. Never apply or
 // silently remove a patch while selecting a source compatibility profile.
 const workspace = readFileSync(join(tree, "pnpm-workspace.yaml"), "utf8");
 if (workspace.includes("@rpgm-tools/neo-angband-core@1.23.0-beta.1")) {
@@ -54,14 +54,14 @@ const graph = {
   transitiveSDK: JSON.parse(readFileSync(transitiveSDK, "utf8")).version,
   sameSDK: realpathSync(directSDK) === realpathSync(transitiveSDK),
 };
-if (graph.core !== "1.23.0-beta.3" || graph.directSDK !== "1.23.0-beta.3" ||
-    graph.transitiveSDK !== "1.23.0-beta.3" || !graph.sameSDK) {
+if (graph.core !== "1.23.0-beta.4" || graph.directSDK !== "1.23.0-beta.4" ||
+    graph.transitiveSDK !== "1.23.0-beta.4" || !graph.sameSDK) {
   throw new Error(`Incoherent source dependency graph: ${JSON.stringify(graph)}`);
 }
 writeFileSync(join(receipt, "profile.json"), JSON.stringify({
-  source: "06a2321ce30a414df20d1b20d486446e7688171c",
-  profile: "official06a-source-beta3",
-  producerReceipt: "047f9a625b4d5c59a20f39daf7a0a2a955417e2d",
+  source: "d27ed50f9e3b650a43cceda5a0c007d03cc321df",
+  profile: "official-d27ed50-source-beta4",
+  producerReceipt: "docs/runs/2026-11-15-upstream-import/pins.json",
   artifacts: tuple, graph, sdkOverride: "exact checked SDK artifact",
 }, null, 2) + "\n");
 console.log(`Exact-source dependency graph: ${JSON.stringify(graph)}`);
@@ -86,4 +86,4 @@ if (code !== 0) throw new Error(`Port verify failed: ${code}; ${receipt}`);
 // Share the ordinary full-suite contract; added cases cannot leave a stale
 // compatibility-only count that rejects a successful complete test run.
 assertFullSuite(output);
-console.log(`Exact-source port gate passed; source engine 06a2321ce30a414df20d1b20d486446e7688171c; receipts ${receipt}`);
+console.log(`Exact-source port gate passed; source engine d27ed50f9e3b650a43cceda5a0c007d03cc321df; receipts ${receipt}`);

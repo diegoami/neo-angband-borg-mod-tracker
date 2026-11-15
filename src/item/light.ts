@@ -9,7 +9,7 @@
  * (game/obj-cmd.ts). Wielding a fresh light uses act.wear.
  *
  * The illumination scan reads remembered terrain and torchlight flags, with
- * the live glow flag used by borg_check_light_only (borg-light.c:139-220).
+ * the visible glow supplied to borg_check_light_only (borg-light.c:139-220).
  *
  * FIDELITY on borg_check_light's panel math: see world/panel.ts for the
  * detailed note on how q_x/q_y (the panel indices upstream reads off the
