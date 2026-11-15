@@ -7,17 +7,25 @@ message/event bus. Gameplay source and the committed plugin are unchanged.
 
 ## Build and run
 
-Build a clean engine checkout (Core, SDK and composed content), then this Borg.
-The actual repositories, commits, content and bundle hashes are recorded. Use a
-full SHA when choosing a version; keep the built bundle and pack with results.
+Start from a workspace directory. These commands create explicit sibling
+checkouts named `borg` and `engine`; your existing tracker checkout can keep its
+current name and is not modified. While upstream PR109 is open, the harness lives
+on the fork branch shown below. After it lands upstream, the official mod
+repository can be cloned into the same `borg` directory instead.
+
+Build the clean engine checkout (Core, SDK and composed content), then the Borg.
+Actual repositories, commits, content and bundle hashes are recorded. Use a full
+SHA when choosing a version; keep the built bundle and pack with results.
 
 ```sh
+git clone --branch task/standalone-experiments \
+  https://github.com/diegoami/neo-angband-borg-mod-tracker.git borg
 git clone https://github.com/neostryder/neo-angband.git engine
 cd engine
 git checkout d27ed50f9e3b650a43cceda5a0c007d03cc321df
 pnpm install --frozen-lockfile
 pnpm exec tsc -b packages/core packages/mod-sdk packages/content
-cd ../neo-angband-mod-borg
+cd ../borg
 pnpm install --frozen-lockfile
 node tools/zoo/build.mjs --engine-dir ../engine --borg-dir . --out /tmp/borg-build \
   --exact-tick-cap true --c-seed-startup true --c-gcc-coordinate-order true
