@@ -31,7 +31,9 @@ function setup(inventory: ItemView[] = [item()], books = [book()], dungeon = fal
     maxDepth: 0, hp: 10, maxHp: 10, sp: 2, maxSp: 2 } });
   const kinds = new Map(books.map((b, i) => [b.name, {tval: b.tval, sval: i + 1, dungeon}]));
   const resolvers = makeCoreResolvers({ bookKind: (_tval, name) => kinds.get(name) ?? null });
-  const before = {player: base.player(), equipment: Array<ItemView | null>(12).fill(null), inventory, stats: {} as LoadoutSimulation["before"]["stats"]};
+  const before = {player: base.player(), equipment: Array<ItemView | null>(12).fill(null), inventory,
+    combat: {blows: base.player().blows ?? 100, damage: null},
+    stats: {} as LoadoutSimulation["before"]["stats"]};
   const view = { ...base, inventory: () => inventory, equipment: () => Array<ItemView | null>(12).fill(null),
     spellbooks: () => books, stores: () => [{feat: 0, featName: 'Home', isHome: true,
       owner: {name: 'you', purse: 0}, stock: []}],
