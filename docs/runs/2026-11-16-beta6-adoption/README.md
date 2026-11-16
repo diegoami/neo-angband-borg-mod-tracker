@@ -38,3 +38,12 @@ First hosted run43838155200 exposed the audit oracle's hardcoded local-home
 path in privacy scan; the fixture was parameterized in a new commit, preserving
 published history. Final-head validation and adoption merge receipts belong
 on PR105 and checkpoint26. No consumer or lab deployment is included.
+
+At f4e293856d0d4a8f1d4d7db438c18667c4ed9db8, hosted43838426426 passes
+ordinary and exact-source1275 tests/66 files/zero skips, types, current plugin
+(723.7KiB), real truth-host, privacy and final verify. The separate gitleaks
+backstop flags the mod-api2-host.ts SHA256 in the immutable audit build manifest
+as generic-api-key. Recomputing the public b4af703 source file's digest matches
+exactly. A .gitleaksignore entry covers only that commit/path/rule/line
+fingerprint; no file-wide or rule-wide exemption is added. The subsequent head
+must rerun all required checks before adoption.
