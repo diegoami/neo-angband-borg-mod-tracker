@@ -16401,6 +16401,14 @@ function borgCaution(ctx, flow) {
     const cure = borgEat(ctx, TV.MUSHROOM, SVAL.mush.cure_mind, d) ?? borgQuaffPotion(ctx, SVAL.potion.boldness, d) ?? borgQuaffPotion(ctx, SVAL.potion.heroism, d) ?? borgQuaffPotion(ctx, SVAL.potion.berserk, d) ?? borgSpellFail(ctx, 119 /* BERSERK_STRENGTH */, 25) ?? borgSpellFail(ctx, 62 /* HEROISM */, 25) ?? borgActivateItem(ctx, "act_cure_paranoia", d) ?? borgActivateItem(ctx, "act_hero", d) ?? borgActivateItem(ctx, "act_shero", d) ?? borgActivateItem(ctx, "act_cure_mind", d) ?? borgActivateItem(ctx, "act_rage_bless_resist", d) ?? borgActivateItem(ctx, "act_rem_fear_pois", d) ?? borgSpellFail(ctx, 82 /* HOLY_WORD */, 25);
     if (cure) return cure;
   }
+  if ((trait3(ctx, 27 /* CURHP */) < idiv(trait3(ctx, 28 /* MAXHP */), 3) || trait3(ctx, 27 /* CURHP */) < idiv(trait3(ctx, 28 /* MAXHP */), 2) && trait3(ctx, 27 /* CURHP */) < trait3(ctx, 35 /* CLEVEL */) * 3) && trait3(ctx, 231 /* ACCW */) < 3 && trait3(ctx, 214 /* AHEAL */) < 1 && trait3(ctx, 105 /* CDEPTH */) && ctx.rng.randint0(100) < 25) {
+    self.goal.leaving = true;
+    self.goal.fleeing = true;
+  }
+  if ((trait3(ctx, 116 /* ISCUT */) || trait3(ctx, 115 /* ISPOISONED */)) && trait3(ctx, 27 /* CURHP */) < idiv(trait3(ctx, 28 /* MAXHP */), 2) && trait3(ctx, 105 /* CDEPTH */) && ctx.rng.randint0(100) < 25) {
+    self.goal.leaving = true;
+    self.goal.fleeing = true;
+  }
   if (trait3(ctx, 27 /* CURHP */) < idiv(trait3(ctx, 28 /* MAXHP */), 10) || posDanger > trait3(ctx, 27 /* CURHP */) && trait3(ctx, 211 /* ATELEPORT */) + trait3(ctx, 212 /* AESCAPE */) <= 2 && trait3(ctx, 27 /* CURHP */) < idiv(trait3(ctx, 28 /* MAXHP */), 4) || trait3(ctx, 215 /* AEZHEAL */) > 5 && trait3(ctx, 27 /* CURHP */) < idiv(trait3(ctx, 28 /* MAXHP */), 4) || trait3(ctx, 28 /* MAXHP */) - trait3(ctx, 27 /* CURHP */) >= 600 && fs.fightingUnique && trait3(ctx, 105 /* CDEPTH */) >= 85) {
     const c = borgQuaffPotion(ctx, SVAL.potion.star_healing) ?? borgQuaffPotion(ctx, SVAL.potion.healing) ?? borgQuaffPotion(ctx, SVAL.potion.life);
     if (c) return c;
