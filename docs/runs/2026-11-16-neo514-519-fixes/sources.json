@@ -1,0 +1,90 @@
+{
+  "schema": "neo-port-fixes@1",
+  "pristine_base": "622b2ba82ee48b26c1be0517181eb29b8a8239e1",
+  "fork_base": "638979da690891c11da1c1e780631828953b03d7",
+  "sources": [
+    {
+      "issue": 514,
+      "sha": "c64c529d75d836fc9c31cfe4e95d380bcf2a9766",
+      "branch": "task/neo-port-514",
+      "title": "Restore the late confusion and fear cure passes",
+      "before_parity_failures": 19,
+      "before_controls_passed": 5,
+      "after_focused_passed": 133,
+      "source_prs": {
+        "fork": "https://github.com/diegoami/neo-angband-borg-mod-tracker/pull/106",
+        "upstream": "https://github.com/neostryder/neo-angband-mod-borg/pull/116"
+      }
+    },
+    {
+      "issue": 515,
+      "sha": "16f57c593574013f3e3e53fce27a409d33b5f31d",
+      "branch": "task/neo-port-515",
+      "title": "Restore late low-HP and status flee triggers",
+      "before_parity_failures": 4,
+      "before_controls_passed": 6,
+      "after_focused_passed": 119,
+      "source_prs": {
+        "fork": "https://github.com/diegoami/neo-angband-borg-mod-tracker/pull/107",
+        "upstream": "https://github.com/neostryder/neo-angband-mod-borg/pull/117"
+      }
+    },
+    {
+      "issue": 516,
+      "sha": "a8fd04a4f20da3632767ae743c92884c11bd234f",
+      "branch": "task/neo-port-516",
+      "title": "Short-circuit command alternatives before their side effects",
+      "before_parity_failures": 1,
+      "before_controls_passed": 1,
+      "after_focused_passed": 127,
+      "source_prs": {
+        "fork": "https://github.com/diegoami/neo-angband-borg-mod-tracker/pull/108",
+        "upstream": "https://github.com/neostryder/neo-angband-mod-borg/pull/118"
+      }
+    },
+    {
+      "issue": 517,
+      "sha": "78d550e23c4f55f793ecab185908ae014c2d15ba",
+      "branch": "task/neo-port-517",
+      "title": "Carry the selected cursed item through removal commands",
+      "before_parity_failures": 7,
+      "before_controls_passed": 2,
+      "after_focused_passed": 46,
+      "source_prs": {
+        "fork": "https://github.com/diegoami/neo-angband-borg-mod-tracker/pull/109",
+        "upstream": "https://github.com/neostryder/neo-angband-mod-borg/pull/119"
+      }
+    },
+    {
+      "issue": 518,
+      "sha": "34efa274acfe63779ed513fdd3672a3ecc962872",
+      "branch": "task/neo-port-518",
+      "title": "Brand the strongest eligible quiver ammunition stack",
+      "before_parity_failures": 4,
+      "before_controls_passed": 9,
+      "after_focused_passed": 46,
+      "source_prs": {
+        "fork": "https://github.com/diegoami/neo-angband-borg-mod-tracker/pull/110",
+        "upstream": "https://github.com/neostryder/neo-angband-mod-borg/pull/120"
+      }
+    },
+    {
+      "issue": 519,
+      "sha": "a108f2ac4b9d689713465276f7fd031717573ebb",
+      "branch": "task/neo-port-519",
+      "title": "Honor configured enchant limits in item selection",
+      "before_parity_failures": 6,
+      "before_controls_passed": 4,
+      "after_focused_passed": 41,
+      "source_prs": {
+        "fork": "https://github.com/diegoami/neo-angband-borg-mod-tracker/pull/111",
+        "upstream": "https://github.com/neostryder/neo-angband-mod-borg/pull/121"
+      }
+    }
+  ],
+  "combined_new_tests_passed": 73,
+  "required_full_count": 1348,
+  "ordinary_engine": "published matching Core/SDK/content1.23.0-beta.4",
+  "exact_engine": "d27ed50f9e3b650a43cceda5a0c007d03cc321df",
+  "scope": "source proposals; no merges, deployment, survival claim or new cohort"
+}

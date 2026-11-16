@@ -1,0 +1,70 @@
+
+ RUN  v5.1.0 /tmp/neo-port-fix-515
+
+ ❯ src/fight/late-flee.test.ts (10 tests | 4 failed) 23ms
+   × C low HP tail sets leaving and fleeing with no reserve cures 10ms
+   × C bleeding tail sets fleeing at below half HP even when above one third 2ms
+   × sets the independent status flee trigger for 116 3ms
+   × sets the independent status flee trigger for 115 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/fight/late-flee.test.ts > C low HP tail sets leaving and fleeing with no reserve cures
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/fight/late-flee.test.ts:64:56
+     62| it('C low HP tail sets leaving and fleeing with no reserve cures',()=>{
+     63|  const {ctx,world,t,flow}=setup();t[BI.CDEPTH]=1;t[BI.CURHP]=30;
+     64|  borgCaution(ctx,flow);expect(world.self.goal.fleeing).toBe(true);expe…
+       |                                                        ^
+     65| });
+     66|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/fight/late-flee.test.ts > C bleeding tail sets fleeing at below half HP even when above one third
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/fight/late-flee.test.ts:69:56
+     67| it('C bleeding tail sets fleeing at below half HP even when above one …
+     68|  const {ctx,world,t,flow}=setup();t[BI.CDEPTH]=1;t[BI.CURHP]=45;t[BI.I…
+     69|  borgCaution(ctx,flow);expect(world.self.goal.fleeing).toBe(true);expe…
+       |                                                        ^
+     70| });
+     71|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/fight/late-flee.test.ts > sets the independent status flee trigger for 116
+ FAIL  src/fight/late-flee.test.ts > sets the independent status flee trigger for 115
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/fight/late-flee.test.ts:72:223
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 6 passed (10)
+   Start at  11:03:21
+   Duration  668ms (transform 65%, setup 21%, import 10%, tests 4%)
+

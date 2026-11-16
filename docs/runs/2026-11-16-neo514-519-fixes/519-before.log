@@ -1,0 +1,77 @@
+
+ RUN  v5.1.0 /tmp/neo-port-fix-519
+
+ ❯ src/item/enchant-limit.test.ts (10 tests | 6 failed) 22ms
+   × honors configured limit above stock for armor 8ms
+   × honors configured limit above stock for hit 1ms
+   × honors configured limit above stock for damage 1ms
+   × honors configured lower limit and equality for armor 1ms
+   × honors configured lower limit and equality for hit 1ms
+   × honors configured lower limit and equality for damage 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/item/enchant-limit.test.ts > honors configured limit above stock for armor
+ FAIL  src/item/enchant-limit.test.ts > honors configured limit above stock for hit
+ FAIL  src/item/enchant-limit.test.ts > honors configured limit above stock for damage
+AssertionError: expected null to deeply equal { code: 'read', …(1) }
+
+- Expected:
+{
+  "args": {
+    "handle": 3,
+    "tgtitem": {
+      "handle": 2,
+    },
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/item/enchant-limit.test.ts:57:71
+     55| }
+     56| it.each(["armor","hit","damage"] as const)("honors configured limit ab…
+     57|  setBorgCfg({enchantLimit:20});expect(borgEnchanting(scene(axis,13))).…
+       |                                                                       ^
+     58| });
+     59| it.each(["armor","hit","damage"] as const)("honors configured lower li…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  src/item/enchant-limit.test.ts > honors configured lower limit and equality for armor
+ FAIL  src/item/enchant-limit.test.ts > honors configured lower limit and equality for hit
+ FAIL  src/item/enchant-limit.test.ts > honors configured lower limit and equality for damage
+AssertionError: expected { code: 'read', …(1) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "args": {
+    "handle": 3,
+    "tgtitem": {
+      "handle": 2,
+    },
+  },
+  "code": "read",
+}
+
+ ❯ src/item/enchant-limit.test.ts:60:69
+     58| });
+     59| it.each(["armor","hit","damage"] as const)("honors configured lower li…
+     60|  setBorgCfg({enchantLimit:6});expect(borgEnchanting(scene(axis,6))).to…
+       |                                                                     ^
+     61|  expect(borgEnchanting(scene(axis,5))?.code).toBe("read");
+     62| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 4 passed (10)
+   Start at  11:01:15
+   Duration  721ms (setup 49%, transform 40%, import 6%, tests 4%, worker 1%)
+

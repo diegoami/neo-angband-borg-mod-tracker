@@ -1,0 +1,9 @@
+
+ RUN  v5.1.0 /tmp/neo-port-fix-515
+
+
+ Test Files  3 passed (3)
+      Tests  119 passed (119)
+   Start at  11:04:35
+   Duration  1.30s (tests 37%, setup 33%, transform 15%, import 14%, worker 1%)
+

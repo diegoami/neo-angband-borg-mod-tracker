@@ -1,0 +1,117 @@
+
+ RUN  v5.1.0 /tmp/neo-port-fix-517
+
+ ❯ src/item/decurse-target.test.ts (9 tests | 7 failed) 13ms
+   × carries the cursed pack item's real handle 6ms
+   × carries the cursed equipment item's real handle 1ms
+   × carries the cursed quiver item's real handle 1ms
+   × prefers C pack order, then equipment, then quiver without equating FIRST_CURSED with a handle 1ms
+   × uses equipment before quiver when the pack has no curse 1ms
+   × does not emit a bare command if the curse flag has become stale 1ms
+   × does not select an empty or non-carried handle 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/item/decurse-target.test.ts > carries the cursed pack item's real handle
+ FAIL  src/item/decurse-target.test.ts > carries the cursed equipment item's real handle
+ FAIL  src/item/decurse-target.test.ts > carries the cursed quiver item's real handle
+AssertionError: expected { code: 'read', args: { handle: 3 } } to deeply equal { code: 'read', …(1) }
+
+- Expected
++ Received
+
+  {
+    "args": {
+      "handle": 3,
+-     "tgtitem": {
+-       "handle": 10,
+-     },
+    },
+    "code": "read",
+  }
+
+ ❯ src/item/decurse-target.test.ts:50:233
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  src/item/decurse-target.test.ts > prefers C pack order, then equipment, then quiver without equating FIRST_CURSED with a handle
+AssertionError: expected undefined to deeply equal { handle: 10 }
+
+- Expected:
+{
+  "handle": 10,
+}
+
++ Received:
+undefined
+
+ ❯ src/item/decurse-target.test.ts:51:244
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  src/item/decurse-target.test.ts > uses equipment before quiver when the pack has no curse
+AssertionError: expected undefined to deeply equal { handle: 11 }
+
+- Expected:
+{
+  "handle": 11,
+}
+
++ Received:
+undefined
+
+ ❯ src/item/decurse-target.test.ts:52:142
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  src/item/decurse-target.test.ts > does not emit a bare command if the curse flag has become stale
+AssertionError: expected { code: 'read', args: { handle: 3 } } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "args": {
+    "handle": 3,
+  },
+  "code": "read",
+}
+
+ ❯ src/item/decurse-target.test.ts:53:121
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  src/item/decurse-target.test.ts > does not select an empty or non-carried handle
+AssertionError: expected { code: 'read', args: { handle: 3 } } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "args": {
+    "handle": 3,
+  },
+  "code": "read",
+}
+
+ ❯ src/item/decurse-target.test.ts:56:146
+     54| it("does not use curse removal without the notice flag",()=>{const ctx…
+     55| it("does not emit when no removal means exists",()=>{const ctx=scene([…
+     56| it("does not select an empty or non-carried handle",()=>{const ctx=sce…
+       |                                                                                                                                                  ^
+     57|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 2 passed (9)
+   Start at  11:08:18
+   Duration  302ms (setup 53%, transform 36%, tests 6%, import 5%, worker 1%)
+

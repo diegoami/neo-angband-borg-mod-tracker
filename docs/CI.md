@@ -76,3 +76,7 @@ The opt-in class experiment is registered only with BORG_SOAK=1, rather than
 appearing as a skipped ordinary regression; the default suite does not start
 the180-life soak. Matching beta.4 packages and exact-source engined27ed50f
 remain unchanged. Release import does not adopt source fixes514–519.
+
+The proposed Neo514–519 integration adds73 regressions and requires1348 passed
+with zero skips in both ordinary and exact-source profiles. The engine tuple,
+source pin and opt-in soak policy remain unchanged.
