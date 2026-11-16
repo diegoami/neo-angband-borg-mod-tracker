@@ -6,9 +6,8 @@
  * enchanted eligible item and returns the read-scroll / cast command carrying
  * that item (withItemTarget), as the C pressed the item letter afterward.
  *
- * FIDELITY: the swap-weapon and quiver-ammo branches (weapon_swap /
- * QUIVER_START..QUIVER_END) need the swap subsystem and quiver view that the
- * frozen contract does not surface here, so those branches are omitted; the
+ * FIDELITY: swap-weapon and quiver-ammo enchanting remain separate omissions.
+ * Branding uses the public quiver view and carries the chosen item target. The
  * primary equipped-weapon/armour enchant path is preserved verbatim including
  * the +8 vs BORG_ENCHANT_LIMIT thresholds and the "skip a weak bow" rule.
  */
@@ -19,11 +18,9 @@ import { TV, SVAL } from "./svals.js";
 import type { ItemDeps } from "./deps.js";
 import { trait, isIdent, withItemTarget } from "./deps.js";
 import { Spell, borgSpellOkayFail, borgSpellFail } from "./magic.js";
-import { borgReadScroll } from "./item-use.js";
+import { borgReadScroll, borgActivateItem } from "./item-use.js";
 import { borgDecurseAny } from "./item-decurse.js";
-
-/** borg_cfg[BORG_ENCHANT_LIMIT] stock default (borg.txt / trait config). */
-const ENCHANT_LIMIT = 12;
+import { borgCfg } from "../trait/config.js";
 
 /** Enchant equipped armour to-ac (borg_enchant_to_a, enchant.c:111). */
 function borgEnchantToA(
@@ -46,7 +43,7 @@ function borgEnchantToA(
     if (!isArmourSlot(item)) continue;
     if (!isIdent(item, d)) continue;
     const a = item.toA;
-    if (canSpell ? a >= ENCHANT_LIMIT : a >= 8) continue;
+    if (canSpell ? a >= borgCfg().enchantLimit : a >= 8) continue;
     if (best && bestA < a) continue;
     best = item;
     bestA = a;
@@ -113,7 +110,7 @@ function pickLeastEnchantedWeapon(
     if (!isIdent(item, d)) continue;
     if (item.tval === TV.DIGGING) continue; /* skip the swap digger */
     const a = bonus(item);
-    if (canSpell ? a >= ENCHANT_LIMIT : a >= 8) continue;
+    if (canSpell ? a >= borgCfg().enchantLimit : a >= 8) continue;
     /* Skip a weak (< x3) non-artifact/ego bow (enchant.c:233). */
     if (
       item.tval === TV.BOW &&
@@ -129,15 +126,24 @@ function pickLeastEnchantedWeapon(
   return best;
 }
 
-/** Brand ammo (borg_brand_weapon, enchant.c:513): action remains a stub. */
+/** borg_brand_weapon (borg-item-enchant.c:513-573): strongest eligible quiver stack. */
 function borgBrandWeapon(
   ctx: BorgContext,
-  _d?: ItemDeps,
+  d?: ItemDeps,
+  playerHas?: (flag: string) => boolean,
 ): AgentCommand | null {
   if (!trait(ctx, BI.NEED_BRAND_WEAPON)) return null;
   if (!trait(ctx, BI.ABRAND)) return null;
-  /* NEED_BRAND_WEAPON counts eligible stacks, but this action has no picker. */
-  return null;
+  let best: ItemView | null = null;
+  for (const ammo of ctx.view.quiver?.() ?? []) {
+    if (ammo.number < 20 || !isIdent(ammo, d) || ammo.tval !== trait(ctx, BI.AMMO_TVAL) || ammo.ego) continue;
+    if (best && best.toH > ammo.toH) continue;
+    best = ammo;
+  }
+  if (!best) return null;
+  return withItemTarget(ctx,
+    borgActivateItem(ctx, "act_firebrand", d) ?? borgSpellFail(ctx, Spell.BRAND_AMMUNITION, 65, playerHas),
+    best.handle);
 }
 
 function isArmourSlot(item: ItemView): boolean {
@@ -188,7 +194,7 @@ export function borgEnchanting(
   if (trait(ctx, BI.CDEPTH)) return null;
 
   return (
-    borgBrandWeapon(ctx, d) ||
+    borgBrandWeapon(ctx, d, playerHas) ||
     borgEnchantToH(ctx, d, playerHas) ||
     borgEnchantToD(ctx, d, playerHas) ||
     borgEnchantToA(ctx, d, playerHas)

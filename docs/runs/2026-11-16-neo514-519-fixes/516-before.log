@@ -1,0 +1,38 @@
+
+ RUN  v5.1.0 /tmp/neo-port-fix-516
+
+ ❯ src/fight/lazy-commands.test.ts (2 tests | 1 failed) 9ms
+   × C short circuit does not mark an unused critical cure as drunk 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/fight/lazy-commands.test.ts > C short circuit does not mark an unused critical cure as drunk
+AssertionError: expected null to deeply equal { code: 'quaff', args: { handle: 4 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 4,
+  },
+  "code": "quaff",
+}
+
++ Received:
+null
+
+ ❯ src/fight/lazy-commands.test.ts:66:35
+     64|  expect(borgHeal(ctx,0)).toEqual({code:'eat',args:{handle:3}});
+     65|  world.clock=101;t[BI.ISCONFUSED]=0;
+     66|  expect(borgQuaffCrit(ctx,false)).toEqual({code:'quaff',args:{handle:4…
+       |                                   ^
+     67| });
+     68|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  11:03:22
+   Duration  673ms (transform 66%, setup 23%, import 10%, tests 1%)
+

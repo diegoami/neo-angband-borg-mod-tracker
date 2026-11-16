@@ -12,9 +12,8 @@
  * the class-ordered heal/defend attempt, the restock check, the *** Stairs ***
  * section, starvation relief, desperate stairs, strategic retreat, the escape
  * attempt, *** Back away ***, and the
- * final emergency ez-heal, recall and recall waiting. What is left to later stages of the think ladder is
- * the cure ladder from caution.c:1846 and the food/light maintenance flows,
- * which belong to the item and flow subsystems that own those commands.
+ * late confusion/fear cures, final emergency ez-heal, recall and recall waiting.
+ * General food/light maintenance remains in the later think-ladder rungs.
  *
  * Back away is the one that matters most in ordinary play and it is the easiest
  * to mistake for flow's business: it is not pathfinding, it is a single step
@@ -23,7 +22,7 @@
 
 import type { AgentCommand } from "@rpgm-tools/neo-angband-core";
 import type { BorgContext } from "../context.js";
-import { BI, CLASS_MAGE, CLASS_PRIEST, CLASS_PALADIN } from "../trait/trait-index.js";
+import { BI, CLASS_MAGE, CLASS_PRIEST, CLASS_PALADIN, CLASS_WARRIOR } from "../trait/trait-index.js";
 import { trait } from "../item/deps.js";
 import { borgDanger, getDangerGlobals } from "../danger/index.js";
 import {
@@ -70,8 +69,12 @@ import { borgDefend } from "./defend.js";
 function av(ctx: BorgContext): number {
   return getDangerGlobals(ctx.world).avoidance;
 }
-function firstCmd(...cmds: Array<AgentCommand | null>): AgentCommand | null {
-  for (const c of cmds) if (c) return c;
+// C || evaluates later command helpers only when earlier helpers fail.
+function firstCmd(...cmds: Array<() => AgentCommand | null>): AgentCommand | null {
+  for (const command of cmds) {
+    const c = command();
+    if (c) return c;
+  }
   return null;
 }
 
@@ -134,25 +137,25 @@ export function borgHeal(ctx: BorgContext, danger: number): AgentCommand | null 
       if (c) return c;
     }
     if (pctDown >= 85 && danger >= curhp * 2) {
-      const c = firstCmd(borgQuaffPotion(ctx, SVAL.potion.star_healing!), borgQuaffPotion(ctx, SVAL.potion.life!));
+      const c = firstCmd(() => (borgQuaffPotion(ctx, SVAL.potion.star_healing!)), () => (borgQuaffPotion(ctx, SVAL.potion.life!)));
       if (c) return c;
     }
     if (danger < curhp + cswHeal) {
       const c = firstCmd(
-        borgEat(ctx, TV.MUSHROOM, SVAL.mush.cure_mind!),
-        borgQuaffPotion(ctx, SVAL.potion.cure_serious!),
-        borgQuaffCrit(ctx, false),
-        borgQuaffPotion(ctx, SVAL.potion.healing!),
-        borgUseStaffFail(ctx, SVAL.staff.healing!),
-        borgActivateItem(ctx, "act_cure_confusion"),
-        borgUseStaffFail(ctx, SVAL.staff.curing!),
+        () => (borgEat(ctx, TV.MUSHROOM, SVAL.mush.cure_mind!)),
+        () => (borgQuaffPotion(ctx, SVAL.potion.cure_serious!)),
+        () => (borgQuaffCrit(ctx, false)),
+        () => (borgQuaffPotion(ctx, SVAL.potion.healing!)),
+        () => (borgUseStaffFail(ctx, SVAL.staff.healing!)),
+        () => (borgActivateItem(ctx, "act_cure_confusion")),
+        () => (borgUseStaffFail(ctx, SVAL.staff.curing!)),
       );
       if (c) return c;
     }
     /* teleport-staff-then-heal branch (caution.c:172). */
     /* GAP: the "heal then use staff" nuance needs staff-fail probing already
      * done above; fall through to the plain heal path below. */
-    const c = firstCmd(borgQuaffCrit(ctx, true), borgQuaffPotion(ctx, SVAL.potion.cure_serious!), borgQuaffPotion(ctx, SVAL.potion.healing!));
+    const c = firstCmd(() => (borgQuaffCrit(ctx, true)), () => (borgQuaffPotion(ctx, SVAL.potion.cure_serious!)), () => (borgQuaffPotion(ctx, SVAL.potion.healing!)));
     if (c) return c;
   }
 
@@ -164,13 +167,13 @@ export function borgHeal(ctx: BorgContext, danger: number): AgentCommand | null 
     }
     if (!(cls === 0 && curhp > idiv(maxhp, 4) && trait(ctx, BI.ESP))) {
       const c = firstCmd(
-        borgEat(ctx, TV.MUSHROOM, SVAL.mush.fast_recovery!),
-        borgQuaffPotion(ctx, SVAL.potion.cure_light!),
-        borgQuaffPotion(ctx, SVAL.potion.cure_serious!),
-        borgQuaffCrit(ctx, true),
-        borgUseStaffFail(ctx, SVAL.staff.healing!),
-        borgUseStaffFail(ctx, SVAL.staff.curing!),
-        borgQuaffPotion(ctx, SVAL.potion.healing!),
+        () => (borgEat(ctx, TV.MUSHROOM, SVAL.mush.fast_recovery!)),
+        () => (borgQuaffPotion(ctx, SVAL.potion.cure_light!)),
+        () => (borgQuaffPotion(ctx, SVAL.potion.cure_serious!)),
+        () => (borgQuaffCrit(ctx, true)),
+        () => (borgUseStaffFail(ctx, SVAL.staff.healing!)),
+        () => (borgUseStaffFail(ctx, SVAL.staff.curing!)),
+        () => (borgQuaffPotion(ctx, SVAL.potion.healing!)),
       );
       if (c) return c;
     }
@@ -189,21 +192,21 @@ export function borgHeal(ctx: BorgContext, danger: number): AgentCommand | null 
   if (fs.fightingUnique >= 10) {
     if (curhp <= 700) {
       const c = firstCmd(
-        curhp > 250 ? borgSpellFail(ctx, Spell.HOLY_WORD, 14) : null,
-        statsFix >= 5 ? borgQuaffPotion(ctx, SVAL.potion.life!) : null,
-        hpDown > 500 && borgSlot(ctx, TV.POTION, SVAL.potion.star_healing!) === null
+        () => (curhp > 250 ? borgSpellFail(ctx, Spell.HOLY_WORD, 14) : null),
+        () => (statsFix >= 5 ? borgQuaffPotion(ctx, SVAL.potion.life!) : null),
+        () => (hpDown > 500 && borgSlot(ctx, TV.POTION, SVAL.potion.star_healing!) === null
           ? borgQuaffPotion(ctx, SVAL.potion.life!)
-          : null,
-        borgQuaffPotion(ctx, SVAL.potion.star_healing!),
-        borgQuaffPotion(ctx, SVAL.potion.healing!),
-        borgActivateItem(ctx, "act_heal1"),
-        borgActivateItem(ctx, "act_heal2"),
-        borgActivateItem(ctx, "act_heal3"),
-        curhp < 250 ? borgSpellFail(ctx, Spell.HOLY_WORD, 5) : null,
-        curhp > 550 ? borgSpellFail(ctx, Spell.HOLY_WORD, 15) : null,
-        borgSpellFail(ctx, Spell.HEALING, 15),
-        borgQuaffPotion(ctx, SVAL.potion.life!),
-        borgZapRod(ctx, SVAL.rod.healing!),
+          : null),
+        () => (borgQuaffPotion(ctx, SVAL.potion.star_healing!)),
+        () => (borgQuaffPotion(ctx, SVAL.potion.healing!)),
+        () => (borgActivateItem(ctx, "act_heal1")),
+        () => (borgActivateItem(ctx, "act_heal2")),
+        () => (borgActivateItem(ctx, "act_heal3")),
+        () => (curhp < 250 ? borgSpellFail(ctx, Spell.HOLY_WORD, 5) : null),
+        () => (curhp > 550 ? borgSpellFail(ctx, Spell.HOLY_WORD, 15) : null),
+        () => (borgSpellFail(ctx, Spell.HEALING, 15)),
+        () => (borgQuaffPotion(ctx, SVAL.potion.life!)),
+        () => (borgZapRod(ctx, SVAL.rod.healing!)),
       );
       if (c) return c;
     }
@@ -211,7 +214,7 @@ export function borgHeal(ctx: BorgContext, danger: number): AgentCommand | null 
 
   /* Restore mana (caution.c:273). */
   if (trait(ctx, BI.CURSP) < idiv(trait(ctx, BI.MAXSP), 5) && ctx.rng.randint0(100) < 50) {
-    const c = firstCmd(borgUseStaffFail(ctx, SVAL.staff.the_magi!), borgActivateItem(ctx, "act_staff_magi"));
+    const c = firstCmd(() => (borgUseStaffFail(ctx, SVAL.staff.the_magi!)), () => (borgActivateItem(ctx, "act_staff_magi")));
     if (c) return c;
   }
   if (
@@ -224,10 +227,10 @@ export function borgHeal(ctx: BorgContext, danger: number): AgentCommand | null 
       (trait(ctx, BI.ATELEPORT) + trait(ctx, BI.AESCAPE) === 0 && danger > av(ctx))
     ) {
       const c = firstCmd(
-        borgUseStaffFail(ctx, SVAL.staff.the_magi!),
-        borgQuaffPotion(ctx, SVAL.potion.restore_mana!),
-        borgActivateItem(ctx, "act_restore_mana"),
-        borgActivateItem(ctx, "act_staff_magi"),
+        () => (borgUseStaffFail(ctx, SVAL.staff.the_magi!)),
+        () => (borgQuaffPotion(ctx, SVAL.potion.restore_mana!)),
+        () => (borgActivateItem(ctx, "act_restore_mana")),
+        () => (borgActivateItem(ctx, "act_staff_magi")),
       );
       if (c) return c;
     }
@@ -238,7 +241,7 @@ export function borgHeal(ctx: BorgContext, danger: number): AgentCommand | null 
 
   /* Restore stats in Morgoth combat (caution.c:309). */
   if (statsFix >= 5 && fs.fightingUnique >= 10 && curhp > 650) {
-    const c = firstCmd(borgEat(ctx, TV.MUSHROOM, SVAL.mush.restoring!), borgActivateItem(ctx, "act_restore_all"));
+    const c = firstCmd(() => (borgEat(ctx, TV.MUSHROOM, SVAL.mush.restoring!)), () => (borgActivateItem(ctx, "act_restore_all")));
     if (c) return c;
   }
   if (fs.fightingUnique >= 10) return null;
@@ -265,15 +268,15 @@ export function borgHeal(ctx: BorgContext, danger: number): AgentCommand | null 
 
   /* Heal ladder (caution.c:353). */
   if (pctDown >= 30 && (pctDown <= 40 || trait(ctx, BI.CLEVEL) < 10) && danger < curhp + clwHeal && clwHeal > idiv(danger, 3)) {
-    const c = firstCmd(borgSpellFail(ctx, Spell.MINOR_HEALING, allowFail), borgQuaffPotion(ctx, SVAL.potion.cure_light!), borgActivateItem(ctx, "act_cure_light"));
+    const c = firstCmd(() => (borgSpellFail(ctx, Spell.MINOR_HEALING, allowFail)), () => (borgQuaffPotion(ctx, SVAL.potion.cure_light!)), () => (borgActivateItem(ctx, "act_cure_light")));
     if (c) return c;
   }
   if (pctDown >= 40 && (pctDown <= 50 || trait(ctx, BI.CLEVEL) < 20) && danger < curhp + cswHeal && cswHeal > idiv(danger, 3)) {
-    const c = firstCmd(borgQuaffPotion(ctx, SVAL.potion.cure_serious!), borgActivateItem(ctx, "act_cure_serious"));
+    const c = firstCmd(() => (borgQuaffPotion(ctx, SVAL.potion.cure_serious!)), () => (borgActivateItem(ctx, "act_cure_serious")));
     if (c) return c;
   }
   if (pctDown >= 50 && pctDown <= 55 && danger < curhp + ccwHeal && ccwHeal > idiv(danger, 3)) {
-    const c = firstCmd(borgActivateItem(ctx, "act_cure_critical"), borgQuaffCrit(ctx, false));
+    const c = firstCmd(() => (borgActivateItem(ctx, "act_cure_critical")), () => (borgQuaffCrit(ctx, false)));
     if (c) return c;
   }
   if (danger >= curhp && danger < maxhp && curhp < 50 && danger < ccwHeal) {
@@ -287,15 +290,15 @@ export function borgHeal(ctx: BorgContext, danger: number): AgentCommand | null 
   /* Heal step one (caution.c:398). */
   if (pctDown >= 55 && danger < curhp + healHeal) {
     const c = firstCmd(
-      (!trait(ctx, BI.ATELEPORT) && !trait(ctx, BI.AESCAPE)) || rodGood ? borgZapRod(ctx, SVAL.rod.healing!) : null,
-      borgActivateItem(ctx, "act_cure_full"),
-      borgActivateItem(ctx, "act_cure_full2"),
-      borgActivateItem(ctx, "act_cure_nonorlybig"),
-      borgActivateItem(ctx, "act_heal1"),
-      borgActivateItem(ctx, "act_heal2"),
-      borgActivateItem(ctx, "act_heal3"),
-      borgUseStaffFail(ctx, SVAL.staff.healing!),
-      borgSpellFail(ctx, Spell.HEALING, allowFail),
+      () => ((!trait(ctx, BI.ATELEPORT) && !trait(ctx, BI.AESCAPE)) || rodGood ? borgZapRod(ctx, SVAL.rod.healing!) : null),
+      () => (borgActivateItem(ctx, "act_cure_full")),
+      () => (borgActivateItem(ctx, "act_cure_full2")),
+      () => (borgActivateItem(ctx, "act_cure_nonorlybig")),
+      () => (borgActivateItem(ctx, "act_heal1")),
+      () => (borgActivateItem(ctx, "act_heal2")),
+      () => (borgActivateItem(ctx, "act_heal3")),
+      () => (borgUseStaffFail(ctx, SVAL.staff.healing!)),
+      () => (borgSpellFail(ctx, Spell.HEALING, allowFail)),
     );
     if (c) return c;
   }
@@ -306,26 +309,26 @@ export function borgHeal(ctx: BorgContext, danger: number): AgentCommand | null 
   /* Heal steps two/three/first-ez (caution.c:426..498). */
   if (pctDown > 50 && danger < curhp + healHeal) {
     const c = firstCmd(
-      borgUseStaffFail(ctx, SVAL.staff.healing!),
-      fs.fightingEvilUnique ? borgSpellFail(ctx, Spell.HOLY_WORD, allowFail) : null,
-      borgSpellFail(ctx, Spell.HEALING, allowFail),
-      (!trait(ctx, BI.ATELEPORT) && !trait(ctx, BI.AESCAPE)) || rodGood ? borgZapRod(ctx, SVAL.rod.healing!) : null,
-      borgZapRod(ctx, SVAL.rod.healing!),
-      borgQuaffPotion(ctx, SVAL.potion.healing!),
+      () => (borgUseStaffFail(ctx, SVAL.staff.healing!)),
+      () => (fs.fightingEvilUnique ? borgSpellFail(ctx, Spell.HOLY_WORD, allowFail) : null),
+      () => (borgSpellFail(ctx, Spell.HEALING, allowFail)),
+      () => ((!trait(ctx, BI.ATELEPORT) && !trait(ctx, BI.AESCAPE)) || rodGood ? borgZapRod(ctx, SVAL.rod.healing!) : null),
+      () => (borgZapRod(ctx, SVAL.rod.healing!)),
+      () => (borgQuaffPotion(ctx, SVAL.potion.healing!)),
     );
     if (c) return c;
   }
   if (pctDown > 65 && danger < curhp + healHeal) {
     const c = firstCmd(
-      fs.fightingEvilUnique ? borgSpellFail(ctx, Spell.HOLY_WORD, allowFail) : null,
-      borgSpellFail(ctx, Spell.HEALING, allowFail),
-      borgUseStaffFail(ctx, SVAL.staff.healing!),
-      (!trait(ctx, BI.ATELEPORT) && !trait(ctx, BI.AESCAPE)) || rodGood ? borgZapRod(ctx, SVAL.rod.healing!) : null,
-      borgQuaffPotion(ctx, SVAL.potion.healing!),
-      borgActivateItem(ctx, "act_cure_full"),
-      borgActivateItem(ctx, "act_heal1"),
-      fs.fightingUnique ? borgQuaffPotion(ctx, SVAL.potion.star_healing!) : null,
-      fs.fightingUnique ? borgQuaffPotion(ctx, SVAL.potion.life!) : null,
+      () => (fs.fightingEvilUnique ? borgSpellFail(ctx, Spell.HOLY_WORD, allowFail) : null),
+      () => (borgSpellFail(ctx, Spell.HEALING, allowFail)),
+      () => (borgUseStaffFail(ctx, SVAL.staff.healing!)),
+      () => ((!trait(ctx, BI.ATELEPORT) && !trait(ctx, BI.AESCAPE)) || rodGood ? borgZapRod(ctx, SVAL.rod.healing!) : null),
+      () => (borgQuaffPotion(ctx, SVAL.potion.healing!)),
+      () => (borgActivateItem(ctx, "act_cure_full")),
+      () => (borgActivateItem(ctx, "act_heal1")),
+      () => (fs.fightingUnique ? borgQuaffPotion(ctx, SVAL.potion.star_healing!) : null),
+      () => (fs.fightingUnique ? borgQuaffPotion(ctx, SVAL.potion.life!) : null),
     );
     if (c) return c;
   }
@@ -334,7 +337,7 @@ export function borgHeal(ctx: BorgContext, danger: number): AgentCommand | null 
     danger > curhp &&
     trait(ctx, BI.ATELEPORT) + trait(ctx, BI.AESCAPE) <= 0
   ) {
-    const c = firstCmd(borgQuaffPotion(ctx, SVAL.potion.healing!), borgQuaffPotion(ctx, SVAL.potion.star_healing!), borgQuaffPotion(ctx, SVAL.potion.life!));
+    const c = firstCmd(() => (borgQuaffPotion(ctx, SVAL.potion.healing!)), () => (borgQuaffPotion(ctx, SVAL.potion.star_healing!)), () => (borgQuaffPotion(ctx, SVAL.potion.life!)));
     if (c) return c;
   }
 
@@ -343,30 +346,30 @@ export function borgHeal(ctx: BorgContext, danger: number): AgentCommand | null 
 
   if (trait(ctx, BI.ISPOISONED) && curhp < idiv(maxhp, 2)) {
     const c = firstCmd(
-      borgSpellFail(ctx, Spell.CURE_POISON, 60),
-      borgSpellFail(ctx, Spell.HERBAL_CURING, 60),
-      borgQuaffPotion(ctx, SVAL.potion.cure_poison!),
-      borgActivateItem(ctx, "act_cure_body"),
-      borgActivateItem(ctx, "act_cure_critical"),
-      borgActivateItem(ctx, "act_cure_full"),
-      borgUseStaff(ctx, SVAL.staff.curing!),
-      borgEat(ctx, TV.MUSHROOM, SVAL.mush.fast_recovery!),
-      borgEat(ctx, TV.MUSHROOM, SVAL.mush.purging!),
-      borgQuaffCrit(ctx, true),
-      borgSpellFail(ctx, Spell.HEALING, 60),
-      borgSpellFail(ctx, Spell.HOLY_WORD, 60),
-      borgUseStaffFail(ctx, SVAL.staff.healing!),
+      () => (borgSpellFail(ctx, Spell.CURE_POISON, 60)),
+      () => (borgSpellFail(ctx, Spell.HERBAL_CURING, 60)),
+      () => (borgQuaffPotion(ctx, SVAL.potion.cure_poison!)),
+      () => (borgActivateItem(ctx, "act_cure_body")),
+      () => (borgActivateItem(ctx, "act_cure_critical")),
+      () => (borgActivateItem(ctx, "act_cure_full")),
+      () => (borgUseStaff(ctx, SVAL.staff.curing!)),
+      () => (borgEat(ctx, TV.MUSHROOM, SVAL.mush.fast_recovery!)),
+      () => (borgEat(ctx, TV.MUSHROOM, SVAL.mush.purging!)),
+      () => (borgQuaffCrit(ctx, true)),
+      () => (borgSpellFail(ctx, Spell.HEALING, 60)),
+      () => (borgSpellFail(ctx, Spell.HOLY_WORD, 60)),
+      () => (borgUseStaffFail(ctx, SVAL.staff.healing!)),
     );
     if (c) return c;
   }
 
   if (trait(ctx, BI.ISCUT) && (curhp < idiv(maxhp, 3) || ctx.rng.randint0(100) < 20)) {
     const c = firstCmd(
-      borgQuaffPotion(ctx, SVAL.potion.cure_serious!),
-      borgQuaffPotion(ctx, SVAL.potion.cure_light!),
-      borgQuaffCrit(ctx, curhp < 10),
-      borgSpell(ctx, Spell.MINOR_HEALING),
-      borgQuaffPotion(ctx, SVAL.potion.cure_critical!),
+      () => (borgQuaffPotion(ctx, SVAL.potion.cure_serious!)),
+      () => (borgQuaffPotion(ctx, SVAL.potion.cure_light!)),
+      () => (borgQuaffCrit(ctx, curhp < 10)),
+      () => (borgSpell(ctx, Spell.MINOR_HEALING)),
+      () => (borgQuaffPotion(ctx, SVAL.potion.cure_critical!)),
     );
     if (c) return c;
   }
@@ -616,10 +619,10 @@ export function borgCaution(
   /* Prevent starvation (caution.c:1230): eat / cast / restore-mana. */
   if (trait(ctx, BI.ISWEAK)) {
     const c = firstCmd(
-      borgSpell(ctx, Spell.REMOVE_HUNGER),
-      borgSpell(ctx, Spell.HERBAL_CURING),
-      borgQuaffPotion(ctx, SVAL.potion.restore_mana!),
-      borgActivateItem(ctx, "act_restore_mana"),
+      () => (borgSpell(ctx, Spell.REMOVE_HUNGER)),
+      () => (borgSpell(ctx, Spell.HERBAL_CURING)),
+      () => (borgQuaffPotion(ctx, SVAL.potion.restore_mana!)),
+      () => (borgActivateItem(ctx, "act_restore_mana")),
     );
     if (c) return c;
     if (trait(ctx, BI.CDEPTH)) {
@@ -651,6 +654,49 @@ export function borgCaution(
 
   const backOff = borgBackAway(ctx, flow, posDanger, nasty, surrounded);
   if (backOff) return backOff;
+
+  /* borg-caution.c:1852-1896: a second cure pass, also while fleeing. */
+  if (trait(ctx, BI.ISCONFUSED)) {
+    const d = { activateItem: (act: string) => getThinkSession(ctx.world).resolvers.activateHandle?.(ctx, act) ?? null };
+    if (trait(ctx, BI.MAXHP) - trait(ctx, BI.CURHP) >= 300) {
+      const heal = borgQuaffPotion(ctx, SVAL.potion.healing!, d) ??
+        borgQuaffPotion(ctx, SVAL.potion.star_healing!, d) ?? borgQuaffPotion(ctx, SVAL.potion.life!, d);
+      if (heal) return heal;
+    }
+    const cure = borgEat(ctx, TV.MUSHROOM, SVAL.mush.cure_mind!, d) ??
+      borgQuaffPotion(ctx, SVAL.potion.cure_serious!, d) ?? borgQuaffCrit(ctx, false, d) ??
+      borgQuaffPotion(ctx, SVAL.potion.healing!, d) ?? borgActivateItem(ctx, "act_cure_confusion", d) ??
+      borgUseStaffFail(ctx, SVAL.staff.healing!, d);
+    if (cure) return cure;
+  }
+  if (trait(ctx, BI.ISAFRAID) && !trait(ctx, BI.CRSFEAR) &&
+    (ctx.rng.randint0(100) < 70 || (trait(ctx, BI.CLASS) === CLASS_WARRIOR && trait(ctx, BI.AMISSILES) <= 0))) {
+    const d = { activateItem: (act: string) => getThinkSession(ctx.world).resolvers.activateHandle?.(ctx, act) ?? null };
+    const cure = borgEat(ctx, TV.MUSHROOM, SVAL.mush.cure_mind!, d) ??
+      borgQuaffPotion(ctx, SVAL.potion.boldness!, d) ?? borgQuaffPotion(ctx, SVAL.potion.heroism!, d) ??
+      borgQuaffPotion(ctx, SVAL.potion.berserk!, d) ?? borgSpellFail(ctx, Spell.BERSERK_STRENGTH, 25) ??
+      borgSpellFail(ctx, Spell.HEROISM, 25) ?? borgActivateItem(ctx, "act_cure_paranoia", d) ??
+      borgActivateItem(ctx, "act_hero", d) ?? borgActivateItem(ctx, "act_shero", d) ??
+      borgActivateItem(ctx, "act_cure_mind", d) ?? borgActivateItem(ctx, "act_rage_bless_resist", d) ??
+      borgActivateItem(ctx, "act_rem_fear_pois", d) ?? borgSpellFail(ctx, Spell.HOLY_WORD, 25);
+    if (cure) return cure;
+  }
+
+  /* borg-caution.c:1900-1951: low reserves/HP and bleeding or poison can
+   * independently set the journey flags after the tactical escape passes. */
+  if ((trait(ctx, BI.CURHP) < idiv(trait(ctx, BI.MAXHP), 3) ||
+      (trait(ctx, BI.CURHP) < idiv(trait(ctx, BI.MAXHP), 2) && trait(ctx, BI.CURHP) < trait(ctx, BI.CLEVEL) * 3)) &&
+    trait(ctx, BI.ACCW) < 3 && trait(ctx, BI.AHEAL) < 1 &&
+    trait(ctx, BI.CDEPTH) && ctx.rng.randint0(100) < 25) {
+    self.goal.leaving = true;
+    self.goal.fleeing = true;
+  }
+  if ((trait(ctx, BI.ISCUT) || trait(ctx, BI.ISPOISONED)) &&
+    trait(ctx, BI.CURHP) < idiv(trait(ctx, BI.MAXHP), 2) &&
+    trait(ctx, BI.CDEPTH) && ctx.rng.randint0(100) < 25) {
+    self.goal.leaving = true;
+    self.goal.fleeing = true;
+  }
 
   /* borg_caution spends reserve healing before recall and unknown items. */
   if (
@@ -704,9 +750,7 @@ export function borgCaution(
     if (c) return c;
   }
 
-  /* Remaining C tail (the cure ladder from caution.c:1846 on, and the
-   * food maintenance flows) emits item and flow commands whose owning
-   * subsystems sit later in the ladder; yield to it. */
+  /* General food/light maintenance remains in the later think-ladder rungs. */
   return null;
 }
 

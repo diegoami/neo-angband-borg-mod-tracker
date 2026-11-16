@@ -1,0 +1,110 @@
+
+ RUN  v5.1.0 /tmp/neo-port-fix-514
+
+ ❯ src/fight/late-cures.test.ts (24 tests | 19 failed) 43ms
+   × C late confusion cure still runs when already fleeing, class 0 5ms
+   × C late confusion cure still runs when already fleeing, class 1 3ms
+   × C late confusion cure still runs when already fleeing, class 2 1ms
+   × C late confusion cure still runs when already fleeing, class 3 2ms
+   × C late confusion cure still runs when already fleeing, class 4 2ms
+   × C late confusion cure still runs when already fleeing, class 5 1ms
+   × C late confusion cure still runs when already fleeing, class 6 1ms
+   × C late confusion cure still runs when already fleeing, class 7 1ms
+   × C late confusion cure still runs when already fleeing, class 8 1ms
+   × C late fear cure consumes boldness rather than yielding, class 0 1ms
+   × C late fear cure consumes boldness rather than yielding, class 1 1ms
+   × C late fear cure consumes boldness rather than yielding, class 2 1ms
+   × C late fear cure consumes boldness rather than yielding, class 3 1ms
+   × C late fear cure consumes boldness rather than yielding, class 4 1ms
+   × C late fear cure consumes boldness rather than yielding, class 5 1ms
+   × C late fear cure consumes boldness rather than yielding, class 6 1ms
+   × C late fear cure consumes boldness rather than yielding, class 7 1ms
+   × C late fear cure consumes boldness rather than yielding, class 8 1ms
+   × cures a missile-less Warrior despite the chance gate 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 19 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/fight/late-cures.test.ts > C late confusion cure still runs when already fleeing, class 0
+ FAIL  src/fight/late-cures.test.ts > C late confusion cure still runs when already fleeing, class 1
+ FAIL  src/fight/late-cures.test.ts > C late confusion cure still runs when already fleeing, class 2
+ FAIL  src/fight/late-cures.test.ts > C late confusion cure still runs when already fleeing, class 3
+ FAIL  src/fight/late-cures.test.ts > C late confusion cure still runs when already fleeing, class 4
+ FAIL  src/fight/late-cures.test.ts > C late confusion cure still runs when already fleeing, class 5
+ FAIL  src/fight/late-cures.test.ts > C late confusion cure still runs when already fleeing, class 6
+ FAIL  src/fight/late-cures.test.ts > C late confusion cure still runs when already fleeing, class 7
+ FAIL  src/fight/late-cures.test.ts > C late confusion cure still runs when already fleeing, class 8
+AssertionError: expected null to deeply equal { code: 'quaff', args: { handle: 4 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 4,
+  },
+  "code": "quaff",
+}
+
++ Received:
+null
+
+ ❯ src/fight/late-cures.test.ts:69:48
+     67| it.each([0,1,2,3,4,5,6,7,8])('C late confusion cure still runs when al…
+     68|  const {ctx,world,t,flow}=setup([packItem(4,TV.POTION,SVAL.potion.cure…
+     69|  t[BI.CLASS]=cls;expect(borgCaution(ctx,flow)).toEqual({code:'quaff',a…
+       |                                                ^
+     70| });
+     71|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/19]⎯
+
+ FAIL  src/fight/late-cures.test.ts > C late fear cure consumes boldness rather than yielding, class 0
+ FAIL  src/fight/late-cures.test.ts > C late fear cure consumes boldness rather than yielding, class 1
+ FAIL  src/fight/late-cures.test.ts > C late fear cure consumes boldness rather than yielding, class 2
+ FAIL  src/fight/late-cures.test.ts > C late fear cure consumes boldness rather than yielding, class 3
+ FAIL  src/fight/late-cures.test.ts > C late fear cure consumes boldness rather than yielding, class 4
+ FAIL  src/fight/late-cures.test.ts > C late fear cure consumes boldness rather than yielding, class 5
+ FAIL  src/fight/late-cures.test.ts > C late fear cure consumes boldness rather than yielding, class 6
+ FAIL  src/fight/late-cures.test.ts > C late fear cure consumes boldness rather than yielding, class 7
+ FAIL  src/fight/late-cures.test.ts > C late fear cure consumes boldness rather than yielding, class 8
+AssertionError: expected null to deeply equal { code: 'quaff', args: { handle: 5 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 5,
+  },
+  "code": "quaff",
+}
+
++ Received:
+null
+
+ ❯ src/fight/late-cures.test.ts:74:48
+     72| it.each([0,1,2,3,4,5,6,7,8])('C late fear cure consumes boldness rathe…
+     73|  const {ctx,world,t,flow}=setup([packItem(5,TV.POTION,SVAL.potion.bold…
+     74|  t[BI.CLASS]=cls;expect(borgCaution(ctx,flow)).toEqual({code:'quaff',a…
+       |                                                ^
+     75| });
+     76|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/19]⎯
+
+ FAIL  src/fight/late-cures.test.ts > cures a missile-less Warrior despite the chance gate
+AssertionError: expected undefined to be 'quaff' // Object.is equality
+
+- Expected:
+"quaff"
+
++ Received:
+undefined
+
+ ❯ src/fight/late-cures.test.ts:80:262
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/19]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  19 failed | 5 passed (24)
+   Start at  11:03:20
+   Duration  749ms (transform 64%, setup 20%, import 9%, tests 7%)
+

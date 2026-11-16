@@ -1,0 +1,91 @@
+
+ RUN  v5.1.0 /tmp/neo-port-fix-518
+
+ ❯ src/item/brand-ammo.test.ts (13 tests | 4 failed) 14ms
+   × brands a quiver stack using firebrand and carries its item target 5ms
+   × chooses the highest to-hit stack, last on ties 1ms
+   × uses the real class spell mapping when activation is unavailable 1ms
+   × prefers activation before an available spell 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/item/brand-ammo.test.ts > brands a quiver stack using firebrand and carries its item target
+AssertionError: expected null to deeply equal { code: 'activate', …(1) }
+
+- Expected:
+{
+  "args": {
+    "handle": 9,
+    "tgtitem": {
+      "handle": 10,
+    },
+  },
+  "code": "activate",
+}
+
++ Received:
+null
+
+ ❯ src/item/brand-ammo.test.ts:55:145
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/item/brand-ammo.test.ts > chooses the highest to-hit stack, last on ties
+AssertionError: expected undefined to deeply equal { handle: 12 }
+
+- Expected:
+{
+  "handle": 12,
+}
+
++ Received:
+undefined
+
+ ❯ src/item/brand-ammo.test.ts:56:169
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/item/brand-ammo.test.ts > uses the real class spell mapping when activation is unavailable
+AssertionError: expected null to deeply equal { code: 'cast', …(1) }
+
+- Expected:
+{
+  "args": {
+    "spell": 10,
+    "tgtitem": {
+      "handle": 10,
+    },
+  },
+  "code": "cast",
+}
+
++ Received:
+null
+
+ ❯ src/item/brand-ammo.test.ts:57:143
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/item/brand-ammo.test.ts > prefers activation before an available spell
+AssertionError: expected undefined to be 'activate' // Object.is equality
+
+- Expected:
+"activate"
+
++ Received:
+undefined
+
+ ❯ src/item/brand-ammo.test.ts:58:135
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 9 passed (13)
+   Start at  11:06:52
+   Duration  297ms (setup 52%, transform 37%, tests 6%, import 5%, worker 1%)
+

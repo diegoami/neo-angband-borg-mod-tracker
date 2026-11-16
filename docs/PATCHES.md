@@ -223,3 +223,13 @@ fork master: experimental Zoo sourced6215a8 and upstream113/fork104 retain
 their published heads. No source finding is closed by this import merely
 because a related release shipped. Adoption validation/merge receipts are
 recorded on the integration PR and checkpoint26.
+
+## Proposed Neo514–519 correction batch — 2026-11-16
+
+Six isolated pristine-source topics now have upstream mod PR116–121 and fork
+source PR106–111, respectively. They restore late cures/flee flags, short-circuit
+command selection, curse-item targeting, ammo branding and configured enchant
+limits. [Source heads, before/after controls and integration record](runs/2026-11-16-neo514-519-fixes/README.md).
+The source mirror remains pristine; the combined fork landing is a separate PR.
+Source issues remain open until accepted and incorporated. No consumer deployment,
+book-proposal adoption or new experiment is included.
