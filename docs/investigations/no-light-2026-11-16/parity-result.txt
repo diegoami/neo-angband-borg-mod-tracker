@@ -1,0 +1,33 @@
+
+ RUN  v5.1.0 /tmp/neo-no-light-investigation
+
+ ❯ src/item/visibility-investigation.test.ts (5 tests | 1 failed) 158ms
+   × matches C no_light on the recorded unseen square 32ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/item/visibility-investigation.test.ts > matches C no_light on the recorded unseen square
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/item/visibility-investigation.test.ts:66:28
+     64|  const known=JSON.parse(readFileSync(new URL('../../docs/investigation…
+     65|  const {ctx,bridge}=await observation(known);
+     66|  try {expect(noLight(ctx)).toBe(true);expect(borgSpell(ctx,Spell.NETHE…
+       |                            ^
+     67|  finally {await bridge.dispose();}
+     68| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  17:53:41
+   Duration  1.28s (import 34%, setup 30%, transform 20%, tests 14%, worker 1%)
+

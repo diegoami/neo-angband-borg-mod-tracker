@@ -1,0 +1,112 @@
+{
+  "zooRun": 43876073942,
+  "source": "464a1555ca73cf662b522f020152faa9d1a2d465",
+  "evidenceBase": "2e4684202ad960b268116e5e6991816639ab00b6",
+  "engine": "d27ed50f9e3b650a43cceda5a0c007d03cc321df",
+  "snapshots": {
+    "1125182320.json": {
+      "sha256": "32d5e82cad551838b39d8fe907600cf216caf05dde51964e0b8671584b77f4f2",
+      "format": "JSON-serialized unchanged finalKnownWorld (formatting differs from raw run.json)"
+    },
+    "1211397579.json": {
+      "sha256": "77a64ba08e1fd0212f57823db04dbf3b9632d6a378c8a77e67a3389b9215ef7b",
+      "format": "JSON-serialized unchanged finalKnownWorld (formatting differs from raw run.json)"
+    }
+  },
+  "rawMembers": [
+    {
+      "archive": "raw-neo-b4-parity-books-v1-1.tgz",
+      "member": "./neo-seeded-v2-classes-1800-small/neo-b4-parity-books-v1/default/1211397579/run/messages.jsonl",
+      "sha256": "0665435c128c3cc660c23db01ec7eb79d3b6819d43f95fe7f7d7e017d51284fc"
+    },
+    {
+      "archive": "raw-neo-b4-parity-books-v1-1.tgz",
+      "member": "./neo-seeded-v2-classes-1800-small/neo-b4-parity-books-v1/default/1211397579/run/run.json",
+      "sha256": "89da3087420c29d0a70134452907e05503d8f0329f7fad6cdd6423df87b204ad"
+    },
+    {
+      "archive": "raw-neo-b4-parity-books-v1-1.tgz",
+      "member": "./neo-seeded-v2-classes-1800-small/neo-b4-parity-books-v1/default/1211397579/run/commands.jsonl",
+      "sha256": "49aa7aaeb9e6a3326fbe08662323c27751257f292fbb694e400c43091325f34b"
+    }
+  ],
+  "terminalRows": {
+    "messages.jsonl": [
+      {
+        "turn": 76449,
+        "text": "You cannot see!"
+      },
+      {
+        "turn": 76449,
+        "text": "You cannot see!"
+      },
+      {
+        "turn": 76449,
+        "text": "You cannot see!"
+      },
+      {
+        "turn": 76449,
+        "text": "You cannot see!"
+      },
+      {
+        "turn": 76449,
+        "text": "You cannot see!"
+      }
+    ],
+    "commands.jsonl": [
+      {
+        "accepted": true,
+        "intent": {
+          "kind": "target",
+          "x": 107,
+          "y": 33
+        },
+        "turn": 76449,
+        "type": "intent"
+      },
+      {
+        "accepted": true,
+        "intent": {
+          "command": {
+            "args": {
+              "spell": 0
+            },
+            "code": "cast"
+          },
+          "kind": "command"
+        },
+        "turn": 76449,
+        "type": "intent"
+      },
+      {
+        "accepted": true,
+        "intent": {
+          "kind": "target",
+          "x": 107,
+          "y": 33
+        },
+        "turn": 76449,
+        "type": "intent"
+      },
+      {
+        "accepted": true,
+        "intent": {
+          "command": {
+            "args": {
+              "spell": 0
+            },
+            "code": "cast"
+          },
+          "kind": "command"
+        },
+        "turn": 76449,
+        "type": "intent"
+      },
+      {
+        "reason": "The Borg's cast changed nothing 40 times running.",
+        "turn": 76449,
+        "type": "release"
+      }
+    ]
+  }
+}
