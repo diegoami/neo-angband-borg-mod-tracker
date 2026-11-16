@@ -1,6 +1,11 @@
-import pathlib,re,subprocess,json
-root=pathlib.Path(__file__).parent
-repo='/home/diego/projects/angband/neo-angband-tracker/.worktrees/angband-c'
+import argparse,pathlib,re,subprocess,tempfile
+parser=argparse.ArgumentParser()
+parser.add_argument('--c-repo',required=True)
+parser.add_argument('--out-dir')
+args=parser.parse_args()
+root=pathlib.Path(args.out_dir or tempfile.mkdtemp(prefix='neo-caution-oracle-'))
+root.mkdir(parents=True,exist_ok=True)
+repo=args.c_repo
 for rev in ['4.2.6','e473720ed88a0f0c7ca66815cef3000eb4a38bc3']:
  source=subprocess.check_output(['git','-C',repo,'show',rev+':src/borg/borg-caution.c'],text=True)
  start=source.index('    /* cure confusion, second check')

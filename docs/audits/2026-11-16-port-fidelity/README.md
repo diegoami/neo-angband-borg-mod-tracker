@@ -110,7 +110,7 @@ node node_modules/vitest/vitest.mjs run src/item/port-audit.test.ts src/fight/po
 
 Exit1 is expected:24 C-parity failures, three controls pass. Mocked danger=0, disabled escape and walled-off surroundings isolate the missing caution tail; item helpers are real. These synthetic scenarios do not instantiate a game or claim a natural death replay.
 
-The native script extracts unchanged C blocks from both pins and compiles tiny standalone oracles with `cc -std=c11`. Set its repository/root paths to local pinned references before using it outside this machine. Both pins print:
+The native script extracts unchanged C blocks from both pins and compiles tiny standalone oracles with `cc -std=c11`. Run the retained script with `--c-repo PATH_TO_C_CHECKOUT` and optionally `--out-dir OUTPUT_DIRECTORY`; otherwise it writes to a new OS temporary directory. Both pins print:
 
 ```text
 0 command=1 fleeing=1 leaving=0
