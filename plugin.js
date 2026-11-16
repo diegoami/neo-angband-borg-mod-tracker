@@ -6758,7 +6758,7 @@ function borgTwitchy(ctx, flow) {
       return ctx.act.rest(REST_COMPLETE);
     }
   }
-  if (trait(w, 113 /* ISAFRAID */)) return ctx.act.tunnel(dir);
+  if (trait(w, 113 /* ISAFRAID */)) return { code: "alter", dir };
   return ctx.act.move(dir);
 }
 
@@ -16387,17 +16387,8 @@ function borgCaution(ctx, flow) {
   }
   const backOff = borgBackAway(ctx, flow, posDanger, nasty, surrounded);
   if (backOff) return backOff;
-  if (posDanger > trait3(ctx, 27 /* CURHP */) && trait3(ctx, 27 /* CURHP */) < idiv(trait3(ctx, 28 /* MAXHP */), 4)) {
-    const c = firstCmd2(
-      borgQuaffPotion(ctx, SVAL.potion.healing),
-      borgQuaffPotion(ctx, SVAL.potion.star_healing),
-      borgQuaffPotion(ctx, SVAL.potion.life),
-      borgQuaffCrit(ctx, true),
-      borgQuaffUnknown(ctx),
-      borgReadUnknown(ctx),
-      borgEatUnknown(ctx),
-      borgUseUnknown(ctx)
-    );
+  if (trait3(ctx, 27 /* CURHP */) < idiv(trait3(ctx, 28 /* MAXHP */), 10) || posDanger > trait3(ctx, 27 /* CURHP */) && trait3(ctx, 211 /* ATELEPORT */) + trait3(ctx, 212 /* AESCAPE */) <= 2 && trait3(ctx, 27 /* CURHP */) < idiv(trait3(ctx, 28 /* MAXHP */), 4) || trait3(ctx, 215 /* AEZHEAL */) > 5 && trait3(ctx, 27 /* CURHP */) < idiv(trait3(ctx, 28 /* MAXHP */), 4) || trait3(ctx, 28 /* MAXHP */) - trait3(ctx, 27 /* CURHP */) >= 600 && fs.fightingUnique && trait3(ctx, 105 /* CDEPTH */) >= 85) {
+    const c = borgQuaffPotion(ctx, SVAL.potion.star_healing) ?? borgQuaffPotion(ctx, SVAL.potion.healing) ?? borgQuaffPotion(ctx, SVAL.potion.life);
     if (c) return c;
   }
   if (self.goal.fleeing && !self.goal.fleeingMunchkin && !self.goal.fleeingToTown && trait3(ctx, 105 /* CDEPTH */) >= 1) {
@@ -16421,6 +16412,10 @@ function borgCaution(ctx, flow) {
       const heal = borgZapRod(ctx, SVAL.rod.healing) ?? borgQuaffPotion(ctx, SVAL.potion.healing) ?? borgQuaffPotion(ctx, SVAL.potion.star_healing) ?? borgQuaffPotion(ctx, SVAL.potion.life) ?? borgQuaffCrit(ctx, true) ?? borgQuaffPotion(ctx, SVAL.potion.cure_serious) ?? borgQuaffPotion(ctx, SVAL.potion.cure_light);
       if (heal) return heal;
     }
+  }
+  if (posDanger > trait3(ctx, 27 /* CURHP */) * 4 && trait3(ctx, 35 /* CLEVEL */) < 20 && !trait3(ctx, 31 /* MAXSP */)) {
+    const c = borgUseUnknown(ctx) ?? borgReadUnknown(ctx) ?? borgQuaffUnknown(ctx) ?? borgEatUnknown(ctx);
+    if (c) return c;
   }
   return null;
 }

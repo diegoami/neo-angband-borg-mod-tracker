@@ -1,0 +1,31 @@
+import argparse,pathlib,re,subprocess,tempfile
+parser=argparse.ArgumentParser()
+parser.add_argument('--c-repo',required=True)
+parser.add_argument('--out-dir')
+args=parser.parse_args()
+root=pathlib.Path(args.out_dir or tempfile.mkdtemp(prefix='neo-caution-oracle-'))
+root.mkdir(parents=True,exist_ok=True)
+repo=args.c_repo
+for rev in ['4.2.6','e473720ed88a0f0c7ca66815cef3000eb4a38bc3']:
+ source=subprocess.check_output(['git','-C',repo,'show',rev+':src/borg/borg-caution.c'],text=True)
+ start=source.index('    /* cure confusion, second check')
+ end=source.index('    /* Emergency check on healing.',start)
+ block=source[start:end]
+ names=sorted(set(re.findall(r'\b(?:BI_[A-Z_]+|sv_[a-z_]+|act_[a-z_]+|CLASS_WARRIOR|TV_MUSHROOM|BERSERK_STRENGTH|HEROISM|HOLY_WORD)\b',block)))
+ code='#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\nenum {'+','.join(names)+'};\n'
+ code+='struct {int trait[256]; struct {bool fleeing, leaving;} goal;} borg; int selected=-1;\n'
+ code+='static bool borg_quaff_potion(int sval){return sval==selected;}\n'
+ for fn in ['borg_note','borg_eat','borg_spell_fail','borg_activate_item','borg_use_staff_fail','borg_quaff_crit']:
+  code+='#define '+fn+'(...) false\n'
+ code+='#define randint0(n) 0\nstatic bool tail(void){\n'+block+'\nreturn false;}\n'
+ code+='''int main(void){for(int i=0;i<4;i++){memset(&borg,0,sizeof borg);selected=-1;
+ borg.trait[BI_MAXHP]=100;borg.trait[BI_CURHP]=80;borg.trait[BI_CLEVEL]=10;
+ if(i==0){borg.trait[BI_ISCONFUSED]=1;borg.goal.fleeing=true;selected=sv_potion_cure_serious;}
+ if(i==1){borg.trait[BI_ISAFRAID]=1;borg.goal.fleeing=true;selected=sv_potion_boldness;}
+ if(i==2){borg.trait[BI_CURHP]=30;borg.trait[BI_CDEPTH]=1;}
+ if(i==3){borg.trait[BI_CURHP]=45;borg.trait[BI_CDEPTH]=1;borg.trait[BI_ISCUT]=1;}
+ bool result=tail();printf("%d command=%d fleeing=%d leaving=%d\\n",i,result,borg.goal.fleeing,borg.goal.leaving);
+ }}\n'''
+ path=root/('oracle-'+rev[:8]+'.c');path.write_text(code)
+ subprocess.run(['cc','-std=c11',str(path),'-o',str(path.with_suffix(''))],check=True)
+ print(rev,subprocess.check_output([str(path.with_suffix(''))],text=True),flush=True)

@@ -67,3 +67,12 @@ packed artifact hash, and forces the transitive SDK to the same exact artifact.
 This replaces the old official06a beta.3 compatibility pin because current Borg
 requires the API2.1 fields. The ordinary/source gates retain one shared full-suite
 count with zero skips. Earlier version/count descriptions above are historical.
+
+## Borg beta.6 release import (2026-11-16)
+
+The required ordinary/exact-source full count is1275 (previous1265 plus ten
+upstream ordinary regressions). The new birth/shopping smoke remains active.
+The opt-in class experiment is registered only with BORG_SOAK=1, rather than
+appearing as a skipped ordinary regression; the default suite does not start
+the180-life soak. Matching beta.4 packages and exact-source engined27ed50f
+remain unchanged. Release import does not adopt source fixes514–519.

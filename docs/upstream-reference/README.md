@@ -3,7 +3,7 @@
 Borg (Angband's automatic player) for
 [Neo Angband](https://github.com/neostryder/neo-angband), as a mod.
 
-**Needs Neo Angband 1.23.0-beta.1 or newer.** An older game refuses to load it and says so; [How well it plays today](#how-well-it-plays-today) explains why it refuses instead of running a reduced Borg.
+**Needs Neo Angband 1.23.0-beta.4 or newer.** An older game refuses to load it and says so; [How well it plays today](#how-well-it-plays-today) explains why it refuses instead of running a reduced Borg.
 
 Install it from the game's **Install a mod...** row. Enabling the mod does **not**
 hand it your character: press **Ctrl-Z** in play to warn, confirm, and hand over
@@ -75,7 +75,7 @@ flowchart TD
   SHOP --> RES
   POWER --> RES
   RES --> BORG["createBorg"]
-  FLOOR["manifest.json<br/>engine at least 1.23.0-beta.1"] --> PLUGIN
+  FLOOR["manifest.json<br/>engine at least 1.23.0-beta.4"] --> PLUGIN
 ```
 
 *Source of truth: `plugin.ts`, `src/api2/host.ts`, `src/api2/caches.ts`, and `src/resolvers.ts`. The bridge also supplies kind cost and attack-message data from content records it reads once at start.*
@@ -120,7 +120,7 @@ All four resolvers are wired: danger vision, activation identity, the in-shop si
 
 When it dies it starts a new character, and the game does that, not this mod. A controller can only return an in-game command, and there is no command for "roll me a new character", so the game's death handler does it whenever a mod holds the keyboard. It is an in-session reincarnation, not a new save: same session, same slot, a rolled race and class each time, as upstream's borg respawns.
 
-The loadout scoring and the death handler both arrived in Neo Angband 0.25.0, and this version requires Neo Angband 1.23.0-beta.1 or newer instead of running in a reduced form on an older game. Earlier versions declared `>=0.12.0` and fell back. On a game without the loadout support, the Borg wore nothing it found, bought nothing it needed and sold nothing it was done with, and on a game without the death handler, a death simply ended the run. That left a Borg unable to do the two things a Borg is for. No earlier version of this mod ran a working autoplayer on any game, so the stricter requirement takes nothing away from anyone.
+The loadout scoring and the death handler both arrived in Neo Angband 0.25.0, and this version requires Neo Angband 1.23.0-beta.4 or newer instead of running in a reduced form on an older game. Earlier versions declared `>=0.12.0` and fell back. On a game without the loadout support, the Borg wore nothing it found, bought nothing it needed and sold nothing it was done with, and on a game without the death handler, a death simply ended the run. That left a Borg unable to do the two things a Borg is for. No earlier version of this mod ran a working autoplayer on any game, so the stricter requirement takes nothing away from anyone.
 
 Watched in the released 0.25.0 desktop build on 2026-08-21, over two characters, the Borg took the keyboard, shopped, wore what it bought, found the town's down staircase and descended, and then stalled on the first dungeon level both times without dying. Five separate causes turned up, four of them one-line fixes:
 
@@ -138,7 +138,7 @@ The reported habit of "sitting there or moving frantically back and forth across
 
 On 2026-08-22 it was watched again, and this time it played: thirteen minutes in the development build and four in the packaged 0.26.0 artifact, each on its own isolated data directory. There were no mod faults and no console errors. It answered 37 blocking prompts without a human, picked four locked doors a turn at a time, found four secret doors by searching, killed thirteen monsters in the artifact run, and had four characters die and start again on their own. It fled twice under a low-hitpoint warning by taking the stairs, arrived in town at 6 of 11 hit points, and rested back to 10 before diving again.
 
-Before a routine descent, the Borg walks to the shop doors on its known map, looks at what each shop stocks, and decides what to buy or sell. It sends `shop-buy`, `shop-sell`, and `shop-exit` through the engine's command registry. One test fixture covers this, in a safe town at seed 441: a fresh character of each of the nine classes starts with 100 gold, walks to a shop, and buys before going down. Shopping in desktop play is untested, and so is the reporter's comparison across 1,800 lives.
+Before a routine descent, the Borg walks to the shop doors it knows about, looks at what each shop stocks, and decides what to buy or sell. Danger in town can send it to the stairs first, so a low-level Borg that sees a monster such as a street urchin often leaves before shopping. Current upstream Angband plays the same way since a capitalization bug that kept the 4.2.6 Borg from counting those monsters as town danger was fixed (upstream commit 27e4ce3d7). In a test of 180 Borg lives in a populated town, 60 bought something before their first descent and 179 bought something at some point. In the desktop game, the Borg sees only the stock it has looked at.
 
 Install it to watch it try, not to watch it win. Most of the other test files cover dispatch, ladder ordering and resolver wiring and never play a turn, so they say nothing about how well it plays; `play.test.ts` covers that, and `rest.test.ts` covers the path the in-town death went through.
 
@@ -277,6 +277,8 @@ writers. `src/wiring-allowlist.ts` records the current gaps with reasons and C
 sites. A new unwritten read fails the test, as does an entry that gains a writer
 or loses its readers. Run it alone with `pnpm exec vitest run src/wiring.test.ts`.
 This checks assignment presence, so it cannot prove a writer runs before a read.
+
+`src/soak.test.ts` is an opt-in soak runner that plays the Borg through repeated lives for each class against the installed engine and content. The full soak is skipped unless `BORG_SOAK=1` is set, though its populated-town regression runs during `pnpm verify`. Run it with `BORG_SOAK=1 pnpm exec vitest run src/soak.test.ts`. Each life births a Human character in town at depth 0, and the runner supplies the book, spell effect, and race and class resolvers the Borg needs. The runner loads all eight stores and tracks the store phase separately from the entrance grid. If one life throws an exception, the runner records it and still runs the remaining lives. `BORG_SOAK_CLASSES` takes a comma-separated list of class names, `BORG_SOAK_LIVES` sets lives per class (default 20), `BORG_SOAK_DECISIONS` caps decisions per life (default 30000), `BORG_SOAK_SEED` sets the first seed (default 140000), and `BORG_SOAK_OUTPUT` names the result folder (default `.soak-results`). After each life the runner writes `results.json` and `summary.md` with evidence for deaths and stalls. If a run stops returning, add `BORG_SOAK_CHECKPOINT=1` to also write `checkpoint.json` before and after each controller decision. List result folders in `.git/info/exclude` to keep them out of git.
 
 To develop against an unreleased engine:
 

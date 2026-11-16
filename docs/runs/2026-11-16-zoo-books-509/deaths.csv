@@ -1,0 +1,861 @@
+seed,race,class,cause,turn,depth,level,max_depth,healing_carried,phase_door_carried,source_diagnosis
+1093205,Human,Ranger,"Grip, Farmer Maggot's Dog",4347,1,1,1,False,False,unproven; observed endpoint retained
+3831992,Half-Elf,Druid,grey mold,11470,1,1,2,True,True,unproven; observed endpoint retained
+6597999,Hobbit,Priest,"Grip, Farmer Maggot's Dog",7035,1,1,1,True,False,unproven; observed endpoint retained
+7360891,Half-Troll,Druid,"Grip, Farmer Maggot's Dog",12945,1,1,1,True,True,unproven; observed endpoint retained
+17036969,Half-Elf,Warrior,giant yellow centipede,22773,1,3,1,True,False,unproven; observed endpoint retained
+21282305,Human,Ranger,"Fang, Farmer Maggot's Dog",40695,1,3,2,True,False,unproven; observed endpoint retained
+23166487,Hobbit,Necromancer,giant white mouse,45814,1,1,1,True,False,unproven; observed endpoint retained
+28775175,Kobold,Rogue,"Grip, Farmer Maggot's Dog",28604,2,4,2,True,False,unproven; observed endpoint retained
+28851876,Half-Troll,Mage,small kobold,15706,1,2,1,False,False,unproven; observed endpoint retained
+33530328,Hobbit,Warrior,"Grip, Farmer Maggot's Dog",10335,1,1,1,True,False,unproven; observed endpoint retained
+36984942,Human,Ranger,a fatal wound,12740,1,1,1,True,False,unproven; observed endpoint retained
+39654728,Dunadan,Mage,giant yellow centipede,2313,1,1,1,False,False,unproven; observed endpoint retained
+40535242,Elf,Priest,acolyte,975,1,1,1,True,False,unproven; observed endpoint retained
+52783104,Half-Troll,Blackguard,soldier,67594,2,4,3,True,False,unproven; observed endpoint retained
+56502778,Dwarf,Rogue,"Fang, Farmer Maggot's Dog",16980,1,2,1,True,False,unproven; observed endpoint retained
+59350116,Hobbit,Priest,"Grip, Farmer Maggot's Dog",69343,1,3,2,True,False,unproven; observed endpoint retained
+66124157,Human,Blackguard,poison,7070,1,3,1,True,True,unproven; observed endpoint retained
+69009467,Elf,Ranger,apprentice,2473,1,1,1,True,False,unproven; observed endpoint retained
+69379360,Half-Elf,Priest,wild dog,14325,1,1,1,True,True,unproven; observed endpoint retained
+71937972,Half-Orc,Blackguard,giant yellow centipede,13791,1,2,1,True,True,unproven; observed endpoint retained
+78373428,Gnome,Rogue,crow,6275,1,1,1,False,False,unproven; observed endpoint retained
+81840130,Elf,Druid,mean-looking mercenary,5135,0,1,1,False,False,unproven; observed endpoint retained
+82197034,Dwarf,Mage,small kobold,76791,1,3,2,True,False,unproven; observed endpoint retained
+85287802,High-Elf,Mage,metallic red centipede,9670,1,1,2,True,False,unproven; observed endpoint retained
+85732457,Human,Necromancer,giant yellow centipede,35429,1,2,1,True,False,unproven; observed endpoint retained
+86782549,Hobbit,Mage,giant white mouse,23461,1,2,2,True,False,unproven; observed endpoint retained
+92822818,Hobbit,Rogue,grey mold,83408,1,2,2,True,True,unproven; observed endpoint retained
+93579168,Half-Orc,Mage,small kobold,23129,1,1,2,True,False,unproven; observed endpoint retained
+97193338,Human,Mage,grey mold,5286,1,1,1,False,False,unproven; observed endpoint retained
+100197413,Half-Troll,Mage,"Fang, Farmer Maggot's Dog",1895,1,1,1,False,False,unproven; observed endpoint retained
+102062135,Dunadan,Mage,giant yellow centipede,31668,1,2,2,True,False,unproven; observed endpoint retained
+110758336,Half-Troll,Druid,"Fang, Farmer Maggot's Dog",10813,1,1,1,False,False,unproven; observed endpoint retained
+113783013,Hobbit,Priest,giant white mouse,84936,1,3,2,True,False,unproven; observed endpoint retained
+113854930,Dunadan,Paladin,wild cat,14068,1,1,1,True,False,unproven; observed endpoint retained
+116175228,Half-Troll,Necromancer,giant white mouse,20218,1,3,2,True,False,unproven; observed endpoint retained
+117529556,High-Elf,Druid,grey mushroom patch,33133,1,1,1,True,True,unproven; observed endpoint retained
+119249021,Elf,Paladin,"Grip, Farmer Maggot's Dog",9856,1,3,2,True,False,unproven; observed endpoint retained
+123307904,Kobold,Druid,"Grip, Farmer Maggot's Dog",4773,1,1,1,False,False,unproven; observed endpoint retained
+124464381,Elf,Rogue,wild cat,5347,1,1,1,True,False,unproven; observed endpoint retained
+126406398,Elf,Mage,poison,51230,1,4,1,True,False,unproven; observed endpoint retained
+126464402,Dunadan,Priest,soldier,7317,1,2,1,True,False,unproven; observed endpoint retained
+127838064,Half-Troll,Warrior,giant white mouse,12331,1,4,1,True,False,unproven; observed endpoint retained
+131481630,Half-Orc,Paladin,giant white mouse,43139,1,4,2,True,False,unproven; observed endpoint retained
+132036130,Half-Elf,Mage,blue yeek,10930,1,1,1,False,False,unproven; observed endpoint retained
+132188583,Elf,Paladin,wild cat,8812,1,2,1,True,False,unproven; observed endpoint retained
+133435817,Elf,Ranger,crow,33920,1,2,1,True,True,unproven; observed endpoint retained
+136587177,Human,Priest,wild cat,35718,2,3,3,True,False,unproven; observed endpoint retained
+140681574,Kobold,Druid,giant yellow centipede,7747,1,1,2,False,False,unproven; observed endpoint retained
+141674384,Hobbit,Necromancer,"Grip, Farmer Maggot's Dog",64419,1,2,1,True,True,unproven; observed endpoint retained
+141796614,Kobold,Blackguard,grey mold,10836,1,1,1,True,True,unproven; observed endpoint retained
+142809761,Half-Elf,Paladin,"Grip, Farmer Maggot's Dog",11636,1,1,1,True,False,unproven; observed endpoint retained
+143899131,Kobold,Ranger,giant red frog,71636,7,4,7,True,False,unproven; observed endpoint retained
+144113298,Elf,Rogue,poison,4320,1,2,1,True,False,unproven; observed endpoint retained
+146758027,Kobold,Priest,grey mold,8485,1,1,1,True,False,unproven; observed endpoint retained
+150020177,Half-Troll,Blackguard,fruit bat,1757,1,1,1,True,False,unproven; observed endpoint retained
+154703736,Elf,Necromancer,giant yellow centipede,34832,1,2,2,True,False,unproven; observed endpoint retained
+156364984,Elf,Necromancer,crow,7355,1,1,2,True,False,unproven; observed endpoint retained
+157258919,Human,Druid,giant yellow centipede,13489,1,1,1,True,True,unproven; observed endpoint retained
+162580419,Half-Troll,Blackguard,wild cat,10540,1,1,1,True,False,unproven; observed endpoint retained
+169564570,Elf,Mage,poison,23970,1,2,1,True,True,unproven; observed endpoint retained
+170937582,Dwarf,Ranger,white jelly,17815,1,2,2,True,True,unproven; observed endpoint retained
+171741958,Half-Troll,Mage,small kobold,14486,1,1,1,True,True,unproven; observed endpoint retained
+175735064,Human,Druid,crow,36434,1,1,2,True,True,unproven; observed endpoint retained
+184371514,Elf,Necromancer,soldier,74183,1,3,2,True,True,unproven; observed endpoint retained
+186370744,Gnome,Paladin,"Fang, Farmer Maggot's Dog",4740,1,1,1,False,False,unproven; observed endpoint retained
+188423534,Dunadan,Priest,"Grip, Farmer Maggot's Dog",60332,2,3,2,True,False,unproven; observed endpoint retained
+188749779,Dunadan,Priest,fruit bat,3487,1,1,1,True,False,unproven; observed endpoint retained
+189117966,Half-Elf,Paladin,poison,11080,1,2,1,True,False,unproven; observed endpoint retained
+189620885,Half-Orc,Mage,small kobold,13773,1,2,1,False,False,unproven; observed endpoint retained
+190766901,Half-Orc,Druid,"Fang, Farmer Maggot's Dog",2608,1,1,1,False,False,unproven; observed endpoint retained
+196174093,Kobold,Paladin,warrior,59282,12,5,12,True,False,unproven; observed endpoint retained
+209310940,Hobbit,Rogue,wild cat,88422,1,2,2,True,False,unproven; observed endpoint retained
+211009638,High-Elf,Mage,grey mushroom patch,26260,1,1,1,True,True,unproven; observed endpoint retained
+213153841,Human,Ranger,clear mushroom patch,59147,7,5,8,True,False,unproven; observed endpoint retained
+213454877,Elf,Ranger,wild cat,39156,1,2,1,True,False,unproven; observed endpoint retained
+215270755,Human,Ranger,grey mold,14242,1,1,1,False,False,unproven; observed endpoint retained
+215853633,Half-Orc,Necromancer,grey mold,17032,1,1,1,True,True,unproven; observed endpoint retained
+218389835,Gnome,Necromancer,blue yeek,2649,1,1,1,False,False,unproven; observed endpoint retained
+219045338,Gnome,Rogue,poison,5730,1,1,1,True,False,unproven; observed endpoint retained
+221549726,Half-Elf,Ranger,white jelly,96178,2,5,3,True,False,unproven; observed endpoint retained
+223300336,Elf,Mage,blubbering icky thing,1497,1,1,1,False,False,unproven; observed endpoint retained
+227251157,Human,Priest,wild dog,15332,1,2,1,True,True,unproven; observed endpoint retained
+229359584,Dwarf,Ranger,warrior,62439,13,5,13,True,False,unproven; observed endpoint retained
+230666557,Half-Elf,Ranger,cave spider,90064,2,5,2,True,False,unproven; observed endpoint retained
+232735336,Kobold,Priest,grey mushroom patch,35097,1,1,2,True,True,unproven; observed endpoint retained
+234147355,Half-Elf,Druid,giant yellow centipede,21806,1,2,2,True,False,unproven; observed endpoint retained
+234849497,Elf,Rogue,"Grip, Farmer Maggot's Dog",33461,1,2,2,True,False,unproven; observed endpoint retained
+235020492,Kobold,Priest,floating eye,80970,1,2,2,True,True,unproven; observed endpoint retained
+237018246,Elf,Blackguard,soldier,34745,2,4,3,True,False,unproven; observed endpoint retained
+239390507,Dunadan,Blackguard,Sméagol,21243,12,3,12,True,False,unproven; observed endpoint retained
+239694606,Elf,Ranger,wild cat,91343,7,4,7,True,True,unproven; observed endpoint retained
+242123663,Hobbit,Priest,cutpurse,50675,1,2,2,True,True,unproven; observed endpoint retained
+242651048,Gnome,Necromancer,a fatal wound,31220,1,1,1,True,False,unproven; observed endpoint retained
+243667120,Half-Troll,Necromancer,aimless-looking merchant,92789,0,2,2,True,False,unproven; observed endpoint retained
+245331668,Half-Elf,Rogue,"Grip, Farmer Maggot's Dog",13910,1,1,1,False,False,unproven; observed endpoint retained
+245717517,Gnome,Blackguard,scout,98479,4,6,7,True,False,unproven; observed endpoint retained
+249214804,Hobbit,Druid,an apprentice,7395,1,1,1,False,False,unproven; observed endpoint retained
+249356756,Kobold,Mage,giant yellow centipede,34697,1,2,2,True,False,unproven; observed endpoint retained
+251358766,Half-Orc,Mage,grey mushroom patch,19509,1,2,2,True,True,unproven; observed endpoint retained
+257216955,Half-Troll,Druid,wild cat,6295,1,1,1,True,False,unproven; observed endpoint retained
+257241742,Half-Troll,Mage,grey mold,59213,1,4,2,True,False,unproven; observed endpoint retained
+259317492,Elf,Druid,wild dog,24734,1,1,1,True,True,unproven; observed endpoint retained
+259354904,Half-Troll,Necromancer,wild cat,19935,1,2,1,True,True,unproven; observed endpoint retained
+259851285,Gnome,Mage,wild dog,23913,1,1,1,True,False,unproven; observed endpoint retained
+260830079,Half-Orc,Necromancer,white worm mass,25809,1,2,1,True,False,unproven; observed endpoint retained
+265120597,Half-Elf,Druid,"Fang, Farmer Maggot's Dog",29948,1,1,1,True,True,unproven; observed endpoint retained
+268338536,Hobbit,Druid,small kobold,20876,1,1,1,False,False,unproven; observed endpoint retained
+270111444,Dwarf,Druid,grey mold,92320,1,4,2,True,True,unproven; observed endpoint retained
+273368719,Half-Troll,Warrior,grey mold,16287,1,2,1,True,False,unproven; observed endpoint retained
+277926518,High-Elf,Blackguard,wild cat,65706,2,3,2,True,False,unproven; observed endpoint retained
+281230325,Half-Orc,Blackguard,"Grip, Farmer Maggot's Dog",20614,1,2,1,True,True,unproven; observed endpoint retained
+287531673,Gnome,Necromancer,metallic red centipede,763,1,1,1,False,False,unproven; observed endpoint retained
+287783911,Half-Orc,Warrior,scout,65577,4,6,4,True,True,unproven; observed endpoint retained
+288433911,Kobold,Druid,blue yeek,23859,1,1,1,True,True,unproven; observed endpoint retained
+295883610,Hobbit,Blackguard,grey mold,1998,1,1,1,True,False,unproven; observed endpoint retained
+296131892,Hobbit,Ranger,"Grip, Farmer Maggot's Dog",30887,1,2,1,True,False,unproven; observed endpoint retained
+303407266,Human,Mage,crow,91444,1,4,2,True,True,unproven; observed endpoint retained
+303466322,Elf,Druid,wild cat,39080,1,1,2,True,False,unproven; observed endpoint retained
+305558603,Kobold,Mage,floating eye,57694,1,2,2,True,True,unproven; observed endpoint retained
+309480460,Gnome,Warrior,stonefoot warrior,86438,5,7,5,True,False,unproven; observed endpoint retained
+316136081,Human,Necromancer,burning to a cinder in lava,4960,0,1,1,False,False,unproven; observed endpoint retained
+318602201,Dwarf,Mage,grey mushroom patch,36699,1,2,2,True,True,unproven; observed endpoint retained
+320299937,Dwarf,Necromancer,giant white mouse,31660,1,2,1,True,False,unproven; observed endpoint retained
+320534568,Human,Necromancer,small kobold,25615,1,3,2,False,False,unproven; observed endpoint retained
+325533317,Human,Druid,giant yellow centipede,12179,1,1,2,True,False,unproven; observed endpoint retained
+328026318,Dwarf,Ranger,"Grip, Farmer Maggot's Dog",16840,2,3,2,True,False,unproven; observed endpoint retained
+333116141,Dwarf,Rogue,"Fang, Farmer Maggot's Dog",1730,1,1,1,False,False,unproven; observed endpoint retained
+334225350,Elf,Druid,yellow jelly,12944,1,1,2,False,False,unproven; observed endpoint retained
+336527361,Dunadan,Paladin,wild cat,59807,1,2,1,True,True,unproven; observed endpoint retained
+338951283,Half-Orc,Druid,floating eye,14441,1,2,1,True,False,unproven; observed endpoint retained
+340560238,Human,Rogue,fruit bat,6451,1,1,1,False,True,unproven; observed endpoint retained
+341914764,Half-Troll,Druid,"Fang, Farmer Maggot's Dog",1313,1,1,1,False,False,unproven; observed endpoint retained
+342520689,Gnome,Blackguard,giant white mouse,20803,1,2,1,True,False,unproven; observed endpoint retained
+344621783,Elf,Blackguard,"Fang, Farmer Maggot's Dog",10654,1,1,1,True,True,unproven; observed endpoint retained
+346755506,Dwarf,Necromancer,poison,40940,1,2,2,True,False,unproven; observed endpoint retained
+349168886,Half-Troll,Warrior,soldier,84223,4,6,4,True,False,unproven; observed endpoint retained
+349592353,Half-Elf,Paladin,"Fang, Farmer Maggot's Dog",10663,1,1,1,True,False,unproven; observed endpoint retained
+350019725,Half-Orc,Mage,giant white centipede,1980,1,1,1,False,False,unproven; observed endpoint retained
+350226423,Half-Elf,Ranger,soldier,57280,5,3,7,True,False,unproven; observed endpoint retained
+350229614,Kobold,Mage,small kobold,41769,1,2,2,True,False,unproven; observed endpoint retained
+351391783,Kobold,Ranger,giant white louse,79128,1,5,2,True,True,unproven; observed endpoint retained
+362301888,Half-Elf,Druid,wild dog,7215,1,1,1,False,False,unproven; observed endpoint retained
+366924728,Half-Troll,Necromancer,"Grip, Farmer Maggot's Dog",28571,1,2,1,True,False,unproven; observed endpoint retained
+371688879,Gnome,Rogue,wild cat,48318,1,3,1,True,False,unproven; observed endpoint retained
+372686776,High-Elf,Mage,small kobold,8790,1,1,1,False,False,unproven; observed endpoint retained
+373347292,High-Elf,Warrior,a kobold archer,51258,9,8,10,True,False,unproven; observed endpoint retained
+377146653,Human,Ranger,white jelly,16018,2,2,2,True,False,unproven; observed endpoint retained
+377501502,Human,Mage,fruit bat,10400,1,2,1,True,False,unproven; observed endpoint retained
+384853161,Elf,Mage,giant white mouse,2672,1,1,1,True,False,unproven; observed endpoint retained
+386442805,Kobold,Necromancer,giant white louse,11789,1,1,1,True,False,unproven; observed endpoint retained
+387195494,Human,Druid,poison,12090,1,1,1,True,False,unproven; observed endpoint retained
+394484089,Half-Elf,Mage,giant black ant,27499,1,2,1,True,False,unproven; observed endpoint retained
+394782902,Dunadan,Rogue,poison,9970,1,1,1,True,False,unproven; observed endpoint retained
+397924477,Half-Orc,Ranger,grey mold,29171,1,1,1,True,True,unproven; observed endpoint retained
+400971577,Elf,Paladin,Bullroarer the Hobbit,82825,3,4,3,True,False,unproven; observed endpoint retained
+405636322,Dunadan,Druid,"Fang, Farmer Maggot's Dog",78312,1,2,1,True,False,unproven; observed endpoint retained
+411458635,Half-Orc,Rogue,grey mold,14862,1,2,1,False,False,unproven; observed endpoint retained
+416334673,Dunadan,Priest,grey mushroom patch,2441,1,1,1,True,True,unproven; observed endpoint retained
+419199257,Human,Mage,small kobold,33344,1,1,1,True,True,unproven; observed endpoint retained
+419279354,Dunadan,Rogue,large kobold,52294,6,5,8,True,False,unproven; observed endpoint retained
+419565663,Kobold,Ranger,wild cat,45693,1,2,2,True,False,unproven; observed endpoint retained
+424424763,Human,Necromancer,"Grip, Farmer Maggot's Dog",32108,1,2,1,True,False,unproven; observed endpoint retained
+428043577,Human,Rogue,cave lizard,93082,8,8,8,True,False,unproven; observed endpoint retained
+430810754,Kobold,Blackguard,soldier,17884,1,2,1,True,False,unproven; observed endpoint retained
+431284855,Human,Mage,yellow mushroom patch,6286,1,1,1,True,True,unproven; observed endpoint retained
+431537779,Dunadan,Necromancer,"Fang, Farmer Maggot's Dog",284,1,1,1,False,False,unproven; observed endpoint retained
+433737085,Gnome,Mage,crow,26399,1,1,1,True,True,unproven; observed endpoint retained
+435042582,Half-Orc,Necromancer,soldier,18246,1,2,2,True,False,unproven; observed endpoint retained
+443544168,Half-Orc,Druid,soldier,78651,2,6,3,True,False,unproven; observed endpoint retained
+443989415,Half-Troll,Mage,grey mold,9276,1,1,1,True,False,unproven; observed endpoint retained
+445437226,Dunadan,Ranger,"Grip, Farmer Maggot's Dog",42516,2,3,2,True,True,unproven; observed endpoint retained
+445750562,Half-Orc,Warrior,acolyte,60139,3,5,3,True,False,unproven; observed endpoint retained
+446813045,High-Elf,Priest,burning to a cinder in lava,85187,0,2,1,True,True,unproven; observed endpoint retained
+449215163,Gnome,Druid,yellow jelly,17064,1,1,1,True,False,unproven; observed endpoint retained
+456624506,Elf,Ranger,"Grip, Farmer Maggot's Dog",9210,1,1,1,True,False,unproven; observed endpoint retained
+456627423,Half-Elf,Necromancer,"Fang, Farmer Maggot's Dog",3924,1,1,1,False,False,unproven; observed endpoint retained
+457739619,Dunadan,Rogue,wild cat,50643,2,3,2,True,False,unproven; observed endpoint retained
+458172323,Half-Elf,Rogue,a fatal wound,63140,0,3,2,False,True,unproven; observed endpoint retained
+458424895,Kobold,Druid,"Grip, Farmer Maggot's Dog",19542,1,1,2,True,True,unproven; observed endpoint retained
+458704130,High-Elf,Blackguard,poison,27140,2,5,3,True,False,unproven; observed endpoint retained
+462111593,Half-Troll,Necromancer,crow,789,1,1,1,False,False,unproven; observed endpoint retained
+463577688,Hobbit,Ranger,grey mushroom patch,41866,1,1,2,True,True,unproven; observed endpoint retained
+465368095,Hobbit,Mage,grey mushroom patch,11668,1,1,1,True,True,unproven; observed endpoint retained
+474349686,Human,Blackguard,crow,64532,2,4,2,True,False,unproven; observed endpoint retained
+474870818,High-Elf,Druid,"Grip, Farmer Maggot's Dog",66674,1,3,2,True,True,unproven; observed endpoint retained
+477376406,Dwarf,Necromancer,"Grip, Farmer Maggot's Dog",26789,1,1,1,True,False,unproven; observed endpoint retained
+477818724,Half-Orc,Ranger,cave orc,98238,9,7,9,True,False,unproven; observed endpoint retained
+479600145,Dunadan,Paladin,yellow jelly,19758,1,3,2,False,False,unproven; observed endpoint retained
+479688535,Human,Rogue,grey mold,47099,1,3,2,True,False,unproven; observed endpoint retained
+479689718,Dwarf,Mage,"Fang, Farmer Maggot's Dog",12636,1,1,1,True,False,unproven; observed endpoint retained
+482757584,Dunadan,Priest,large kobold,91269,7,4,8,True,False,unproven; observed endpoint retained
+483672970,Gnome,Priest,grey mushroom patch,67852,1,3,2,True,True,unproven; observed endpoint retained
+485990395,Gnome,Druid,small kobold,99582,1,2,2,True,False,unproven; observed endpoint retained
+487471826,Half-Elf,Priest,acolyte,10014,1,1,1,True,False,unproven; observed endpoint retained
+488856977,Hobbit,Paladin,"Fang, Farmer Maggot's Dog",89155,6,3,6,True,True,unproven; observed endpoint retained
+489599475,Half-Elf,Mage,giant yellow centipede,21295,1,2,2,False,False,unproven; observed endpoint retained
+490275608,Half-Troll,Priest,floating eye,6434,1,1,1,False,True,unproven; observed endpoint retained
+490936338,Human,Rogue,"Fang, Farmer Maggot's Dog",37655,1,3,1,True,True,unproven; observed endpoint retained
+496925615,Hobbit,Paladin,giant white mouse,68684,1,3,2,True,False,unproven; observed endpoint retained
+497945951,Dwarf,Druid,blubbering icky thing,2041,1,1,1,True,False,unproven; observed endpoint retained
+497973512,Hobbit,Druid,fruit bat,41725,1,2,2,True,False,unproven; observed endpoint retained
+503575532,Kobold,Druid,metallic red centipede,58149,1,1,2,True,False,unproven; observed endpoint retained
+505123665,Gnome,Mage,giant white centipede,21525,1,1,1,True,False,unproven; observed endpoint retained
+519830381,Elf,Paladin,giant white mouse,15849,1,2,1,True,False,unproven; observed endpoint retained
+527408849,Gnome,Mage,grey mushroom patch,31836,1,3,2,True,True,unproven; observed endpoint retained
+535080934,Human,Necromancer,apprentice,19283,1,3,1,True,False,unproven; observed endpoint retained
+536786439,Gnome,Necromancer,yellow mushroom patch,25991,1,2,2,True,True,unproven; observed endpoint retained
+537242584,High-Elf,Druid,acolyte,22354,1,1,1,True,False,unproven; observed endpoint retained
+538152356,Hobbit,Necromancer,crow,49737,1,2,2,True,False,unproven; observed endpoint retained
+539166422,High-Elf,Rogue,"Grip, Farmer Maggot's Dog",14398,1,2,1,True,False,unproven; observed endpoint retained
+539923342,Half-Orc,Necromancer,"Grip, Farmer Maggot's Dog",10958,1,1,1,False,False,unproven; observed endpoint retained
+542409840,Half-Elf,Paladin,poison,34630,2,3,3,True,False,unproven; observed endpoint retained
+545354144,Gnome,Necromancer,wild dog,48057,1,2,1,True,False,unproven; observed endpoint retained
+549207723,Hobbit,Warrior,a snaga,96794,7,7,8,True,False,unproven; observed endpoint retained
+552030975,Half-Troll,Blackguard,grey mushroom patch,33775,1,1,1,True,False,unproven; observed endpoint retained
+554730444,Half-Troll,Mage,floating eye,84265,1,3,2,True,True,unproven; observed endpoint retained
+557466218,Half-Troll,Priest,grey mold,1479,1,1,1,True,False,unproven; observed endpoint retained
+557623096,Half-Elf,Druid,wild cat,16977,1,1,1,True,True,unproven; observed endpoint retained
+558288488,Gnome,Blackguard,fruit bat,4467,1,1,1,True,True,unproven; observed endpoint retained
+563835391,Elf,Mage,"Grip, Farmer Maggot's Dog",4614,1,1,2,False,False,unproven; observed endpoint retained
+565797968,Gnome,Paladin,"Fang, Farmer Maggot's Dog",61841,1,2,2,True,False,unproven; observed endpoint retained
+569014086,Gnome,Ranger,crow,33198,1,1,2,False,False,unproven; observed endpoint retained
+569645299,Half-Elf,Priest,small kobold,73139,1,4,2,True,True,unproven; observed endpoint retained
+573438348,Human,Priest,yellow mold,3778,1,1,1,True,False,unproven; observed endpoint retained
+588727977,Human,Warrior,gallant,57474,4,6,5,True,False,unproven; observed endpoint retained
+601134584,Hobbit,Priest,"Grip, Farmer Maggot's Dog",24076,1,2,2,True,False,unproven; observed endpoint retained
+602646687,Dwarf,Necromancer,wild dog,10979,1,2,1,True,True,unproven; observed endpoint retained
+602947882,Half-Elf,Warrior,kobold shaman,82163,3,6,3,True,True,unproven; observed endpoint retained
+604041273,Dwarf,Ranger,wild cat,25340,1,2,1,True,False,unproven; observed endpoint retained
+606346974,Elf,Druid,fruit bat,10482,1,1,1,True,True,unproven; observed endpoint retained
+609330327,Dunadan,Necromancer,grey mushroom patch,44229,1,1,1,True,True,unproven; observed endpoint retained
+610253005,High-Elf,Paladin,poison,87310,1,5,1,True,True,unproven; observed endpoint retained
+611504896,Kobold,Druid,grey mushroom patch,30400,1,1,1,True,True,unproven; observed endpoint retained
+613722550,Half-Orc,Druid,gallant,19337,7,2,7,True,False,unproven; observed endpoint retained
+616311367,Human,Warrior,snaga,43632,4,7,4,True,False,unproven; observed endpoint retained
+621337928,Dunadan,Priest,a fatal wound,3540,1,1,1,True,False,unproven; observed endpoint retained
+621695780,Half-Elf,Mage,grey mold,8002,1,1,1,True,True,unproven; observed endpoint retained
+625670818,Elf,Paladin,a kobold shaman,42084,1,2,2,True,True,unproven; observed endpoint retained
+628179241,Gnome,Ranger,"Fang, Farmer Maggot's Dog",20355,1,1,1,True,True,unproven; observed endpoint retained
+631021017,Dunadan,Mage,giant yellow centipede,10359,1,1,1,False,False,unproven; observed endpoint retained
+636767023,Hobbit,Warrior,a trap,85275,2,4,2,True,True,unproven; observed endpoint retained
+637299829,Human,Priest,wild cat,6505,1,1,1,True,False,unproven; observed endpoint retained
+637383423,Half-Troll,Ranger,cutpurse,16093,1,2,1,True,False,unproven; observed endpoint retained
+637734345,Human,Priest,wild cat,5729,1,1,2,True,False,unproven; observed endpoint retained
+641902156,Dunadan,Ranger,grey mushroom patch,5623,1,1,1,True,True,unproven; observed endpoint retained
+643329433,Dunadan,Ranger,snaga,92291,8,6,8,True,False,unproven; observed endpoint retained
+648594951,Dunadan,Mage,giant yellow centipede,17906,1,1,2,False,False,unproven; observed endpoint retained
+648986900,High-Elf,Rogue,crow,23889,1,2,1,True,False,unproven; observed endpoint retained
+649519045,Human,Ranger,poison,81760,2,4,2,True,True,unproven; observed endpoint retained
+652737461,Human,Rogue,crow,74768,2,5,3,True,True,unproven; observed endpoint retained
+655132696,Dunadan,Blackguard,giant white louse,59050,3,8,4,True,False,unproven; observed endpoint retained
+658394156,Kobold,Warrior,wild cat,88046,8,5,9,True,False,unproven; observed endpoint retained
+658631310,Human,Rogue,"Fang, Farmer Maggot's Dog",20966,1,2,1,False,False,unproven; observed endpoint retained
+661599740,Dunadan,Blackguard,snaga,96093,8,7,9,True,False,unproven; observed endpoint retained
+662288895,Half-Orc,Rogue,fruit bat,29071,1,2,1,True,False,unproven; observed endpoint retained
+662492106,Hobbit,Mage,mean-looking mercenary,86146,0,1,2,True,False,unproven; observed endpoint retained
+663331971,Hobbit,Rogue,giant yellow centipede,11446,1,2,2,True,False,unproven; observed endpoint retained
+667333946,Kobold,Blackguard,white wolf,94915,12,7,12,True,False,unproven; observed endpoint retained
+670844921,Kobold,Ranger,"Grip, Farmer Maggot's Dog",49941,1,2,2,True,False,unproven; observed endpoint retained
+678271033,High-Elf,Priest,fruit bat,7087,1,1,1,True,False,unproven; observed endpoint retained
+683882009,High-Elf,Blackguard,white jelly,22344,2,3,2,True,False,unproven; observed endpoint retained
+690827153,Dwarf,Ranger,soldier,842,1,2,1,False,False,unproven; observed endpoint retained
+692130864,Human,Rogue,grey mold,6085,1,1,1,True,True,unproven; observed endpoint retained
+692479596,Dunadan,Necromancer,giant white centipede,55207,1,2,2,True,False,unproven; observed endpoint retained
+693287281,Gnome,Druid,blue yeek,44162,1,2,2,True,False,unproven; observed endpoint retained
+693502544,Kobold,Druid,grey mold,51069,1,1,2,True,True,unproven; observed endpoint retained
+695923035,Gnome,Druid,"Fang, Farmer Maggot's Dog",51051,1,2,2,True,False,unproven; observed endpoint retained
+696153496,Kobold,Druid,"Fang, Farmer Maggot's Dog",29860,1,1,1,True,True,unproven; observed endpoint retained
+704861996,High-Elf,Ranger,poison,53960,2,4,2,False,True,unproven; observed endpoint retained
+706411084,Human,Druid,small kobold,21513,1,2,1,True,False,unproven; observed endpoint retained
+708701273,Human,Mage,wild cat,11735,1,1,1,True,False,unproven; observed endpoint retained
+709973915,Half-Troll,Priest,grey mold,84048,1,1,1,True,False,unproven; observed endpoint retained
+710357303,Dunadan,Warrior,snaga,56949,12,6,12,True,False,unproven; observed endpoint retained
+713267349,Half-Elf,Mage,giant white centipede,12497,1,1,1,False,False,unproven; observed endpoint retained
+714423089,Half-Elf,Ranger,"Grip, Farmer Maggot's Dog",17819,1,1,1,False,False,unproven; observed endpoint retained
+714965768,Human,Blackguard,floating eye,61322,1,3,2,True,False,unproven; observed endpoint retained
+716899722,Human,Blackguard,poison,2090,1,2,1,True,False,unproven; observed endpoint retained
+718662071,Half-Elf,Ranger,white worm mass,29318,1,3,1,True,False,unproven; observed endpoint retained
+720316647,High-Elf,Mage,floating eye,9706,1,1,1,False,False,unproven; observed endpoint retained
+720463425,Dwarf,Priest,"Grip, Farmer Maggot's Dog",9264,1,3,1,True,False,unproven; observed endpoint retained
+720762199,Half-Elf,Blackguard,crow,23469,1,2,2,True,False,unproven; observed endpoint retained
+720991008,Half-Orc,Druid,apprentice,13173,1,1,1,True,True,unproven; observed endpoint retained
+726340759,Dunadan,Druid,giant white louse,10677,1,1,1,True,True,unproven; observed endpoint retained
+729725670,Dunadan,Druid,kobold,67539,2,4,3,True,False,unproven; observed endpoint retained
+733188514,Gnome,Druid,clear icky thing,79161,1,2,1,True,False,unproven; observed endpoint retained
+733428656,Human,Mage,grey mushroom patch,4409,1,1,1,False,False,unproven; observed endpoint retained
+739979512,High-Elf,Necromancer,"Grip, Farmer Maggot's Dog",589,1,1,1,False,False,unproven; observed endpoint retained
+740805329,Half-Elf,Rogue,wild cat,1084,1,1,1,False,False,unproven; observed endpoint retained
+742989827,Half-Elf,Blackguard,a blacklock mage,57749,7,8,8,True,False,unproven; observed endpoint retained
+748637576,Human,Warrior,soldier,62920,3,8,4,True,False,unproven; observed endpoint retained
+748856198,Hobbit,Paladin,wild cat,39032,1,2,2,True,False,unproven; observed endpoint retained
+752166389,Half-Orc,Mage,cutpurse,1607,1,1,1,False,False,unproven; observed endpoint retained
+757658001,Kobold,Druid,"Fang, Farmer Maggot's Dog",27779,1,2,1,True,False,unproven; observed endpoint retained
+758859639,Kobold,Necromancer,grey mushroom patch,33667,1,1,1,True,True,unproven; observed endpoint retained
+759446222,Elf,Ranger,"Fang, Farmer Maggot's Dog",32154,1,2,1,True,False,unproven; observed endpoint retained
+764352834,Half-Elf,Druid,silver jelly,30165,1,1,2,True,False,unproven; observed endpoint retained
+765056578,Dwarf,Ranger,"Fang, Farmer Maggot's Dog",22776,1,2,2,True,True,unproven; observed endpoint retained
+766599136,Half-Troll,Priest,starvation,71760,1,4,1,True,True,unproven; observed endpoint retained
+766682119,Kobold,Warrior,grizzly bear,93065,17,7,17,True,False,unproven; observed endpoint retained
+766836775,Kobold,Ranger,"Grip, Farmer Maggot's Dog",19481,1,1,2,True,False,unproven; observed endpoint retained
+769211563,Half-Troll,Necromancer,poison,5370,1,1,1,False,False,unproven; observed endpoint retained
+769288350,Half-Orc,Blackguard,giant white mouse,19749,1,3,1,True,False,unproven; observed endpoint retained
+771102727,Half-Troll,Necromancer,"Grip, Farmer Maggot's Dog",30563,1,1,1,True,True,unproven; observed endpoint retained
+772054174,Half-Elf,Necromancer,floating eye,13193,1,1,1,True,True,unproven; observed endpoint retained
+772569209,Hobbit,Druid,"Grip, Farmer Maggot's Dog",17960,1,1,1,False,False,unproven; observed endpoint retained
+775723402,Gnome,Druid,small kobold,40291,1,2,2,True,False,unproven; observed endpoint retained
+777529532,Elf,Mage,wild dog,46368,1,3,2,True,True,unproven; observed endpoint retained
+779733352,Hobbit,Ranger,wild cat,3457,1,1,1,False,False,unproven; observed endpoint retained
+781672862,Half-Troll,Paladin,starvation,79700,1,4,2,True,False,unproven; observed endpoint retained
+785346154,Gnome,Blackguard,giant spider,30567,17,3,17,True,False,unproven; observed endpoint retained
+787107739,High-Elf,Blackguard,"Fang, Farmer Maggot's Dog",42881,1,3,2,True,False,unproven; observed endpoint retained
+791204476,Elf,Necromancer,giant yellow centipede,33085,1,1,2,True,False,unproven; observed endpoint retained
+792139037,Gnome,Ranger,a fatal wound,15140,1,1,1,True,True,unproven; observed endpoint retained
+792336749,Elf,Necromancer,wild dog,12961,1,1,1,False,False,unproven; observed endpoint retained
+794733879,Elf,Druid,cave spider,45197,1,1,1,True,True,unproven; observed endpoint retained
+796308427,Half-Troll,Rogue,mean-looking mercenary,60630,0,2,1,True,True,unproven; observed endpoint retained
+798933857,Dunadan,Necromancer,yellow jelly,30764,1,2,2,True,False,unproven; observed endpoint retained
+802456660,High-Elf,Necromancer,"Fang, Farmer Maggot's Dog",14466,1,1,2,True,True,unproven; observed endpoint retained
+803321859,Dunadan,Mage,"Grip, Farmer Maggot's Dog",14663,1,1,1,True,True,unproven; observed endpoint retained
+812381235,Half-Elf,Mage,grey mold,54257,1,2,2,True,False,unproven; observed endpoint retained
+814486546,Hobbit,Mage,grey mushroom patch,16433,1,1,1,False,False,unproven; observed endpoint retained
+815733926,Elf,Ranger,grey mushroom patch,19213,1,2,1,False,False,unproven; observed endpoint retained
+818605216,Elf,Warrior,poison,84310,1,5,3,True,True,unproven; observed endpoint retained
+827109718,Gnome,Rogue,crow,53512,1,2,1,True,True,unproven; observed endpoint retained
+828726945,Hobbit,Necromancer,creeping copper coins,15320,1,2,1,False,False,unproven; observed endpoint retained
+831698119,Elf,Ranger,"Grip, Farmer Maggot's Dog",9055,1,1,1,True,False,unproven; observed endpoint retained
+831898264,Human,Necromancer,small kobold,37877,1,2,2,True,False,unproven; observed endpoint retained
+833546317,Dwarf,Rogue,"Fang, Farmer Maggot's Dog",44746,2,3,2,True,False,unproven; observed endpoint retained
+834308092,Kobold,Rogue,"Fang, Farmer Maggot's Dog",33064,1,2,1,True,False,unproven; observed endpoint retained
+837724418,Hobbit,Rogue,"Fang, Farmer Maggot's Dog",27319,1,1,1,True,False,unproven; observed endpoint retained
+838582702,Half-Elf,Priest,"Fang, Farmer Maggot's Dog",42669,2,3,2,True,True,unproven; observed endpoint retained
+841184377,Hobbit,Ranger,wild cat,6403,1,1,1,False,False,unproven; observed endpoint retained
+843115295,Half-Elf,Ranger,small kobold,36078,1,3,2,True,False,unproven; observed endpoint retained
+844195309,Gnome,Druid,small kobold,35070,1,1,1,True,False,unproven; observed endpoint retained
+849061711,Elf,Druid,cave spider,9956,1,1,1,True,False,unproven; observed endpoint retained
+849292704,Elf,Warrior,apprentice,46230,2,4,2,True,True,unproven; observed endpoint retained
+857832833,Gnome,Warrior,soldier,65264,4,6,5,True,False,unproven; observed endpoint retained
+861763646,Half-Elf,Druid,small kobold,16801,1,1,2,True,True,unproven; observed endpoint retained
+864741416,Half-Elf,Priest,"Grip, Farmer Maggot's Dog",33651,1,2,1,True,False,unproven; observed endpoint retained
+865472173,Gnome,Mage,wild cat,2237,1,1,1,False,False,unproven; observed endpoint retained
+866066050,Human,Paladin,wild cat,32811,1,2,1,True,False,unproven; observed endpoint retained
+870282515,Hobbit,Mage,apprentice,2754,1,1,1,True,False,unproven; observed endpoint retained
+877244077,Half-Troll,Priest,small kobold,11502,1,2,1,True,True,unproven; observed endpoint retained
+880069703,Half-Elf,Paladin,cave spider,20619,1,1,1,True,True,unproven; observed endpoint retained
+880349916,Half-Elf,Necromancer,small kobold,60201,1,3,1,True,False,unproven; observed endpoint retained
+883402733,Elf,Mage,wild cat,3241,1,1,1,True,False,unproven; observed endpoint retained
+884638026,Hobbit,Necromancer,small kobold,99560,1,3,2,True,False,unproven; observed endpoint retained
+884906005,Gnome,Mage,wild cat,43604,1,1,1,True,True,unproven; observed endpoint retained
+889077824,Human,Rogue,"Fang, Farmer Maggot's Dog",4743,1,1,1,True,True,unproven; observed endpoint retained
+895228807,Human,Paladin,"Grip, Farmer Maggot's Dog",12972,1,1,1,True,True,unproven; observed endpoint retained
+900903094,Dunadan,Rogue,apprentice,46448,2,4,2,True,False,unproven; observed endpoint retained
+903085288,Kobold,Blackguard,wild cat,8664,1,1,2,True,False,unproven; observed endpoint retained
+904243829,Kobold,Druid,grey mushroom patch,4936,1,1,1,True,False,unproven; observed endpoint retained
+907433825,Elf,Blackguard,wild cat,81371,4,6,4,False,False,unproven; observed endpoint retained
+908442392,Half-Troll,Necromancer,giant yellow centipede,4857,1,1,1,False,False,unproven; observed endpoint retained
+909772557,Hobbit,Mage,poison,23120,1,1,1,True,False,unproven; observed endpoint retained
+913496253,Dunadan,Mage,grey mold,2667,1,1,1,False,False,unproven; observed endpoint retained
+914341623,Half-Elf,Druid,apprentice,19544,1,1,1,True,False,unproven; observed endpoint retained
+919899808,Human,Necromancer,giant yellow centipede,3132,1,1,1,False,False,unproven; observed endpoint retained
+921615189,Half-Elf,Druid,crow,87279,1,1,2,True,True,unproven; observed endpoint retained
+924842945,High-Elf,Blackguard,soldier,43443,2,6,3,True,False,unproven; observed endpoint retained
+930553860,Human,Blackguard,kobold,65123,3,7,4,True,False,unproven; observed endpoint retained
+932406894,Half-Elf,Rogue,"Grip, Farmer Maggot's Dog",31091,1,3,2,True,True,unproven; observed endpoint retained
+937324119,Elf,Druid,wild cat,30885,1,1,1,True,True,unproven; observed endpoint retained
+938706518,Dunadan,Rogue,giant white louse,10987,1,3,1,False,False,unproven; observed endpoint retained
+940525943,Kobold,Necromancer,grey mushroom patch,23959,1,1,1,True,True,unproven; observed endpoint retained
+944354232,High-Elf,Mage,soldier,36628,1,3,2,True,False,unproven; observed endpoint retained
+947388872,Half-Troll,Mage,baby red dragon,65563,22,4,22,True,False,unproven; observed endpoint retained
+947957732,Elf,Blackguard,"Grip, Farmer Maggot's Dog",9943,1,1,1,True,False,unproven; observed endpoint retained
+950331901,Kobold,Rogue,"Fang, Farmer Maggot's Dog",42788,1,4,2,True,False,unproven; observed endpoint retained
+950505809,High-Elf,Necromancer,"Fang, Farmer Maggot's Dog",19999,1,1,1,False,False,unproven; observed endpoint retained
+956898190,Half-Orc,Mage,poison,36230,1,3,1,True,False,unproven; observed endpoint retained
+958304078,Elf,Druid,blue yeek,6363,1,1,1,True,True,unproven; observed endpoint retained
+958306555,Half-Orc,Necromancer,"Grip, Farmer Maggot's Dog",24136,1,2,1,True,True,unproven; observed endpoint retained
+961105917,Half-Orc,Druid,"Grip, Farmer Maggot's Dog",5306,1,1,1,True,False,unproven; observed endpoint retained
+966011657,Kobold,Druid,wild cat,28573,1,1,2,True,True,unproven; observed endpoint retained
+968265147,Hobbit,Priest,poison,19160,1,2,1,True,False,unproven; observed endpoint retained
+968292864,Hobbit,Ranger,"Grip, Farmer Maggot's Dog",2345,1,1,1,False,False,unproven; observed endpoint retained
+973858310,Hobbit,Necromancer,wild cat,18984,1,1,1,False,False,unproven; observed endpoint retained
+979734367,Elf,Priest,grey mold,55109,1,2,1,True,True,unproven; observed endpoint retained
+986615111,Half-Orc,Druid,giant yellow centipede,23147,1,2,1,True,False,unproven; observed endpoint retained
+990185474,Dunadan,Druid,"Fang, Farmer Maggot's Dog",41622,1,2,2,True,True,unproven; observed endpoint retained
+996024898,Dunadan,Ranger,crow,11704,1,1,2,True,False,unproven; observed endpoint retained
+996269430,Kobold,Mage,"Lagduf, the Snaga",49250,5,1,7,True,True,unproven; observed endpoint retained
+997392472,Dwarf,Druid,giant yellow centipede,2550,1,1,1,False,False,unproven; observed endpoint retained
+997713157,Hobbit,Ranger,small kobold,10059,1,1,1,False,True,unproven; observed endpoint retained
+998569485,Half-Troll,Priest,floating eye,12684,1,1,1,True,True,unproven; observed endpoint retained
+999201164,Hobbit,Ranger,"Grip, Farmer Maggot's Dog",97034,1,3,2,True,False,unproven; observed endpoint retained
+1003129283,Gnome,Ranger,grey mold,27420,1,2,2,True,True,unproven; observed endpoint retained
+1003341992,Kobold,Mage,metallic red centipede,3660,1,1,1,False,False,unproven; observed endpoint retained
+1004282102,Half-Troll,Necromancer,"Fang, Farmer Maggot's Dog",7419,1,1,1,True,False,unproven; observed endpoint retained
+1005649447,Elf,Paladin,"Fang, Farmer Maggot's Dog",3543,1,1,1,False,False,unproven; observed endpoint retained
+1006979927,Gnome,Blackguard,crow,65407,2,30,3,True,False,unproven; observed endpoint retained
+1007132992,Dunadan,Warrior,grey mushroom patch,4250,1,1,1,True,True,unproven; observed endpoint retained
+1009888086,Dunadan,Druid,grey mold,7625,1,1,1,False,False,unproven; observed endpoint retained
+1014213008,Half-Elf,Necromancer,small kobold,12350,1,1,1,False,False,unproven; observed endpoint retained
+1025781240,Kobold,Paladin,"Fang, Farmer Maggot's Dog",43108,1,2,1,False,False,unproven; observed endpoint retained
+1026569825,Kobold,Ranger,"Fang, Farmer Maggot's Dog",3564,1,1,1,False,False,unproven; observed endpoint retained
+1035314720,Human,Mage,giant yellow centipede,12561,1,2,1,False,False,unproven; observed endpoint retained
+1038087830,Dwarf,Necromancer,floating eye,27966,1,2,1,True,True,unproven; observed endpoint retained
+1038484165,Hobbit,Druid,fruit bat,20785,1,1,1,True,False,unproven; observed endpoint retained
+1039476657,Elf,Necromancer,"Fang, Farmer Maggot's Dog",3286,1,1,1,False,False,unproven; observed endpoint retained
+1041201113,Half-Troll,Warrior,gallant,26460,8,8,8,True,False,unproven; observed endpoint retained
+1042091759,Human,Blackguard,crow,89029,2,4,2,True,False,unproven; observed endpoint retained
+1043073565,Elf,Druid,fruit bat,63331,1,1,2,True,False,unproven; observed endpoint retained
+1045506784,Dwarf,Blackguard,grey mold,9251,1,1,1,True,False,unproven; observed endpoint retained
+1046713326,Hobbit,Druid,a kobold shaman,6709,1,1,1,False,False,unproven; observed endpoint retained
+1048072241,Dwarf,Paladin,metallic red centipede,15419,1,1,1,True,True,unproven; observed endpoint retained
+1051793215,High-Elf,Druid,grey mold,16946,1,1,1,True,True,unproven; observed endpoint retained
+1051840188,Half-Elf,Druid,apprentice,15188,1,1,1,True,False,unproven; observed endpoint retained
+1053399778,Kobold,Paladin,crow,51054,1,3,2,True,True,unproven; observed endpoint retained
+1053495781,Hobbit,Druid,a fatal wound,20790,1,1,1,True,True,unproven; observed endpoint retained
+1059211497,Half-Troll,Druid,"Fang, Farmer Maggot's Dog",31836,1,3,2,True,True,unproven; observed endpoint retained
+1064573407,Gnome,Priest,grey mold,16058,1,1,1,True,False,unproven; observed endpoint retained
+1067641281,Half-Troll,Priest,starvation,87130,1,3,1,True,True,unproven; observed endpoint retained
+1067863875,Kobold,Ranger,black naga,3971,1,1,1,False,False,unproven; observed endpoint retained
+1067931090,Kobold,Priest,wild cat,25566,1,2,1,True,True,unproven; observed endpoint retained
+1070397578,Elf,Necromancer,giant white centipede,21313,1,1,1,True,False,unproven; observed endpoint retained
+1071322447,High-Elf,Necromancer,"Fang, Farmer Maggot's Dog",13135,1,1,1,True,False,unproven; observed endpoint retained
+1073907511,Half-Elf,Necromancer,grey mushroom patch,9278,1,1,1,False,False,unproven; observed endpoint retained
+1085896348,Half-Elf,Druid,small kobold,52738,1,2,2,True,False,unproven; observed endpoint retained
+1089417617,Human,Druid,giant white centipede,3339,1,1,1,True,True,unproven; observed endpoint retained
+1089527435,Elf,Ranger,wild dog,12396,1,1,1,True,False,unproven; observed endpoint retained
+1093298412,Half-Troll,Blackguard,giant white rat,72453,4,9,4,True,False,unproven; observed endpoint retained
+1094821035,Hobbit,Mage,wild dog,16018,1,2,2,True,False,unproven; observed endpoint retained
+1096593829,Half-Orc,Mage,poison,8340,1,1,1,True,False,unproven; observed endpoint retained
+1101937868,Human,Druid,poison,14400,1,1,1,False,False,unproven; observed endpoint retained
+1102267292,Elf,Priest,"Grip, Farmer Maggot's Dog",7971,1,1,2,True,False,unproven; observed endpoint retained
+1109707718,High-Elf,Druid,wild cat,24884,1,1,1,False,False,unproven; observed endpoint retained
+1110711930,High-Elf,Mage,grey mushroom patch,3902,1,1,1,False,False,unproven; observed endpoint retained
+1112241703,Human,Blackguard,crow,48734,2,4,2,True,False,unproven; observed endpoint retained
+1112440583,Half-Elf,Ranger,a fatal wound,1610,0,1,1,False,False,unproven; observed endpoint retained
+1125805698,Human,Necromancer,grey mushroom patch,7144,1,1,1,True,True,unproven; observed endpoint retained
+1126013507,Gnome,Rogue,wild cat,4602,1,1,1,True,True,unproven; observed endpoint retained
+1127570179,Dunadan,Ranger,kobold,20259,1,1,1,True,False,unproven; observed endpoint retained
+1128312516,Half-Orc,Ranger,small kobold,33399,1,3,2,True,True,unproven; observed endpoint retained
+1129799589,Half-Elf,Rogue,grey mold,88644,1,3,2,True,True,unproven; observed endpoint retained
+1131785824,Elf,Necromancer,small kobold,34761,1,1,1,True,False,unproven; observed endpoint retained
+1137114910,High-Elf,Rogue,"Grip, Farmer Maggot's Dog",13491,1,2,1,False,False,unproven; observed endpoint retained
+1137846486,Half-Elf,Priest,crow,28967,1,2,2,True,False,unproven; observed endpoint retained
+1144231984,Dunadan,Druid,giant yellow centipede,17354,1,2,1,True,False,unproven; observed endpoint retained
+1144876927,Gnome,Necromancer,wild cat,15811,1,1,2,True,False,unproven; observed endpoint retained
+1146415441,Hobbit,Necromancer,"Grip, Farmer Maggot's Dog",11110,1,1,1,False,False,unproven; observed endpoint retained
+1148494771,Kobold,Druid,fruit bat,6447,1,1,1,False,False,unproven; observed endpoint retained
+1153774677,Hobbit,Ranger,"Fang, Farmer Maggot's Dog",4906,1,1,1,False,False,unproven; observed endpoint retained
+1155186037,Hobbit,Rogue,grey mold,70143,1,2,2,True,True,unproven; observed endpoint retained
+1159263302,Hobbit,Rogue,"Fang, Farmer Maggot's Dog",11484,1,1,1,False,False,unproven; observed endpoint retained
+1161577088,Hobbit,Necromancer,wild dog,9305,1,1,1,False,False,unproven; observed endpoint retained
+1164433721,Elf,Mage,small kobold,9308,1,1,1,False,False,unproven; observed endpoint retained
+1165190051,Half-Troll,Mage,"Fang, Farmer Maggot's Dog",30683,1,3,1,True,False,unproven; observed endpoint retained
+1168541922,Gnome,Druid,"Grip, Farmer Maggot's Dog",36244,1,2,1,True,False,unproven; observed endpoint retained
+1171302161,Half-Troll,Druid,"Grip, Farmer Maggot's Dog",41719,2,4,2,True,False,unproven; observed endpoint retained
+1172257321,Half-Troll,Rogue,crow,50148,2,4,2,True,False,unproven; observed endpoint retained
+1175570287,Elf,Mage,wild dog,11819,1,1,1,True,False,unproven; observed endpoint retained
+1183728212,High-Elf,Rogue,lemure,88062,8,6,9,True,False,unproven; observed endpoint retained
+1186773012,Human,Druid,giant yellow centipede,43799,1,2,2,True,False,unproven; observed endpoint retained
+1190611897,Gnome,Necromancer,"Fang, Farmer Maggot's Dog",29977,1,2,2,True,False,unproven; observed endpoint retained
+1194112891,Human,Mage,giant yellow centipede,8181,1,1,1,False,False,unproven; observed endpoint retained
+1194255694,Half-Elf,Mage,"Fang, Farmer Maggot's Dog",40409,1,2,2,True,True,unproven; observed endpoint retained
+1201809957,Kobold,Blackguard,orc tracker,73223,7,5,8,True,False,unproven; observed endpoint retained
+1204081353,Elf,Paladin,metallic red centipede,54289,1,2,2,True,False,unproven; observed endpoint retained
+1205427608,Hobbit,Mage,a fatal wound,24180,1,1,2,True,False,unproven; observed endpoint retained
+1211906030,Half-Orc,Necromancer,small kobold,34909,1,1,1,False,False,unproven; observed endpoint retained
+1212447211,Gnome,Mage,wild cat,71573,1,3,2,True,True,unproven; observed endpoint retained
+1216848514,Gnome,Priest,"Fang, Farmer Maggot's Dog",52576,1,2,2,True,False,unproven; observed endpoint retained
+1218453831,Hobbit,Mage,crow,30323,1,1,1,True,False,unproven; observed endpoint retained
+1218550368,Gnome,Druid,wild cat,15029,1,1,1,True,False,unproven; observed endpoint retained
+1219201182,Elf,Mage,small kobold,28158,1,1,1,False,False,unproven; observed endpoint retained
+1221628922,Human,Necromancer,giant white mouse,67089,1,3,2,True,False,unproven; observed endpoint retained
+1222035658,Half-Elf,Warrior,a scout,67526,2,5,2,True,True,unproven; observed endpoint retained
+1222063185,Human,Necromancer,small kobold,76176,1,2,2,True,False,unproven; observed endpoint retained
+1222118476,High-Elf,Necromancer,grey mushroom patch,15414,1,1,1,True,True,unproven; observed endpoint retained
+1224334579,Kobold,Druid,wild cat,70240,1,2,2,True,False,unproven; observed endpoint retained
+1224551098,Half-Orc,Priest,an apprentice,81077,1,3,2,True,True,unproven; observed endpoint retained
+1225589117,Elf,Blackguard,clear mushroom patch,21259,2,4,2,True,True,unproven; observed endpoint retained
+1226637695,Dunadan,Mage,crow,9199,1,1,1,True,True,unproven; observed endpoint retained
+1226848619,Kobold,Mage,"Grip, Farmer Maggot's Dog",20376,1,2,1,True,False,unproven; observed endpoint retained
+1232058646,Half-Orc,Druid,a scout,23909,1,2,1,True,True,unproven; observed endpoint retained
+1232283612,Human,Druid,small kobold,5363,1,1,1,False,False,unproven; observed endpoint retained
+1237754709,Elf,Blackguard,"Boldor, King of the Yeeks",93899,13,7,13,True,False,unproven; observed endpoint retained
+1238709152,Kobold,Paladin,"Grip, Farmer Maggot's Dog",30913,1,2,1,True,True,unproven; observed endpoint retained
+1238971279,Kobold,Paladin,"Grip, Farmer Maggot's Dog",20274,1,2,2,False,False,unproven; observed endpoint retained
+1241570437,Dwarf,Mage,crow,4501,1,1,2,False,False,unproven; observed endpoint retained
+1245273259,Half-Orc,Necromancer,giant yellow centipede,9884,1,2,2,False,False,unproven; observed endpoint retained
+1248710151,Elf,Paladin,poison,73050,1,4,1,True,True,unproven; observed endpoint retained
+1249060439,Human,Mage,"Grip, Farmer Maggot's Dog",14131,1,2,1,False,False,unproven; observed endpoint retained
+1249991957,Half-Elf,Druid,cave spider,13804,1,2,1,True,False,unproven; observed endpoint retained
+1254779050,Dwarf,Druid,cutpurse,21944,1,1,1,True,True,unproven; observed endpoint retained
+1258016286,Hobbit,Necromancer,"Fang, Farmer Maggot's Dog",5459,1,1,1,False,False,unproven; observed endpoint retained
+1259011626,Hobbit,Ranger,"Grip, Farmer Maggot's Dog",23416,1,2,2,True,False,unproven; observed endpoint retained
+1264851866,High-Elf,Necromancer,"Fang, Farmer Maggot's Dog",7167,1,1,1,True,False,unproven; observed endpoint retained
+1265781666,Dwarf,Ranger,"Fang, Farmer Maggot's Dog",15537,1,2,2,True,True,unproven; observed endpoint retained
+1269056376,Kobold,Warrior,warrior,81486,7,7,8,True,False,unproven; observed endpoint retained
+1269836353,Gnome,Ranger,white worm mass,13460,1,1,2,False,False,unproven; observed endpoint retained
+1273344432,Dwarf,Ranger,giant white mouse,5584,1,2,1,False,False,unproven; observed endpoint retained
+1273421171,Dunadan,Necromancer,giant white mouse,16350,1,2,2,True,False,unproven; observed endpoint retained
+1273593001,Half-Orc,Mage,a fatal wound,38600,1,4,1,True,False,unproven; observed endpoint retained
+1273807936,Hobbit,Ranger,poison,4050,1,1,1,True,False,unproven; observed endpoint retained
+1274906742,Half-Orc,Rogue,grey mold,9422,1,1,1,True,True,unproven; observed endpoint retained
+1276558558,Half-Orc,Mage,soldier ant,17318,1,2,1,True,True,unproven; observed endpoint retained
+1279002906,Human,Necromancer,crow,11574,1,1,1,False,False,unproven; observed endpoint retained
+1281242830,Kobold,Ranger,grey mushroom patch,48682,1,2,1,True,True,unproven; observed endpoint retained
+1287691436,Hobbit,Priest,"Grip, Farmer Maggot's Dog",99664,1,3,1,True,False,unproven; observed endpoint retained
+1290291645,Half-Elf,Necromancer,a fatal wound,36110,1,2,1,True,False,unproven; observed endpoint retained
+1291944271,Half-Orc,Blackguard,soldier,50124,2,3,2,True,False,unproven; observed endpoint retained
+1294045795,Half-Orc,Ranger,fruit bat,16294,1,3,2,False,False,unproven; observed endpoint retained
+1297388745,Dunadan,Blackguard,wolf,46598,11,3,11,True,False,unproven; observed endpoint retained
+1298548108,Gnome,Druid,a fatal wound,860,1,1,1,False,False,unproven; observed endpoint retained
+1298948961,Half-Orc,Necromancer,wild cat,11496,1,1,1,True,False,unproven; observed endpoint retained
+1301304703,Half-Elf,Necromancer,"Grip, Farmer Maggot's Dog",9413,1,1,1,False,False,unproven; observed endpoint retained
+1304180058,High-Elf,Ranger,snaga,60195,6,7,8,True,False,unproven; observed endpoint retained
+1308026744,Human,Warrior,blacklock mage,81425,9,7,9,True,True,unproven; observed endpoint retained
+1313379400,Hobbit,Mage,wild cat,3950,1,1,1,False,False,unproven; observed endpoint retained
+1316875199,Gnome,Druid,"Grip, Farmer Maggot's Dog",14988,1,1,2,False,False,unproven; observed endpoint retained
+1319860499,Gnome,Ranger,grey mushroom patch,7724,1,1,1,True,False,unproven; observed endpoint retained
+1319919587,Half-Elf,Mage,small kobold,2256,1,1,1,False,False,unproven; observed endpoint retained
+1324867727,Gnome,Rogue,"Grip, Farmer Maggot's Dog",4016,1,1,1,True,False,unproven; observed endpoint retained
+1325173253,Kobold,Mage,small kobold,73506,1,2,1,True,True,unproven; observed endpoint retained
+1327515927,Elf,Necromancer,giant yellow centipede,10501,1,1,1,False,False,unproven; observed endpoint retained
+1328543510,Gnome,Druid,wild cat,3709,1,1,1,False,False,unproven; observed endpoint retained
+1329905883,Hobbit,Warrior,poison,57550,2,5,3,True,False,unproven; observed endpoint retained
+1330977694,Gnome,Blackguard,grey mold,72271,1,3,2,True,True,unproven; observed endpoint retained
+1331845084,High-Elf,Necromancer,wild cat,14310,1,1,1,True,True,unproven; observed endpoint retained
+1334691433,Elf,Necromancer,crow,8040,1,1,1,False,False,unproven; observed endpoint retained
+1338824875,Elf,Rogue,small kobold,53605,1,2,2,True,True,unproven; observed endpoint retained
+1345242779,High-Elf,Priest,poison,91210,1,2,2,True,False,unproven; observed endpoint retained
+1345422754,High-Elf,Druid,"Grip, Farmer Maggot's Dog",1264,1,1,1,False,False,unproven; observed endpoint retained
+1346312061,Elf,Priest,"Fang, Farmer Maggot's Dog",95666,1,3,1,True,True,unproven; observed endpoint retained
+1348167554,Gnome,Mage,crow,16786,1,1,1,True,True,unproven; observed endpoint retained
+1352320243,Half-Elf,Mage,giant yellow centipede,3491,1,1,1,True,False,unproven; observed endpoint retained
+1353921989,High-Elf,Priest,"Grip, Farmer Maggot's Dog",8718,1,1,1,True,False,unproven; observed endpoint retained
+1356519341,Elf,Warrior,crow,53178,2,5,2,True,False,unproven; observed endpoint retained
+1358201979,Half-Troll,Ranger,a fatal wound,99570,3,10,5,True,True,unproven; observed endpoint retained
+1361446565,Half-Troll,Ranger,a kobold shaman,13030,1,1,1,True,True,unproven; observed endpoint retained
+1362374809,Dwarf,Druid,"Fang, Farmer Maggot's Dog",3090,1,1,1,False,False,unproven; observed endpoint retained
+1362776575,Human,Druid,yellow jelly,39055,1,2,2,True,False,unproven; observed endpoint retained
+1363862596,Dunadan,Necromancer,metallic red centipede,4730,1,1,1,False,False,unproven; observed endpoint retained
+1365003031,Half-Orc,Necromancer,small kobold,55744,1,3,2,True,False,unproven; observed endpoint retained
+1366361653,Dunadan,Ranger,crow,58956,2,4,2,True,True,unproven; observed endpoint retained
+1366603370,High-Elf,Mage,"Fang, Farmer Maggot's Dog",81346,1,3,2,True,True,unproven; observed endpoint retained
+1370572797,Half-Elf,Necromancer,"Grip, Farmer Maggot's Dog",15326,1,1,1,False,False,unproven; observed endpoint retained
+1370590550,Half-Troll,Necromancer,giant yellow centipede,42233,1,2,1,False,False,unproven; observed endpoint retained
+1371072830,Kobold,Mage,"Fang, Farmer Maggot's Dog",17981,1,1,1,True,False,unproven; observed endpoint retained
+1373121310,Half-Orc,Druid,wild cat,16819,1,1,1,True,False,unproven; observed endpoint retained
+1374104091,Dwarf,Druid,a fatal wound,10310,1,1,1,True,True,unproven; observed endpoint retained
+1375846818,Gnome,Ranger,"Fang, Farmer Maggot's Dog",22039,1,2,2,True,False,unproven; observed endpoint retained
+1376917013,Half-Orc,Paladin,soldier ant,73555,1,3,1,True,True,unproven; observed endpoint retained
+1382161019,Hobbit,Rogue,grey mold,30114,1,2,2,True,True,unproven; observed endpoint retained
+1385551353,Human,Paladin,"Grip, Farmer Maggot's Dog",2464,1,1,1,False,False,unproven; observed endpoint retained
+1389116880,Dunadan,Ranger,wild cat,66664,2,4,2,True,False,unproven; observed endpoint retained
+1391233723,Gnome,Necromancer,cave spider,11160,1,1,2,True,False,unproven; observed endpoint retained
+1392833409,Gnome,Necromancer,wild cat,19359,6,1,7,True,False,unproven; observed endpoint retained
+1394939043,Hobbit,Warrior,grey mold,96949,1,3,2,True,True,unproven; observed endpoint retained
+1396135981,Elf,Priest,wild cat,21587,1,1,1,True,True,unproven; observed endpoint retained
+1396801704,Dwarf,Rogue,poison,46440,1,3,2,True,True,unproven; observed endpoint retained
+1398719567,Dunadan,Mage,crow,1708,1,1,1,True,False,unproven; observed endpoint retained
+1400584643,Dwarf,Ranger,giant white mouse,31947,1,3,2,True,False,unproven; observed endpoint retained
+1403368547,Dunadan,Ranger,poison,19320,1,2,1,True,True,unproven; observed endpoint retained
+1405028272,Half-Elf,Mage,giant yellow centipede,7129,1,1,1,True,False,unproven; observed endpoint retained
+1406320130,Hobbit,Druid,grey mushroom patch,9424,1,1,1,False,True,unproven; observed endpoint retained
+1409788330,Half-Orc,Druid,burning to a cinder in lava,10972,0,1,1,True,True,unproven; observed endpoint retained
+1409992607,High-Elf,Paladin,a fatal wound,94300,1,3,2,True,False,unproven; observed endpoint retained
+1412658529,Gnome,Necromancer,a fatal wound,28850,1,2,2,True,False,unproven; observed endpoint retained
+1418128834,High-Elf,Mage,"Grip, Farmer Maggot's Dog",7794,1,1,1,True,False,unproven; observed endpoint retained
+1422142200,Half-Elf,Ranger,wild cat,82674,2,5,3,True,False,unproven; observed endpoint retained
+1422344901,Hobbit,Priest,tamer,35937,1,2,1,True,False,unproven; observed endpoint retained
+1422771481,Half-Orc,Rogue,wild cat,7383,1,1,1,True,True,unproven; observed endpoint retained
+1424685093,Hobbit,Mage,grey mold,12558,1,1,1,True,True,unproven; observed endpoint retained
+1425201447,High-Elf,Blackguard,giant white mouse,41078,1,4,2,True,False,unproven; observed endpoint retained
+1426997798,Half-Orc,Rogue,panther,68766,10,5,12,True,False,unproven; observed endpoint retained
+1428366750,Hobbit,Druid,rock lizard,5497,1,1,1,False,False,unproven; observed endpoint retained
+1431869978,Elf,Ranger,giant white mouse,19377,1,2,1,True,False,unproven; observed endpoint retained
+1434615677,Human,Mage,crow,5057,1,1,1,False,False,unproven; observed endpoint retained
+1437787440,High-Elf,Mage,"Fang, Farmer Maggot's Dog",1484,1,1,1,False,False,unproven; observed endpoint retained
+1443012805,Hobbit,Necromancer,"Fang, Farmer Maggot's Dog",30323,1,1,1,True,True,unproven; observed endpoint retained
+1446284664,Kobold,Paladin,"Fang, Farmer Maggot's Dog",6707,1,1,1,True,False,unproven; observed endpoint retained
+1453792767,Human,Mage,"Grip, Farmer Maggot's Dog",10273,1,1,1,False,False,unproven; observed endpoint retained
+1453839714,Kobold,Priest,wild cat,35892,1,2,2,True,False,unproven; observed endpoint retained
+1458676284,Half-Troll,Ranger,poison,80490,4,7,5,True,False,unproven; observed endpoint retained
+1459949624,Dunadan,Necromancer,wild cat,39346,1,3,2,True,False,unproven; observed endpoint retained
+1462534175,Gnome,Ranger,poison,60490,1,3,2,True,False,unproven; observed endpoint retained
+1462812703,Kobold,Necromancer,soldier ant,7441,1,1,1,True,False,unproven; observed endpoint retained
+1466238222,Kobold,Blackguard,wild cat,37268,1,3,2,True,False,unproven; observed endpoint retained
+1467033831,Elf,Priest,metallic red centipede,10506,1,1,1,True,False,unproven; observed endpoint retained
+1468140872,Hobbit,Paladin,soldier,79465,1,4,2,True,False,unproven; observed endpoint retained
+1471206353,Half-Elf,Ranger,grey mushroom patch,68940,1,3,2,True,True,unproven; observed endpoint retained
+1474235601,Hobbit,Ranger,grey mold,26246,1,1,2,False,False,unproven; observed endpoint retained
+1474786552,Dunadan,Druid,kobold shaman,53045,2,4,2,True,True,unproven; observed endpoint retained
+1475154086,Human,Paladin,"Grip, Farmer Maggot's Dog",2647,1,1,1,False,False,unproven; observed endpoint retained
+1475600071,Elf,Blackguard,small kobold,5473,1,1,1,True,False,unproven; observed endpoint retained
+1477236631,Half-Elf,Mage,wild cat,12509,1,1,1,False,False,unproven; observed endpoint retained
+1479190087,Elf,Warrior,cutpurse,36279,2,6,4,True,True,unproven; observed endpoint retained
+1481729677,Hobbit,Druid,grey mushroom patch,23117,1,1,1,True,True,unproven; observed endpoint retained
+1491651583,Dunadan,Druid,metallic red centipede,94579,1,5,2,True,False,unproven; observed endpoint retained
+1492891233,Human,Priest,"Grip, Farmer Maggot's Dog",7773,1,2,1,True,False,unproven; observed endpoint retained
+1494176494,Elf,Mage,grey mold,20793,1,1,1,True,True,unproven; observed endpoint retained
+1495685581,Dunadan,Warrior,soldier,8062,1,3,1,True,True,unproven; observed endpoint retained
+1496671880,Hobbit,Blackguard,wild cat,58871,1,4,2,True,False,unproven; observed endpoint retained
+1500519124,Dwarf,Paladin,white harpy,25642,1,3,1,True,True,unproven; observed endpoint retained
+1504056033,High-Elf,Mage,"Grip, Farmer Maggot's Dog",20136,1,1,1,True,False,unproven; observed endpoint retained
+1504803501,High-Elf,Rogue,grey mushroom patch,38712,1,2,1,True,False,unproven; observed endpoint retained
+1508242324,Half-Troll,Paladin,grey mold,67750,1,4,1,True,False,unproven; observed endpoint retained
+1508916453,Dwarf,Necromancer,cutpurse,18049,1,1,1,True,False,unproven; observed endpoint retained
+1512978798,Half-Elf,Druid,"Grip, Farmer Maggot's Dog",11916,1,1,1,False,False,unproven; observed endpoint retained
+1524230970,Human,Necromancer,giant yellow centipede,2588,1,1,1,False,False,unproven; observed endpoint retained
+1524654666,Human,Paladin,poison,86940,1,5,2,True,False,unproven; observed endpoint retained
+1524729598,Elf,Druid,giant yellow centipede,29145,1,1,1,True,False,unproven; observed endpoint retained
+1525145896,Elf,Ranger,"Fang, Farmer Maggot's Dog",80488,1,3,2,True,False,unproven; observed endpoint retained
+1527293810,Half-Orc,Priest,poison,45400,2,4,3,True,False,unproven; observed endpoint retained
+1528455320,High-Elf,Mage,poison,13420,1,2,2,True,False,unproven; observed endpoint retained
+1528488738,Dwarf,Rogue,wild cat,8196,1,1,1,True,True,unproven; observed endpoint retained
+1530506703,High-Elf,Necromancer,cutpurse,39486,1,1,2,True,False,unproven; observed endpoint retained
+1531513654,Hobbit,Blackguard,small kobold,11993,1,3,2,True,False,unproven; observed endpoint retained
+1533709090,Half-Troll,Ranger,crow,67133,1,4,2,True,True,unproven; observed endpoint retained
+1534347538,Gnome,Ranger,"Grip, Farmer Maggot's Dog",13527,1,1,1,True,False,unproven; observed endpoint retained
+1535983217,High-Elf,Druid,crow,14424,1,1,1,True,False,unproven; observed endpoint retained
+1536313376,Dwarf,Necromancer,"Grip, Farmer Maggot's Dog",14127,1,1,1,True,True,unproven; observed endpoint retained
+1537687638,Gnome,Ranger,grey mold,80534,1,4,2,True,False,unproven; observed endpoint retained
+1538315091,Dunadan,Necromancer,"Fang, Farmer Maggot's Dog",7196,1,1,1,False,False,unproven; observed endpoint retained
+1538660367,Human,Druid,giant white centipede,15979,1,2,2,False,False,unproven; observed endpoint retained
+1541427534,Half-Orc,Ranger,"Grip, Farmer Maggot's Dog",52104,2,3,3,True,False,unproven; observed endpoint retained
+1545448376,Kobold,Priest,giant yellow centipede,13983,1,2,1,True,False,unproven; observed endpoint retained
+1550667130,Gnome,Ranger,fruit bat,54705,1,2,1,True,True,unproven; observed endpoint retained
+1551605493,Kobold,Druid,large grey snake,36618,7,1,7,True,False,unproven; observed endpoint retained
+1554393291,Half-Elf,Priest,a fatal wound,4310,1,2,1,True,False,unproven; observed endpoint retained
+1556053872,Kobold,Necromancer,giant white centipede,17483,1,1,1,True,False,unproven; observed endpoint retained
+1557466867,Hobbit,Rogue,mean-looking mercenary,90010,0,1,1,True,False,unproven; observed endpoint retained
+1559226251,Elf,Necromancer,cave spider,30078,1,2,1,True,False,unproven; observed endpoint retained
+1559825670,Dunadan,Druid,a kobold shaman,47025,1,1,1,True,True,unproven; observed endpoint retained
+1559990558,Hobbit,Rogue,grey mold,15684,1,1,1,True,True,unproven; observed endpoint retained
+1560208496,Hobbit,Paladin,poison,15850,1,2,1,True,False,unproven; observed endpoint retained
+1565059625,Kobold,Mage,wild cat,13806,1,1,1,True,True,unproven; observed endpoint retained
+1568631989,Half-Elf,Priest,soldier,6855,1,2,1,True,False,unproven; observed endpoint retained
+1578282410,Hobbit,Ranger,poison,39800,2,3,2,True,False,unproven; observed endpoint retained
+1580217358,Dunadan,Druid,soldier,21786,1,1,1,True,False,unproven; observed endpoint retained
+1582915501,High-Elf,Druid,giant white mouse,31717,1,2,1,True,False,unproven; observed endpoint retained
+1583356880,Dunadan,Mage,crow,21530,1,3,1,True,True,unproven; observed endpoint retained
+1584266988,Kobold,Warrior,grey mold,14268,1,1,1,True,True,unproven; observed endpoint retained
+1585889726,Kobold,Necromancer,small kobold,9298,1,1,1,False,False,unproven; observed endpoint retained
+1586957911,Dwarf,Mage,blubbering icky thing,1406,1,1,1,False,False,unproven; observed endpoint retained
+1587792847,High-Elf,Rogue,crow,55495,2,3,2,True,False,unproven; observed endpoint retained
+1588956158,Gnome,Paladin,grey mold,2130,1,1,1,False,False,unproven; observed endpoint retained
+1593033140,Half-Elf,Rogue,soldier,53427,6,2,6,True,False,unproven; observed endpoint retained
+1594940184,Half-Orc,Blackguard,snaga,72566,6,7,7,True,False,unproven; observed endpoint retained
+1595123334,Half-Elf,Mage,poison,33440,1,2,2,True,False,unproven; observed endpoint retained
+1597115067,High-Elf,Paladin,grey mold,7543,1,1,1,False,False,unproven; observed endpoint retained
+1599106232,Kobold,Rogue,"Grip, Farmer Maggot's Dog",18419,1,2,2,False,False,unproven; observed endpoint retained
+1608285713,High-Elf,Priest,giant white mouse,90463,1,1,1,True,True,unproven; observed endpoint retained
+1609494591,Human,Ranger,kobold,33630,2,3,2,True,False,unproven; observed endpoint retained
+1609888770,Half-Orc,Ranger,a fatal wound,91580,12,7,14,True,False,unproven; observed endpoint retained
+1609973554,Dwarf,Mage,crow,17385,1,1,1,True,False,unproven; observed endpoint retained
+1624711216,Gnome,Paladin,tengu,65861,16,2,16,True,False,unproven; observed endpoint retained
+1624718000,Half-Orc,Druid,"Fang, Farmer Maggot's Dog",40173,1,3,2,True,False,unproven; observed endpoint retained
+1630058736,Dunadan,Druid,fruit bat,15116,1,1,1,True,True,unproven; observed endpoint retained
+1630664923,Hobbit,Rogue,"Fang, Farmer Maggot's Dog",17379,1,1,2,True,True,unproven; observed endpoint retained
+1630837329,Half-Elf,Ranger,giant white mouse,9641,1,2,1,True,False,unproven; observed endpoint retained
+1635819329,Half-Elf,Mage,radiation eye,5411,1,1,2,False,False,unproven; observed endpoint retained
+1638436408,Elf,Rogue,a fatal wound,64860,2,4,3,True,False,unproven; observed endpoint retained
+1639696405,Dunadan,Mage,wild cat,6292,1,1,1,True,True,unproven; observed endpoint retained
+1642756498,Half-Orc,Mage,"Grip, Farmer Maggot's Dog",14028,1,1,1,False,False,unproven; observed endpoint retained
+1643983464,Human,Druid,"Grip, Farmer Maggot's Dog",85320,1,2,2,True,False,unproven; observed endpoint retained
+1644302770,Half-Orc,Druid,"Grip, Farmer Maggot's Dog",39090,1,2,2,True,False,unproven; observed endpoint retained
+1644994507,Hobbit,Necromancer,"Grip, Farmer Maggot's Dog",33171,1,1,1,True,False,unproven; observed endpoint retained
+1647047509,Elf,Mage,grey mushroom patch,9536,1,1,1,False,True,unproven; observed endpoint retained
+1649745104,Half-Elf,Mage,"Fang, Farmer Maggot's Dog",6610,1,1,1,False,False,unproven; observed endpoint retained
+1654043976,Human,Mage,cave spider,11858,1,1,1,False,False,unproven; observed endpoint retained
+1654479708,Gnome,Druid,crow,7193,1,1,1,False,False,unproven; observed endpoint retained
+1663592567,Half-Elf,Rogue,giant white louse,25654,1,6,2,True,False,unproven; observed endpoint retained
+1663670289,Half-Troll,Mage,"Fang, Farmer Maggot's Dog",22703,1,2,2,True,False,unproven; observed endpoint retained
+1665217166,Elf,Ranger,wild cat,14765,1,1,1,True,False,unproven; observed endpoint retained
+1667925257,Gnome,Paladin,crow,29939,1,2,1,True,False,unproven; observed endpoint retained
+1671923008,Hobbit,Warrior,crow,89682,3,7,4,True,False,unproven; observed endpoint retained
+1678191165,Human,Priest,clear icky thing,22356,1,1,1,True,False,unproven; observed endpoint retained
+1680468067,Hobbit,Blackguard,soldier,76484,2,5,2,True,False,unproven; observed endpoint retained
+1682288758,High-Elf,Druid,wild cat,23677,1,1,1,False,True,unproven; observed endpoint retained
+1683396927,Kobold,Mage,grey mold,11573,1,1,1,False,False,unproven; observed endpoint retained
+1683795384,Gnome,Druid,small kobold,16829,1,1,2,False,False,unproven; observed endpoint retained
+1687718358,Human,Druid,"Fang, Farmer Maggot's Dog",6709,1,1,1,False,False,unproven; observed endpoint retained
+1689690482,Half-Troll,Mage,wild cat,2482,1,1,1,False,False,unproven; observed endpoint retained
+1689765380,Gnome,Warrior,acolyte,20425,1,3,2,True,True,unproven; observed endpoint retained
+1691306860,Half-Elf,Rogue,"Grip, Farmer Maggot's Dog",79935,1,4,1,True,True,unproven; observed endpoint retained
+1691999413,Elf,Priest,grey mold,55467,1,1,1,True,True,unproven; observed endpoint retained
+1692063704,Dwarf,Druid,soldier,1564,1,1,1,False,False,unproven; observed endpoint retained
+1699224169,Gnome,Rogue,cutpurse,3174,1,1,1,False,False,unproven; observed endpoint retained
+1700848065,Gnome,Warrior,skeleton human,98477,9,5,9,True,False,unproven; observed endpoint retained
+1703041893,Dwarf,Necromancer,grey mushroom patch,7246,1,2,1,False,False,unproven; observed endpoint retained
+1703613756,Elf,Blackguard,wild dog,9642,1,2,1,True,False,unproven; observed endpoint retained
+1704378358,Elf,Druid,kobold,18287,1,1,2,True,True,unproven; observed endpoint retained
+1704796025,Gnome,Necromancer,soldier ant,13288,1,1,1,True,True,unproven; observed endpoint retained
+1708858932,Dunadan,Mage,cave spider,4057,1,1,1,False,False,unproven; observed endpoint retained
+1713555923,Half-Orc,Necromancer,giant white centipede,31218,1,2,1,True,False,unproven; observed endpoint retained
+1713784200,Dwarf,Paladin,soldier,40706,2,3,2,True,True,unproven; observed endpoint retained
+1714763121,Half-Orc,Necromancer,"Grip, Farmer Maggot's Dog",90250,1,3,1,True,False,unproven; observed endpoint retained
+1717416320,Kobold,Ranger,giant white mouse,98228,1,4,2,True,False,unproven; observed endpoint retained
+1717813771,Hobbit,Druid,"Grip, Farmer Maggot's Dog",22364,1,1,2,True,False,unproven; observed endpoint retained
+1728079344,Elf,Rogue,"Grip, Farmer Maggot's Dog",48737,2,4,2,True,False,unproven; observed endpoint retained
+1728437421,Gnome,Mage,fruit bat,10771,1,1,1,False,False,unproven; observed endpoint retained
+1732687008,Half-Elf,Ranger,poison,48800,2,3,2,True,False,unproven; observed endpoint retained
+1735092968,Half-Orc,Blackguard,soldier,97445,7,9,8,True,False,unproven; observed endpoint retained
+1735184234,Half-Elf,Druid,giant white centipede,5083,1,1,1,True,False,unproven; observed endpoint retained
+1742671594,Elf,Druid,small kobold,41785,1,1,1,True,False,unproven; observed endpoint retained
+1743359186,Kobold,Paladin,crow,1894,1,1,1,False,False,unproven; observed endpoint retained
+1745161855,Kobold,Mage,"Fang, Farmer Maggot's Dog",78000,1,2,1,True,False,unproven; observed endpoint retained
+1745658442,Gnome,Rogue,soldier,88247,2,4,2,True,True,unproven; observed endpoint retained
+1745762596,Half-Troll,Mage,grey mold,9880,1,1,1,True,True,unproven; observed endpoint retained
+1749600238,Dunadan,Druid,grey mold,23176,1,1,1,True,True,unproven; observed endpoint retained
+1751607179,Dunadan,Priest,grey mushroom patch,5827,1,1,1,True,False,unproven; observed endpoint retained
+1754947320,Dwarf,Ranger,grey mold,9070,1,1,1,False,False,unproven; observed endpoint retained
+1756048346,Gnome,Priest,"Grip, Farmer Maggot's Dog",55938,1,2,1,True,True,unproven; observed endpoint retained
+1756283461,Kobold,Ranger,"Fang, Farmer Maggot's Dog",84314,2,4,2,True,True,unproven; observed endpoint retained
+1759292364,Gnome,Mage,giant white centipede,14423,1,2,1,True,False,unproven; observed endpoint retained
+1765788270,Dwarf,Druid,wild cat,19707,1,2,2,True,False,unproven; observed endpoint retained
+1770109965,Half-Orc,Necromancer,floating eye,29718,1,1,1,True,True,unproven; observed endpoint retained
+1771668387,Half-Elf,Paladin,"Grip, Farmer Maggot's Dog",13101,1,1,1,False,False,unproven; observed endpoint retained
+1776416746,Half-Orc,Priest,wild cat,6142,1,1,1,True,True,unproven; observed endpoint retained
+1776967537,Human,Mage,giant white centipede,13926,1,2,1,False,False,unproven; observed endpoint retained
+1782851619,Hobbit,Druid,yellow jelly,65098,1,2,2,True,False,unproven; observed endpoint retained
+1786276282,Half-Orc,Mage,crow,16540,1,2,1,False,False,unproven; observed endpoint retained
+1799844403,Half-Elf,Ranger,wild cat,94804,2,4,2,True,False,unproven; observed endpoint retained
+1799881949,Half-Orc,Mage,wild cat,51748,2,4,2,True,False,unproven; observed endpoint retained
+1802054264,Half-Elf,Mage,grey mold,28591,1,2,1,True,False,unproven; observed endpoint retained
+1809155193,Gnome,Necromancer,"Fang, Farmer Maggot's Dog",5183,1,1,1,True,False,unproven; observed endpoint retained
+1811824564,Gnome,Blackguard,grey mushroom patch,13753,1,2,1,True,True,unproven; observed endpoint retained
+1811908180,Half-Elf,Ranger,"Grip, Farmer Maggot's Dog",41805,2,3,2,True,False,unproven; observed endpoint retained
+1814208946,Kobold,Rogue,cave spider,4242,1,2,1,False,False,unproven; observed endpoint retained
+1814447251,Kobold,Necromancer,"Fang, Farmer Maggot's Dog",38133,1,1,2,True,True,unproven; observed endpoint retained
+1816296459,Dwarf,Necromancer,rock lizard,32373,1,1,1,True,False,unproven; observed endpoint retained
+1819645266,Elf,Mage,fruit bat,1578,1,1,1,False,False,unproven; observed endpoint retained
+1820417042,Half-Elf,Blackguard,soldier,89783,2,4,3,True,False,unproven; observed endpoint retained
+1820777845,Half-Troll,Necromancer,"Fang, Farmer Maggot's Dog",3961,1,1,1,True,False,unproven; observed endpoint retained
+1823973374,Elf,Rogue,soldier,56406,1,2,1,True,False,unproven; observed endpoint retained
+1825968254,Hobbit,Warrior,soldier,58806,2,5,3,True,False,unproven; observed endpoint retained
+1833250917,High-Elf,Necromancer,"Grip, Farmer Maggot's Dog",38978,1,1,1,True,False,unproven; observed endpoint retained
+1834254712,Elf,Druid,grey mold,16661,1,1,1,True,True,unproven; observed endpoint retained
+1836109908,Half-Troll,Ranger,giant white louse,67936,4,7,4,True,False,unproven; observed endpoint retained
+1837711079,Hobbit,Ranger,soldier,72262,2,3,3,True,False,unproven; observed endpoint retained
+1838536654,Kobold,Druid,wild cat,54461,1,2,2,True,True,unproven; observed endpoint retained
+1840409817,Half-Troll,Druid,grey mold,35139,1,2,1,True,True,unproven; observed endpoint retained
+1841212313,Human,Ranger,giant yellow centipede,91097,1,5,2,True,False,unproven; observed endpoint retained
+1841564164,Dwarf,Ranger,soldier,55812,2,4,2,True,False,unproven; observed endpoint retained
+1842393541,Gnome,Necromancer,cave spider,47885,1,2,2,True,False,unproven; observed endpoint retained
+1844440798,Dwarf,Rogue,rock lizard,27362,1,4,2,False,False,unproven; observed endpoint retained
+1845438864,Gnome,Mage,wild dog,3569,1,1,1,False,False,unproven; observed endpoint retained
+1845762949,Dunadan,Warrior,black ogre,96143,18,12,18,True,False,unproven; observed endpoint retained
+1849773788,Human,Mage,grey mushroom patch,2137,1,1,1,False,False,unproven; observed endpoint retained
+1855049264,Elf,Blackguard,spotted mushroom patch,66348,3,6,3,True,False,unproven; observed endpoint retained
+1855593465,Hobbit,Mage,giant white centipede,13643,1,1,1,True,False,unproven; observed endpoint retained
+1863228237,Gnome,Rogue,crow,58455,1,2,1,True,True,unproven; observed endpoint retained
+1863869647,Elf,Mage,grey mushroom patch,29035,1,1,1,True,True,unproven; observed endpoint retained
+1866102210,Half-Orc,Druid,wild cat,7208,1,1,1,True,True,unproven; observed endpoint retained
+1867672523,High-Elf,Druid,small kobold,15180,1,1,1,False,False,unproven; observed endpoint retained
+1873547215,Hobbit,Blackguard,giant white rat,56874,3,6,3,True,False,unproven; observed endpoint retained
+1874146915,Hobbit,Ranger,wild cat,56804,1,3,2,True,False,unproven; observed endpoint retained
+1874498557,Human,Priest,"Grip, Farmer Maggot's Dog",5053,1,1,1,True,False,unproven; observed endpoint retained
+1885871322,Kobold,Blackguard,"Grip, Farmer Maggot's Dog",23963,1,2,2,True,False,unproven; observed endpoint retained
+1888613055,Half-Elf,Paladin,wild cat,8647,1,2,2,True,False,unproven; observed endpoint retained
+1892571290,Gnome,Druid,metallic red centipede,15842,1,1,2,False,False,unproven; observed endpoint retained
+1892720822,High-Elf,Blackguard,"Fang, Farmer Maggot's Dog",16230,1,2,1,True,True,unproven; observed endpoint retained
+1895912119,High-Elf,Mage,kobold,8368,1,1,1,True,True,unproven; observed endpoint retained
+1898163387,Dunadan,Necromancer,grey mold,13702,1,1,1,False,False,unproven; observed endpoint retained
+1899603868,Dunadan,Necromancer,"Grip, Farmer Maggot's Dog",37966,1,2,1,True,False,unproven; observed endpoint retained
+1901232377,Kobold,Necromancer,"Fang, Farmer Maggot's Dog",3883,1,1,1,False,False,unproven; observed endpoint retained
+1904996258,Half-Orc,Blackguard,poison,74380,2,6,2,True,False,unproven; observed endpoint retained
+1910390693,High-Elf,Mage,wild cat,60502,1,2,2,True,False,unproven; observed endpoint retained
+1914631544,Hobbit,Ranger,wild cat,33528,1,1,1,True,True,unproven; observed endpoint retained
+1914981040,Hobbit,Druid,"Grip, Farmer Maggot's Dog",940,1,1,1,False,False,unproven; observed endpoint retained
+1918066313,Gnome,Mage,giant yellow centipede,15930,1,2,1,True,False,unproven; observed endpoint retained
+1918878874,Hobbit,Mage,fruit bat,9734,1,1,1,True,False,unproven; observed endpoint retained
+1919395187,Hobbit,Druid,blubbering icky thing,64799,1,1,2,True,False,unproven; observed endpoint retained
+1926850603,Human,Priest,grey mushroom patch,1470,1,1,1,True,True,unproven; observed endpoint retained
+1927042982,Gnome,Priest,soldier,36412,1,2,2,True,False,unproven; observed endpoint retained
+1927780952,Hobbit,Priest,a fatal wound,34470,1,2,2,True,False,unproven; observed endpoint retained
+1928405346,Kobold,Blackguard,wild cat,35386,1,3,1,True,False,unproven; observed endpoint retained
+1929052682,High-Elf,Ranger,small kobold,6818,1,1,1,False,False,unproven; observed endpoint retained
+1929796823,Dunadan,Mage,soldier ant,78972,1,3,2,True,True,unproven; observed endpoint retained
+1930472046,Elf,Druid,grey mushroom patch,13697,1,1,1,True,True,unproven; observed endpoint retained
+1931470766,Human,Rogue,wild cat,51908,1,2,2,True,True,unproven; observed endpoint retained
+1933249324,Hobbit,Necromancer,wild dog,16753,1,1,1,True,False,unproven; observed endpoint retained
+1933500267,Elf,Blackguard,grey mold,40192,1,2,1,True,True,unproven; observed endpoint retained
+1934457142,Elf,Rogue,"Fang, Farmer Maggot's Dog",44071,1,2,2,True,False,unproven; observed endpoint retained
+1935871607,Human,Rogue,metallic red centipede,19248,1,2,1,True,False,unproven; observed endpoint retained
+1936536577,High-Elf,Paladin,"Grip, Farmer Maggot's Dog",323,1,1,1,False,False,unproven; observed endpoint retained
+1938220992,Half-Orc,Druid,crow,23167,1,1,1,False,False,unproven; observed endpoint retained
+1940529285,Dunadan,Priest,giant yellow centipede,23525,1,2,1,True,False,unproven; observed endpoint retained
+1943505747,Half-Elf,Ranger,"Fang, Farmer Maggot's Dog",5232,1,1,1,False,False,unproven; observed endpoint retained
+1947510448,Gnome,Blackguard,grey mushroom patch,39745,1,3,2,True,True,unproven; observed endpoint retained
+1950544731,Half-Elf,Paladin,a scout,52004,3,4,3,True,False,unproven; observed endpoint retained
+1957415190,High-Elf,Ranger,kobold,67843,2,4,2,True,False,unproven; observed endpoint retained
+1957928267,Hobbit,Warrior,a fatal wound,99260,3,5,3,True,False,unproven; observed endpoint retained
+1958632240,Half-Orc,Mage,snaga,16934,1,2,2,False,False,unproven; observed endpoint retained
+1959535269,Kobold,Druid,"Grip, Farmer Maggot's Dog",20407,1,1,1,False,False,unproven; observed endpoint retained
+1964661245,Half-Elf,Necromancer,small kobold,61195,1,2,2,True,False,unproven; observed endpoint retained
+1967364751,Dwarf,Ranger,"Grip, Farmer Maggot's Dog",17203,1,1,1,True,True,unproven; observed endpoint retained
+1970739674,Kobold,Ranger,giant white mouse,24968,1,1,2,True,False,unproven; observed endpoint retained
+1972075250,High-Elf,Rogue,a fatal wound,85550,1,2,2,True,True,unproven; observed endpoint retained
+1972606412,Dunadan,Mage,giant yellow centipede,5302,1,1,1,True,True,unproven; observed endpoint retained
+1976260343,High-Elf,Warrior,"Lagduf, the Snaga",90131,9,10,10,True,False,unproven; observed endpoint retained
+1977286422,High-Elf,Druid,"Grip, Farmer Maggot's Dog",209,1,1,1,False,False,unproven; observed endpoint retained
+1981709616,Hobbit,Druid,a fatal wound,9040,1,1,2,True,True,unproven; observed endpoint retained
+1986788576,Half-Troll,Ranger,soldier,15180,1,2,1,True,False,unproven; observed endpoint retained
+1988683091,Half-Troll,Ranger,blue yeek,67560,3,7,5,True,False,unproven; observed endpoint retained
+1990943206,Hobbit,Paladin,"Grip, Farmer Maggot's Dog",9663,1,4,1,False,False,unproven; observed endpoint retained
+1993357177,Half-Troll,Mage,grey mold,4008,1,1,1,False,False,unproven; observed endpoint retained
+1996155002,Kobold,Druid,wild dog,44988,1,1,1,True,True,unproven; observed endpoint retained
+1998502184,Gnome,Rogue,a fatal wound,32380,1,2,2,True,True,unproven; observed endpoint retained
+2001244237,Hobbit,Necromancer,giant white mouse,7733,1,2,1,True,False,unproven; observed endpoint retained
+2003037071,Half-Elf,Rogue,soldier,7154,1,2,1,False,False,unproven; observed endpoint retained
+2003312818,Dwarf,Mage,wild cat,12669,1,1,1,True,True,unproven; observed endpoint retained
+2003364180,Human,Rogue,grey icky thing,91027,7,6,7,True,False,unproven; observed endpoint retained
+2007482817,Kobold,Mage,grey mold,22851,1,1,1,False,True,unproven; observed endpoint retained
+2013093892,Half-Orc,Mage,blue yeek,21314,1,1,1,True,False,unproven; observed endpoint retained
+2014702771,Elf,Rogue,small kobold,46912,1,3,2,True,False,unproven; observed endpoint retained
+2015196584,Half-Orc,Blackguard,soldier,92613,1,6,2,True,True,unproven; observed endpoint retained
+2017149103,Half-Troll,Druid,cave spider,80080,2,4,3,True,False,unproven; observed endpoint retained
+2018465309,Half-Troll,Priest,giant white louse,57159,2,6,2,True,False,unproven; observed endpoint retained
+2020151559,Kobold,Paladin,"Fang, Farmer Maggot's Dog",34531,1,2,1,True,False,unproven; observed endpoint retained
+2020834205,High-Elf,Necromancer,wild cat,7755,1,1,2,False,False,unproven; observed endpoint retained
+2035170246,Kobold,Druid,giant yellow centipede,56361,1,1,2,True,False,unproven; observed endpoint retained
+2037653082,High-Elf,Druid,small kobold,7017,1,1,1,False,False,unproven; observed endpoint retained
+2042441767,Human,Mage,grey mushroom patch,26987,1,2,2,True,True,unproven; observed endpoint retained
+2043237956,Human,Necromancer,blue yeek,15199,1,1,1,True,False,unproven; observed endpoint retained
+2045685632,Half-Troll,Necromancer,crow,34806,3,2,3,True,True,unproven; observed endpoint retained
+2048933486,Human,Druid,giant white centipede,89299,1,2,1,True,False,unproven; observed endpoint retained
+2048979036,Elf,Mage,wild cat,38524,1,2,2,True,True,unproven; observed endpoint retained
+2056021991,Half-Elf,Blackguard,soldier,70730,3,3,3,True,False,unproven; observed endpoint retained
+2056026998,Dwarf,Necromancer,"Grip, Farmer Maggot's Dog",55021,1,1,1,True,False,unproven; observed endpoint retained
+2059469364,Half-Elf,Ranger,cutpurse,42617,2,3,2,True,False,unproven; observed endpoint retained
+2064628454,Human,Ranger,acolyte,19515,1,2,1,True,False,unproven; observed endpoint retained
+2068906450,Half-Orc,Rogue,fruit bat,6022,1,1,2,False,False,unproven; observed endpoint retained
+2068988810,Hobbit,Ranger,"Grip, Farmer Maggot's Dog",19780,1,1,1,True,False,unproven; observed endpoint retained
+2070232585,Gnome,Mage,crow,41157,1,1,1,True,True,unproven; observed endpoint retained
+2076903211,Half-Elf,Blackguard,"Grip, Farmer Maggot's Dog",1322,1,1,1,True,False,unproven; observed endpoint retained
+2077989534,High-Elf,Mage,grey mushroom patch,10859,1,2,1,True,True,unproven; observed endpoint retained
+2078403152,Half-Orc,Mage,giant yellow centipede,27568,1,2,2,True,False,unproven; observed endpoint retained
+2079052829,High-Elf,Druid,"Grip, Farmer Maggot's Dog",62797,2,3,2,True,True,unproven; observed endpoint retained
+2081335353,Half-Elf,Druid,small kobold,23579,1,1,1,True,False,unproven; observed endpoint retained
+2081717251,Half-Troll,Ranger,soldier,9254,1,2,2,True,True,unproven; observed endpoint retained
+2085115471,Kobold,Mage,"Fang, Farmer Maggot's Dog",16252,1,1,2,True,False,unproven; observed endpoint retained
+2086767968,Dunadan,Mage,floating eye,82878,1,3,1,True,True,unproven; observed endpoint retained
+2090142186,Elf,Druid,scruffy looking hobbit,17712,1,1,2,False,False,unproven; observed endpoint retained
+2090795539,Human,Paladin,wild cat,14844,2,2,2,True,False,unproven; observed endpoint retained
+2093282929,Human,Druid,"Fang, Farmer Maggot's Dog",18072,1,1,1,True,True,unproven; observed endpoint retained
+2096452081,High-Elf,Rogue,poison,4500,0,1,1,False,False,unproven; observed endpoint retained
+2096475642,Human,Ranger,wild cat,446,1,1,1,False,False,unproven; observed endpoint retained
+2097101724,Kobold,Necromancer,giant white louse,27546,1,2,2,True,False,unproven; observed endpoint retained
+2099102246,Human,Blackguard,poison,10320,1,2,1,True,False,unproven; observed endpoint retained
+2099968627,High-Elf,Priest,"Fang, Farmer Maggot's Dog",22786,1,2,1,True,True,unproven; observed endpoint retained
+2102541124,Human,Druid,tamer,46626,1,2,1,True,False,unproven; observed endpoint retained
+2110810444,Half-Orc,Blackguard,poison,47680,1,4,2,True,False,unproven; observed endpoint retained
+2111732291,Gnome,Paladin,"Fang, Farmer Maggot's Dog",14190,1,1,1,False,False,unproven; observed endpoint retained
+2114746907,Half-Elf,Druid,wild cat,29303,1,1,2,True,False,unproven; observed endpoint retained
+2116438928,Gnome,Priest,grey mushroom patch,45323,1,1,1,True,True,unproven; observed endpoint retained
+2118422704,Half-Elf,Mage,white icky thing,1429,1,1,1,False,False,unproven; observed endpoint retained
+2119335049,Human,Blackguard,"Fang, Farmer Maggot's Dog",8304,1,1,1,True,False,unproven; observed endpoint retained
+2128711494,Kobold,Necromancer,"Grip, Farmer Maggot's Dog",2103,1,1,1,False,False,unproven; observed endpoint retained
+2129068425,Hobbit,Mage,giant white centipede,25228,1,2,2,True,False,unproven; observed endpoint retained
+2131109327,Half-Elf,Blackguard,"Grip, Farmer Maggot's Dog",12284,1,1,1,True,True,unproven; observed endpoint retained
+2133458316,Kobold,Ranger,grey mold,29984,1,2,1,True,False,unproven; observed endpoint retained
+2138491540,Half-Elf,Warrior,"Fang, Farmer Maggot's Dog",19622,2,5,2,True,False,unproven; observed endpoint retained
+2147363787,Gnome,Druid,wild cat,19914,1,1,1,True,False,unproven; observed endpoint retained

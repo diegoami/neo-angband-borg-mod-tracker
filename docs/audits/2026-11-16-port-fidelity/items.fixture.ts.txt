@@ -1,0 +1,36 @@
+import {afterEach,expect,it} from 'vitest';
+import {BorgWorld} from '../world/model.js';
+import {makeScenarioView,makeFakeActions} from '../harness.js';
+import {makeBorgRng} from '../rng.js';
+import {BI} from '../trait/trait-index.js';
+import {TV,SVAL} from './svals.js';
+import {setBorgCfg,resetBorgCfg} from '../trait/config.js';
+import {borgEnchanting} from './item-enchant.js';
+import {borgDecurseAny} from './item-decurse.js';
+function item(handle:number,tval:number,sval:number,over:any={}){return {handle,tval,sval,number:1,aware:true,pval:0,timeout:0,weight:1,flags:[],modifiers:[],resists:[],curses:[],charging:0,toA:0,toH:0,toD:0,ego:false,artifact:false,...over};}
+function scene(bonus=7){
+ const world=new BorgWorld();const armor=item(2,TV.HARD_ARMOR,1,{toA:bonus});
+ const view={...makeScenarioView(),inventory:()=>[item(3,TV.SCROLL,SVAL.scroll.star_enchant_armor!)],equipment:()=>[null,null,null,null,null,null,armor]};
+ const ctx={world,view,act:makeFakeActions(),rng:makeBorgRng(1)};
+ world.self.trait[BI.NEED_ENCHANT_TO_A]=1;world.self.trait[BI.AENCH_SARM]=1;world.self.trait[BI.LIGHT]=1;
+ return {ctx,world};
+}
+afterEach(()=>resetBorgCfg());
+it('control: ordinary town armor enchanting can use a real carried scroll',()=>{
+ const {ctx}=scene();expect(borgEnchanting(ctx)).toEqual({code:'read',args:{handle:3,tgtitem:{handle:2}}});
+});
+it('C configured enchant limit 20 permits improving +13 armor',()=>{
+ setBorgCfg({enchantLimit:20});const {ctx}=scene(13);
+ expect(borgEnchanting(ctx)).toEqual({code:'read',args:{handle:3,tgtitem:{handle:2}}});
+});
+it('C brands twenty identified unbranded arrows with available firebrand activation',()=>{
+ const {ctx,world}=scene();world.self.trait[BI.NEED_ENCHANT_TO_A]=0;world.self.trait[BI.NEED_BRAND_WEAPON]=1;world.self.trait[BI.ABRAND]=1;world.self.trait[BI.AMMO_TVAL]=TV.ARROW;
+ const arrows=item(10,TV.ARROW,1,{number:20,toH:5});ctx.view={...ctx.view,inventory:()=>[arrows],equipment:()=>[],quiver:()=>[arrows]};
+ expect(borgEnchanting(ctx,{activateItem:act=>act==='act_firebrand'?9:null})).toEqual({code:'activate',args:{handle:9,tgtitem:{handle:10}}});
+});
+it('C decursing carries the chosen cursed item instead of prompting without a target',()=>{
+ const {ctx,world}=scene();world.self.trait[BI.FIRST_CURSED]=1;
+ const armor=item(10,TV.HARD_ARMOR,1,{curses:[{name:'clumsiness',power:10}]});
+ ctx.view={...ctx.view,inventory:()=>[item(3,TV.SCROLL,SVAL.scroll.remove_curse!),armor],equipment:()=>[]};
+ expect(borgDecurseAny(ctx)).toEqual({code:'read',args:{handle:3,tgtitem:{handle:10}}});
+});

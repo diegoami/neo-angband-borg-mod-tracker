@@ -1,0 +1,4 @@
+# Exact false positive: SHA256 of public engine b4af703 packages/web/src/mod-api2-host.ts.
+# Recomputed from pinned source; this is build provenance, not an API credential.
+# Keep the exception scoped to this one immutable finding, not the file or rule.
+777bce131f7c6c3da0483e90f993dd744c16ad7b:docs/runs/2026-11-16-zoo-books-509/analysis.json:generic-api-key:150

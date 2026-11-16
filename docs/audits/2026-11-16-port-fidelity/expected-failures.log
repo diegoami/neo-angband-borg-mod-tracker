@@ -1,0 +1,244 @@
+
+ RUN  v4.1.11 /tmp/neo-port-audit-20261116
+
+ ❯ src/fight/port-audit.test.ts (23 tests | 21 failed) 34ms
+   × C late confusion cure still runs when already fleeing, class 0 4ms
+   × C late confusion cure still runs when already fleeing, class 1 1ms
+   × C late confusion cure still runs when already fleeing, class 2 1ms
+   × C late confusion cure still runs when already fleeing, class 3 1ms
+   × C late confusion cure still runs when already fleeing, class 4 3ms
+   × C late confusion cure still runs when already fleeing, class 5 1ms
+   × C late confusion cure still runs when already fleeing, class 6 1ms
+   × C late confusion cure still runs when already fleeing, class 7 1ms
+   × C late confusion cure still runs when already fleeing, class 8 1ms
+   × C late fear cure consumes boldness rather than yielding, class 0 1ms
+   × C late fear cure consumes boldness rather than yielding, class 1 1ms
+   × C late fear cure consumes boldness rather than yielding, class 2 1ms
+   × C late fear cure consumes boldness rather than yielding, class 3 1ms
+   × C late fear cure consumes boldness rather than yielding, class 4 1ms
+   × C late fear cure consumes boldness rather than yielding, class 5 1ms
+   × C late fear cure consumes boldness rather than yielding, class 6 1ms
+   × C late fear cure consumes boldness rather than yielding, class 7 1ms
+   × C late fear cure consumes boldness rather than yielding, class 8 1ms
+   × C low HP tail sets leaving and fleeing with no reserve cures 4ms
+   × C bleeding tail sets fleeing at below half HP even when above one third 1ms
+   × C short circuit does not mark an unused critical cure as drunk 1ms
+ ❯ src/item/port-audit.test.ts (4 tests | 3 failed) 10ms
+   × C configured enchant limit 20 permits improving +13 armor 4ms
+   × C brands twenty identified unbranded arrows with available firebrand activation 1ms
+   × C decursing carries the chosen cursed item instead of prompting without a target 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 24 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/fight/port-audit.test.ts > C late confusion cure still runs when already fleeing, class 0
+ FAIL  src/fight/port-audit.test.ts > C late confusion cure still runs when already fleeing, class 1
+ FAIL  src/fight/port-audit.test.ts > C late confusion cure still runs when already fleeing, class 2
+ FAIL  src/fight/port-audit.test.ts > C late confusion cure still runs when already fleeing, class 3
+ FAIL  src/fight/port-audit.test.ts > C late confusion cure still runs when already fleeing, class 4
+ FAIL  src/fight/port-audit.test.ts > C late confusion cure still runs when already fleeing, class 5
+ FAIL  src/fight/port-audit.test.ts > C late confusion cure still runs when already fleeing, class 6
+ FAIL  src/fight/port-audit.test.ts > C late confusion cure still runs when already fleeing, class 7
+ FAIL  src/fight/port-audit.test.ts > C late confusion cure still runs when already fleeing, class 8
+AssertionError: expected null to deeply equal { code: 'quaff', args: { handle: 4 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 4,
+  },
+  "code": "quaff",
+}
+
++ Received:
+null
+
+ ❯ src/fight/port-audit.test.ts:32:48
+     30| it.each([0,1,2,3,4,5,6,7,8])('C late confusion cure still runs when al…
+     31|  const {ctx,world,t,flow}=setup([item(4,TV.POTION,SVAL.potion.cure_ser…
+     32|  t[BI.CLASS]=cls;expect(borgCaution(ctx,flow)).toEqual({code:'quaff',a…
+       |                                                ^
+     33| });
+     34| it.each([0,1,2,3,4,5,6,7,8])('C late fear cure consumes boldness rathe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/24]⎯
+
+ FAIL  src/fight/port-audit.test.ts > C late fear cure consumes boldness rather than yielding, class 0
+ FAIL  src/fight/port-audit.test.ts > C late fear cure consumes boldness rather than yielding, class 1
+ FAIL  src/fight/port-audit.test.ts > C late fear cure consumes boldness rather than yielding, class 2
+ FAIL  src/fight/port-audit.test.ts > C late fear cure consumes boldness rather than yielding, class 3
+ FAIL  src/fight/port-audit.test.ts > C late fear cure consumes boldness rather than yielding, class 4
+ FAIL  src/fight/port-audit.test.ts > C late fear cure consumes boldness rather than yielding, class 5
+ FAIL  src/fight/port-audit.test.ts > C late fear cure consumes boldness rather than yielding, class 6
+ FAIL  src/fight/port-audit.test.ts > C late fear cure consumes boldness rather than yielding, class 7
+ FAIL  src/fight/port-audit.test.ts > C late fear cure consumes boldness rather than yielding, class 8
+AssertionError: expected null to deeply equal { code: 'quaff', args: { handle: 5 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 5,
+  },
+  "code": "quaff",
+}
+
++ Received:
+null
+
+ ❯ src/fight/port-audit.test.ts:36:48
+     34| it.each([0,1,2,3,4,5,6,7,8])('C late fear cure consumes boldness rathe…
+     35|  const {ctx,world,t,flow}=setup([item(5,TV.POTION,SVAL.potion.boldness…
+     36|  t[BI.CLASS]=cls;expect(borgCaution(ctx,flow)).toEqual({code:'quaff',a…
+       |                                                ^
+     37| });
+     38| it('C low HP tail sets leaving and fleeing with no reserve cures',()=>{
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/24]⎯
+
+ FAIL  src/fight/port-audit.test.ts > C low HP tail sets leaving and fleeing with no reserve cures
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/fight/port-audit.test.ts:40:56
+     38| it('C low HP tail sets leaving and fleeing with no reserve cures',()=>{
+     39|  const {ctx,world,t,flow}=setup();t[BI.CDEPTH]=1;t[BI.CURHP]=30;
+     40|  borgCaution(ctx,flow);expect(world.self.goal.fleeing).toBe(true);expe…
+       |                                                        ^
+     41| });
+     42| it('C bleeding tail sets fleeing at below half HP even when above one …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/24]⎯
+
+ FAIL  src/fight/port-audit.test.ts > C bleeding tail sets fleeing at below half HP even when above one third
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/fight/port-audit.test.ts:44:56
+     42| it('C bleeding tail sets fleeing at below half HP even when above one …
+     43|  const {ctx,world,t,flow}=setup();t[BI.CDEPTH]=1;t[BI.CURHP]=45;t[BI.I…
+     44|  borgCaution(ctx,flow);expect(world.self.goal.fleeing).toBe(true);expe…
+       |                                                        ^
+     45| });
+     46| it('C short circuit does not mark an unused critical cure as drunk',()…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/24]⎯
+
+ FAIL  src/fight/port-audit.test.ts > C short circuit does not mark an unused critical cure as drunk
+AssertionError: expected null to deeply equal { code: 'quaff', args: { handle: 4 } }
+
+- Expected:
+{
+  "args": {
+    "handle": 4,
+  },
+  "code": "quaff",
+}
+
++ Received:
+null
+
+ ❯ src/fight/port-audit.test.ts:50:35
+     48|  expect(borgHeal(ctx,0)).toEqual({code:'eat',args:{handle:3}});
+     49|  world.clock=101;t[BI.ISCONFUSED]=0;
+     50|  expect(borgQuaffCrit(ctx,false)).toEqual({code:'quaff',args:{handle:4…
+       |                                   ^
+     51| });
+     52| it('control: a critical cure without the earlier mushroom branch is av…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/24]⎯
+
+ FAIL  src/item/port-audit.test.ts > C configured enchant limit 20 permits improving +13 armor
+AssertionError: expected null to deeply equal { code: 'read', …(1) }
+
+- Expected:
+{
+  "args": {
+    "handle": 3,
+    "tgtitem": {
+      "handle": 2,
+    },
+  },
+  "code": "read",
+}
+
++ Received:
+null
+
+ ❯ src/item/port-audit.test.ts:24:30
+     22| it('C configured enchant limit 20 permits improving +13 armor',()=>{
+     23|  setBorgCfg({enchantLimit:20});const {ctx}=scene(13);
+     24|  expect(borgEnchanting(ctx)).toEqual({code:'read',args:{handle:3,tgtit…
+       |                              ^
+     25| });
+     26| it('C brands twenty identified unbranded arrows with available firebra…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/24]⎯
+
+ FAIL  src/item/port-audit.test.ts > C brands twenty identified unbranded arrows with available firebrand activation
+AssertionError: expected null to deeply equal { code: 'activate', …(1) }
+
+- Expected:
+{
+  "args": {
+    "handle": 9,
+    "tgtitem": {
+      "handle": 10,
+    },
+  },
+  "code": "activate",
+}
+
++ Received:
+null
+
+ ❯ src/item/port-audit.test.ts:29:79
+     27|  const {ctx,world}=scene();world.self.trait[BI.NEED_ENCHANT_TO_A]=0;wo…
+     28|  const arrows=item(10,TV.ARROW,1,{number:20,toH:5});ctx.view={...ctx.v…
+     29|  expect(borgEnchanting(ctx,{activateItem:act=>act==='act_firebrand'?9:…
+       |                                                                               ^
+     30| });
+     31| it('C decursing carries the chosen cursed item instead of prompting wi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/24]⎯
+
+ FAIL  src/item/port-audit.test.ts > C decursing carries the chosen cursed item instead of prompting without a target
+AssertionError: expected { code: 'read', args: { handle: 3 } } to deeply equal { code: 'read', …(1) }
+
+- Expected
++ Received
+
+  {
+    "args": {
+      "handle": 3,
+-     "tgtitem": {
+-       "handle": 10,
+-     },
+    },
+    "code": "read",
+  }
+
+ ❯ src/item/port-audit.test.ts:35:30
+     33|  const armor=item(10,TV.HARD_ARMOR,1,{curses:[{name:'clumsiness',power…
+     34|  ctx.view={...ctx.view,inventory:()=>[item(3,TV.SCROLL,SVAL.scroll.rem…
+     35|  expect(borgDecurseAny(ctx)).toEqual({code:'read',args:{handle:3,tgtit…
+       |                              ^
+     36| });
+     37|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/24]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  24 failed | 3 passed (27)
+   Start at  10:02:35
+   Duration  904ms (transform 386ms, setup 261ms, import 436ms, tests 44ms, environment 0ms)
+
