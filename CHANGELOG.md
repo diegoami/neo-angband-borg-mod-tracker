@@ -20,6 +20,12 @@ were not retagged.
 
 ## [Unreleased]
 
+## 1.4.0-beta.6.zoo.1 - 2026-11-16
+
+### Changed
+
+- [Visible] [Compatibility] Experimental fork measurement build combining the six Neo514–519 C-parity corrections with the carried-spellbook value correction509. Requires the beta.4 API2.1 engine. This build is identified by its exact source commit and Zoo specimen; it is not an official upstream release or a survival-improvement claim.
+
 ## 1.4.0-beta.6 - 2026-11-15
 
 ### Changed

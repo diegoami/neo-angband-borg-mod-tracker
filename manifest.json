@@ -4,7 +4,7 @@
   "data": {
     "id": "borg",
     "name": "Borg",
-    "version": "1.4.0-beta.6",
+    "version": "1.4.0-beta.6.zoo.1",
     "api": ">=2.1.0 <3.0.0",
     "runtime": "in-process",
     "engine": {
