@@ -233,3 +233,31 @@ limits. [Source heads, before/after controls and integration record](runs/2026-1
 The source mirror remains pristine; the combined fork landing is a separate PR.
 Source issues remain open until accepted and incorporated. No consumer deployment,
 book-proposal adoption or new experiment is included.
+
+## All-fixes build landed on fork master — 2026-11-16
+
+At the owner's explicit request, [owned PR113](https://github.com/diegoami/neo-angband-borg-mod-tracker/pull/113)
+normally merged the exact tested candidate into master at
+b9beb64ddc535326079feef9a43cfbde031a7531. Runtime version is
+1.4.0-beta.6.zoo.1. It includes all six Neo514–519 corrections and carried-book
+value509, including the sole-book HOME protection. All seven topic heads are
+ancestors of master; the full landing tree matches source464a155 exactly.
+Owned integration112 is included and GitHub marks it merged through this history.
+The earlier entries above remain dated proposal/release-import receipts.
+
+Source CI43860178921 passed1363 tests/75 files/zero skips in both ordinary and
+exact-source profiles, types, current729.5KiB plugin, real truth-host and
+privacy/security. Zoo smoke43861787363 passed18/18 exact5000-tick caps with
+all16caster starting books retained and108raw-file receipts verified.
+The committed plugin SHA256 is
+cb7e99ce77580f3f7c8d4ba1a5324d4ed8d5617c44760b73f2a4ee84962fb9c6.
+
+Upstream mod PR113 (books) and116–121 (parity) remain open; their source
+proposals against pristine upstream-master must not be merged into that mirror.
+This is implemented fork code, not a claim of vendor acceptance or a reason
+to close the upstream reports. No consumer/lab deployment is included.
+
+[Zoo issue137](https://github.com/diegoami/borg-zoo/issues/137) now records the
+master landing and exact identity. The next proposal is small90 starts,
+then disjoint medium/big/full increments under written gates and owner go.
+The previous direct1800 dispatch and concurrency question are superseded.

@@ -80,3 +80,11 @@ remain unchanged. Release import does not adopt source fixes514–519.
 The proposed Neo514–519 integration adds73 regressions and requires1348 passed
 with zero skips in both ordinary and exact-source profiles. The engine tuple,
 source pin and opt-in soak policy remain unchanged.
+
+## Current integrated parity-and-books build
+
+Owned PR113 lands1.4.0-beta.6.zoo.1 with all six parity corrections plus the
+fifteen book regressions. The current full contract is1363 passed/75 files,
+zero skips, in both ordinary and exact-source profiles. Required source
+CI43860178921 passed at464a155; the master landingb9beb64 has the identical
+tree. Runtime plugin and smoke receipts are in docs/PATCHES.md and checkpoint26.
