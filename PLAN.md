@@ -45,12 +45,16 @@
    as fixed. Keep a locally carried consumer open while upstream delivery is
    missing. Do not edit/deploy the Mandos checkout from this port session.
 
-8. Owner-requested 2026-11-16 adoption targets released upstream Borg
-   v1.4.0-beta.6 / 622b2ba82ee48b26c1be0517181eb29b8a8239e1. Preserve
-   the published beta.4 engine tuple and existing exact-source engine baseline.
-   Source reports neostryder/neo-angband#514–519 remain independent, open
-   parity findings; the release does not correct them. The carried-book
-   proposal (upstream113/fork104) remains separate from this release import.
+8. Current fork runtime is 1.4.0-beta.6.zoo.1, landed by owned PR113 at
+   b9beb64ddc535326079feef9a43cfbde031a7531. It includes all six Neo514–519
+   parity corrections AND carried-book value509. Its landing tree exactly
+   matches validated source464a1555ca73cf662b522f020152faa9d1a2d465.
+   Keep upstream-master pristine at the vendor base622b2ba; upstream mod
+   PR113 and116–121 remain separate pending reviews, not missing fork fixes.
+   Published beta.4 packages and source engined27ed50f remain unchanged.
+   Required ordinary/exact-source checks pass1363 tests without skips, and
+   Zoo smoke43861787363 passes18/18. Zoo issue137 owns the next SMALL90
+   proposal under RULES14; no direct1800 dispatch or implicit tier approval.
 
 9. Update issue/checkpoint at merge/stop. No new gameplay features, local lab
    deployments or engine/C fixes in this port workspace.
