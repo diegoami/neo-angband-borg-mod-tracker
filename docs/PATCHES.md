@@ -194,3 +194,32 @@ in the verifier. The headless builder resolves the SDK backup-policy subpath.
 No engine/C source, consumer checkout, lab, save, experiment suite or historical
 measurement result is changed. Harness proposals fork98/upstream109 remain
 separate; upstream drafts99–101 keep their published heads.
+
+## Released Borg beta.6 adoption — 2026-11-16
+
+Owner requested upstream reports followed by release adoption. Reports
+[Neo514](https://github.com/neostryder/neo-angband/issues/514) through
+[Neo519](https://github.com/neostryder/neo-angband/issues/519) now hold the six
+source-audit groups, with immutable fixtures/controls at777bce131f7c6c3da0483e90f993dd744c16ad7b.
+They remain open source work, independently of this import.
+
+Release v1.4.0-beta.6 pins622b2ba82ee48b26c1be0517181eb29b8a8239e1.
+Its bde955e restores reserve-heal/recall/unknown-item ordering and predicates
+(Neo502); ad4d5a8 restores alter rather than tunnel for the afraid fallback
+(Neo503); aecd253/f45fae5 declare engine access and controller input, with the
+beta.4 engine floor (Neo500). The package remains the declared matching
+Core/SDK/content1.23.0-beta.4 tuple; exact source remainsd27ed50f.
+
+The normal merge preserves all existing fork gameplay, host tooling, session
+docs and old evidence. Updated upstream README/PLANNED go under
+docs/upstream-reference. Fork-only adjustment to the new soak test registers
+the large experiment only when explicitly requested with BORG_SOAK=1; its new
+ordinary birth/shopping regression remains unconditional. No ordinary
+regression is skipped or excluded. Ten incoming ordinary cases raise the
+required full count from1265 to1275, with zero skips in both profiles.
+
+The book-value correction509 is not in this release and was not already on
+fork master: experimental Zoo sourced6215a8 and upstream113/fork104 retain
+their published heads. No source finding is closed by this import merely
+because a related release shipped. Adoption validation/merge receipts are
+recorded on the integration PR and checkpoint26.

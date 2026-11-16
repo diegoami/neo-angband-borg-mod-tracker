@@ -122,3 +122,14 @@ The native script extracts unchanged C blocks from both pins and compiles tiny s
 No gameplay source was edited, no fixes merged, no new cohort dispatched, and no large local game or test run started. Reports, test text and logs are retained here; transient worktree and raw Zoo artifacts are under/tmp.
 
 Next exact work: prioritize the omitted caution tail and eager evaluation, then curse selection because it has a natural repeated-prompt example. Each correction needs its own isolated source branch, relevant controls and actual engine interaction where required. File canonical reports only after the source-owner routing and final duplicate/provenance check; the current audit does not claim those reports or any fixes have been published.
+
+## Upstream reports posted at owner request
+
+- [Borg: late confusion and fear cures from borg_caution are missing](https://github.com/neostryder/neo-angband/issues/514)
+- [Borg: late low-HP and bleeding/poison flee triggers are omitted](https://github.com/neostryder/neo-angband/issues/515)
+- [Borg: eager firstCmd evaluation records a CCW quaff that was never selected](https://github.com/neostryder/neo-angband/issues/516)
+- [Borg: Remove Curse omits the chosen item and repeatedly reaches an unanswered prompt](https://github.com/neostryder/neo-angband/issues/517)
+- [Borg: ammo-branding action remains inert despite available quiver and activation seams](https://github.com/neostryder/neo-angband/issues/518)
+- [Borg: enchanting ignores configured enchantLimit and hardcodes 12](https://github.com/neostryder/neo-angband/issues/519)
+
+Evidence was published first at777bce131f7c6c3da0483e90f993dd744c16ad7b. These reports remain independent of adopting beta.6.

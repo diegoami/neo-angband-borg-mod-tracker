@@ -45,5 +45,12 @@
    as fixed. Keep a locally carried consumer open while upstream delivery is
    missing. Do not edit/deploy the Mandos checkout from this port session.
 
-8. Update issue/checkpoint at merge/stop. No new gameplay features, local lab
+8. Owner-requested 2026-11-16 adoption targets released upstream Borg
+   v1.4.0-beta.6 / 622b2ba82ee48b26c1be0517181eb29b8a8239e1. Preserve
+   the published beta.4 engine tuple and existing exact-source engine baseline.
+   Source reports neostryder/neo-angband#514–519 remain independent, open
+   parity findings; the release does not correct them. The carried-book
+   proposal (upstream113/fork104) remains separate from this release import.
+
+9. Update issue/checkpoint at merge/stop. No new gameplay features, local lab
    deployments or engine/C fixes in this port workspace.
