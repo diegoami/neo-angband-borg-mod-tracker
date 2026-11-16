@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+enum {BERSERK_STRENGTH,BI_ACCW,BI_AHEAL,BI_AMISSILES,BI_CDEPTH,BI_CLASS,BI_CLEVEL,BI_CRSFEAR,BI_CURHP,BI_ISAFRAID,BI_ISCONFUSED,BI_ISCUT,BI_ISPOISONED,BI_MAXHP,CLASS_WARRIOR,HEROISM,HOLY_WORD,TV_MUSHROOM,act_cure_confusion,act_cure_mind,act_cure_paranoia,act_hero,act_rage_bless_resist,act_rem_fear_pois,act_shero,sv_mush_cure_mind,sv_potion_berserk,sv_potion_boldness,sv_potion_cure_serious,sv_potion_healing,sv_potion_heroism,sv_potion_life,sv_potion_star_healing,sv_staff_healing};
+struct {int trait[256]; struct {bool fleeing, leaving;} goal;} borg; int selected=-1;
+static bool borg_quaff_potion(int sval){return sval==selected;}
+#define borg_note(...) false
+#define borg_eat(...) false
+#define borg_spell_fail(...) false
+#define borg_activate_item(...) false
+#define borg_use_staff_fail(...) false
+#define borg_quaff_crit(...) false
+#define randint0(n) 0
+static bool tail(void){
+    /* cure confusion, second check, first (slightly different) in borg_heal */
+    if (borg.trait[BI_ISCONFUSED]) {
+        if (borg.trait[BI_MAXHP] - borg.trait[BI_CURHP] >= 300
+            && (borg_quaff_potion(sv_potion_healing)
+                || borg_quaff_potion(sv_potion_star_healing)
+                || borg_quaff_potion(sv_potion_life))) {
+            borg_note("# Healing.  Confusion.");
+            return true;
+        }
+        if (borg_eat(TV_MUSHROOM, sv_mush_cure_mind)
+            || borg_quaff_potion(sv_potion_cure_serious)
+            || borg_quaff_crit(false) || borg_quaff_potion(sv_potion_healing)
+            || borg_activate_item(act_cure_confusion)
+            || borg_use_staff_fail(sv_staff_healing)) {
+            borg_note("# Healing.  Confusion.");
+            return true;
+        }
+    }
+
+    /* Cure fear when afraid */
+    if ((borg.trait[BI_ISAFRAID] && !borg.trait[BI_CRSFEAR])
+        && (randint0(100) < 70
+            || (borg.trait[BI_CLASS] == CLASS_WARRIOR
+                && borg.trait[BI_AMISSILES] <= 0))) {
+        if (borg_eat(TV_MUSHROOM, sv_mush_cure_mind)
+            || borg_quaff_potion(sv_potion_boldness)
+            || borg_quaff_potion(sv_potion_heroism)
+            || borg_quaff_potion(sv_potion_berserk)
+            || borg_spell_fail(BERSERK_STRENGTH, 25) || /* berserk */
+            borg_spell_fail(HEROISM, 25) || /* hero */
+            borg_activate_item(act_cure_paranoia)
+            || borg_activate_item(act_hero) || borg_activate_item(act_shero)
+            || borg_activate_item(act_cure_mind)
+            || borg_activate_item(act_rage_bless_resist)
+            || borg_activate_item(act_rem_fear_pois)
+            || borg_spell_fail(HOLY_WORD, 25)) {
+            return true;
+        }
+    }
+
+    /*** Note impending death XXX XXX XXX ***/
+
+    /* Flee from low hit-points */
+    if (((borg.trait[BI_CURHP] < borg.trait[BI_MAXHP] / 3)
+            || ((borg.trait[BI_CURHP] < borg.trait[BI_MAXHP] / 2)
+                && borg.trait[BI_CURHP] < (borg.trait[BI_CLEVEL] * 3)))
+        && (borg.trait[BI_ACCW] < 3) && (borg.trait[BI_AHEAL] < 1)) {
+        /* Flee from low hit-points */
+        if (borg.trait[BI_CDEPTH] && (randint0(100) < 25)) {
+            /* Start leaving */
+            if (!borg.goal.leaving) {
+                /* Flee */
+                borg_note("# Leaving (low hit-points)");
+
+                /* Start leaving */
+                borg.goal.leaving = true;
+            }
+            /* Start fleeing */
+            if (!borg.goal.fleeing) {
+                /* Flee */
+                borg_note("# Fleeing (low hit-points)");
+
+                /* Start fleeing */
+                borg.goal.fleeing = true;
+            }
+        }
+    }
+
+    /* Flee from bleeding wounds or poison and no heals */
+    if ((borg.trait[BI_ISCUT] || borg.trait[BI_ISPOISONED])
+        && (borg.trait[BI_CURHP] < borg.trait[BI_MAXHP] / 2)) {
+        /* Flee from bleeding wounds */
+        if (borg.trait[BI_CDEPTH] && (randint0(100) < 25)) {
+            /* Start leaving */
+            if (!borg.goal.leaving) {
+                /* Flee */
+                borg_note("# Leaving (bleeding/poison)");
+
+                /* Start leaving */
+                borg.goal.leaving = true;
+            }
+
+            /* Start fleeing */
+            if (!borg.goal.fleeing) {
+                /* Flee */
+                borg_note("# Fleeing (bleeding/poison)");
+
+                /* Start fleeing */
+                borg.goal.fleeing = true;
+            }
+        }
+    }
+
+
+return false;}
+int main(void){for(int i=0;i<4;i++){memset(&borg,0,sizeof borg);selected=-1;
+ borg.trait[BI_MAXHP]=100;borg.trait[BI_CURHP]=80;borg.trait[BI_CLEVEL]=10;
+ if(i==0){borg.trait[BI_ISCONFUSED]=1;borg.goal.fleeing=true;selected=sv_potion_cure_serious;}
+ if(i==1){borg.trait[BI_ISAFRAID]=1;borg.goal.fleeing=true;selected=sv_potion_boldness;}
+ if(i==2){borg.trait[BI_CURHP]=30;borg.trait[BI_CDEPTH]=1;}
+ if(i==3){borg.trait[BI_CURHP]=45;borg.trait[BI_CDEPTH]=1;borg.trait[BI_ISCUT]=1;}
+ bool result=tail();printf("%d command=%d fleeing=%d leaving=%d\n",i,result,borg.goal.fleeing,borg.goal.leaving);
+ }}
